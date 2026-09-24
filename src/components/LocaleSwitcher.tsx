@@ -17,7 +17,11 @@ export function LocaleSwitcher() {
       <span className="sr-only">{t("Common.language")}</span>
       <select
         value={locale}
-        onChange={(e) => router.replace({ pathname, params } as never, { locale: e.target.value as Locale })}
+        onChange={(e) =>
+          router.replace({ pathname, params } as never, {
+            locale: e.target.value as Locale,
+          })
+        }
         className="rounded-md border border-line bg-surface px-2 py-1"
       >
         {routing.locales.map((l) => (

@@ -16,6 +16,7 @@
     "check": "npm run i18n:check && npm run typecheck && npm run lint"
   },
   "dependencies": {
+    "jose": "^6.2.12",
     "next": "^16.0.0",
     "next-intl": "^4.3.0",
     "react": "^19.2.0",

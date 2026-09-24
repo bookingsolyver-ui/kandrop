@@ -1,31 +1,39 @@
 import { getEnv } from "../config/env";
-import type { DashboardSummary } from "../modules/dashboard/schema";
+import { withPayouts } from "../modules/dashboard/service";
+import { tick } from "../modules/dashboard/simulator";
 import { eventBus } from "./eventBus";
 
-const g = globalThis as unknown as { __kandropDemo?: ReturnType<typeof setInterval> };
+const TICK_MS = 2500;
+
+/** Identifies this evaluation of the module, so a hot-reloaded copy can replace a stale timer. */
+const OWNER = {};
+
+const g = globalThis as unknown as {
+  __kandropDemo?: { owner: object; timer: ReturnType<typeof setInterval> };
+  __kandropDemoStores?: Set<string>;
+};
 
 /**
  * Development-only producer so the live dashboard visibly moves before real payment
- * events exist. Real producers (payment webhooks, settlement jobs) call
- * `eventBus.publish` directly — same path, same transport.
+ * events exist. Every store that opens the stream receives the (shared) simulated feed.
+ * Real producers (order webhooks, settlement jobs) call `eventBus.publish` directly —
+ * same path, same transport, same event contract.
  */
 export function ensureDemoPublisher(storeId: string) {
   const env = getEnv();
-  if (!env.KANDROP_DEMO_EVENTS || env.NODE_ENV === "production" || g.__kandropDemo) return;
+  if (!env.KANDROP_DEMO_EVENTS || env.NODE_ENV === "production") return;
 
-  let volume = 0;
-  let count = 0;
-  g.__kandropDemo = setInterval(() => {
-    count += 1;
-    volume += Math.round((5_000 + Math.random() * 95_000) * 100);
-    const summary: DashboardSummary = {
-      volumeToday: { amount: volume, currency: "AOA" },
-      transactionsToday: count,
-      successRate: 0.94 + Math.random() * 0.05,
-      pendingSettlement: { amount: Math.round(volume * 0.3), currency: "AOA" },
-      updatedAt: new Date().toISOString(),
-    };
-    eventBus.publish(storeId, "dashboard.summary", summary);
-  }, 3000);
-  g.__kandropDemo.unref?.();
+  const stores = (g.__kandropDemoStores ??= new Set<string>());
+  stores.add(storeId);
+  if (g.__kandropDemo?.owner === OWNER) return;
+
+  // A timer left by a previous hot-reload would keep publishing with stale code.
+  if (g.__kandropDemo) clearInterval(g.__kandropDemo.timer);
+
+  const timer = setInterval(() => {
+    const summary = tick();
+    for (const id of stores) eventBus.publish(id, "dashboard.summary", withPayouts(summary, id));
+  }, TICK_MS);
+  timer.unref?.();
+  g.__kandropDemo = { owner: OWNER, timer };
 }

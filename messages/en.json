@@ -1,42 +1,1435 @@
 {
   "Metadata": {
-    "title": "Kandrop — Payments for Angola",
-    "description": "High-performance payments platform for Angolan merchants."
+    "title": "Kandrop — Master e-commerce in Angola",
+    "description": "The all-in-one platform with its own logistics, integrated Multicaixa Express payments and high-converting funnels."
   },
   "Common": {
     "appName": "Kandrop",
     "language": "Language",
-    "loading": "Loading…",
-    "live": "Live",
-    "reconnecting": "Reconnecting…"
+    "pagination": {
+      "label": "Pagination",
+      "previous": "Previous",
+      "next": "Next",
+      "range": "{from}–{to} of {total}"
+    }
   },
   "Locales": {
     "pt": "Português",
     "en": "English",
     "fr": "Français"
   },
-  "Home": {
-    "eyebrow": "Institutional payments",
-    "title": "Get paid in Kwanza. With the trust of an institution.",
-    "subtitle": "Payments infrastructure built for Angolan commerce: fast, auditable and real-time.",
-    "cta": "Open dashboard"
-  },
   "Dashboard": {
-    "title": "Summary",
-    "subtitle": "Your store's activity in real time.",
-    "metrics": {
-      "volumeToday": "Volume today",
-      "transactionsToday": "Transactions today",
-      "successRate": "Success rate",
-      "pendingSettlement": "Pending settlement"
+    "eyebrow": "Merchant dashboard",
+    "title": "Dashboard",
+    "subtitle": "Your dropshipping store's performance, in real time.",
+    "period": "Last {days} days",
+    "updatedAt": "Updated at {time}",
+    "kpi": {
+      "grossRevenue": {
+        "label": "Gross revenue",
+        "hint": "Total billed in sales"
+      },
+      "netRevenue": {
+        "label": "Net revenue",
+        "hint": "{rate} profit margin"
+      },
+      "pendingOrders": {
+        "label": "Pending orders",
+        "hint": "{value} in sales to complete"
+      },
+      "availableBalance": {
+        "label": "Balance available to withdraw",
+        "hint": "{amount} releasing after delivery"
+      },
+      "vsPrevious": "<change>{value}</change> vs. previous period"
     },
-    "updatedAt": "Updated at {time}"
+    "chart": {
+      "title": "Revenue",
+      "subtitle": "Gross and net revenue per day, in Kwanza (AOA)",
+      "gross": "Gross",
+      "net": "Net",
+      "date": "Date",
+      "tableLabel": "Daily revenue",
+      "empty": "No revenue data yet."
+    },
+    "products": {
+      "title": "Best-selling products",
+      "subtitle": "Ranked by gross revenue",
+      "product": "Product",
+      "units": "Units",
+      "revenue": "Revenue",
+      "margin": "Margin",
+      "empty": "No sales yet."
+    }
   },
   "Errors": {
     "unauthenticated": "Invalid or expired session.",
     "forbidden": "You do not have permission to do this.",
     "not_found": "Resource not found.",
     "validation_failed": "The submitted data is invalid.",
-    "internal": "An unexpected error occurred. Please try again."
+    "internal": "An unexpected error occurred. Please try again.",
+    "invalid_credentials": "Incorrect email or password.",
+    "email_taken": "An account with this email already exists.",
+    "rate_limited": "Too many attempts. Please try again in a few minutes.",
+    "checkout_expired": "This payment session has expired.",
+    "checkout_paid": "This order has already been paid.",
+    "payments_unavailable": "Payments are unavailable right now.",
+    "payload_too_large": "The data sent is too large. Use fewer or smaller images.",
+    "invalid_transition": "This status change is no longer possible. Refresh the page.",
+    "no_bank_account": "Add your bank details before requesting a payout.",
+    "insufficient_balance": "The amount exceeds the available balance.",
+    "payout_pending": "A payout is already in progress. Wait until it completes.",
+    "plan_limit_reached": "You have reached your plan's product limit. Upgrade to add more.",
+    "whatsapp_not_connected": "Connect WhatsApp before turning this flow on.",
+    "whatsapp_already_connected": "WhatsApp is already connected. Disconnect it first to use another number.",
+    "no_courier_available": "No couriers are available for this zone right now.",
+    "order_not_dispatchable": "This order is no longer waiting to ship.",
+    "delivery_exists": "This order already has a delivery assigned.",
+    "out_of_stock": "This product is sold out. Please try again later.",
+    "plan_not_upgradable": "You already have a higher plan active. You can only renew your plan or move up to a bigger one.",
+    "lesson_locked": "Finish the earlier lessons to unlock this one."
+  },
+  "Auth": {
+    "login": {
+      "title": "Sign in",
+      "subtitle": "Access your store dashboard.",
+      "submit": "Sign in",
+      "submitting": "Signing in…",
+      "switchPrompt": "Don't have an account?",
+      "switchLink": "Create account"
+    },
+    "register": {
+      "title": "Create account",
+      "subtitle": "Start selling and getting paid in Kwanza.",
+      "submit": "Create account",
+      "submitting": "Creating account…",
+      "switchPrompt": "Already have an account?",
+      "switchLink": "Sign in"
+    },
+    "fields": {
+      "email": "Email",
+      "password": "Password",
+      "fullName": "Full name",
+      "storeName": "Store name"
+    },
+    "password": {
+      "show": "Show password",
+      "hide": "Hide password",
+      "rulesTitle": "Your password must",
+      "met": "met",
+      "unmet": "not met",
+      "rules": {
+        "length": "Be at least {min} characters",
+        "letterAndNumber": "Include letters and numbers",
+        "notCommon": "Not be a common password",
+        "notEmail": "Not contain your email"
+      }
+    },
+    "validation": {
+      "email_required": "Enter your email.",
+      "email_invalid": "This email isn't valid. Example: name@company.ao",
+      "password_required": "Enter your password.",
+      "password_too_short": "Your password must be at least {min} characters.",
+      "password_too_long": "Your password can't be longer than {max} characters.",
+      "password_needs_letter_number": "Use both letters and numbers in your password.",
+      "password_too_common": "This password is too common. Choose another one.",
+      "password_contains_email": "Your password shouldn't contain your email.",
+      "name_required": "Enter your name.",
+      "name_too_short": "Your name must be at least 2 characters.",
+      "store_name_required": "Enter your store name.",
+      "store_name_too_short": "The store name must be at least 2 characters."
+    },
+    "fixErrors": "Fix the highlighted fields to continue.",
+    "securityNote": "Kandrop will never ask for your password by phone, message or email.",
+    "logout": "Sign out"
+  },
+  "Checkout": {
+    "title": "Payment",
+    "processedBy": "Payment processed by Kandrop",
+    "sandbox": {
+      "banner": "Test mode: no real money will be charged.",
+      "details": "Show test data",
+      "phoneOk": "Phone: any 9-digit number starting with 9 is accepted. Multicaixa Express confirms after 5 to 10 seconds (through a signed webhook).",
+      "phoneDecline": "End in 00 to simulate a decline on the phone.",
+      "phoneFunds": "End in 01 to simulate insufficient funds.",
+      "cardOk": "Card 4242 4242 4242 4242: payment approved.",
+      "cardDecline": "Card 4000 0000 0000 0002: card declined."
+    },
+    "summary": {
+      "title": "Order summary",
+      "toggle": "View summary",
+      "quantity": "Qty {count}",
+      "subtotal": "Subtotal",
+      "shipping": "Shipping",
+      "total": "Total",
+      "free": "Free",
+      "payTo": "Total to pay to {store}"
+    },
+    "method": {
+      "legend": "Payment method",
+      "multicaixa_express": {
+        "name": "Multicaixa Express",
+        "hint": "Confirm on your phone"
+      },
+      "unitel_money": {
+        "name": "Unitel Money",
+        "hint": "Confirm on your phone"
+      },
+      "card": {
+        "name": "Credit or debit card",
+        "hint": "Instant payment"
+      },
+      "other": "Or pay by card"
+    },
+    "fields": {
+      "phone": "Mobile number",
+      "phoneHint": "Enter the 9 digits, without the country code.",
+      "cardNumber": "Card number",
+      "expiry": "Expiry",
+      "expiryPlaceholder": "MM/YY",
+      "cvc": "CVC",
+      "cardName": "Name on card"
+    },
+    "notes": {
+      "multicaixa_express": "You will receive a confirmation request in the Multicaixa Express app.",
+      "unitel_money": "You will receive a confirmation request on your phone.",
+      "card": "We don't store your card details."
+    },
+    "trust": {
+      "encrypted": "Encrypted connection",
+      "noPin": "We never ask for your PIN or password."
+    },
+    "pay": "Pay {amount}",
+    "paying": "Processing…",
+    "pending": {
+      "title": "Waiting for confirmation in the {app} app",
+      "body": "Open the app on the phone {phone} and approve the payment of {amount}.",
+      "steps": {
+        "open": "Open the {app} app on your phone.",
+        "check": "Check the amount of {amount} and the store {store}.",
+        "approve": "Approve the payment with your PIN, inside the app."
+      },
+      "receipt": {
+        "amount": "Amount",
+        "store": "Store",
+        "phone": "Phone",
+        "reference": "Reference"
+      },
+      "waiting": "It usually takes less than a minute. Please keep this page open: we move on as soon as you confirm.",
+      "cancel": "Cancel and choose another method"
+    },
+    "success": {
+      "title": "Payment complete",
+      "body": "We received your payment of {amount}.",
+      "reference": "Reference",
+      "method": "Method",
+      "store": "Store",
+      "date": "Date",
+      "keep": "Keep this reference for any question about your order.",
+      "receipt": "View and save receipt"
+    },
+    "failed": {
+      "title": "We couldn't complete the payment",
+      "codes": {
+        "declined_by_customer": "The payment was declined on the phone.",
+        "insufficient_funds": "Insufficient funds. Try another payment method.",
+        "card_declined": "The card was declined. Try another card or method.",
+        "cancelled": "The payment was cancelled.",
+        "generic": "We couldn't complete the payment. Please try again.",
+        "timeout": "The payment provider did not answer in time. Please try again."
+      }
+    },
+    "states": {
+      "expired": {
+        "title": "This payment session has expired",
+        "body": "Go back to the store and start the payment again."
+      },
+      "paid": {
+        "title": "This order has already been paid",
+        "body": "There is nothing more to do."
+      },
+      "notFound": {
+        "title": "Payment not found",
+        "body": "Check the link you received or go back to the store."
+      }
+    },
+    "validation": {
+      "phone_required": "Enter your mobile number.",
+      "phone_invalid": "Enter 9 digits starting with 9. E.g. 923 456 789",
+      "card_number_required": "Enter the card number.",
+      "card_number_invalid": "The card number isn't valid. Check the digits.",
+      "card_expiry_required": "Enter the card expiry date.",
+      "card_expiry_invalid": "Use the format MM/YY. E.g. 08/28",
+      "card_expired": "This card has expired.",
+      "card_cvc_invalid": "Enter the CVC (3 or 4 digits).",
+      "card_name_required": "Enter the name shown on the card."
+    },
+    "redirecting": {
+      "title": "Payment confirmed",
+      "body": "Opening your receipt…"
+    }
+  },
+  "Catalog": {
+    "eyebrow": "Catalogue",
+    "title": "Products",
+    "subtitle": "Manage what you sell, the prices and the margin on every item.",
+    "add": "New product",
+    "search": {
+      "label": "Search products",
+      "placeholder": "Search by name or description",
+      "clear": "Clear search"
+    },
+    "filters": {
+      "category": "Category",
+      "status": "Status",
+      "allCategories": "All categories",
+      "allStatuses": "All statuses",
+      "clear": "Clear filters"
+    },
+    "categories": {
+      "fashion": "Fashion",
+      "electronics": "Electronics",
+      "home": "Home",
+      "beauty": "Beauty",
+      "food": "Food",
+      "other": "Other"
+    },
+    "status": {
+      "active": "Active",
+      "draft": "Draft",
+      "archived": "Archived"
+    },
+    "table": {
+      "caption": "Product list",
+      "product": "Product",
+      "category": "Category",
+      "status": "Status",
+      "cost": "Cost",
+      "price": "Price",
+      "margin": "Margin",
+      "actions": "Actions",
+      "sortBy": "Sort by {column}",
+      "edit": "Edit {title}",
+      "delete": "Delete {title}",
+      "views": "Views"
+    },
+    "results": "{count, plural, =0 {No products} one {# product} other {# products}}",
+    "empty": {
+      "title": "You have no products yet",
+      "body": "Add your first product to start selling and tracking your margin.",
+      "cta": "Add product"
+    },
+    "noResults": {
+      "title": "No products found",
+      "body": "Try a different search or remove the filters."
+    },
+    "loadError": {
+      "title": "Products could not be loaded",
+      "retry": "Try again"
+    },
+    "form": {
+      "createTitle": "New product",
+      "createSubtitle": "Fill in the item's details. The margin updates as you type.",
+      "editTitle": "Edit product",
+      "editSubtitle": "Changes only apply once you save.",
+      "back": "Back to products",
+      "basics": "Product information",
+      "fields": {
+        "title": "Title",
+        "description": "Description",
+        "descriptionHint": "Optional. Up to 2000 characters.",
+        "category": "Category",
+        "status": "Status",
+        "cost": "Cost price",
+        "price": "Sale price",
+        "moneyHint": "In Kwanzas, without cents."
+      },
+      "images": {
+        "title": "Images",
+        "hint": "Up to {max} JPG, PNG or WebP images. The first one is the main image.",
+        "add": "Add images",
+        "drop": "or drop files here",
+        "remove": "Remove image {n}",
+        "makeCover": "Make main",
+        "cover": "Main",
+        "alt": "Product image {n}"
+      },
+      "pricing": {
+        "title": "Price and margin",
+        "margin": "Margin",
+        "amount": "Profit per unit",
+        "empty": "Enter the cost and sale price to see the margin.",
+        "negative": "The sale price is below cost: every sale makes a loss."
+      },
+      "save": "Save product",
+      "saving": "Saving…",
+      "saved": "Changes saved.",
+      "cancel": "Cancel",
+      "delete": "Delete product",
+      "offer": {
+        "title": "Stock and offer",
+        "intro": "Optional. This appears on the product's public page and is always true: the low-stock notice only shows with real stock and, when the deadline passes, the shop charges the original price.",
+        "stock": "Units in stock",
+        "stockHint": "Leave empty to show no stock. The page warns when 5 or fewer are left.",
+        "regular": "Original price",
+        "regularHint": "Shown struck through next to the sale price.",
+        "ends": "Offer ends at",
+        "endsHint": "Optional. After this moment the shop charges the original price and the countdown disappears.",
+        "clear": "Clear deadline"
+      },
+      "publicPage": "View public page",
+      "publicPageHint": "Only active products have a public page."
+    },
+    "imageErrors": {
+      "type": "Only JPG, PNG or WebP images are accepted.",
+      "size": "The image is larger than 15 MB.",
+      "unreadable": "This image could not be read.",
+      "max": "You can add at most {max} images."
+    },
+    "delete": {
+      "title": "Delete this product?",
+      "body": "“{title}” will be removed from the catalogue. This cannot be undone.",
+      "confirm": "Delete",
+      "deleting": "Deleting…",
+      "cancel": "Keep product"
+    },
+    "validation": {
+      "title_required": "Enter the product title.",
+      "title_too_long": "The title can be at most 120 characters.",
+      "description_too_long": "The description can be at most 2000 characters.",
+      "category_invalid": "Choose a category.",
+      "status_invalid": "Choose a status.",
+      "cost_required": "Enter the cost price (it can be 0).",
+      "cost_too_high": "The cost price cannot exceed 10,000,000 Kz.",
+      "price_required": "Enter a sale price above 0.",
+      "price_too_high": "The sale price cannot exceed 10,000,000 Kz.",
+      "images_invalid": "One of the images is not valid. Remove it and try another.",
+      "images_max": "You can add at most 5 images.",
+      "stock_invalid": "Enter a whole number of units, from 0 to 1,000,000.",
+      "compare_price_invalid": "The original price must be higher than the sale price.",
+      "offer_end_invalid": "Choose a date and time in the future.",
+      "offer_needs_price": "To set a deadline, enter the original price first."
+    }
+  },
+  "Orders": {
+    "eyebrow": "Orders",
+    "title": "Orders",
+    "subtitle": "Follow every order, from payment to delivery.",
+    "search": {
+      "label": "Search orders",
+      "placeholder": "No., customer, phone or product",
+      "clear": "Clear search"
+    },
+    "tabs": {
+      "label": "Filter by status",
+      "all": "All"
+    },
+    "status": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "shipped": "Shipped",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled"
+    },
+    "table": {
+      "caption": "Order list",
+      "order": "Order",
+      "customer": "Customer",
+      "products": "Products",
+      "date": "Date",
+      "total": "Total paid",
+      "status": "Status",
+      "sortBy": "Sort by {column}",
+      "open": "Open order {number}",
+      "more": "+{count, plural, one {# item} other {# items}}"
+    },
+    "results": "{count, plural, =0 {No orders} one {# order} other {# orders}}",
+    "filters": {
+      "clear": "Clear filters"
+    },
+    "empty": {
+      "title": "You have no orders yet",
+      "body": "Orders paid through your checkout appear here."
+    },
+    "noResults": {
+      "title": "No orders found",
+      "body": "Try a different search or status."
+    },
+    "loadError": {
+      "title": "Orders could not be loaded",
+      "retry": "Try again"
+    },
+    "detail": {
+      "title": "Order {number}",
+      "close": "Close",
+      "placed": "Placed on {date}",
+      "sections": {
+        "history": "History",
+        "customer": "Customer",
+        "address": "Delivery address",
+        "items": "Items",
+        "payment": "Payment"
+      },
+      "customer": {
+        "phone": "Phone",
+        "email": "E-mail",
+        "name": "Name"
+      },
+      "address": {
+        "reference": "Landmark: {value}"
+      },
+      "items": {
+        "quantity": "Qty {count}",
+        "subtotal": "Subtotal",
+        "shipping": "Shipping",
+        "free": "Free",
+        "total": "Total paid"
+      },
+      "payment": {
+        "method": "Method",
+        "reference": "Reference",
+        "paidAt": "Paid on"
+      },
+      "tracking": {
+        "label": "Tracking code",
+        "hint": "Optional. Add it so the shipment can be followed.",
+        "shown": "Tracking"
+      },
+      "actions": {
+        "processing": "Start processing",
+        "shipped": "Mark as shipped",
+        "delivered": "Mark as delivered",
+        "cancel": "Cancel order",
+        "updating": "Updating…"
+      },
+      "cancelConfirm": {
+        "title": "Cancel this order?",
+        "body": "The order will be cancelled and cannot be resumed. This action does not refund the payment.",
+        "confirm": "Cancel order",
+        "keep": "Keep order"
+      },
+      "final": {
+        "delivered": "This order has been delivered. There are no further steps.",
+        "cancelled": "This order was cancelled."
+      },
+      "updated": "Status updated: {status}."
+    },
+    "validation": {
+      "status_invalid": "Invalid status.",
+      "tracking_too_long": "The code can be at most 40 characters."
+    }
+  },
+  "Shell": {
+    "navLabel": "Main navigation",
+    "store": "Store",
+    "collapse": "Collapse menu",
+    "expand": "Expand menu",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "skip": "Skip to content",
+    "nav": {
+      "overview": "Dashboard",
+      "wallet": "Wallet",
+      "orders": "Orders",
+      "catalog": "Premium Catalogue",
+      "products": "My products",
+      "landingPages": "My landing pages",
+      "customers": "Customers",
+      "whatsapp": "WhatsApp automations",
+      "logistics": "Logistics & couriers",
+      "academy": "Kandrop Academy",
+      "support": "Support",
+      "settings": "Settings",
+      "plans": "Billing and plans",
+      "affiliates": "Affiliates"
+    },
+    "breadcrumbs": {
+      "label": "Breadcrumb",
+      "root": "Dashboard",
+      "new": "New product",
+      "edit": "Edit product"
+    },
+    "connection": {
+      "title": "Real-time connection",
+      "live": "Online",
+      "connecting": "Connecting…",
+      "reconnecting": "Reconnecting…"
+    },
+    "user": {
+      "open": "Account menu",
+      "label": "Account",
+      "settings": "Settings"
+    },
+    "groups": {
+      "main": "Main",
+      "dropshipping": "Dropshipping",
+      "accelerators": "Accelerators",
+      "other": "Other"
+    },
+    "soon": "Soon",
+    "loading": "Loading…",
+    "plan": {
+      "label": "Current plan",
+      "names": {
+        "starter": "Starter",
+        "growth": "Growth",
+        "scale": "Scale"
+      },
+      "landingPages": "Landing pages",
+      "products": "Products",
+      "upgrade": "Upgrade",
+      "unlimited": "Unlimited",
+      "manage": "Manage plan"
+    },
+    "notFound": {
+      "title": "Page not found",
+      "body": "This page does not exist or is no longer available.",
+      "back": "Back to Dashboard"
+    }
+  },
+  "Settings": {
+    "eyebrow": "Settings",
+    "title": "Settings",
+    "subtitle": "Your profile, your store and the bank account that receives your payouts.",
+    "store": {
+      "title": "Store",
+      "subtitle": "How your store is registered on the platform.",
+      "name": "Name",
+      "nif": "Tax ID (NIF)",
+      "nifEmpty": "Not provided",
+      "currency": "Currency",
+      "status": "Status"
+    },
+    "storeStatus": {
+      "pending_verification": "Verification pending",
+      "active": "Active",
+      "suspended": "Suspended"
+    },
+    "account": {
+      "title": "Account",
+      "subtitle": "The person who is signed in.",
+      "name": "Name",
+      "email": "E-mail",
+      "role": "Role"
+    },
+    "roles": {
+      "owner": "Owner",
+      "staff": "Staff"
+    },
+    "readOnly": "For now these details are view-only. Editing is not available yet.",
+    "tabs": {
+      "label": "Settings sections",
+      "profile": "Profile",
+      "store": "Store preferences",
+      "bank": "Bank details"
+    },
+    "bank": {
+      "title": "Bank details",
+      "subtitle": "The account that receives your payouts.",
+      "current": {
+        "holder": "Account holder",
+        "iban": "IBAN",
+        "updated": "Updated on {date}",
+        "change": "Change bank details"
+      },
+      "fields": {
+        "holder": "Account holder",
+        "holderHint": "As it appears at the bank.",
+        "iban": "IBAN",
+        "ibanHint": "AO + 2 check digits + 21 digits (25 characters).",
+        "ibanCount": "{count}/25",
+        "password": "Current password",
+        "passwordHint": "For your security, confirm your password to change the account that receives payouts."
+      },
+      "save": "Save bank details",
+      "saving": "Saving…",
+      "saved": "Bank details saved.",
+      "cancel": "Cancel",
+      "ownerOnly": "Only the store owner can change the bank details.",
+      "validation": {
+        "holder_required": "Enter the account holder.",
+        "holder_invalid": "Use only letters, numbers, spaces and simple punctuation (2 to 70 characters).",
+        "iban_required": "Enter the IBAN.",
+        "iban_format": "An Angolan IBAN is AO + 2 check digits + 21 digits (25 characters).",
+        "iban_checksum": "The IBAN check digits are not valid. Make sure you copied every digit.",
+        "password_required": "Enter your password.",
+        "password_incorrect": "Incorrect password."
+      }
+    }
+  },
+  "Receipt": {
+    "title": "Payment receipt",
+    "platform": "Payments platform",
+    "number": "No.",
+    "issuedOn": "Issued on {date}",
+    "merchant": {
+      "title": "Merchant",
+      "name": "Name",
+      "nif": "Tax ID (NIF)",
+      "nifEmpty": "Not provided",
+      "country": "Country",
+      "countryValue": "Angola"
+    },
+    "payment": {
+      "title": "Payment",
+      "paidAt": "Payment date",
+      "transactionId": "Transaction ID",
+      "reference": "Reference",
+      "method": "Method",
+      "paidWith": "Paid with"
+    },
+    "items": {
+      "title": "Items",
+      "description": "Description",
+      "quantity": "Qty",
+      "unitPrice": "Unit price",
+      "total": "Total",
+      "subtotal": "Subtotal",
+      "shipping": "Shipping",
+      "free": "Free",
+      "totalPaid": "Total paid"
+    },
+    "status": {
+      "paid": "Payment confirmed"
+    },
+    "currencyNote": "Amounts in Angolan Kwanza (AOA).",
+    "legal": "This document proves the payment made and was generated automatically by Kandrop. It is not an invoice or a certified tax document; the invoice, where applicable, is issued by the merchant.",
+    "generated": "Automatically generated on {date}",
+    "print": "Print or save as PDF",
+    "printHint": "In the print dialog, choose “Save as PDF”.",
+    "back": "Back to confirmation"
+  },
+  "Payouts": {
+    "eyebrow": "Wallet",
+    "title": "Wallet",
+    "subtitle": "Your balance and payouts to your bank account.",
+    "balance": {
+      "label": "Balance available for payout",
+      "releasing": "{amount} to be released after delivery"
+    },
+    "request": {
+      "cta": "Request payout",
+      "destination": "Transfer to",
+      "addBank": "Add bank details",
+      "ownerOnly": "Only the store owner can request payouts.",
+      "created": "Payout requested. Reference {reference}.",
+      "blocked": {
+        "noBank": "Add your bank details to withdraw your balance.",
+        "pending": "You already have a payout in progress. You can request another once it completes.",
+        "low": "Your balance has not yet reached the {amount} minimum per payout."
+      }
+    },
+    "dialog": {
+      "title": "Request a payout",
+      "to": "To",
+      "amount": "Amount to withdraw",
+      "all": "Withdraw all",
+      "available": "Available: {amount}",
+      "min": "Minimum: {amount}",
+      "submit": "Confirm payout",
+      "submitting": "Requesting…",
+      "cancel": "Cancel",
+      "sandbox": "Test environment: the transfer is simulated and no real money moves."
+    },
+    "history": {
+      "title": "Payout history",
+      "subtitle": "Newest first.",
+      "caption": "Payout history",
+      "date": "Date",
+      "reference": "Reference",
+      "account": "Account",
+      "amount": "Amount",
+      "status": "Status"
+    },
+    "status": {
+      "pending": "Pending",
+      "completed": "Completed"
+    },
+    "empty": {
+      "title": "You have not made any payouts yet",
+      "body": "Your payouts appear here, with the status of each."
+    },
+    "loadError": {
+      "title": "Payouts could not be loaded",
+      "retry": "Try again"
+    },
+    "validation": {
+      "amount_required": "Enter the amount, in whole Kwanzas.",
+      "amount_too_low": "The minimum amount per payout is {min}.",
+      "amount_too_high": "The amount exceeds the available balance."
+    }
+  },
+  "ComingSoon": {
+    "note": "We are preparing this area. There is nothing to set up yet.",
+    "features": {
+      "catalog": "Products from selected B2B suppliers, with cost price and stock, ready to sell in your store.",
+      "landingPages": "Conversion-focused sales pages built from your products.",
+      "customers": "All your customers in one place, with the history of their orders.",
+      "support": "Talk to the Kandrop team whenever you need help."
+    }
+  },
+  "Marketing": {
+    "nav": {
+      "label": "Main navigation",
+      "skip": "Skip to content",
+      "home": "Home",
+      "plans": "Pricing",
+      "affiliates": "Affiliates",
+      "about": "About",
+      "login": "Sign in",
+      "start": "Get started",
+      "open": "Open menu",
+      "close": "Close menu"
+    },
+    "hero": {
+      "eyebrow": "Dropshipping in Angola, no stock",
+      "title1": "Master <nowrap>E-commerce</nowrap> in Angola.",
+      "title2": "Zero Stock.",
+      "title3": "Real Profit.",
+      "subtitle": "The all-in-one platform with its own logistics, integrated Multicaixa Express payments and high-converting funnels.",
+      "primary": "Get started",
+      "secondary": "See pricing",
+      "example": "Illustrative examples, with fictional data.",
+      "mockup": {
+        "balance": "Available balance",
+        "period": "Last 14 days",
+        "status": {
+          "shipped": "Shipped",
+          "processing": "Processing",
+          "delivered": "Delivered"
+        }
+      },
+      "proof": {
+        "revenue": "{amount} in sales",
+        "order": "New order of {amount}",
+        "payout": "Payout of {amount} completed",
+        "ago": "{minutes} min ago"
+      }
+    },
+    "pillars": {
+      "eyebrow": "Advantages",
+      "title": "Why Kandrop?",
+      "subtitle": "Everything an Angolan merchant needs to sell more and get paid faster, in one place.",
+      "soon": "Soon",
+      "items": {
+        "catalog": {
+          "title": "High-margin B2B catalogue",
+          "body": "Pick products from selected suppliers, with the margin worked out up front, and sell without buying stock."
+        },
+        "payouts": {
+          "title": "Payouts in 24h",
+          "body": "Request a payout of your balance and receive it in your Angolan bank account, without red tape."
+        },
+        "whatsapp": {
+          "title": "Sales recovery via WhatsApp",
+          "body": "Win back abandoned carts and confirm orders automatically, on the app your customers already use."
+        }
+      }
+    },
+    "pricing": {
+      "eyebrow": "Pricing",
+      "title": "A plan for every stage of your business",
+      "subtitle": "Start small and grow when sales ask for it.",
+      "free": "Free",
+      "period": "/month",
+      "recommended": "Recommended",
+      "soon": "Soon",
+      "cta": "Start with {plan}",
+      "note": "Amounts in Angolan Kwanza (AOA), per month.",
+      "plans": {
+        "starter": {
+          "name": "Starter",
+          "tagline": "To validate your first product."
+        },
+        "growth": {
+          "name": "Growth",
+          "tagline": "For those already selling who want to speed up."
+        },
+        "scale": {
+          "name": "Scale",
+          "tagline": "For high-volume operations."
+        }
+      },
+      "features": {
+        "products": "Up to {count} products",
+        "productsUnlimited": "Unlimited products",
+        "landingPages": "Up to {count} landing pages",
+        "landingPagesUnlimited": "Unlimited landing pages",
+        "multicaixa": "Multicaixa Express, Unitel Money and card payments",
+        "payouts": "Payouts to your bank account",
+        "catalog": "Premium B2B catalogue",
+        "whatsapp": "WhatsApp automations",
+        "logistics": "Logistics and couriers",
+        "logisticsPriority": "Logistics priority"
+      }
+    },
+    "final": {
+      "title": "Start selling without stock today.",
+      "body": "Create your account in minutes and launch your first product.",
+      "cta": "Get started"
+    },
+    "footer": {
+      "label": "Footer",
+      "tagline": "Dropshipping built for Angola.",
+      "register": "Create account",
+      "copyright": "© {year} Kandrop. All rights reserved."
+    },
+    "pages": {
+      "soon": "Soon",
+      "affiliates": {
+        "title": "Affiliate programme",
+        "body": "We are preparing Kandrop's affiliate programme. Check back soon."
+      },
+      "about": {
+        "title": "About Kandrop",
+        "body": "We are building the dropshipping platform designed for Angola. We will tell our story here soon."
+      }
+    }
+  },
+  "Automations": {
+    "title": "Boost your sales by 30% with WhatsApp on autopilot.",
+    "subtitle": "Connect your number and let Kandrop recover carts, confirm payments and tell your customers about their deliveries.",
+    "sandbox": "Test environment: the WhatsApp connection and the messages are simulated. Nothing is sent to real customers.",
+    "loadError": {
+      "title": "Automations could not be loaded",
+      "retry": "Try again"
+    },
+    "connection": {
+      "title": "WhatsApp connection",
+      "subtitle": "The number the messages are sent from.",
+      "ownerOnly": "Only the store owner can manage WhatsApp and the automations.",
+      "status": {
+        "connected": "Connected",
+        "pending": "Waiting for scan",
+        "disconnected": "Not connected"
+      },
+      "disconnected": {
+        "body": "Connect your store's WhatsApp number to be able to turn the automations on.",
+        "phone": "WhatsApp number",
+        "phoneHint": "Enter the 9 digits, without the country code.",
+        "connect": "Connect WhatsApp",
+        "connecting": "Generating code…"
+      },
+      "pending": {
+        "title": "Scan the code with your phone",
+        "qrLabel": "Pairing code (simulated)",
+        "steps": {
+          "open": "Open WhatsApp on the phone {phone}.",
+          "menu": "Tap Settings, then Linked devices.",
+          "scan": "Tap Link a device and point the camera at this code."
+        },
+        "waiting": "Waiting for the scan…",
+        "cancel": "Cancel"
+      },
+      "connected": {
+        "body": "Active automations send messages from {phone}.",
+        "since": "Connected since {date}",
+        "disconnect": "Disconnect",
+        "confirmTitle": "Disconnect WhatsApp?",
+        "confirmBody": "All automations will be turned off and stop sending messages.",
+        "confirm": "Disconnect",
+        "keep": "Stay connected"
+      }
+    },
+    "flows": {
+      "title": "Automation flows",
+      "subtitle": "Turn on the ones you want. Click a flow to read and edit its message.",
+      "needConnection": "Connect WhatsApp to be able to turn the flows on.",
+      "on": "On",
+      "off": "Off",
+      "edit": "View and edit message",
+      "customised": "Customised",
+      "toggle": "Turn on {flow}",
+      "items": {
+        "abandonedCart": {
+          "title": "Abandoned cart recovery",
+          "description": "Sends the customer a message 1 hour after a failed payment attempt.",
+          "trigger": "1 h after the failed attempt"
+        },
+        "paymentConfirmation": {
+          "title": "Payment confirmation",
+          "description": "Sends the receipt to the customer automatically as soon as the payment is confirmed.",
+          "trigger": "When the payment is confirmed"
+        },
+        "shippingUpdate": {
+          "title": "Shipping update",
+          "description": "Lets the customer know when the courier is on the way.",
+          "trigger": "When the courier heads out to deliver"
+        }
+      }
+    },
+    "editor": {
+      "template": "Message template",
+      "templateHint": "Variables in curly braces are replaced with each customer's details.",
+      "variables": "Variables (click to insert)",
+      "insert": "Insert {variable}",
+      "counter": "{count}/{max}",
+      "preview": "Preview",
+      "previewNote": "with example data",
+      "save": "Save template",
+      "saving": "Saving…",
+      "saved": "Template saved.",
+      "reset": "Restore original template",
+      "close": "Close",
+      "approval": "Test environment: messages are not sent. With the real WhatsApp Business, templates must be approved by Meta before they can be used.",
+      "variableNames": {
+        "nome_cliente": "Customer name",
+        "nome_produto": "Product name",
+        "link_pagamento": "Link to complete the payment",
+        "nome_loja": "Your store name",
+        "valor_total": "Amount paid",
+        "referencia": "Payment reference",
+        "link_recibo": "Link to the receipt",
+        "codigo_seguimento": "Shipment tracking code",
+        "nome_estafeta": "Courier name"
+      }
+    },
+    "validation": {
+      "template_required": "Write the message.",
+      "template_too_long": "The message can be at most 1000 characters.",
+      "template_unknown_variable": "Unknown variables: {names}. Use only the ones in the list.",
+      "template_braces": "There are unmatched curly braces. Write each variable between braces, for example {example}.",
+      "phone_required": "Enter the WhatsApp number.",
+      "phone_invalid": "Enter 9 digits starting with 9. E.g. 923 456 789"
+    }
+  },
+  "Logistics": {
+    "title": "Logistics and couriers",
+    "subtitle": "Dispatch orders in one click and follow every delivery, from pickup to your customer.",
+    "sandbox": "Test environment: the couriers, deliveries, photos and signatures are simulated. Each trip lasts about a minute so the whole cycle can be watched, and orders whose number is a multiple of 7 are returned.",
+    "loadError": {
+      "title": "Deliveries could not be loaded",
+      "retry": "Try again"
+    },
+    "dispatch": {
+      "title": "Quick dispatch",
+      "subtitle": "Orders that are ready, waiting for a courier.",
+      "waiting": "{count, plural, =0 {None waiting to ship} other {# waiting to ship}}",
+      "more": "and {count, plural, one {# more item} other {# more items}}",
+      "assign": "Assign courier",
+      "assigning": "Assigning…",
+      "done": "Order {number} assigned to {courier}.",
+      "empty": {
+        "title": "No orders waiting to ship",
+        "body": "Orders in processing appear here, ready to dispatch.",
+        "cta": "View orders"
+      }
+    },
+    "deliveries": {
+      "title": "Deliveries",
+      "subtitle": "In progress, delivered and returned.",
+      "filter": "Filter deliveries by status"
+    },
+    "tabs": {
+      "in_transit": "In progress",
+      "delivered": "Delivered",
+      "returned": "Returned",
+      "all": "All"
+    },
+    "table": {
+      "caption": "Delivery list",
+      "order": "Order",
+      "zone": "Neighbourhood / municipality",
+      "courier": "Courier",
+      "progress": "Progress",
+      "status": "Status",
+      "open": "Open the delivery of order {number}",
+      "proof": "Proof"
+    },
+    "status": {
+      "in_transit": "In transit",
+      "delivered": "Delivered",
+      "returned": "Returned"
+    },
+    "stages": {
+      "assigned": "Assigned",
+      "picked_up": "Picked up",
+      "in_transit": "On the way",
+      "delivered": "Delivered",
+      "returned": "Returned"
+    },
+    "vehicles": {
+      "moto": "Motorbike",
+      "car": "Car"
+    },
+    "returnReasons": {
+      "customer_absent": "Delivery failed: the customer was not there. The order came back to the merchant and was cancelled."
+    },
+    "empty": {
+      "in_transit": {
+        "title": "No deliveries in progress",
+        "body": "Assigned deliveries appear here while the courier takes them to the customer."
+      },
+      "delivered": {
+        "title": "No completed deliveries yet",
+        "body": "Completed deliveries appear here, with their proof."
+      },
+      "returned": {
+        "title": "No returned deliveries",
+        "body": "A returned delivery appears here, with the reason."
+      },
+      "all": {
+        "title": "No deliveries yet",
+        "body": "Assign an order to a courier to get started."
+      }
+    },
+    "sheet": {
+      "title": "Delivery {number}",
+      "code": "Tracking code",
+      "close": "Close",
+      "live": "Live",
+      "eta": "arrives in {time}",
+      "viewProof": "View proof of delivery",
+      "proofPending": "Getting the proof…",
+      "courier": "Courier",
+      "name": "Name",
+      "phone": "Contact",
+      "vehicle": "Vehicle",
+      "destination": "Destination",
+      "landmark": "Landmark: {value}"
+    },
+    "proof": {
+      "eyebrow": "Proof of delivery",
+      "title": "Order {number}",
+      "close": "Close",
+      "kind": "Type of proof",
+      "kinds": {
+        "photo": "Photo",
+        "signature": "Signature"
+      },
+      "photoLabel": "Photo of the delivered parcel (simulated)",
+      "signatureLabel": "Customer's signature (simulated)",
+      "test": "TEST IMAGE",
+      "deliveredAt": "Delivered on",
+      "receivedBy": "Received by",
+      "courier": "Courier",
+      "place": "Place",
+      "code": "Tracking code",
+      "simulated": "Test environment: the image is generated to illustrate. In the real version it would be the photo or signature the courier recorded at the moment of delivery."
+    }
+  },
+  "Affiliates": {
+    "title": "Affiliate programme",
+    "hero": {
+      "eyebrow": "Affiliate programme",
+      "title": "Invite and Earn.",
+      "body": "Earn {rate} recurring commission for every active merchant you bring to Kandrop.",
+      "rateCaption": "recurring commission, every month"
+    },
+    "link": {
+      "title": "Your exclusive affiliate link",
+      "hint": "Share it with anyone who wants to sell online in Angola. Every visit to the link is counted.",
+      "label": "Affiliate link",
+      "copy": "Copy link",
+      "copied": "Link copied",
+      "copyFailed": "Could not copy automatically. The link is selected: copy it with Ctrl+C or Cmd+C.",
+      "whatsapp": "Share on WhatsApp",
+      "whatsappMessage": "Start selling online in Angola with no stock, with Kandrop: {link}"
+    },
+    "kpis": {
+      "label": "Programme summary",
+      "clicks": "Link clicks",
+      "signups": "Total sign-ups",
+      "active": "Active merchants (paying)",
+      "commission": "Available commission",
+      "clicksHint": "{rate} of clicks become sign-ups",
+      "signupsHint": "{count, plural, =0 {None} one {# in the last 30 days} other {# in the last 30 days}}",
+      "activeHint": "{share} of sign-ups",
+      "commissionHint": "{amount} a month, recurring",
+      "none": "—"
+    },
+    "table": {
+      "title": "Your referrals",
+      "subtitle": "E-mails are masked to protect each person's privacy.",
+      "caption": "Referrals list",
+      "email": "Referral",
+      "registered": "Signed up",
+      "plan": "Plan",
+      "payment": "Payment status",
+      "commission": "Commission / month"
+    },
+    "plans": {
+      "starter": "Starter",
+      "growth": "Growth",
+      "scale": "Scale"
+    },
+    "payment": {
+      "paid": "Paid",
+      "pending": "Pending",
+      "overdue": "Overdue",
+      "free": "Free plan"
+    },
+    "empty": {
+      "title": "No referrals yet",
+      "body": "Share your link. When someone opens a store through it, they appear here."
+    },
+    "loadError": {
+      "title": "The programme could not be loaded",
+      "retry": "Try again"
+    },
+    "forbidden": {
+      "title": "Owner-only area",
+      "body": "Commissions are the account's money. Ask the store owner to manage the affiliate programme."
+    },
+    "sandbox": "Test environment: the referrals and amounts are examples. Sign-ups are not really attributed yet and no commission is paid out, and the {rate} rate and the plan prices are proposals awaiting confirmation."
+  },
+  "Storefront": {
+    "notFound": {
+      "title": "Product not found",
+      "body": "This product is no longer available, or the address is wrong."
+    },
+    "meta": {
+      "fallback": "Pay with Multicaixa Express, Unitel Money or card."
+    },
+    "header": {
+      "store": "{store} store"
+    },
+    "banner": {
+      "low": "{count, plural, one {Only # unit left in stock!} other {Only # units left in stock!}}",
+      "out": "Sold out"
+    },
+    "timer": {
+      "label": "Offer ends in",
+      "ended": "The offer has ended",
+      "days": "{days} d {time}"
+    },
+    "price": {
+      "regular": "Original price",
+      "off": "-{percent}",
+      "now": "Offer price"
+    },
+    "gallery": {
+      "label": "Product images",
+      "slide": "{title} — image {current} of {total}",
+      "counter": "{current} / {total}",
+      "goTo": "Show image {n}",
+      "none": "No image"
+    },
+    "description": {
+      "title": "Description"
+    },
+    "pay": {
+      "title": "Pay the way you prefer",
+      "note": "Payment is made on Kandrop's payment page.",
+      "multicaixa": "Multicaixa Express",
+      "unitel": "Unitel Money",
+      "card": "Credit or debit card"
+    },
+    "reviews": {
+      "title": "Reviews",
+      "badge": "Test examples",
+      "note": "These reviews are examples from the test environment. They are not real customers' opinions and do not appear in a live store.",
+      "stars": "{n} out of 5 stars",
+      "r1": {
+        "name": "Ana M.",
+        "text": "Arrived on time and well packed.",
+        "when": "Example"
+      },
+      "r2": {
+        "name": "Carlos N.",
+        "text": "Just like the photos. Paying with Multicaixa was quick.",
+        "when": "Example"
+      },
+      "r3": {
+        "name": "Luzia B.",
+        "text": "Good product for the price. I recommend it.",
+        "when": "Example"
+      }
+    },
+    "buy": {
+      "cta": "Buy now",
+      "methods": "Multicaixa Express · Unitel Money · Card",
+      "soldOut": "Sold out",
+      "soldOutNote": "This product is sold out. Please come back later."
+    },
+    "footer": {
+      "soldBy": "Sold by {store}",
+      "payments": "Payments by Kandrop"
+    }
+  },
+  "Billing": {
+    "title": "Billing and plans",
+    "eyebrow": "Account",
+    "subtitle": "See your plan and what you have used, change plan and review your invoices.",
+    "forbidden": {
+      "title": "Owner-only area",
+      "body": "The subscription belongs to the account. Ask the store owner to manage plans and billing."
+    },
+    "loadError": {
+      "title": "Billing could not be loaded",
+      "retry": "Try again"
+    },
+    "current": {
+      "label": "Current plan",
+      "name": "{plan} plan",
+      "free": "Free, no renewal",
+      "active": "{price} a month · active until {date}",
+      "lapsed": "Your {plan} plan has ended. You are on Starter until you renew.",
+      "landingPages": "{used} of {limit} landing pages used",
+      "products": "{used} of {limit} products used",
+      "landingPagesUnlimited": "Unlimited landing pages · {used} in use",
+      "productsUnlimited": "Unlimited products · {used} in use",
+      "meters": "Plan usage"
+    },
+    "plans": {
+      "title": "Choose your plan",
+      "subtitle": "Pay in Kwanzas, in 30-day periods. No lock-in and no automatic renewal.",
+      "perMonth": "/ month",
+      "free": "Free",
+      "current": "Current plan",
+      "badge": "Most complete",
+      "upgrade": "Upgrade",
+      "renew": "Renew 30 days",
+      "included": "Included in your plan",
+      "soon": "Soon",
+      "label": "Available plans"
+    },
+    "dialog": {
+      "title": "Subscribe to the {plan} plan",
+      "renewTitle": "Renew the {plan} plan",
+      "close": "Close",
+      "preparing": "Preparing the payment…",
+      "startError": "The payment could not be started.",
+      "retry": "Try again",
+      "summary": "Summary",
+      "plan": "Plan",
+      "period": "Period",
+      "days": "30 days",
+      "total": "Total to pay",
+      "successTitle": "{plan} plan active",
+      "successBody": "Your plan is active until {date}. The payment is recorded in your invoices.",
+      "invoice": "View invoice",
+      "done": "Done"
+    },
+    "invoices": {
+      "title": "Invoice history",
+      "subtitle": "Every payment of your subscription.",
+      "caption": "Invoices list",
+      "number": "No.",
+      "date": "Date",
+      "plan": "Plan",
+      "amount": "Amount",
+      "status": "Status",
+      "document": "Document",
+      "pdf": "Download PDF",
+      "pdfLabel": "Download the PDF of invoice {number}",
+      "none": "—",
+      "note": "The document opens on a print-ready page: use “Save as PDF”. It is a payment receipt, not a tax invoice.",
+      "empty": {
+        "title": "No invoices yet",
+        "body": "Once you subscribe to a paid plan, every payment is recorded here."
+      },
+      "statuses": {
+        "paid": "Paid",
+        "pending": "Pending",
+        "failed": "Failed"
+      },
+      "pdfShort": "PDF"
+    },
+    "sandbox": "Test environment: payments are simulated and nothing is charged. Growth and Scale prices are proposals awaiting confirmation, and only the product and landing-page limits are in force: the other advantages are not tied to the plan yet."
+  },
+  "Academy": {
+    "title": "Kandrop Academy",
+    "subtitle": "Learn to sell better with dropshipping, lesson by lesson.",
+    "loadError": {
+      "title": "The Academy could not be loaded",
+      "retry": "Try again"
+    },
+    "progress": {
+      "label": "Your progress",
+      "summary": "{done} of {total} lessons completed",
+      "left": "about {minutes} min left to watch",
+      "complete": "You have completed the course. You can review any lesson.",
+      "continue": "Continue: lesson {n}",
+      "review": "Review the course",
+      "bar": "Course progress"
+    },
+    "player": {
+      "soon": "Video coming soon",
+      "play": "Play the lesson",
+      "label": "Video player: {title}",
+      "unavailable": "This lesson's video has not been recorded yet. In this test environment you can mark the lesson as completed to see the progress and the unlocking.",
+      "expand": "Expand the player",
+      "collapse": "Shrink the player",
+      "fullscreen": "Full screen",
+      "exitFullscreen": "Exit full screen",
+      "module": "Module {n}"
+    },
+    "lesson": {
+      "meta": "Lesson {n} of {total} · {minutes} min",
+      "complete": "Mark as completed",
+      "saving": "Saving…",
+      "done": "Lesson completed",
+      "next": "Go to the next lesson",
+      "advanced": "Lesson completed. The next lesson is unlocked.",
+      "finished": "Lesson completed. You have finished the course!",
+      "status": "Lesson status",
+      "lockedTitle": "Lesson locked",
+      "lockedBody": "Finish the earlier lessons to unlock this one."
+    },
+    "outline": {
+      "title": "Course content",
+      "module": "Module {n}",
+      "count": "{done}/{total}",
+      "minutes": "{minutes} min",
+      "completed": "Completed",
+      "available": "Available",
+      "locked": "Locked",
+      "open": "Open module {title}",
+      "lessonLabel": "{title}, {minutes} min, {state}"
+    },
+    "sandbox": "Test environment: the titles and descriptions are a course outline and the videos have not been recorded yet. The first five lessons already completed are a starting example.",
+    "modules": {
+      "m1": "Choosing Viral Products",
+      "m2": "Paid Traffic to WhatsApp",
+      "m3": "The Product Page That Sells",
+      "m4": "Deliveries and After-sales"
+    },
+    "lessons": {
+      "m1l1": {
+        "title": "How dropshipping works in Angola",
+        "description": "The no-stock model, who does what and where the profit is."
+      },
+      "m1l2": {
+        "title": "Where to find products in demand",
+        "description": "Demand signals, seasonality and how to test an idea at low risk."
+      },
+      "m1l3": {
+        "title": "Working out margin and sale price",
+        "description": "Cost, price and margin: how to set a price without losing money."
+      },
+      "m2l1": {
+        "title": "Ads that lead to WhatsApp",
+        "description": "How to structure an ad that starts the right conversation."
+      },
+      "m2l2": {
+        "title": "Messages that convert",
+        "description": "Quick replies, tone of voice and what to say before sending the payment link."
+      },
+      "m2l3": {
+        "title": "Recovering abandoned carts",
+        "description": "Automatic reminders and when it is worth insisting."
+      },
+      "m3l1": {
+        "title": "Photos and description",
+        "description": "What to show, what to write and what to cut."
+      },
+      "m3l2": {
+        "title": "Offers, stock and deadlines, honestly",
+        "description": "Using real scarcity and deadlines, and why trust sells more."
+      },
+      "m3l3": {
+        "title": "Accepting Multicaixa Express",
+        "description": "How the buyer pays and what happens next."
+      },
+      "m4l1": {
+        "title": "Dispatching and tracking orders",
+        "description": "From “awaiting dispatch” to proof of delivery."
+      },
+      "m4l2": {
+        "title": "Returns and complaints",
+        "description": "How to react to a failed delivery and keep the customer."
+      }
+    }
   }
 }

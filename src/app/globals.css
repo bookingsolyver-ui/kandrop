@@ -1,18 +1,331 @@
 @import "tailwindcss";
 
 /*
- * Design tokens live here as the single source of truth.
- * Placeholders only — /impeccable init will define the real premium/institutional system.
+ * Kandrop design tokens — single source of truth (see PRODUCT.md).
+ * Roles, not raw colours: components reference `bg-surface`, `text-ink-2`, etc.
+ * Dark values are selected steps for the dark surface, not an automatic inversion.
+ * Chart series pairs were checked with the dataviz palette validator (light + dark).
  */
-@theme {
-  --color-surface: #ffffff;
-  --color-ink: #0b1220;
-  --color-ink-muted: #5b6577;
-  --color-line: #e3e7ee;
-  --color-brand: #0b2a4a;
+:root {
+  color-scheme: light;
+  --page: #f6f5f1;
+  --surface: #ffffff;
+  --ink: #0d1b2e;
+  --ink-2: #445063;
+  --ink-muted: #5d697a;
+  --line: #e6e3da;
+  --axis: #c9c5b8;
+  --field: #7d8593; /* input borders: >= 3:1 on white (WCAG 1.4.11), unlike the decorative hairline */
+  --brand: #0b2a4a;
+  --select: #0b2a4a; /* selected-state ring/dot: must stay visible on the surface in both modes */
+  --on-brand: #f6f5f1;
+  --on-brand-muted: #b9c6d8;
+  --action: #0b2a4a; /* the single primary action per screen (e.g. Pay); must stand out from the surface */
+  --on-action: #f6f5f1;
+  --series-1: #1d4f91;
+  --series-2: #b3801f;
+  --up: #006300;
+  --down: #b42323;
+  --accent: var(--select);
+  --focus: var(--series-1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --page: #0a121f;
+    --surface: #0f1a2b;
+    --ink: #eef1f5;
+    --ink-2: #b4bdca;
+    --ink-muted: #8794a6;
+    --line: #1f2c40;
+    --axis: #34455f;
+    --field: #62738c;
+    --brand: #16355c;
+    --select: #7aa9e6;
+    --on-brand: #f2f5f9;
+    --on-brand-muted: #a9b8cd;
+    --action: #7aa9e6; /* dark navy would vanish on the dark surface, so the action steps up to the light accent */
+    --on-action: #0a121f;
+    --series-1: #4a87d8;
+    --series-2: #b8821b;
+    --up: #34b26a;
+    --down: #ef6b6b;
+  }
+}
+
+/*
+ * Printing / "Save as PDF". Paper is white whatever the screen theme: without this, a dark-mode
+ * device would print light ink on white. Kept after the dark block so it wins the cascade.
+ */
+@media print {
+  @page {
+    size: A4;
+    margin: 16mm 16mm 18mm;
+  }
+  :root {
+    color-scheme: light;
+    --page: #ffffff;
+    --surface: #ffffff;
+    --ink: #0d1b2e;
+    --ink-2: #445063;
+    --ink-muted: #5d697a;
+    --line: #cfcabd;
+    --up: #006300;
+  }
+  html {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  body {
+    background: #ffffff;
+    font-size: 10.5pt;
+  }
+}
+
+/*
+ * Merchant workspace (everything inside the dashboard shell): dark only, whatever the device
+ * says, on a near-black graphite ("ink-900") with ONE accent — a neon green used for what is
+ * active or actionable (current nav item, primary buttons, focus, live status) and nothing else.
+ * Flat: no gradients, no glow. Same roles as above, so no component changes per theme.
+ *
+ * Contrast (WCAG 2.2, computed): ink 17:1 · ink-2 10:1 · ink-muted 6.3:1 · accent on page 13.7:1 ·
+ * button label on accent 13.1:1 · field border 4:1 (needs 3:1). Buyer-facing pages (checkout,
+ * receipt) are not in the workspace and keep the light/dark themes above.
+ */
+.workspace,
+.marketing {
+  color-scheme: dark;
+  --page: #0a0b0c; /* ink-900 */
+  --surface: #111315;
+  --ink: #f1f3f2;
+  --ink-2: #b9c0bc;
+  --ink-muted: #8f9893;
+  --line: #262a2d;
+  --axis: #3a4145;
+  --field: #6e767c;
+  --brand: #0f1c15; /* the one tinted panel: the wallet balance, the highlighted KPI */
+  --on-brand: #f1f3f2;
+  --on-brand-muted: #a9b5ae;
+  --accent: #3df58f;
+  --select: var(--accent);
+  --action: var(--accent);
+  --on-action: #03150b;
+  --focus: var(--accent);
+  --series-1: #4a87d8;
+  --series-2: #b8821b;
+  --up: #3ed17e;
+  --down: #ff7a7a;
+  background: var(--page);
+  color: var(--ink);
+}
+
+/* Overscroll, scrollbars and native controls must be dark too, not just the shell's own box. */
+html:has(.workspace),
+body:has(.workspace),
+html:has(.marketing),
+body:has(.marketing) {
+  color-scheme: dark;
+  background: #0a0b0c;
+}
+
+@theme inline {
+  --color-page: var(--page);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-muted: var(--ink-muted);
+  --color-line: var(--line);
+  --color-axis: var(--axis);
+  --color-field: var(--field);
+  --color-brand: var(--brand);
+  --color-select: var(--select);
+  --color-on-brand: var(--on-brand);
+  --color-on-brand-muted: var(--on-brand-muted);
+  --color-accent: var(--accent);
+  --color-action: var(--action);
+  --color-on-action: var(--on-action);
+  --color-series-1: var(--series-1);
+  --color-series-2: var(--series-2);
+  --color-up: var(--up);
+  --color-down: var(--down);
+  --font-sans: var(--font-hanken), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-serif: var(--font-newsreader), Georgia, serif;
 }
 
 body {
-  background: var(--color-surface);
-  color: var(--color-ink);
+  background: var(--page);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2 {
+  text-wrap: balance;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* A value that just changed in real time settles from the accent back to ink: colour only, no box. */
+@keyframes kandrop-settle {
+  from {
+    color: var(--series-2);
+  }
+  to {
+    color: inherit;
+  }
+}
+.settle {
+  animation: kandrop-settle 1.8s ease-out;
+}
+
+@keyframes kandrop-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+.pulse {
+  animation: kandrop-pulse 3s ease-in-out infinite;
+}
+
+@keyframes kandrop-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.spinner-arc {
+  transform-origin: 48px 48px;
+  animation: kandrop-spin 1.6s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .settle,
+  .pulse {
+    animation: none;
+  }
+  .spinner-arc {
+    animation: none;
+  }
+}
+
+/*
+ * Route transitions (React <ViewTransition> + the View Transitions API, no configuration in
+ * the App Router). Only the page content animates — a short fade with a 6px rise. The shell
+ * around it is not a participant, so it never flickers; the root snapshot is not cross-faded
+ * (that would blur the persistent sidebar and header).
+ */
+@keyframes kandrop-page-in {
+  from {
+    opacity: 0;
+    translate: 0 6px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+::view-transition {
+  pointer-events: none; /* never swallow a click while a transition runs */
+}
+::view-transition-old(root) {
+  display: none;
+}
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-new(.page-in) {
+  animation: 160ms ease-out both kandrop-page-in;
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
+}
+
+/*
+ * Public marketing site (`.marketing`, same dark tokens as the workspace). The one place a soft
+ * glow of the accent is allowed — behind the hero and behind the recommended plan — because a
+ * sales page has to draw the eye; everywhere else the accent stays flat. Every animation runs
+ * only when the visitor has not asked for reduced motion, and nothing is hidden without it: with
+ * animations off (or unsupported) the page is simply complete.
+ */
+.marketing {
+  --glow: color-mix(in oklab, var(--accent) 22%, transparent);
+}
+.marketing section[id] {
+  scroll-margin-top: 5rem; /* the sticky navbar */
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:has(.marketing) {
+    scroll-behavior: smooth;
+  }
+
+  @keyframes kandrop-rise {
+    from {
+      opacity: 0;
+      translate: 0 1.25rem;
+    }
+    to {
+      opacity: 1;
+      translate: 0 0;
+    }
+  }
+  @keyframes kandrop-float {
+    from {
+      translate: 0 0;
+    }
+    to {
+      translate: 0 -0.5rem;
+    }
+  }
+  @keyframes kandrop-proof-in {
+    from {
+      opacity: 0;
+      translate: 0 0.75rem;
+      scale: 0.97;
+    }
+    to {
+      opacity: 1;
+      translate: 0 0;
+      scale: 1;
+    }
+  }
+
+  /* Above the fold: staggered entrance on load (`--i` is the step). */
+  .marketing .enter {
+    animation: kandrop-rise 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--i, 0) * 90ms);
+  }
+  .marketing .float {
+    animation: kandrop-float 6s ease-in-out infinite alternate;
+    animation-delay: calc(var(--i, 0) * -2s);
+  }
+  .marketing .proof-in {
+    animation: kandrop-proof-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--i, 0) * 120ms);
+  }
+
+  /* Below the fold: nothing is ever hidden. `RevealController` plays this once, when a block
+     first reaches the screen, so any tool that never scrolls (crawlers, screenshots, print,
+     no JavaScript) sees the finished page. */
+  .marketing .reveal-play {
+    animation: kandrop-rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--i, 0) * 90ms);
+  }
 }

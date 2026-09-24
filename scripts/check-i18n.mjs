@@ -13,7 +13,11 @@ function flatten(obj, prefix = "") {
 }
 
 const load = (locale) =>
-  new Set(flatten(JSON.parse(readFileSync(new URL(`../messages/${locale}.json`, import.meta.url), "utf8"))));
+  new Set(
+    flatten(
+      JSON.parse(readFileSync(new URL(`../messages/${locale}.json`, import.meta.url), "utf8"))
+    )
+  );
 
 const reference = load(source);
 let failed = false;
@@ -24,7 +28,9 @@ for (const locale of locales.filter((l) => l !== source)) {
   const extra = [...keys].filter((k) => !reference.has(k));
   if (missing.length || extra.length) {
     failed = true;
-    console.error(`[i18n] ${locale}: missing=${JSON.stringify(missing)} extra=${JSON.stringify(extra)}`);
+    console.error(
+      `[i18n] ${locale}: missing=${JSON.stringify(missing)} extra=${JSON.stringify(extra)}`
+    );
   }
 }
 

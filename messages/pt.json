@@ -1,42 +1,1435 @@
 {
   "Metadata": {
-    "title": "Kandrop — Pagamentos para Angola",
-    "description": "Plataforma de pagamentos de alta performance para comerciantes angolanos."
+    "title": "Kandrop — Domine o e-commerce em Angola",
+    "description": "A plataforma tudo-em-um com logística própria, pagamentos Multicaixa Express integrados e funis de alta conversão."
   },
   "Common": {
     "appName": "Kandrop",
     "language": "Idioma",
-    "loading": "A carregar…",
-    "live": "Em direto",
-    "reconnecting": "A reconectar…"
+    "pagination": {
+      "label": "Paginação",
+      "previous": "Anterior",
+      "next": "Seguinte",
+      "range": "{from}–{to} de {total}"
+    }
   },
   "Locales": {
     "pt": "Português",
     "en": "English",
     "fr": "Français"
   },
-  "Home": {
-    "eyebrow": "Pagamentos institucionais",
-    "title": "Receba em Kwanzas. Com a confiança de uma instituição.",
-    "subtitle": "Infraestrutura de pagamentos desenhada para o comércio angolano: rápida, auditável e em tempo real.",
-    "cta": "Abrir painel"
-  },
   "Dashboard": {
-    "title": "Resumo",
-    "subtitle": "Atividade da sua loja em tempo real.",
-    "metrics": {
-      "volumeToday": "Volume hoje",
-      "transactionsToday": "Transações hoje",
-      "successRate": "Taxa de sucesso",
-      "pendingSettlement": "Por liquidar"
+    "eyebrow": "Painel do lojista",
+    "title": "Dashboard",
+    "subtitle": "O desempenho da sua loja de dropshipping, em tempo real.",
+    "period": "Últimos {days} dias",
+    "updatedAt": "Atualizado às {time}",
+    "kpi": {
+      "grossRevenue": {
+        "label": "Receita bruta",
+        "hint": "Total faturado em vendas"
+      },
+      "netRevenue": {
+        "label": "Receita líquida",
+        "hint": "Margem de lucro de {rate}"
+      },
+      "pendingOrders": {
+        "label": "Encomendas pendentes",
+        "hint": "{value} em vendas por concluir"
+      },
+      "availableBalance": {
+        "label": "Saldo disponível para saque",
+        "hint": "{amount} a libertar após entrega"
+      },
+      "vsPrevious": "<change>{value}</change> face ao período anterior"
     },
-    "updatedAt": "Atualizado às {time}"
+    "chart": {
+      "title": "Faturação",
+      "subtitle": "Receita bruta e líquida por dia, em Kwanzas (AOA)",
+      "gross": "Bruta",
+      "net": "Líquida",
+      "date": "Data",
+      "tableLabel": "Faturação diária",
+      "empty": "Ainda não existem dados de faturação."
+    },
+    "products": {
+      "title": "Produtos que mais vendem",
+      "subtitle": "Ordenados por receita bruta",
+      "product": "Produto",
+      "units": "Unidades",
+      "revenue": "Receita",
+      "margin": "Margem",
+      "empty": "Ainda não existem vendas."
+    }
   },
   "Errors": {
     "unauthenticated": "Sessão inválida ou expirada.",
     "forbidden": "Não tem permissão para esta ação.",
     "not_found": "Recurso não encontrado.",
     "validation_failed": "Os dados enviados são inválidos.",
-    "internal": "Ocorreu um erro inesperado. Tente novamente."
+    "internal": "Ocorreu um erro inesperado. Tente novamente.",
+    "invalid_credentials": "E-mail ou palavra-passe incorretos.",
+    "email_taken": "Já existe uma conta com este e-mail.",
+    "rate_limited": "Demasiadas tentativas. Tente novamente dentro de alguns minutos.",
+    "checkout_expired": "Esta sessão de pagamento expirou.",
+    "checkout_paid": "Esta encomenda já foi paga.",
+    "payments_unavailable": "Os pagamentos não estão disponíveis de momento.",
+    "payload_too_large": "Os dados enviados são demasiado grandes. Use menos ou mais pequenas imagens.",
+    "invalid_transition": "Esta alteração de estado já não é possível. Atualize a página.",
+    "no_bank_account": "Adicione os dados bancários antes de fazer um levantamento.",
+    "insufficient_balance": "O montante excede o saldo disponível.",
+    "payout_pending": "Já existe um levantamento em curso. Aguarde que seja concluído.",
+    "plan_limit_reached": "Atingiu o limite de produtos do seu plano. Faça upgrade para adicionar mais.",
+    "whatsapp_not_connected": "Conecte o WhatsApp antes de ativar este fluxo.",
+    "whatsapp_already_connected": "O WhatsApp já está conectado. Desconecte-o primeiro para usar outro número.",
+    "no_courier_available": "Não há estafetas disponíveis para esta zona neste momento.",
+    "order_not_dispatchable": "Esta encomenda já não está a aguardar envio.",
+    "delivery_exists": "Esta encomenda já tem uma entrega atribuída.",
+    "out_of_stock": "Este produto esgotou. Volte a tentar mais tarde.",
+    "plan_not_upgradable": "Já tem um plano superior ativo. Só pode renovar o seu plano ou subir para um maior.",
+    "lesson_locked": "Conclua as aulas anteriores para desbloquear esta."
+  },
+  "Auth": {
+    "login": {
+      "title": "Entrar",
+      "subtitle": "Aceda ao painel da sua loja.",
+      "submit": "Entrar",
+      "submitting": "A entrar…",
+      "switchPrompt": "Ainda não tem conta?",
+      "switchLink": "Criar conta"
+    },
+    "register": {
+      "title": "Criar conta",
+      "subtitle": "Comece a vender e a receber em Kwanzas.",
+      "submit": "Criar conta",
+      "submitting": "A criar conta…",
+      "switchPrompt": "Já tem conta?",
+      "switchLink": "Entrar"
+    },
+    "fields": {
+      "email": "E-mail",
+      "password": "Palavra-passe",
+      "fullName": "Nome completo",
+      "storeName": "Nome da loja"
+    },
+    "password": {
+      "show": "Mostrar palavra-passe",
+      "hide": "Ocultar palavra-passe",
+      "rulesTitle": "A palavra-passe deve",
+      "met": "cumprido",
+      "unmet": "por cumprir",
+      "rules": {
+        "length": "Ter pelo menos {min} caracteres",
+        "letterAndNumber": "Incluir letras e números",
+        "notCommon": "Não ser uma palavra-passe comum",
+        "notEmail": "Não conter o seu e-mail"
+      }
+    },
+    "validation": {
+      "email_required": "Indique o seu e-mail.",
+      "email_invalid": "Este e-mail não é válido. Exemplo: nome@empresa.ao",
+      "password_required": "Indique a palavra-passe.",
+      "password_too_short": "A palavra-passe deve ter pelo menos {min} caracteres.",
+      "password_too_long": "A palavra-passe não pode ter mais de {max} caracteres.",
+      "password_needs_letter_number": "Use letras e números na palavra-passe.",
+      "password_too_common": "Esta palavra-passe é demasiado comum. Escolha outra.",
+      "password_contains_email": "A palavra-passe não deve conter o seu e-mail.",
+      "name_required": "Indique o seu nome.",
+      "name_too_short": "O nome deve ter pelo menos 2 caracteres.",
+      "store_name_required": "Indique o nome da loja.",
+      "store_name_too_short": "O nome da loja deve ter pelo menos 2 caracteres."
+    },
+    "fixErrors": "Corrija os campos assinalados para continuar.",
+    "securityNote": "A Kandrop nunca lhe pede a palavra-passe por telefone, mensagem ou e-mail.",
+    "logout": "Terminar sessão"
+  },
+  "Checkout": {
+    "title": "Pagamento",
+    "processedBy": "Pagamento processado pela Kandrop",
+    "sandbox": {
+      "banner": "Modo de teste: nenhum valor real será cobrado.",
+      "details": "Ver dados de teste",
+      "phoneOk": "Telemóvel: qualquer número de 9 dígitos que comece por 9 é aceite. O Multicaixa Express confirma ao fim de 5 a 10 segundos (através de um webhook assinado).",
+      "phoneDecline": "Termine em 00 para simular uma recusa no telemóvel.",
+      "phoneFunds": "Termine em 01 para simular saldo insuficiente.",
+      "cardOk": "Cartão 4242 4242 4242 4242: pagamento aprovado.",
+      "cardDecline": "Cartão 4000 0000 0000 0002: cartão recusado."
+    },
+    "summary": {
+      "title": "Resumo da encomenda",
+      "toggle": "Ver resumo",
+      "quantity": "Qtd. {count}",
+      "subtotal": "Subtotal",
+      "shipping": "Envio",
+      "total": "Total",
+      "free": "Grátis",
+      "payTo": "Total a pagar a {store}"
+    },
+    "method": {
+      "legend": "Método de pagamento",
+      "multicaixa_express": {
+        "name": "Multicaixa Express",
+        "hint": "Confirme no seu telemóvel"
+      },
+      "unitel_money": {
+        "name": "Unitel Money",
+        "hint": "Confirme no seu telemóvel"
+      },
+      "card": {
+        "name": "Cartão de crédito ou débito",
+        "hint": "Pagamento imediato"
+      },
+      "other": "Ou pague com cartão"
+    },
+    "fields": {
+      "phone": "Número de telemóvel",
+      "phoneHint": "Introduza os 9 dígitos, sem indicativo.",
+      "cardNumber": "Número do cartão",
+      "expiry": "Validade",
+      "expiryPlaceholder": "MM/AA",
+      "cvc": "CVC",
+      "cardName": "Nome no cartão"
+    },
+    "notes": {
+      "multicaixa_express": "Vai receber um pedido de confirmação na aplicação Multicaixa Express.",
+      "unitel_money": "Vai receber um pedido de confirmação no seu telemóvel.",
+      "card": "Não guardamos os dados do seu cartão."
+    },
+    "trust": {
+      "encrypted": "Ligação cifrada",
+      "noPin": "Nunca lhe pedimos o PIN nem a palavra-passe."
+    },
+    "pay": "Pagar {amount}",
+    "paying": "A processar…",
+    "pending": {
+      "title": "A aguardar confirmação na app {app}",
+      "body": "Abra a app no telemóvel {phone} e aprove o pagamento de {amount}.",
+      "steps": {
+        "open": "Abra a app {app} no seu telemóvel.",
+        "check": "Confirme o valor de {amount} e a loja {store}.",
+        "approve": "Aprove o pagamento com o seu PIN, na própria app."
+      },
+      "receipt": {
+        "amount": "Valor",
+        "store": "Loja",
+        "phone": "Telemóvel",
+        "reference": "Referência"
+      },
+      "waiting": "Normalmente demora menos de um minuto. Não feche esta página: avançamos assim que confirmar.",
+      "cancel": "Cancelar e escolher outro método"
+    },
+    "success": {
+      "title": "Pagamento concluído",
+      "body": "Recebemos o seu pagamento de {amount}.",
+      "reference": "Referência",
+      "method": "Método",
+      "store": "Loja",
+      "date": "Data",
+      "keep": "Guarde esta referência para qualquer questão sobre a sua encomenda.",
+      "receipt": "Ver e guardar recibo"
+    },
+    "failed": {
+      "title": "Não foi possível concluir o pagamento",
+      "codes": {
+        "declined_by_customer": "O pagamento foi recusado no telemóvel.",
+        "insufficient_funds": "Saldo insuficiente. Tente outro método de pagamento.",
+        "card_declined": "O cartão foi recusado. Tente outro cartão ou método.",
+        "cancelled": "O pagamento foi cancelado.",
+        "generic": "Não foi possível concluir o pagamento. Tente novamente.",
+        "timeout": "O fornecedor de pagamento não respondeu a tempo. Tente novamente."
+      }
+    },
+    "states": {
+      "expired": {
+        "title": "Esta sessão de pagamento expirou",
+        "body": "Volte à loja e inicie o pagamento novamente."
+      },
+      "paid": {
+        "title": "Esta encomenda já foi paga",
+        "body": "Não é necessário fazer mais nada."
+      },
+      "notFound": {
+        "title": "Pagamento não encontrado",
+        "body": "Verifique a ligação que recebeu ou volte à loja."
+      }
+    },
+    "validation": {
+      "phone_required": "Indique o número de telemóvel.",
+      "phone_invalid": "Introduza 9 dígitos a começar por 9. Ex.: 923 456 789",
+      "card_number_required": "Indique o número do cartão.",
+      "card_number_invalid": "O número do cartão não é válido. Verifique os dígitos.",
+      "card_expiry_required": "Indique a validade do cartão.",
+      "card_expiry_invalid": "Use o formato MM/AA. Ex.: 08/28",
+      "card_expired": "Este cartão está fora de validade.",
+      "card_cvc_invalid": "Introduza o CVC (3 ou 4 dígitos).",
+      "card_name_required": "Indique o nome que consta no cartão."
+    },
+    "redirecting": {
+      "title": "Pagamento confirmado",
+      "body": "A abrir o seu comprovativo…"
+    }
+  },
+  "Catalog": {
+    "eyebrow": "Catálogo",
+    "title": "Produtos",
+    "subtitle": "Gira o que vende, os preços e a margem de cada artigo.",
+    "add": "Novo produto",
+    "search": {
+      "label": "Pesquisar produtos",
+      "placeholder": "Pesquisar por nome ou descrição",
+      "clear": "Limpar pesquisa"
+    },
+    "filters": {
+      "category": "Categoria",
+      "status": "Estado",
+      "allCategories": "Todas as categorias",
+      "allStatuses": "Todos os estados",
+      "clear": "Limpar filtros"
+    },
+    "categories": {
+      "fashion": "Moda",
+      "electronics": "Eletrónica",
+      "home": "Casa",
+      "beauty": "Beleza",
+      "food": "Alimentação",
+      "other": "Outros"
+    },
+    "status": {
+      "active": "Ativo",
+      "draft": "Rascunho",
+      "archived": "Arquivado"
+    },
+    "table": {
+      "caption": "Lista de produtos",
+      "product": "Produto",
+      "category": "Categoria",
+      "status": "Estado",
+      "cost": "Custo",
+      "price": "Preço",
+      "margin": "Margem",
+      "actions": "Ações",
+      "sortBy": "Ordenar por {column}",
+      "edit": "Editar {title}",
+      "delete": "Eliminar {title}",
+      "views": "Visualizações"
+    },
+    "results": "{count, plural, =0 {Nenhum produto} one {# produto} other {# produtos}}",
+    "empty": {
+      "title": "Ainda não tem produtos",
+      "body": "Adicione o primeiro produto para começar a vender e a acompanhar a margem.",
+      "cta": "Adicionar produto"
+    },
+    "noResults": {
+      "title": "Nenhum produto encontrado",
+      "body": "Experimente outra pesquisa ou remova os filtros."
+    },
+    "loadError": {
+      "title": "Não foi possível carregar os produtos",
+      "retry": "Tentar novamente"
+    },
+    "form": {
+      "createTitle": "Novo produto",
+      "createSubtitle": "Preencha os dados do artigo. A margem calcula-se enquanto escreve.",
+      "editTitle": "Editar produto",
+      "editSubtitle": "As alterações só se aplicam depois de guardar.",
+      "back": "Voltar aos produtos",
+      "basics": "Informação do produto",
+      "fields": {
+        "title": "Título",
+        "description": "Descrição",
+        "descriptionHint": "Opcional. Máximo de 2000 caracteres.",
+        "category": "Categoria",
+        "status": "Estado",
+        "cost": "Preço de custo",
+        "price": "Preço de venda",
+        "moneyHint": "Em Kwanzas, sem cêntimos."
+      },
+      "images": {
+        "title": "Imagens",
+        "hint": "Até {max} imagens JPG, PNG ou WebP. A primeira é a imagem principal.",
+        "add": "Adicionar imagens",
+        "drop": "ou largue os ficheiros aqui",
+        "remove": "Remover imagem {n}",
+        "makeCover": "Tornar principal",
+        "cover": "Principal",
+        "alt": "Imagem {n} do produto"
+      },
+      "pricing": {
+        "title": "Preço e margem",
+        "margin": "Margem",
+        "amount": "Lucro por unidade",
+        "empty": "Indique o custo e o preço de venda para ver a margem.",
+        "negative": "O preço de venda está abaixo do custo: cada venda dá prejuízo."
+      },
+      "save": "Guardar produto",
+      "saving": "A guardar…",
+      "saved": "Alterações guardadas.",
+      "cancel": "Cancelar",
+      "delete": "Eliminar produto",
+      "offer": {
+        "title": "Stock e oferta",
+        "intro": "Opcional. Estes dados aparecem na página pública do produto e são sempre verdadeiros: o aviso de stock baixo só surge com stock real e, quando o prazo acaba, a loja passa a cobrar o preço original.",
+        "stock": "Unidades em stock",
+        "stockHint": "Deixe vazio para não indicar stock. A página avisa quando restarem 5 ou menos.",
+        "regular": "Preço original",
+        "regularHint": "Aparece riscado ao lado do preço de venda.",
+        "ends": "A oferta termina em",
+        "endsHint": "Opcional. Depois deste momento a loja cobra o preço original e o contador desaparece.",
+        "clear": "Limpar prazo"
+      },
+      "publicPage": "Ver página pública",
+      "publicPageHint": "Só produtos ativos têm página pública."
+    },
+    "imageErrors": {
+      "type": "Só são aceites imagens JPG, PNG ou WebP.",
+      "size": "A imagem excede os 15 MB.",
+      "unreadable": "Não foi possível ler esta imagem.",
+      "max": "Pode adicionar no máximo {max} imagens."
+    },
+    "delete": {
+      "title": "Eliminar este produto?",
+      "body": "“{title}” será removido do catálogo. Esta ação não pode ser anulada.",
+      "confirm": "Eliminar",
+      "deleting": "A eliminar…",
+      "cancel": "Manter produto"
+    },
+    "validation": {
+      "title_required": "Indique o título do produto.",
+      "title_too_long": "O título pode ter no máximo 120 caracteres.",
+      "description_too_long": "A descrição pode ter no máximo 2000 caracteres.",
+      "category_invalid": "Escolha uma categoria.",
+      "status_invalid": "Escolha um estado.",
+      "cost_required": "Indique o preço de custo (pode ser 0).",
+      "cost_too_high": "O preço de custo não pode exceder 10 000 000 Kz.",
+      "price_required": "Indique um preço de venda superior a 0.",
+      "price_too_high": "O preço de venda não pode exceder 10 000 000 Kz.",
+      "images_invalid": "Uma das imagens não é válida. Remova-a e tente outra.",
+      "images_max": "Pode adicionar no máximo 5 imagens.",
+      "stock_invalid": "Indique um número inteiro de unidades, de 0 a 1 000 000.",
+      "compare_price_invalid": "O preço original tem de ser superior ao preço de venda.",
+      "offer_end_invalid": "Escolha uma data e hora no futuro.",
+      "offer_needs_price": "Para definir um prazo, indique primeiro o preço original."
+    }
+  },
+  "Orders": {
+    "eyebrow": "Encomendas",
+    "title": "Encomendas",
+    "subtitle": "Acompanhe cada encomenda, do pagamento à entrega.",
+    "search": {
+      "label": "Pesquisar encomendas",
+      "placeholder": "N.º, cliente, telefone ou produto",
+      "clear": "Limpar pesquisa"
+    },
+    "tabs": {
+      "label": "Filtrar por estado",
+      "all": "Todas"
+    },
+    "status": {
+      "pending": "Pendente",
+      "processing": "Em processamento",
+      "shipped": "Enviado",
+      "delivered": "Entregue",
+      "cancelled": "Cancelado"
+    },
+    "table": {
+      "caption": "Lista de encomendas",
+      "order": "Encomenda",
+      "customer": "Cliente",
+      "products": "Produtos",
+      "date": "Data",
+      "total": "Total pago",
+      "status": "Estado",
+      "sortBy": "Ordenar por {column}",
+      "open": "Abrir encomenda {number}",
+      "more": "+{count, plural, one {# artigo} other {# artigos}}"
+    },
+    "results": "{count, plural, =0 {Nenhuma encomenda} one {# encomenda} other {# encomendas}}",
+    "filters": {
+      "clear": "Limpar filtros"
+    },
+    "empty": {
+      "title": "Ainda não tem encomendas",
+      "body": "As encomendas pagas através do seu checkout aparecem aqui."
+    },
+    "noResults": {
+      "title": "Nenhuma encomenda encontrada",
+      "body": "Experimente outra pesquisa ou outro estado."
+    },
+    "loadError": {
+      "title": "Não foi possível carregar as encomendas",
+      "retry": "Tentar novamente"
+    },
+    "detail": {
+      "title": "Encomenda {number}",
+      "close": "Fechar",
+      "placed": "Feita em {date}",
+      "sections": {
+        "history": "Histórico",
+        "customer": "Cliente",
+        "address": "Morada de entrega",
+        "items": "Artigos",
+        "payment": "Pagamento"
+      },
+      "customer": {
+        "phone": "Telefone",
+        "email": "E-mail",
+        "name": "Nome"
+      },
+      "address": {
+        "reference": "Referência: {value}"
+      },
+      "items": {
+        "quantity": "Qtd. {count}",
+        "subtotal": "Subtotal",
+        "shipping": "Envio",
+        "free": "Grátis",
+        "total": "Total pago"
+      },
+      "payment": {
+        "method": "Método",
+        "reference": "Referência",
+        "paidAt": "Pago em"
+      },
+      "tracking": {
+        "label": "Código de seguimento",
+        "hint": "Opcional. Indique-o para poder acompanhar o envio.",
+        "shown": "Seguimento"
+      },
+      "actions": {
+        "processing": "Iniciar processamento",
+        "shipped": "Marcar como enviado",
+        "delivered": "Marcar como entregue",
+        "cancel": "Cancelar encomenda",
+        "updating": "A atualizar…"
+      },
+      "cancelConfirm": {
+        "title": "Cancelar esta encomenda?",
+        "body": "A encomenda ficará cancelada e não poderá ser retomada. Esta ação não reembolsa o pagamento.",
+        "confirm": "Cancelar encomenda",
+        "keep": "Manter encomenda"
+      },
+      "final": {
+        "delivered": "Esta encomenda foi entregue. Não há mais passos.",
+        "cancelled": "Esta encomenda foi cancelada."
+      },
+      "updated": "Estado atualizado: {status}."
+    },
+    "validation": {
+      "status_invalid": "Estado inválido.",
+      "tracking_too_long": "O código pode ter no máximo 40 caracteres."
+    }
+  },
+  "Shell": {
+    "navLabel": "Navegação principal",
+    "store": "Loja",
+    "collapse": "Recolher menu",
+    "expand": "Expandir menu",
+    "openMenu": "Abrir menu",
+    "closeMenu": "Fechar menu",
+    "skip": "Saltar para o conteúdo",
+    "nav": {
+      "overview": "Dashboard",
+      "wallet": "Carteira",
+      "orders": "Encomendas",
+      "catalog": "Catálogo Premium",
+      "products": "Os meus produtos",
+      "landingPages": "As minhas landing pages",
+      "customers": "Clientes",
+      "whatsapp": "Automações WhatsApp",
+      "logistics": "Logística e estafetas",
+      "academy": "Academia Kandrop",
+      "support": "Suporte",
+      "settings": "Configurações",
+      "plans": "Faturação e planos",
+      "affiliates": "Afiliados"
+    },
+    "breadcrumbs": {
+      "label": "Localização",
+      "root": "Dashboard",
+      "new": "Novo produto",
+      "edit": "Editar produto"
+    },
+    "connection": {
+      "title": "Ligação em tempo real",
+      "live": "Online",
+      "connecting": "A ligar…",
+      "reconnecting": "A reconectar…"
+    },
+    "user": {
+      "open": "Menu da conta",
+      "label": "Conta",
+      "settings": "Configurações"
+    },
+    "groups": {
+      "main": "Principal",
+      "dropshipping": "Dropshipping",
+      "accelerators": "Aceleradores",
+      "other": "Outros"
+    },
+    "soon": "Em breve",
+    "loading": "A carregar…",
+    "plan": {
+      "label": "Plano atual",
+      "names": {
+        "starter": "Starter",
+        "growth": "Growth",
+        "scale": "Scale"
+      },
+      "landingPages": "Landing pages",
+      "products": "Produtos",
+      "upgrade": "Fazer upgrade",
+      "unlimited": "Ilimitado",
+      "manage": "Gerir plano"
+    },
+    "notFound": {
+      "title": "Página não encontrada",
+      "body": "Esta página não existe ou já não está disponível.",
+      "back": "Voltar ao Dashboard"
+    }
+  },
+  "Settings": {
+    "eyebrow": "Configurações",
+    "title": "Configurações",
+    "subtitle": "O seu perfil, a sua loja e a conta bancária que recebe os levantamentos.",
+    "store": {
+      "title": "Loja",
+      "subtitle": "Como a sua loja está registada na plataforma.",
+      "name": "Nome",
+      "nif": "NIF",
+      "nifEmpty": "Não indicado",
+      "currency": "Moeda",
+      "status": "Estado"
+    },
+    "storeStatus": {
+      "pending_verification": "Verificação pendente",
+      "active": "Ativa",
+      "suspended": "Suspensa"
+    },
+    "account": {
+      "title": "Conta",
+      "subtitle": "A pessoa com a sessão iniciada.",
+      "name": "Nome",
+      "email": "E-mail",
+      "role": "Função"
+    },
+    "roles": {
+      "owner": "Proprietário",
+      "staff": "Colaborador"
+    },
+    "readOnly": "Por agora estes dados são apenas de consulta. A edição ainda não está disponível.",
+    "tabs": {
+      "label": "Secções das configurações",
+      "profile": "Perfil",
+      "store": "Preferências da loja",
+      "bank": "Dados bancários"
+    },
+    "bank": {
+      "title": "Dados bancários",
+      "subtitle": "A conta que recebe os seus levantamentos.",
+      "current": {
+        "holder": "Titular",
+        "iban": "IBAN",
+        "updated": "Atualizado em {date}",
+        "change": "Alterar dados bancários"
+      },
+      "fields": {
+        "holder": "Titular da conta",
+        "holderHint": "Tal como consta no banco.",
+        "iban": "IBAN",
+        "ibanHint": "AO + 2 dígitos de controlo + 21 dígitos (25 caracteres).",
+        "ibanCount": "{count}/25",
+        "password": "Palavra-passe atual",
+        "passwordHint": "Por segurança, confirme a sua palavra-passe para alterar a conta que recebe os levantamentos."
+      },
+      "save": "Guardar dados bancários",
+      "saving": "A guardar…",
+      "saved": "Dados bancários guardados.",
+      "cancel": "Cancelar",
+      "ownerOnly": "Só o proprietário da loja pode alterar os dados bancários.",
+      "validation": {
+        "holder_required": "Indique o titular da conta.",
+        "holder_invalid": "Use apenas letras, números, espaços e pontuação simples (2 a 70 caracteres).",
+        "iban_required": "Indique o IBAN.",
+        "iban_format": "O IBAN angolano tem o formato AO + 2 dígitos de controlo + 21 dígitos (25 caracteres).",
+        "iban_checksum": "Os dígitos de controlo do IBAN não são válidos. Verifique se copiou todos os dígitos.",
+        "password_required": "Indique a sua palavra-passe.",
+        "password_incorrect": "Palavra-passe incorreta."
+      }
+    }
+  },
+  "Receipt": {
+    "title": "Recibo de pagamento",
+    "platform": "Plataforma de pagamentos",
+    "number": "N.º",
+    "issuedOn": "Emitido em {date}",
+    "merchant": {
+      "title": "Comerciante",
+      "name": "Nome",
+      "nif": "NIF",
+      "nifEmpty": "Não indicado",
+      "country": "País",
+      "countryValue": "Angola"
+    },
+    "payment": {
+      "title": "Pagamento",
+      "paidAt": "Data do pagamento",
+      "transactionId": "ID da transação",
+      "reference": "Referência",
+      "method": "Método",
+      "paidWith": "Pago com"
+    },
+    "items": {
+      "title": "Artigos",
+      "description": "Descrição",
+      "quantity": "Qtd.",
+      "unitPrice": "Preço unit.",
+      "total": "Total",
+      "subtotal": "Subtotal",
+      "shipping": "Envio",
+      "free": "Grátis",
+      "totalPaid": "Total pago"
+    },
+    "status": {
+      "paid": "Pagamento confirmado"
+    },
+    "currencyNote": "Valores em Kwanzas angolanos (AOA).",
+    "legal": "Este documento comprova o pagamento efetuado e foi gerado automaticamente pela Kandrop. Não constitui fatura nem documento fiscal certificado; a fatura, quando aplicável, é emitida pelo comerciante.",
+    "generated": "Gerado automaticamente em {date}",
+    "print": "Imprimir ou guardar em PDF",
+    "printHint": "Na janela de impressão, escolha «Guardar como PDF».",
+    "back": "Voltar ao comprovativo"
+  },
+  "Payouts": {
+    "eyebrow": "Carteira",
+    "title": "Carteira",
+    "subtitle": "O seu saldo e os levantamentos para a sua conta bancária.",
+    "balance": {
+      "label": "Saldo disponível para saque",
+      "releasing": "{amount} a libertar após entrega"
+    },
+    "request": {
+      "cta": "Solicitar levantamento",
+      "destination": "Transferência para",
+      "addBank": "Adicionar dados bancários",
+      "ownerOnly": "Só o proprietário da loja pode solicitar levantamentos.",
+      "created": "Levantamento solicitado. Referência {reference}.",
+      "blocked": {
+        "noBank": "Adicione os dados bancários para poder levantar o seu saldo.",
+        "pending": "Já tem um levantamento em curso. Poderá pedir outro quando for concluído.",
+        "low": "O saldo ainda não atingiu o mínimo de {amount} por levantamento."
+      }
+    },
+    "dialog": {
+      "title": "Solicitar levantamento",
+      "to": "Para",
+      "amount": "Montante a levantar",
+      "all": "Levantar tudo",
+      "available": "Disponível: {amount}",
+      "min": "Mínimo: {amount}",
+      "submit": "Confirmar levantamento",
+      "submitting": "A pedir…",
+      "cancel": "Cancelar",
+      "sandbox": "Ambiente de teste: a transferência é simulada e nenhum valor real é movimentado."
+    },
+    "history": {
+      "title": "Histórico de levantamentos",
+      "subtitle": "Do mais recente para o mais antigo.",
+      "caption": "Histórico de levantamentos",
+      "date": "Data",
+      "reference": "Referência",
+      "account": "Conta",
+      "amount": "Montante",
+      "status": "Estado"
+    },
+    "status": {
+      "pending": "Pendente",
+      "completed": "Concluído"
+    },
+    "empty": {
+      "title": "Ainda não fez levantamentos",
+      "body": "Os seus levantamentos aparecem aqui, com o estado de cada um."
+    },
+    "loadError": {
+      "title": "Não foi possível carregar os levantamentos",
+      "retry": "Tentar novamente"
+    },
+    "validation": {
+      "amount_required": "Indique o montante, em Kwanzas inteiros.",
+      "amount_too_low": "O montante mínimo por levantamento é {min}.",
+      "amount_too_high": "O montante excede o saldo disponível."
+    }
+  },
+  "ComingSoon": {
+    "note": "Estamos a preparar esta área. Não há nada para configurar por agora.",
+    "features": {
+      "catalog": "Produtos de fornecedores B2B selecionados, com preço de custo e stock, prontos a vender na sua loja.",
+      "landingPages": "Páginas de venda focadas na conversão, criadas a partir dos seus produtos.",
+      "customers": "Todos os seus clientes num só lugar, com o histórico das respetivas encomendas.",
+      "support": "Fale com a equipa Kandrop sempre que precisar de ajuda."
+    }
+  },
+  "Marketing": {
+    "nav": {
+      "label": "Navegação principal",
+      "skip": "Saltar para o conteúdo",
+      "home": "Início",
+      "plans": "Planos",
+      "affiliates": "Afiliados",
+      "about": "Sobre",
+      "login": "Entrar",
+      "start": "Começar agora",
+      "open": "Abrir menu",
+      "close": "Fechar menu"
+    },
+    "hero": {
+      "eyebrow": "Dropshipping em Angola, sem stock",
+      "title1": "Domine o <nowrap>E-commerce</nowrap> em Angola.",
+      "title2": "Zero Stock.",
+      "title3": "Lucro Real.",
+      "subtitle": "A plataforma tudo-em-um com logística própria, pagamentos Multicaixa Express integrados e funis de alta conversão.",
+      "primary": "Começar agora",
+      "secondary": "Ver planos",
+      "example": "Exemplos ilustrativos, com dados fictícios.",
+      "mockup": {
+        "balance": "Saldo disponível",
+        "period": "Últimos 14 dias",
+        "status": {
+          "shipped": "Enviado",
+          "processing": "Em processamento",
+          "delivered": "Entregue"
+        }
+      },
+      "proof": {
+        "revenue": "{amount} faturados",
+        "order": "Nova encomenda de {amount}",
+        "payout": "Levantamento de {amount} concluído",
+        "ago": "há {minutes} min"
+      }
+    },
+    "pillars": {
+      "eyebrow": "Vantagens",
+      "title": "Porquê a Kandrop?",
+      "subtitle": "Tudo o que um lojista angolano precisa para vender mais e receber mais depressa, num só lugar.",
+      "soon": "Em breve",
+      "items": {
+        "catalog": {
+          "title": "Catálogo B2B de alta margem",
+          "body": "Escolha produtos de fornecedores selecionados, com a margem calculada à partida, e venda sem comprar stock."
+        },
+        "payouts": {
+          "title": "Levantamentos em 24h",
+          "body": "Peça o levantamento do seu saldo e receba na sua conta bancária angolana, sem burocracia."
+        },
+        "whatsapp": {
+          "title": "Recuperação de vendas via WhatsApp",
+          "body": "Recupere carrinhos abandonados e confirme encomendas automaticamente, na aplicação que os seus clientes já usam."
+        }
+      }
+    },
+    "pricing": {
+      "eyebrow": "Planos",
+      "title": "Um plano para cada fase do seu negócio",
+      "subtitle": "Comece pequeno e cresça quando as vendas o pedirem.",
+      "free": "Grátis",
+      "period": "/mês",
+      "recommended": "Recomendado",
+      "soon": "Em breve",
+      "cta": "Começar com {plan}",
+      "note": "Valores em Kwanzas (AOA), por mês.",
+      "plans": {
+        "starter": {
+          "name": "Starter",
+          "tagline": "Para validar o seu primeiro produto."
+        },
+        "growth": {
+          "name": "Growth",
+          "tagline": "Para quem já vende e quer acelerar."
+        },
+        "scale": {
+          "name": "Scale",
+          "tagline": "Para operações de grande volume."
+        }
+      },
+      "features": {
+        "products": "Até {count} produtos",
+        "productsUnlimited": "Produtos ilimitados",
+        "landingPages": "Até {count} landing pages",
+        "landingPagesUnlimited": "Landing pages ilimitadas",
+        "multicaixa": "Pagamentos Multicaixa Express, Unitel Money e cartão",
+        "payouts": "Levantamentos para a sua conta bancária",
+        "catalog": "Catálogo Premium B2B",
+        "whatsapp": "Automações WhatsApp",
+        "logistics": "Logística e estafetas",
+        "logisticsPriority": "Prioridade logística"
+      }
+    },
+    "final": {
+      "title": "Comece a vender sem stock hoje.",
+      "body": "Crie a sua conta em minutos e lance o seu primeiro produto.",
+      "cta": "Começar agora"
+    },
+    "footer": {
+      "label": "Rodapé",
+      "tagline": "Dropshipping pensado para Angola.",
+      "register": "Criar conta",
+      "copyright": "© {year} Kandrop. Todos os direitos reservados."
+    },
+    "pages": {
+      "soon": "Em breve",
+      "affiliates": {
+        "title": "Programa de afiliados",
+        "body": "Estamos a preparar o programa de afiliados da Kandrop. Volte em breve."
+      },
+      "about": {
+        "title": "Sobre a Kandrop",
+        "body": "Estamos a construir a plataforma de dropshipping pensada para Angola. Em breve contamos aqui a nossa história."
+      }
+    }
+  },
+  "Automations": {
+    "title": "Aumente as suas vendas em 30% com o piloto automático do WhatsApp.",
+    "subtitle": "Ligue o seu número e deixe a Kandrop recuperar carrinhos, confirmar pagamentos e avisar os seus clientes das entregas.",
+    "sandbox": "Ambiente de teste: a ligação ao WhatsApp e as mensagens são simuladas. Nada é enviado a clientes reais.",
+    "loadError": {
+      "title": "Não foi possível carregar as automações",
+      "retry": "Tentar novamente"
+    },
+    "connection": {
+      "title": "Ligação ao WhatsApp",
+      "subtitle": "O número a partir do qual as mensagens são enviadas.",
+      "ownerOnly": "Só o proprietário da loja pode gerir o WhatsApp e as automações.",
+      "status": {
+        "connected": "Conectado",
+        "pending": "A aguardar leitura",
+        "disconnected": "Não conectado"
+      },
+      "disconnected": {
+        "body": "Ligue o número de WhatsApp da sua loja para poder ativar as automações.",
+        "phone": "Número de WhatsApp",
+        "phoneHint": "Introduza os 9 dígitos, sem indicativo.",
+        "connect": "Conectar WhatsApp",
+        "connecting": "A gerar código…"
+      },
+      "pending": {
+        "title": "Leia o código com o telemóvel",
+        "qrLabel": "Código de ligação (simulado)",
+        "steps": {
+          "open": "Abra o WhatsApp no telemóvel {phone}.",
+          "menu": "Toque em Definições e depois em Dispositivos ligados.",
+          "scan": "Toque em Ligar um dispositivo e aponte a câmara para este código."
+        },
+        "waiting": "A aguardar leitura…",
+        "cancel": "Cancelar"
+      },
+      "connected": {
+        "body": "As automações ativas enviam as mensagens a partir de {phone}.",
+        "since": "Conectado desde {date}",
+        "disconnect": "Desconectar",
+        "confirmTitle": "Desconectar o WhatsApp?",
+        "confirmBody": "Todas as automações serão desligadas e deixam de enviar mensagens.",
+        "confirm": "Desconectar",
+        "keep": "Manter ligado"
+      }
+    },
+    "flows": {
+      "title": "Fluxos de automação",
+      "subtitle": "Ligue os que quiser. Clique num fluxo para ver e editar a mensagem.",
+      "needConnection": "Conecte o WhatsApp para poder ativar os fluxos.",
+      "on": "Ligado",
+      "off": "Desligado",
+      "edit": "Ver e editar mensagem",
+      "customised": "Personalizada",
+      "toggle": "Ativar {flow}",
+      "items": {
+        "abandonedCart": {
+          "title": "Recuperação de carrinho abandonado",
+          "description": "Envia uma mensagem ao cliente 1 hora depois de uma tentativa de pagamento falhada.",
+          "trigger": "1 h após a tentativa falhada"
+        },
+        "paymentConfirmation": {
+          "title": "Confirmação de pagamento",
+          "description": "Envia o recibo automaticamente ao cliente assim que o pagamento é confirmado.",
+          "trigger": "Ao confirmar o pagamento"
+        },
+        "shippingUpdate": {
+          "title": "Atualização de envio",
+          "description": "Avisa o cliente quando o estafeta está a caminho.",
+          "trigger": "Quando o estafeta sai para entregar"
+        }
+      }
+    },
+    "editor": {
+      "template": "Modelo da mensagem",
+      "templateHint": "As variáveis entre chavetas são substituídas pelos dados de cada cliente.",
+      "variables": "Variáveis (clique para inserir)",
+      "insert": "Inserir {variable}",
+      "counter": "{count}/{max}",
+      "preview": "Pré-visualização",
+      "previewNote": "com dados de exemplo",
+      "save": "Guardar modelo",
+      "saving": "A guardar…",
+      "saved": "Modelo guardado.",
+      "reset": "Repor modelo original",
+      "close": "Fechar",
+      "approval": "Ambiente de teste: as mensagens não são enviadas. Com o WhatsApp Business real, os modelos têm de ser aprovados pela Meta antes de serem usados.",
+      "variableNames": {
+        "nome_cliente": "Nome do cliente",
+        "nome_produto": "Nome do produto",
+        "link_pagamento": "Ligação para concluir o pagamento",
+        "nome_loja": "Nome da sua loja",
+        "valor_total": "Valor pago",
+        "referencia": "Referência do pagamento",
+        "link_recibo": "Ligação para o recibo",
+        "codigo_seguimento": "Código de seguimento do envio",
+        "nome_estafeta": "Nome do estafeta"
+      }
+    },
+    "validation": {
+      "template_required": "Escreva a mensagem.",
+      "template_too_long": "A mensagem pode ter no máximo 1000 caracteres.",
+      "template_unknown_variable": "Variáveis desconhecidas: {names}. Use apenas as da lista.",
+      "template_braces": "Há chavetas sem par. Escreva cada variável entre chavetas, por exemplo {example}.",
+      "phone_required": "Indique o número de WhatsApp.",
+      "phone_invalid": "Introduza 9 dígitos a começar por 9. Ex.: 923 456 789"
+    }
+  },
+  "Logistics": {
+    "title": "Logística e estafetas",
+    "subtitle": "Despache as encomendas com um clique e acompanhe cada entrega, da recolha ao cliente.",
+    "sandbox": "Ambiente de teste: os estafetas, as entregas, as fotos e as assinaturas são simulados. Cada viagem dura cerca de um minuto para se poder ver o ciclo completo, e as encomendas com número múltiplo de 7 são devolvidas.",
+    "loadError": {
+      "title": "Não foi possível carregar as entregas",
+      "retry": "Tentar novamente"
+    },
+    "dispatch": {
+      "title": "Despacho rápido",
+      "subtitle": "Encomendas prontas, à espera de um estafeta.",
+      "waiting": "{count, plural, =0 {Nenhuma a aguardar envio} other {# a aguardar envio}}",
+      "more": "e mais {count, plural, one {# artigo} other {# artigos}}",
+      "assign": "Atribuir estafeta",
+      "assigning": "A atribuir…",
+      "done": "Encomenda {number} atribuída a {courier}.",
+      "empty": {
+        "title": "Sem encomendas a aguardar envio",
+        "body": "As encomendas em processamento aparecem aqui, prontas a despachar.",
+        "cta": "Ver encomendas"
+      }
+    },
+    "deliveries": {
+      "title": "Entregas",
+      "subtitle": "Em curso, entregues e devolvidas.",
+      "filter": "Filtrar entregas por estado"
+    },
+    "tabs": {
+      "in_transit": "Em curso",
+      "delivered": "Entregues",
+      "returned": "Devolvidas",
+      "all": "Todas"
+    },
+    "table": {
+      "caption": "Lista de entregas",
+      "order": "Encomenda",
+      "zone": "Bairro / município",
+      "courier": "Estafeta",
+      "progress": "Progresso",
+      "status": "Estado",
+      "open": "Abrir a entrega da encomenda {number}",
+      "proof": "Comprovativo"
+    },
+    "status": {
+      "in_transit": "Em trânsito",
+      "delivered": "Entregue",
+      "returned": "Devolvido"
+    },
+    "stages": {
+      "assigned": "Atribuída",
+      "picked_up": "Recolhida",
+      "in_transit": "A caminho",
+      "delivered": "Entregue",
+      "returned": "Devolvida"
+    },
+    "vehicles": {
+      "moto": "Mota",
+      "car": "Carro"
+    },
+    "returnReasons": {
+      "customer_absent": "Entrega falhada: o cliente não estava no local. A encomenda voltou ao lojista e foi cancelada."
+    },
+    "empty": {
+      "in_transit": {
+        "title": "Sem entregas em curso",
+        "body": "As entregas atribuídas aparecem aqui enquanto o estafeta as leva ao cliente."
+      },
+      "delivered": {
+        "title": "Ainda sem entregas concluídas",
+        "body": "As entregas concluídas aparecem aqui, com o comprovativo."
+      },
+      "returned": {
+        "title": "Sem entregas devolvidas",
+        "body": "Uma entrega devolvida aparece aqui, com o motivo."
+      },
+      "all": {
+        "title": "Ainda sem entregas",
+        "body": "Atribua uma encomenda a um estafeta para começar."
+      }
+    },
+    "sheet": {
+      "title": "Entrega {number}",
+      "code": "Código de seguimento",
+      "close": "Fechar",
+      "live": "Ao vivo",
+      "eta": "chega em {time}",
+      "viewProof": "Ver comprovativo de entrega",
+      "proofPending": "A obter o comprovativo…",
+      "courier": "Estafeta",
+      "name": "Nome",
+      "phone": "Contacto",
+      "vehicle": "Veículo",
+      "destination": "Destino",
+      "landmark": "Referência: {value}"
+    },
+    "proof": {
+      "eyebrow": "Comprovativo de entrega",
+      "title": "Encomenda {number}",
+      "close": "Fechar",
+      "kind": "Tipo de comprovativo",
+      "kinds": {
+        "photo": "Foto",
+        "signature": "Assinatura"
+      },
+      "photoLabel": "Foto da encomenda entregue (simulada)",
+      "signatureLabel": "Assinatura do cliente (simulada)",
+      "test": "IMAGEM DE TESTE",
+      "deliveredAt": "Entregue em",
+      "receivedBy": "Recebido por",
+      "courier": "Estafeta",
+      "place": "Local",
+      "code": "Código de seguimento",
+      "simulated": "Ambiente de teste: a imagem é gerada para ilustrar. Na versão real seria a foto ou a assinatura registadas pelo estafeta no momento da entrega."
+    }
+  },
+  "Affiliates": {
+    "title": "Programa de afiliados",
+    "hero": {
+      "eyebrow": "Programa de afiliados",
+      "title": "Convide e Ganhe.",
+      "body": "Receba {rate} de comissão recorrente por cada lojista ativo que trouxer para a Kandrop.",
+      "rateCaption": "de comissão recorrente, todos os meses"
+    },
+    "link": {
+      "title": "O seu link de afiliado exclusivo",
+      "hint": "Partilhe-o com quem quer vender online em Angola. Cada visita ao link é contada.",
+      "label": "Link de afiliado",
+      "copy": "Copiar link",
+      "copied": "Link copiado",
+      "copyFailed": "Não foi possível copiar automaticamente. O link está selecionado: copie-o com Ctrl+C ou Cmd+C.",
+      "whatsapp": "Partilhar no WhatsApp",
+      "whatsappMessage": "Comece a vender online em Angola sem stock, com a Kandrop: {link}"
+    },
+    "kpis": {
+      "label": "Resumo do programa",
+      "clicks": "Cliques no link",
+      "signups": "Registos totais",
+      "active": "Lojistas ativos (pagantes)",
+      "commission": "Comissão disponível",
+      "clicksHint": "{rate} dos cliques tornam-se registos",
+      "signupsHint": "{count, plural, =0 {Nenhum} one {# nos últimos 30 dias} other {# nos últimos 30 dias}}",
+      "activeHint": "{share} dos registos",
+      "commissionHint": "{amount} por mês, recorrente",
+      "none": "—"
+    },
+    "table": {
+      "title": "Os seus indicados",
+      "subtitle": "Os e-mails são ofuscados para proteger a privacidade de cada pessoa.",
+      "caption": "Lista de indicados",
+      "email": "Indicado",
+      "registered": "Registo",
+      "plan": "Plano",
+      "payment": "Estado do pagamento",
+      "commission": "Comissão / mês"
+    },
+    "plans": {
+      "starter": "Starter",
+      "growth": "Growth",
+      "scale": "Scale"
+    },
+    "payment": {
+      "paid": "Pago",
+      "pending": "Pendente",
+      "overdue": "Em atraso",
+      "free": "Plano gratuito"
+    },
+    "empty": {
+      "title": "Ainda não tem indicados",
+      "body": "Partilhe o seu link. Quando alguém abrir uma loja através dele, aparece aqui."
+    },
+    "loadError": {
+      "title": "Não foi possível carregar o programa",
+      "retry": "Tentar novamente"
+    },
+    "forbidden": {
+      "title": "Área reservada ao proprietário",
+      "body": "As comissões são dinheiro da conta. Peça ao proprietário da loja para gerir o programa de afiliados."
+    },
+    "sandbox": "Ambiente de teste: os indicados e os valores são exemplos. Ainda não há atribuição real de registos nem pagamento de comissões, e a taxa de {rate} e os preços dos planos são propostas por confirmar."
+  },
+  "Storefront": {
+    "notFound": {
+      "title": "Produto não encontrado",
+      "body": "Este produto já não está disponível ou o endereço está incorreto."
+    },
+    "meta": {
+      "fallback": "Compre com Multicaixa Express, Unitel Money ou cartão."
+    },
+    "header": {
+      "store": "Loja {store}"
+    },
+    "banner": {
+      "low": "{count, plural, one {Só resta # unidade em stock!} other {Apenas # unidades em stock!}}",
+      "out": "Produto esgotado"
+    },
+    "timer": {
+      "label": "A oferta expira em",
+      "ended": "A oferta terminou",
+      "days": "{days} d {time}"
+    },
+    "price": {
+      "regular": "Preço original",
+      "off": "-{percent}",
+      "now": "Preço da oferta"
+    },
+    "gallery": {
+      "label": "Imagens do produto",
+      "slide": "{title} — imagem {current} de {total}",
+      "counter": "{current} / {total}",
+      "goTo": "Ver imagem {n}",
+      "none": "Sem imagem"
+    },
+    "description": {
+      "title": "Descrição"
+    },
+    "pay": {
+      "title": "Pague como preferir",
+      "note": "O pagamento faz-se na página de pagamento da Kandrop.",
+      "multicaixa": "Multicaixa Express",
+      "unitel": "Unitel Money",
+      "card": "Cartão de crédito ou débito"
+    },
+    "reviews": {
+      "title": "Avaliações",
+      "badge": "Exemplos de teste",
+      "note": "Estas avaliações são exemplos do ambiente de teste. Não são opiniões de clientes reais e não aparecem numa loja em produção.",
+      "stars": "{n} de 5 estrelas",
+      "r1": {
+        "name": "Ana M.",
+        "text": "Chegou dentro do prazo e bem embalado.",
+        "when": "Exemplo"
+      },
+      "r2": {
+        "name": "Carlos N.",
+        "text": "Igual às fotografias. Pagar com Multicaixa foi rápido.",
+        "when": "Exemplo"
+      },
+      "r3": {
+        "name": "Luzia B.",
+        "text": "Bom produto pelo preço. Recomendo.",
+        "when": "Exemplo"
+      }
+    },
+    "buy": {
+      "cta": "Comprar agora",
+      "methods": "Multicaixa Express · Unitel Money · Cartão",
+      "soldOut": "Esgotado",
+      "soldOutNote": "Este produto esgotou. Volte mais tarde."
+    },
+    "footer": {
+      "soldBy": "Vendido por {store}",
+      "payments": "Pagamentos Kandrop"
+    }
+  },
+  "Billing": {
+    "title": "Faturação e planos",
+    "eyebrow": "Conta",
+    "subtitle": "Veja o seu plano e o que já usou, mude de plano e consulte as suas faturas.",
+    "forbidden": {
+      "title": "Área reservada ao proprietário",
+      "body": "A subscrição é da conta. Peça ao proprietário da loja para gerir os planos e a faturação."
+    },
+    "loadError": {
+      "title": "Não foi possível carregar a faturação",
+      "retry": "Tentar novamente"
+    },
+    "current": {
+      "label": "Plano atual",
+      "name": "Plano {plan}",
+      "free": "Gratuito, sem renovação",
+      "active": "{price} por mês · ativo até {date}",
+      "lapsed": "O seu plano {plan} terminou. Está no Starter até renovar.",
+      "landingPages": "{used} de {limit} landing pages usadas",
+      "products": "{used} de {limit} produtos usados",
+      "landingPagesUnlimited": "Landing pages ilimitadas · {used} em uso",
+      "productsUnlimited": "Produtos ilimitados · {used} em uso",
+      "meters": "Consumo do plano"
+    },
+    "plans": {
+      "title": "Escolha o seu plano",
+      "subtitle": "Pague em Kwanzas, por períodos de 30 dias. Sem fidelização e sem renovação automática.",
+      "perMonth": "/ mês",
+      "free": "Grátis",
+      "current": "Plano atual",
+      "badge": "Mais completo",
+      "upgrade": "Fazer upgrade",
+      "renew": "Renovar 30 dias",
+      "included": "Incluído no seu plano",
+      "soon": "Em breve",
+      "label": "Planos disponíveis"
+    },
+    "dialog": {
+      "title": "Subscrever o plano {plan}",
+      "renewTitle": "Renovar o plano {plan}",
+      "close": "Fechar",
+      "preparing": "A preparar o pagamento…",
+      "startError": "Não foi possível iniciar o pagamento.",
+      "retry": "Tentar novamente",
+      "summary": "Resumo",
+      "plan": "Plano",
+      "period": "Período",
+      "days": "30 dias",
+      "total": "Total a pagar",
+      "successTitle": "Plano {plan} ativo",
+      "successBody": "O seu plano está ativo até {date}. O pagamento ficou registado nas suas faturas.",
+      "invoice": "Ver fatura",
+      "done": "Concluir"
+    },
+    "invoices": {
+      "title": "Histórico de faturas",
+      "subtitle": "Cada pagamento da sua subscrição.",
+      "caption": "Lista de faturas",
+      "number": "Nº",
+      "date": "Data",
+      "plan": "Plano",
+      "amount": "Valor",
+      "status": "Estado",
+      "document": "Documento",
+      "pdf": "Descarregar PDF",
+      "pdfLabel": "Descarregar PDF da fatura {number}",
+      "none": "—",
+      "note": "O documento abre numa página pronta a imprimir: use «Guardar como PDF». É um recibo de pagamento, não uma fatura fiscal.",
+      "empty": {
+        "title": "Ainda não tem faturas",
+        "body": "Quando subscrever um plano pago, cada pagamento fica registado aqui."
+      },
+      "statuses": {
+        "paid": "Paga",
+        "pending": "Pendente",
+        "failed": "Falhada"
+      },
+      "pdfShort": "PDF"
+    },
+    "sandbox": "Ambiente de teste: os pagamentos são simulados e nada é cobrado. Os preços de Growth e Scale são propostas por confirmar, e só os limites de produtos e de landing pages estão em vigor: as restantes vantagens ainda não estão ligadas ao plano."
+  },
+  "Academy": {
+    "title": "Academia Kandrop",
+    "subtitle": "Aprenda a vender melhor em dropshipping, aula a aula.",
+    "loadError": {
+      "title": "Não foi possível carregar a Academia",
+      "retry": "Tentar novamente"
+    },
+    "progress": {
+      "label": "O seu progresso",
+      "summary": "{done} de {total} aulas concluídas",
+      "left": "cerca de {minutes} min por ver",
+      "complete": "Concluiu o curso. Pode rever qualquer aula.",
+      "continue": "Continuar: aula {n}",
+      "review": "Rever o curso",
+      "bar": "Progresso no curso"
+    },
+    "player": {
+      "soon": "Vídeo em breve",
+      "play": "Reproduzir a aula",
+      "label": "Leitor de vídeo: {title}",
+      "unavailable": "O vídeo desta aula ainda não foi gravado. Neste ambiente de teste, pode marcar a aula como concluída para ver o progresso e o desbloqueio.",
+      "expand": "Expandir o leitor",
+      "collapse": "Reduzir o leitor",
+      "fullscreen": "Ecrã inteiro",
+      "exitFullscreen": "Sair do ecrã inteiro",
+      "module": "Módulo {n}"
+    },
+    "lesson": {
+      "meta": "Aula {n} de {total} · {minutes} min",
+      "complete": "Marcar como concluída",
+      "saving": "A guardar…",
+      "done": "Aula concluída",
+      "next": "Ir para a aula seguinte",
+      "advanced": "Aula concluída. A aula seguinte foi desbloqueada.",
+      "finished": "Aula concluída. Concluiu o curso!",
+      "status": "Estado da aula",
+      "lockedTitle": "Aula bloqueada",
+      "lockedBody": "Conclua as aulas anteriores para desbloquear esta."
+    },
+    "outline": {
+      "title": "Conteúdo do curso",
+      "module": "Módulo {n}",
+      "count": "{done}/{total}",
+      "minutes": "{minutes} min",
+      "completed": "Concluída",
+      "available": "Disponível",
+      "locked": "Bloqueada",
+      "open": "Abrir o módulo {title}",
+      "lessonLabel": "{title}, {minutes} min, {state}"
+    },
+    "sandbox": "Ambiente de teste: os títulos e as descrições são um esboço do curso e os vídeos ainda não foram gravados. As cinco primeiras aulas já concluídas são um exemplo inicial.",
+    "modules": {
+      "m1": "Escolher Produtos Virais",
+      "m2": "Tráfego Pago no WhatsApp",
+      "m3": "A Página de Produto que Vende",
+      "m4": "Entregas e Pós-venda"
+    },
+    "lessons": {
+      "m1l1": {
+        "title": "Como funciona o dropshipping em Angola",
+        "description": "O modelo sem stock, quem faz o quê e onde está o lucro."
+      },
+      "m1l2": {
+        "title": "Onde encontrar produtos com procura",
+        "description": "Sinais de procura, sazonalidade e como testar uma ideia com pouco risco."
+      },
+      "m1l3": {
+        "title": "Calcular margem e preço de venda",
+        "description": "Custo, preço e margem: como decidir o preço sem perder dinheiro."
+      },
+      "m2l1": {
+        "title": "Anúncios que levam ao WhatsApp",
+        "description": "Como estruturar um anúncio para começar a conversa certa."
+      },
+      "m2l2": {
+        "title": "Mensagens que convertem",
+        "description": "Respostas rápidas, tom de voz e o que dizer antes de enviar o link de pagamento."
+      },
+      "m2l3": {
+        "title": "Recuperar carrinhos abandonados",
+        "description": "Lembretes automáticos e quando vale a pena insistir."
+      },
+      "m3l1": {
+        "title": "Fotografias e descrição",
+        "description": "O que mostrar, o que escrever e o que cortar."
+      },
+      "m3l2": {
+        "title": "Ofertas, stock e prazos, sem enganar",
+        "description": "Usar escassez e prazos reais, e porque a confiança vende mais."
+      },
+      "m3l3": {
+        "title": "Aceitar Multicaixa Express",
+        "description": "Como o comprador paga e o que acontece a seguir."
+      },
+      "m4l1": {
+        "title": "Despachar e acompanhar encomendas",
+        "description": "Do «a aguardar envio» ao comprovativo de entrega."
+      },
+      "m4l2": {
+        "title": "Devoluções e reclamações",
+        "description": "Como reagir a uma entrega falhada e manter o cliente."
+      }
+    }
   }
 }
