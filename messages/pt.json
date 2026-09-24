@@ -1,0 +1,42 @@
+{
+  "Metadata": {
+    "title": "Kandrop — Pagamentos para Angola",
+    "description": "Plataforma de pagamentos de alta performance para comerciantes angolanos."
+  },
+  "Common": {
+    "appName": "Kandrop",
+    "language": "Idioma",
+    "loading": "A carregar…",
+    "live": "Em direto",
+    "reconnecting": "A reconectar…"
+  },
+  "Locales": {
+    "pt": "Português",
+    "en": "English",
+    "fr": "Français"
+  },
+  "Home": {
+    "eyebrow": "Pagamentos institucionais",
+    "title": "Receba em Kwanzas. Com a confiança de uma instituição.",
+    "subtitle": "Infraestrutura de pagamentos desenhada para o comércio angolano: rápida, auditável e em tempo real.",
+    "cta": "Abrir painel"
+  },
+  "Dashboard": {
+    "title": "Resumo",
+    "subtitle": "Atividade da sua loja em tempo real.",
+    "metrics": {
+      "volumeToday": "Volume hoje",
+      "transactionsToday": "Transações hoje",
+      "successRate": "Taxa de sucesso",
+      "pendingSettlement": "Por liquidar"
+    },
+    "updatedAt": "Atualizado às {time}"
+  },
+  "Errors": {
+    "unauthenticated": "Sessão inválida ou expirada.",
+    "forbidden": "Não tem permissão para esta ação.",
+    "not_found": "Recurso não encontrado.",
+    "validation_failed": "Os dados enviados são inválidos.",
+    "internal": "Ocorreu um erro inesperado. Tente novamente."
+  }
+}

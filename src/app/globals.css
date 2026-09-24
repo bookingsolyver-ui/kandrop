@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens live here as the single source of truth.
+ * Placeholders only — /impeccable init will define the real premium/institutional system.
+ */
+@theme {
+  --color-surface: #ffffff;
+  --color-ink: #0b1220;
+  --color-ink-muted: #5b6577;
+  --color-line: #e3e7ee;
+  --color-brand: #0b2a4a;
+}
+
+body {
+  background: var(--color-surface);
+  color: var(--color-ink);
+}
