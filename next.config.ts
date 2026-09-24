@@ -2,6 +2,10 @@ import { fileURLToPath } from "node:url";
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 
+// next-intl resolves this RELATIVE path from the folder the build is launched in (Turbopack rejects
+// absolute paths, and process.chdir() is unavailable while the config loads), so `next build` must run
+// from the project folder: on a hosting platform, set the "Root Directory" to this folder (see
+// docs/DEPLOY.md). Launched from anywhere else it fails with "Could not find i18n config".
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {

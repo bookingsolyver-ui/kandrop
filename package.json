@@ -16,6 +16,8 @@
     "check": "npm run i18n:check && npm run typecheck && npm run lint"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.117.1",
     "jose": "^6.2.12",
     "next": "^16.0.0",
     "next-intl": "^4.3.0",

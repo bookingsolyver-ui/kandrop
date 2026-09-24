@@ -8,7 +8,7 @@ ready to run in production, what is **not**, and how to run it.
 The project builds and runs in production mode, but four things make a public launch unsafe until
 they are done. None of them is a build problem; they are unfinished product.
 
-1. **No database.** Users, stores, products, orders, payments, deliveries, plans… live in memory
+1. **No database.** (Supabase clients exist in `src/lib/supabase`, but nothing uses them yet.) Users, stores, products, orders, payments, deliveries, plans… live in memory
    (`globalThis` maps, marked `STUB` in each `repository.ts`). A restart loses everything, and a
    second instance (or a serverless platform, where every request may hit a different process)
    sees different data. Until the repositories are replaced by a database, run **exactly one
@@ -30,15 +30,17 @@ they are done. None of them is a build problem; they are unfinished product.
 All are read in `src/server/config/env.ts` (validated on the first request, not at build, so
 `next build` needs none). Documented, with comments, in `.env.example`.
 
-| Variable                    | Production                         | Purpose                                                                       |
-| --------------------------- | ---------------------------------- | ----------------------------------------------------------------------------- |
-| `SESSION_SECRET`            | **required** (≥ 32 chars)          | Signs session JWTs. Without it the app refuses requests in production.        |
-| `APP_URL`                   | recommended                        | Public base URL (no trailing slash). Webhook callback and server-built links. |
-| `PAYMENTS_MODE`             | `sandbox` (only option that works) | `live` is refused until a provider exists.                                    |
-| `MULTICAIXA_WEBHOOK_SECRET` | recommended (≥ 32 chars)           | Signs the webhook. Empty = random per process (one instance only).            |
-| `PORT`                      | optional                           | Listening port (default 3000).                                                |
-| `AUTH_DEV_BYPASS`           | must be `false`                    | The app throws at start-up in production if true.                             |
-| `KANDROP_DEMO_EVENTS`       | `false`                            | `true` seeds demo data into every store; a warning is logged.                 |
+| Variable                                                     | Production                         | Purpose                                                                       |
+| ------------------------------------------------------------ | ---------------------------------- | ----------------------------------------------------------------------------- |
+| `SESSION_SECRET`                                             | **required** (≥ 32 chars)          | Signs session JWTs. Without it the app refuses requests in production.        |
+| `APP_URL`                                                    | recommended                        | Public base URL (no trailing slash). Webhook callback and server-built links. |
+| `PAYMENTS_MODE`                                              | `sandbox` (only option that works) | `live` is refused until a provider exists.                                    |
+| `MULTICAIXA_WEBHOOK_SECRET`                                  | recommended (≥ 32 chars)           | Signs the webhook. Empty = random per process (one instance only).            |
+| `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` | not used yet                       | Supabase project URL and public anon key (`src/lib/supabase`).                |
+| `SUPABASE_SERVICE_ROLE_KEY`                                  | not used yet                       | **Secret**, bypasses RLS, server only.                                        |
+| `PORT`                                                       | optional                           | Listening port (default 3000).                                                |
+| `AUTH_DEV_BYPASS`                                            | must be `false`                    | The app throws at start-up in production if true.                             |
+| `KANDROP_DEMO_EVENTS`                                        | `false`                            | `true` seeds demo data into every store; a warning is logged.                 |
 
 There is no separate "API URL": the API is the same app under `/api`. The only outbound callback
 is the sandbox Multicaixa webhook (`APP_URL` + `/api/webhooks/multicaixa`).
@@ -51,6 +53,11 @@ npm run check        # i18n parity + tsc + eslint
 npm run build
 SESSION_SECRET=… APP_URL=https://… npm start     # next start, NODE_ENV=production
 ```
+
+**Run the build from the project folder** (the one with `next.config.ts` and `src/`). On a hosting
+platform, set its _Root Directory_ / working directory to that folder. Launched from anywhere else,
+`next build` fails with `[next-intl] Could not find i18n config at ./src/i18n/request.ts`: the plugin
+resolves that relative path from where the command runs (`src/i18n/request.ts` itself is fine).
 
 Node ≥ 20.9. Health check: `GET /api/health` → `{"status":"ok"}`.
 
