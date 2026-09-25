@@ -23,7 +23,7 @@ function tokenFromRequest(req: Request): string | undefined {
 }
 
 /** A valid token wins; otherwise the development bypass (never in production) may apply. */
-async function resolveSession(token: string | undefined): Promise<Session | null> {
+export async function resolveSession(token: string | undefined): Promise<Session | null> {
   if (token) {
     const session = await verifySession(token);
     if (session) return session;

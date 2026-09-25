@@ -1429,28 +1429,46 @@
       "title": "Escolha o seu plano",
       "description": "Escolha um plano e conclua o pagamento para aceder ao painel da Kandrop."
     },
+    "banner": "Falta pouco: escolha o seu plano e ative a conta para começar a vender.",
     "skip": "Saltar para o conteúdo",
-    "gate": {
-      "banner": "A sua conta está criada. Falta escolher um plano e pagar para aceder ao painel.",
-      "signedIn": "Sessão iniciada como {email}",
-      "logout": "Terminar sessão"
+    "currency": {
+      "label": "Moeda",
+      "AOA": "Kz",
+      "EUR": "EUR",
+      "USD": "USD"
     },
     "steps": {
       "label": "Passos da subscrição",
       "plan": "Plano",
+      "details": "Dados",
       "payment": "Pagamento",
       "completed": "concluído"
     },
     "plan": {
-      "title": "Escolha o seu plano",
-      "subtitle": "Pague por mês, sem fidelização. O painel abre assim que o pagamento for confirmado.",
+      "title": "Escolha o plano ideal para o seu negócio",
+      "subtitle": "Pague por mês, sem fidelização e sem renovação automática. O painel abre assim que o pagamento for confirmado.",
       "perMonth": "/ mês",
       "choose": "Escolher {plan}",
       "recommended": "Recomendado",
+      "rates": "Cobrança em Kwanzas (AOA). Pagamentos noutras moedas ainda não estão disponíveis.",
+      "names": {
+        "starter": "Starter",
+        "pro": "Pro"
+      },
       "soon": "Em breve"
     },
-    "pay": {
-      "title": "Pagamento",
+    "details": {
+      "title": "Os seus dados",
+      "subtitle": "Para criar a sua conta Kandrop.",
+      "fullName": "Nome completo",
+      "email": "Email",
+      "whatsapp": "WhatsApp",
+      "whatsappHint": "9 dígitos, sem indicativo.",
+      "password": "Senha",
+      "passwordHint": "Pelo menos 10 caracteres, com letras e números.",
+      "province": "Província",
+      "provincePlaceholder": "Escolha a província",
+      "continue": "Continuar para o pagamento",
       "back": "Alterar plano"
     },
     "summary": {
@@ -1460,10 +1478,80 @@
       "total": "Total a pagar",
       "change": "Alterar plano"
     },
+    "pay": {
+      "title": "Pagamento",
+      "back": "Alterar plano",
+      "methods": "Método de pagamento",
+      "tabs": {
+        "multicaixa": "Multicaixa Express",
+        "bank": "Transferência bancária",
+        "card": "Cartão de crédito"
+      },
+      "phone": "Número de telemóvel",
+      "phoneHint": "Introduza os 9 dígitos, sem indicativo.",
+      "multicaixaNote": "Vai receber um pedido de confirmação na aplicação Multicaixa Express.",
+      "pay": "Pagar {amount}",
+      "paying": "A processar…",
+      "waitingTitle": "A aguardar confirmação na app Multicaixa Express",
+      "waitingBody": "Abra a aplicação e aprove o pagamento de {amount}. Simulação: a confirmação chega sozinha dentro de instantes.",
+      "bank": {
+        "title": "Transferência bancária",
+        "intro": "Transfira {amount} para a conta abaixo e anexe o comprovativo.",
+        "iban": "IBAN",
+        "holder": "Titular",
+        "holderName": "Kandrop (exemplo)",
+        "copy": "Copiar IBAN",
+        "copied": "IBAN copiado",
+        "example": "IBAN de exemplo: não o use para transferir dinheiro.",
+        "proof": "Comprovativo de transferência",
+        "proofHint": "Imagem (JPG ou PNG) ou PDF, até 5 MB.",
+        "choose": "Escolher ficheiro",
+        "replace": "Trocar ficheiro",
+        "remove": "Remover",
+        "send": "Enviar comprovativo",
+        "sending": "A enviar…",
+        "chosen": "Ficheiro escolhido"
+      },
+      "card": {
+        "title": "Cartão de crédito",
+        "note": "Campos de exemplo, sem ligação a nenhum processador de pagamentos: nada é enviado nem guardado.",
+        "test": "Cartão de teste: 4242 4242 4242 4242, uma data futura e qualquer CVC."
+      }
+    },
+    "validation": {
+      "name_required": "Indique o seu nome.",
+      "name_too_short": "O nome parece curto demais.",
+      "email_required": "Indique o seu email.",
+      "email_invalid": "Este email não parece válido.",
+      "phone_required": "Indique o número de WhatsApp.",
+      "phone_invalid": "Introduza um número angolano de 9 dígitos que comece por 9.",
+      "password_required": "Crie uma senha.",
+      "password_too_short": "A senha deve ter pelo menos 10 caracteres.",
+      "password_too_long": "A senha é demasiado longa.",
+      "password_needs_letter_number": "Use letras e números na senha.",
+      "password_too_common": "Esta senha é muito comum. Escolha outra.",
+      "password_contains_email": "A senha não deve conter o seu email.",
+      "province_required": "Escolha a sua província.",
+      "proof_required": "Anexe o comprovativo da transferência.",
+      "proof_type": "O ficheiro tem de ser uma imagem JPG ou PNG, ou um PDF.",
+      "proof_too_large": "O ficheiro excede 5 MB."
+    },
     "success": {
       "title": "Pagamento confirmado",
-      "body": "O plano {plan} está ativo. A abrir o seu painel…",
+      "card": "Recebemos o pagamento de {amount}.",
+      "multicaixa": "O pagamento de {amount} foi confirmado.",
+      "bank": "Comprovativo recebido. Assim que confirmarmos a transferência de {amount}, o plano fica ativo.",
+      "bankTitle": "Comprovativo recebido",
+      "prototype": "Isto é uma simulação: nenhum pagamento foi cobrado, nenhum ficheiro foi enviado e nenhuma conta foi criada.",
+      "register": "Criar conta a sério",
+      "restart": "Recomeçar",
+      "body": "Plano {plan} ativo. A abrir o seu painel…",
       "go": "Ir para o painel"
+    },
+    "gate": {
+      "banner": "Conta criada com sucesso. Escolha o seu plano e conclua o pagamento para aceder ao painel.",
+      "signedIn": "Sessão iniciada como {email}",
+      "logout": "Terminar sessão"
     }
   }
 }

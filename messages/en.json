@@ -1429,28 +1429,46 @@
       "title": "Choose your plan",
       "description": "Choose a plan and complete the payment to access the Kandrop dashboard."
     },
+    "banner": "Almost there: choose your plan and activate your account to start selling.",
     "skip": "Skip to content",
-    "gate": {
-      "banner": "Your account is created. Choose a plan and pay to access the dashboard.",
-      "signedIn": "Signed in as {email}",
-      "logout": "Sign out"
+    "currency": {
+      "label": "Currency",
+      "AOA": "Kz",
+      "EUR": "EUR",
+      "USD": "USD"
     },
     "steps": {
       "label": "Subscription steps",
       "plan": "Plan",
+      "details": "Details",
       "payment": "Payment",
       "completed": "completed"
     },
     "plan": {
-      "title": "Choose your plan",
-      "subtitle": "Pay monthly, no lock-in. The dashboard opens as soon as the payment is confirmed.",
+      "title": "Choose the right plan for your business",
+      "subtitle": "Pay monthly, no lock-in and no automatic renewal. The dashboard opens as soon as the payment is confirmed.",
       "perMonth": "/ month",
       "choose": "Choose {plan}",
       "recommended": "Recommended",
+      "rates": "Billed in Kwanzas (AOA). Payments in other currencies are not available yet.",
+      "names": {
+        "starter": "Starter",
+        "pro": "Pro"
+      },
       "soon": "Soon"
     },
-    "pay": {
-      "title": "Payment",
+    "details": {
+      "title": "Your details",
+      "subtitle": "To create your Kandrop account.",
+      "fullName": "Full name",
+      "email": "Email",
+      "whatsapp": "WhatsApp",
+      "whatsappHint": "9 digits, without the country code.",
+      "password": "Password",
+      "passwordHint": "At least 10 characters, with letters and numbers.",
+      "province": "Province",
+      "provincePlaceholder": "Choose the province",
+      "continue": "Continue to payment",
       "back": "Change plan"
     },
     "summary": {
@@ -1460,10 +1478,80 @@
       "total": "Total to pay",
       "change": "Change plan"
     },
+    "pay": {
+      "title": "Payment",
+      "back": "Change plan",
+      "methods": "Payment method",
+      "tabs": {
+        "multicaixa": "Multicaixa Express",
+        "bank": "Bank transfer",
+        "card": "Credit card"
+      },
+      "phone": "Mobile number",
+      "phoneHint": "Enter the 9 digits, without the country code.",
+      "multicaixaNote": "You will receive a confirmation request in the Multicaixa Express app.",
+      "pay": "Pay {amount}",
+      "paying": "Processing…",
+      "waitingTitle": "Waiting for confirmation in the Multicaixa Express app",
+      "waitingBody": "Open the app and approve the payment of {amount}. Simulation: the confirmation arrives by itself in a moment.",
+      "bank": {
+        "title": "Bank transfer",
+        "intro": "Transfer {amount} to the account below and attach the receipt.",
+        "iban": "IBAN",
+        "holder": "Account holder",
+        "holderName": "Kandrop (example)",
+        "copy": "Copy IBAN",
+        "copied": "IBAN copied",
+        "example": "Example IBAN: do not use it to send money.",
+        "proof": "Transfer receipt",
+        "proofHint": "Image (JPG or PNG) or PDF, up to 5 MB.",
+        "choose": "Choose file",
+        "replace": "Replace file",
+        "remove": "Remove",
+        "send": "Send receipt",
+        "sending": "Sending…",
+        "chosen": "Chosen file"
+      },
+      "card": {
+        "title": "Credit card",
+        "note": "Example fields, connected to no payment processor: nothing is sent or saved.",
+        "test": "Test card: 4242 4242 4242 4242, a future date and any CVC."
+      }
+    },
+    "validation": {
+      "name_required": "Enter your name.",
+      "name_too_short": "That name looks too short.",
+      "email_required": "Enter your email.",
+      "email_invalid": "This email does not look valid.",
+      "phone_required": "Enter your WhatsApp number.",
+      "phone_invalid": "Enter a 9-digit Angolan number starting with 9.",
+      "password_required": "Create a password.",
+      "password_too_short": "The password must be at least 10 characters.",
+      "password_too_long": "The password is too long.",
+      "password_needs_letter_number": "Use letters and numbers in the password.",
+      "password_too_common": "This password is too common. Choose another.",
+      "password_contains_email": "The password must not contain your email.",
+      "province_required": "Choose your province.",
+      "proof_required": "Attach the transfer receipt.",
+      "proof_type": "The file must be a JPG or PNG image, or a PDF.",
+      "proof_too_large": "The file is over 5 MB."
+    },
     "success": {
       "title": "Payment confirmed",
-      "body": "The {plan} plan is active. Opening your dashboard…",
+      "card": "We received the payment of {amount}.",
+      "multicaixa": "The payment of {amount} was confirmed.",
+      "bank": "Receipt received. Once we confirm the transfer of {amount}, the plan becomes active.",
+      "bankTitle": "Receipt received",
+      "prototype": "This is a simulation: nothing was charged, no file was uploaded and no account was created.",
+      "register": "Create a real account",
+      "restart": "Start over",
+      "body": "{plan} plan active. Opening your dashboard…",
       "go": "Go to the dashboard"
+    },
+    "gate": {
+      "banner": "Account created. Choose your plan and complete the payment to access the dashboard.",
+      "signedIn": "Signed in as {email}",
+      "logout": "Sign out"
     }
   }
 }

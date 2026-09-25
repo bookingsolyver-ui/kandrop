@@ -538,11 +538,16 @@ A strict SaaS paywall: **no paid period, no dashboard.** Sign-up always ends at 
 - **The rule** (`hasAccess`): a session may use the merchant area only while its store has an active paid period
   (`planOf(storeId) !== null`). A new account has none; an account whose 30 days ran out has none again. Computed from the
   clock on every request, never from a stored flag. The only exception is the `AUTH_DEV_BYPASS` demo user (refused in production).
-- **Enforced twice, server side.** _APIs_: `requireSession(req)` answers **402 `payment_required`** for a valid session
-  without access; the only routes that opt out (`{ allowUnpaid: true }`) are `GET /api/me` and `POST /api/billing/checkout`
-  (start paying); auth routes and public pages (storefront, buyer checkout, webhooks) are outside it. _Pages_: the dashboard
-  layout and every dashboard page call `requirePaidSession(locale)` (redirect to `/login`, or to `/checkout`, keeping the locale);
-  a layout is not re-run on client-side navigation, hence the per-page repeat. The browser's API client sends a 402 to `/checkout` too.
+- **Enforced three times, all server side.** _The proxy_ (`src/proxy.ts`, the Next 16 `middleware.ts`) is the first door: for every
+  `/<locale>/dashboard/**` request (page loads and the background fetches of client-side navigation alike) it redirects a request
+  with no session to `/login` and one with no active subscription to `/checkout` **before anything is rendered** (it marks
+  the redirect with `X-Kandrop-Gate`), so a dashboard page added later cannot forget the rule. _The pages_: the dashboard layout and
+  every dashboard page call `requirePaidSession(locale)`. _The APIs_: `requireSession(req)` answers **402 `payment_required`**
+  for a valid session without access; the only routes that opt out (`{ allowUnpaid: true }`) are `GET /api/me` and
+  `POST /api/billing/checkout` (start paying); auth routes and public pages (storefront, buyer checkout, webhooks) are outside
+  it. The browser's API client sends a 402 to `/checkout` too. The proxy reads the subscription from the same in-memory
+  store as everything else (`hasAccess`); when subscriptions move to a database this check becomes a database read on every
+  dashboard request, so cache it briefly or carry the state in a short-lived signed claim.
 - **Where people land.** `POST /api/auth/register` and `/login` return `subscription: "active" | "pending"`: the register form
   goes to `/checkout`, the login form to `/dashboard` only when active, else `/checkout`.
 - **`/checkout` (no parameters)** is the gate's door: signed out → `/register`; already paid → `/dashboard`; otherwise two steps
