@@ -180,7 +180,11 @@
         "name": "Cartão de crédito ou débito",
         "hint": "Pagamento imediato"
       },
-      "other": "Ou pague com cartão"
+      "other": "Ou pague com cartão",
+      "bank_transfer": {
+        "name": "Transferência bancária",
+        "hint": "Comprovativo por WhatsApp"
+      }
     },
     "fields": {
       "phone": "Número de telemóvel",
@@ -268,6 +272,32 @@
     "redirecting": {
       "title": "Pagamento confirmado",
       "body": "A abrir o seu comprovativo…"
+    },
+    "transfer": {
+      "title": "Dados para a transferência",
+      "intro": "Transfira o valor exato para a conta abaixo. O plano só fica ativo depois de validarmos a transferência.",
+      "amount": "Valor a transferir",
+      "bank": "Banco",
+      "holder": "Titular",
+      "account": "Conta",
+      "iban": "IBAN",
+      "copy": "Copiar",
+      "copied": "Copiado",
+      "example": "Dados de exemplo (modo de teste): não os use para transferir dinheiro.",
+      "warningTitle": "Importante",
+      "warning": "Depois de transferir, envie o comprovativo (PDF ou fotografia) para o WhatsApp do suporte: {phone}. Sem comprovativo não conseguimos validar o pagamento.",
+      "whatsapp": "Enviar comprovativo por WhatsApp",
+      "whatsappIntro": "Olá! Vou enviar o comprovativo da transferência de {amount}.",
+      "whatsappMessage": "Olá! Fiz a transferência de {amount} para ativar o plano {plan}. Referência {reference}. Segue o comprovativo.",
+      "confirm": "Confirmar transferência",
+      "confirming": "A registar…",
+      "pendingTitle": "Transferência registada",
+      "pendingBody": "Envie agora o comprovativo para o WhatsApp do suporte. Assim que validarmos a transferência de {amount}, o seu plano fica ativo e o painel abre.",
+      "waiting": "A aguardar a validação da transferência…",
+      "sandboxNote": "Modo de teste: a validação é simulada e chega sozinha dentro de instantes.",
+      "reference": "Referência",
+      "referenceHint": "Indique-a na mensagem ao enviar o comprovativo.",
+      "back": "Escolher outro método"
     }
   },
   "Catalog": {

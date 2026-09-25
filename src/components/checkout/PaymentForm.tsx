@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import type { ApiErrorCode } from "@/server/http/errors";
 import type { PublicPayment } from "@/server/modules/payments/schema";
+import type { TransferInfo } from "@/server/modules/payments/transfer";
 import {
   cardBrand,
   cardSchema,
@@ -15,8 +16,9 @@ import {
 } from "@/shared/checkout/schemas";
 import { CheckoutField } from "./CheckoutField";
 import { formatCardNumber, formatCvc, formatExpiry, formatPhone } from "./formatInput";
-import { LockIcon } from "./icons";
+import { CheckIcon, LockIcon } from "./icons";
 import { MethodRow, MethodTile } from "./MethodOptions";
+import { TransferPanel } from "./TransferPanel";
 import { useFields, type FieldErrors } from "./useFields";
 import { useIsHttps } from "./useIsHttps";
 
@@ -33,6 +35,7 @@ const BRAND_LABEL = { visa: "Visa", mastercard: "Mastercard", amex: "Amex", unkn
 
 function validate(method: PaymentMethod, values: Record<Field, string>): FieldErrors<Field> {
   const errors: FieldErrors<Field> = {};
+  if (method === "bank_transfer") return errors; // nothing to fill in: the details are shown, not asked
   if (isMobileMethod(method)) {
     const r = phoneSchema.safeParse(values.phone);
     if (!r.success) errors.phone = r.error.issues[0]!.message as FieldErrors<Field>["phone"];
@@ -59,6 +62,11 @@ interface PaymentFormProps {
   notice?: ReactNode;
   /** Inside a dialog: the pay button stays in the flow instead of being pinned to the screen. */
   inline?: boolean;
+  /**
+   * Offer "Bank transfer" as a third method, with these account details. Only for a store paying for
+   * its Kandrop plan (the money goes to Kandrop's account); a shopper's checkout leaves it out.
+   */
+  transfer?: TransferInfo | null;
   onCreated: (payment: PublicPayment) => void;
   onBlocked: (reason: "checkout_expired" | "checkout_paid") => void;
 }
@@ -68,6 +76,7 @@ export function PaymentForm({
   totalLabel,
   notice,
   inline = false,
+  transfer = null,
   onCreated,
   onBlocked,
 }: PaymentFormProps) {
@@ -95,24 +104,30 @@ export function PaymentForm({
     if (pending) return;
     setFormError(null);
 
-    const order: Field[] = isMobileMethod(method)
-      ? ["phone"]
-      : ["cardNumber", "expiry", "cvc", "cardName"];
+    const order: Field[] =
+      method === "bank_transfer"
+        ? []
+        : isMobileMethod(method)
+          ? ["phone"]
+          : ["cardNumber", "expiry", "cvc", "cardName"];
     if (!form.attempt(order)) return;
 
     const v = form.values;
-    const body = isMobileMethod(method)
-      ? { sessionId, method, phone: v.phone }
-      : {
-          sessionId,
-          method,
-          card: { number: v.cardNumber, expiry: v.expiry, cvc: v.cvc, name: v.cardName },
-        };
+    const bank = method === "bank_transfer";
+    const body = bank
+      ? { sessionId }
+      : isMobileMethod(method)
+        ? { sessionId, method, phone: v.phone }
+        : {
+            sessionId,
+            method,
+            card: { number: v.cardNumber, expiry: v.expiry, cvc: v.cvc, name: v.cardName },
+          };
 
     setPending(true);
     let res: Response;
     try {
-      res = await fetch("/api/payments", {
+      res = await fetch(bank ? "/api/payments/transfer" : "/api/payments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
@@ -145,6 +160,7 @@ export function PaymentForm({
   }
 
   const mobile = isMobileMethod(method);
+  const bank = method === "bank_transfer";
   const brand = cardBrand(form.values.cardNumber.replace(/\D/g, ""));
   const select = (next: PaymentMethod) => {
     setMethod(next);
@@ -173,10 +189,16 @@ export function PaymentForm({
           </span>
         )}
 
-        <div className="grid grid-cols-2 gap-3">
+        {/* Two tiles side by side; with bank transfer a third one (full width on a phone). */}
+        <div className={`grid grid-cols-2 gap-3 ${transfer ? "sm:grid-cols-3" : ""}`}>
           {MOBILE_METHODS.map((m) => (
             <MethodTile key={m} method={m} selected={method === m} onSelect={select} />
           ))}
+          {transfer && (
+            <div className="col-span-2 flex sm:col-span-1">
+              <MethodTile method="bank_transfer" selected={bank} onSelect={select} />
+            </div>
+          )}
         </div>
 
         {mobile && (
@@ -200,9 +222,17 @@ export function PaymentForm({
           </div>
         )}
 
+        {bank && transfer && (
+          <TransferPanel
+            info={transfer}
+            amountLabel={totalLabel}
+            whatsappText={t("transfer.whatsappIntro", { amount: totalLabel })}
+          />
+        )}
+
         <p className="mt-6 mb-3 text-[13px] text-ink-muted">{t("method.other")}</p>
-        <MethodRow method="card" selected={!mobile} onSelect={select}>
-          {!mobile && (
+        <MethodRow method="card" selected={method === "card"} onSelect={select}>
+          {method === "card" && (
             <>
               <CheckoutField
                 {...form.bind("cardNumber", formatCardNumber)}
@@ -267,8 +297,14 @@ export function PaymentForm({
           aria-busy={pending}
           className={`flex h-14 w-full items-center justify-center gap-2.5 rounded-md bg-action text-[1.0625rem] font-semibold tracking-[0.005em] text-on-action tabular-nums transition-opacity hover:opacity-90 disabled:cursor-progress disabled:opacity-70 ${inline ? "" : "mx-auto max-w-md lg:max-w-none"}`}
         >
-          <LockIcon size={18} />
-          {pending ? t("paying") : t("pay", { amount: totalLabel })}
+          {bank ? <CheckIcon size={18} /> : <LockIcon size={18} />}
+          {bank
+            ? pending
+              ? t("transfer.confirming")
+              : t("transfer.confirm")
+            : pending
+              ? t("paying")
+              : t("pay", { amount: totalLabel })}
         </button>
       </div>
     </form>

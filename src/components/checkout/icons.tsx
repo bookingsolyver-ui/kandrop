@@ -39,3 +39,16 @@ export const CardIcon = ({ size = 22 }: { size?: number }) => (
     <path d="M2.5 9h17M6 13.5h3" />
   </Icon>
 );
+
+/** A bank building: bank transfer. */
+export const BankIcon = ({ size = 22 }: { size?: number }) => (
+  <Icon size={size}>
+    <path d="M3 8.5 11 4l8 4.5M4.5 9v7M8.5 9v7M13.5 9v7M17.5 9v7M3 18.5h16" />
+  </Icon>
+);
+
+export const CheckIcon = ({ size = 22 }: { size?: number }) => (
+  <Icon size={size}>
+    <path d="m4.5 11.5 4.25 4.25L17.5 6.5" />
+  </Icon>
+);

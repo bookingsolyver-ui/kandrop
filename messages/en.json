@@ -180,7 +180,11 @@
         "name": "Credit or debit card",
         "hint": "Instant payment"
       },
-      "other": "Or pay by card"
+      "other": "Or pay by card",
+      "bank_transfer": {
+        "name": "Bank transfer",
+        "hint": "Proof by WhatsApp"
+      }
     },
     "fields": {
       "phone": "Mobile number",
@@ -268,6 +272,32 @@
     "redirecting": {
       "title": "Payment confirmed",
       "body": "Opening your receipt…"
+    },
+    "transfer": {
+      "title": "Transfer details",
+      "intro": "Transfer the exact amount to the account below. The plan only becomes active after we validate the transfer.",
+      "amount": "Amount to transfer",
+      "bank": "Bank",
+      "holder": "Account holder",
+      "account": "Account",
+      "iban": "IBAN",
+      "copy": "Copy",
+      "copied": "Copied",
+      "example": "Example details (test mode): do not use them to send money.",
+      "warningTitle": "Important",
+      "warning": "After transferring, send the proof (PDF or photo) to the support WhatsApp: {phone}. Without proof we cannot validate the payment.",
+      "whatsapp": "Send proof on WhatsApp",
+      "whatsappIntro": "Hello! I am going to send the proof of the transfer of {amount}.",
+      "whatsappMessage": "Hello! I transferred {amount} to activate the {plan} plan. Reference {reference}. The proof is attached.",
+      "confirm": "Confirm transfer",
+      "confirming": "Registering…",
+      "pendingTitle": "Transfer registered",
+      "pendingBody": "Now send the proof to the support WhatsApp. As soon as we validate the transfer of {amount}, your plan is activated and the dashboard opens.",
+      "waiting": "Waiting for the transfer to be validated…",
+      "sandboxNote": "Test mode: the validation is simulated and arrives by itself in a moment.",
+      "reference": "Reference",
+      "referenceHint": "Include it in the message when you send the proof.",
+      "back": "Choose another method"
     }
   },
   "Catalog": {

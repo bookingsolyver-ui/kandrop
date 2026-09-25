@@ -554,6 +554,17 @@ A strict SaaS paywall: **no paid period, no dashboard.** Sign-up always ends at 
   in client state (**Plan**, then **Payment**). The payment is the _real_ sandbox one, shared with the billing dialog
   (`billing/PlanPayment.tsx`: Multicaixa Express, Unitel Money, card): confirming it activates the plan in `markPaid`, and
   the page then opens the dashboard by itself. `/checkout?session=…` (buyer checkout) and `/checkout?demo` are unchanged.
+- **Bank transfer** is a third method next to Multicaixa Express and Unitel Money (`PaymentForm`, prop `transfer`), **only for
+  paying a Kandrop plan** (a shopper's purchase from a merchant is paid to the merchant, so the tile is left out there and
+  `POST /api/payments/transfer` answers 404 for such sessions). It shows the account, the amount and a notice to send the
+  proof (PDF or photo) to the support WhatsApp; the main button becomes "Confirm transfer". **Pressing it activates
+  nothing**: it registers a `pending` payment (`bank_transfer`, reference `KD-…`, idempotent per checkout session) and the
+  payer stays behind the gate. The payment succeeds, the receipt is issued and the plan switches on only when the transfer is
+  _validated_: by an administrator, `POST /api/admin/transfers/:reference/confirm` with `Authorization: Bearer <ADMIN_API_TOKEN>`
+  (404 if the token is not configured, 5 wrong tries lock the caller out), or, in sandbox mode only, by a simulation
+  after ~20 s. Details come from `BANK_TRANSFER_*` / `SUPPORT_WHATSAPP` (`payments/transfer.ts`): outside sandbox mode
+  the method is **not offered** unless all are set and valid; in sandbox mode a labelled EXAMPLE fills the gap. Coming back to the payment step reuses the
+  open checkout session (`billing/service.ts#startUpgrade`), so a waiting transfer is found again and cannot be requested twice.
 - The earlier three-step prototype (details form, EUR/USD card, bank transfer with receipt upload) was removed: nothing
   could process those payments and the account now exists before this page. It is in git history (`020c9f9`).
 
@@ -562,7 +573,7 @@ A strict SaaS paywall: **no paid period, no dashboard.** Sign-up always ends at 
 - **Nothing is charged for real**: payments are the sandbox simulator (see `DEPLOY.md`), and accounts live in memory.
 - No renewal reminders or grace period: when the 30 days end the next request is a 402 and the next page a redirect to `/checkout`.
   A public store of a lapsed merchant still sells (the storefront does not check the subscription).
-- Bank transfer and EUR/USD are not offered: they need manual verification / a real processor.
+- EUR/USD are not offered (they need a real processor). Bank transfer is manual: someone at Kandrop must confirm each one (see above); there is no admin screen for it yet, only the endpoint, and no automatic reconciliation with the bank statement.
 - If sign-up moves to Supabase Auth, keep `hasAccess` as the single rule and read the subscription from the database.
 
 ## Status

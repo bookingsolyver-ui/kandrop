@@ -1,8 +1,10 @@
 import { getEnv } from "@/server/config/env";
 import type { Session } from "@/server/auth/types";
 import { ApiError } from "@/server/http/errors";
-import { buildCheckout } from "@/server/modules/checkout/service";
+import { checkoutRepository } from "@/server/modules/checkout/repository";
+import { buildCheckout, statusOf } from "@/server/modules/checkout/service";
 import { getPayment } from "@/server/modules/payments/service";
+import { transferInfo } from "@/server/modules/payments/transfer";
 import { paymentRepository } from "@/server/modules/payments/repository";
 import {
   PLANS,
@@ -16,7 +18,13 @@ import { receiptRepository } from "@/server/modules/receipts/repository";
 import { upgradeSchema, type UpgradeInput } from "@/shared/billing/schemas";
 import { planOf } from "./plan";
 import { billingRepository } from "./repository";
-import type { BillingOverview, PublicInvoice, PublicPlan, UpgradeSession } from "./schema";
+import type {
+  BillingOverview,
+  ChargeRecord,
+  PublicInvoice,
+  PublicPlan,
+  UpgradeSession,
+} from "./schema";
 
 const KZ = 100;
 /** Sessions that carry a plan payment belong to the platform, never to the store paying. */
@@ -91,6 +99,21 @@ export async function startUpgrade(auth: Session, input: UpgradeInput): Promise<
   if (current && planRank(plan) < planRank(current)) throw new ApiError("plan_not_upgradable");
 
   const amount = PLAN_PRICES[plan] * KZ;
+
+  // Coming back to the payment step (a reload, or after leaving with a bank transfer still waiting)
+  // picks up the checkout that is still open instead of piling up new ones, so a pending transfer
+  // is found again and cannot be requested twice. Needs enough time left to pay.
+  const now = Date.now();
+  const charges: ChargeRecord[] = billingRepository.charges(auth.storeId);
+  const reusable = charges
+    .filter((charge) => charge.plan === plan && !charge.activated)
+    .flatMap((charge) => {
+      const open = checkoutRepository.get(charge.sessionId);
+      return open && statusOf(open) === "open" && open.expiresAt - now > 10 * 60_000 ? [open] : [];
+    })
+    .sort((x, y) => y.createdAt - x.createdAt)[0];
+  if (reusable) return { sessionId: reusable.id, plan, amount, transfer: transferInfo() };
+
   const session = buildCheckout({
     storeId: PLATFORM_STORE_ID,
     storeName: "Kandrop",
@@ -108,5 +131,5 @@ export async function startUpgrade(auth: Session, input: UpgradeInput): Promise<
     createdAt: Date.now(),
     activated: false,
   });
-  return { sessionId: session.id, plan, amount };
+  return { sessionId: session.id, plan, amount, transfer: transferInfo() };
 }

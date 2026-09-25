@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import type { PaymentMethod } from "@/shared/checkout/schemas";
-import { CardIcon, PhoneIcon } from "./icons";
+import { BankIcon, CardIcon, PhoneIcon } from "./icons";
 
 interface OptionProps {
   method: PaymentMethod;
@@ -71,7 +71,7 @@ export function MethodTile(props: OptionProps) {
       >
         <span className="flex items-start justify-between">
           <span className="text-ink-2">
-            <PhoneIcon />
+            {method === "bank_transfer" ? <BankIcon /> : <PhoneIcon />}
           </span>
           <Mark selected={selected} />
         </span>

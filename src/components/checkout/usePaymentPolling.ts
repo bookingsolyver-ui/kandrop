@@ -14,7 +14,9 @@ const POLL_MS = 1500;
  */
 export function usePaymentPolling(
   paymentId: string | null,
-  onSettled: (payment: PublicPayment) => void
+  onSettled: (payment: PublicPayment) => void,
+  /** A bank transfer is validated by a person, not in seconds: look less often. */
+  intervalMs = POLL_MS
 ) {
   useEffect(() => {
     if (!paymentId) return;
@@ -39,19 +41,19 @@ export function usePaymentPolling(
       } finally {
         busy = false;
       }
-      if (!stopped) timer = setTimeout(poll, POLL_MS);
+      if (!stopped) timer = setTimeout(poll, intervalMs);
     };
 
     // Payers switch to their bank app and back. Phones freeze timers in a background tab, so
     // look again the moment this one is visible instead of waiting for the next tick.
     const onVisible = () => document.visibilityState === "visible" && void poll();
     document.addEventListener("visibilitychange", onVisible);
-    timer = setTimeout(poll, POLL_MS);
+    timer = setTimeout(poll, intervalMs);
 
     return () => {
       stopped = true;
       clearTimeout(timer);
       document.removeEventListener("visibilitychange", onVisible);
     };
-  }, [paymentId, onSettled]);
+  }, [paymentId, onSettled, intervalMs]);
 }

@@ -9,10 +9,12 @@ import { statusOf } from "@/server/modules/checkout/service";
 import {
   cardBrand,
   paymentRequestSchema,
+  transferRequestSchema,
   type PaymentRequest,
   type PaymentRequestInput,
 } from "@/shared/checkout/schemas";
 import { PROVIDER_TIMEOUT_MS, requestPayment, type MulticaixaEvent } from "./multicaixa";
+import { transferInfo } from "./transfer";
 import { paymentRepository } from "./repository";
 import type { PaymentRecord, PublicPayment } from "./schema";
 import { simulate } from "./simulator";
@@ -191,5 +193,64 @@ export function cancelPayment(id: string): PublicPayment | null {
     payment.failureCode = "cancelled";
     payment.settle = undefined;
   }
+  return toPublic(payment);
+}
+
+/** In sandbox mode a "bank" validates the transfer by itself after this long (a person would, for real). */
+const SANDBOX_TRANSFER_CONFIRM_MS = 20_000;
+
+/**
+ * "Confirm transfer": registers the request and leaves it `pending`. **Nothing is paid and nothing is
+ * activated**: pressing a button cannot buy a plan. The payment turns `success` only when the
+ * transfer is validated — `confirmBankTransfer` (an administrator) or, in sandbox mode, a simulated
+ * check after a short delay. Only for a store paying for its Kandrop plan: a shopper's purchase from a
+ * merchant is paid to the merchant, not to Kandrop's account.
+ */
+export function createBankTransfer(input: unknown, clientKey: string) {
+  const { sessionId } = transferRequestSchema.parse(input);
+  const session = checkoutRepository.get(sessionId);
+  if (!session || !session.subscription) throw new ApiError("not_found");
+  const state = statusOf(session);
+  if (state === "paid") throw new ApiError("checkout_paid");
+  if (state === "expired") throw new ApiError("checkout_expired");
+  const info = transferInfo();
+  if (!info) throw new ApiError("payments_unavailable");
+
+  // Idempotency: asking again while a payment is pending returns that same one.
+  const latest = paymentRepository.bySession(session.id)[0];
+  if (latest && settle(latest).status === "pending") return toPublic(latest);
+  if (latest?.status === "success") throw new ApiError("checkout_paid");
+
+  const key = `transfer:${clientKey}:${session.id}`;
+  attempts.assertAllowed(key);
+  attempts.recordFailure(key);
+
+  const sandbox = getEnv().PAYMENTS_MODE === "sandbox";
+  const payment: PaymentRecord = {
+    id: `pay_${randomBytes(12).toString("base64url")}`,
+    reference: reference(),
+    sessionId: session.id,
+    method: "bank_transfer",
+    status: "pending",
+    amount: session.total,
+    currency: session.currency,
+    target: `IBAN •••• ${info.iban.slice(-4)}`,
+    createdAt: Date.now(),
+    settle: sandbox
+      ? { at: Date.now() + SANDBOX_TRANSFER_CONFIRM_MS, status: "success" }
+      : undefined,
+  };
+  return toPublic(paymentRepository.save(payment));
+}
+
+/**
+ * An administrator confirms the money arrived (see `POST /api/admin/transfers/:reference/confirm`):
+ * the payment succeeds, the receipt is issued and the plan is switched on, exactly like any other
+ * confirmed payment. Idempotent; `null` when there is no such transfer.
+ */
+export function confirmBankTransfer(transferReference: string): PublicPayment | null {
+  const payment = paymentRepository.byReference(transferReference);
+  if (!payment || payment.method !== "bank_transfer") return null;
+  if (settle(payment).status === "pending") markPaid(payment);
   return toPublic(payment);
 }

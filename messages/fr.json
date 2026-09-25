@@ -180,7 +180,11 @@
         "name": "Carte de crédit ou de débit",
         "hint": "Paiement immédiat"
       },
-      "other": "Ou payez par carte"
+      "other": "Ou payez par carte",
+      "bank_transfer": {
+        "name": "Virement bancaire",
+        "hint": "Justificatif par WhatsApp"
+      }
     },
     "fields": {
       "phone": "Numéro de téléphone",
@@ -268,6 +272,32 @@
     "redirecting": {
       "title": "Paiement confirmé",
       "body": "Ouverture de votre reçu…"
+    },
+    "transfer": {
+      "title": "Coordonnées du virement",
+      "intro": "Virez le montant exact sur le compte ci-dessous. L’offre ne devient active qu’après validation du virement.",
+      "amount": "Montant à virer",
+      "bank": "Banque",
+      "holder": "Titulaire",
+      "account": "Compte",
+      "iban": "IBAN",
+      "copy": "Copier",
+      "copied": "Copié",
+      "example": "Coordonnées d’exemple (mode test) : ne les utilisez pas pour envoyer de l’argent.",
+      "warningTitle": "Important",
+      "warning": "Après le virement, envoyez le justificatif (PDF ou photo) au WhatsApp du support : {phone}. Sans justificatif, nous ne pouvons pas valider le paiement.",
+      "whatsapp": "Envoyer le justificatif sur WhatsApp",
+      "whatsappIntro": "Bonjour ! Je vais envoyer le justificatif du virement de {amount}.",
+      "whatsappMessage": "Bonjour ! J’ai viré {amount} pour activer l’offre {plan}. Référence {reference}. Le justificatif est joint.",
+      "confirm": "Confirmer le virement",
+      "confirming": "Enregistrement…",
+      "pendingTitle": "Virement enregistré",
+      "pendingBody": "Envoyez maintenant le justificatif au WhatsApp du support. Dès que nous aurons validé le virement de {amount}, votre offre est activée et le tableau de bord s’ouvre.",
+      "waiting": "En attente de la validation du virement…",
+      "sandboxNote": "Mode test : la validation est simulée et arrive toute seule dans un instant.",
+      "reference": "Référence",
+      "referenceHint": "Indiquez-la dans le message en envoyant le justificatif.",
+      "back": "Choisir un autre moyen"
     }
   },
   "Catalog": {

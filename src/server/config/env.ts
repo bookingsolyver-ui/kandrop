@@ -28,6 +28,19 @@ const schema = z.object({
     z.string().optional()
   ),
   SUPABASE_SERVICE_ROLE_KEY: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
+  // Bank transfer as a way to pay a Kandrop plan: WHERE the money goes and who to send the proof to.
+  // All four (bank, account, IBAN, WhatsApp) must be set to offer it in production; in sandbox mode a
+  // clearly-labelled EXAMPLE is used when they are missing. Never invent bank details: a shopper
+  // would send real money to them. Validated in `payments/transfer.ts`, not here, so a typo does not
+  // take the whole app down.
+  BANK_TRANSFER_BANK: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
+  BANK_TRANSFER_HOLDER: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
+  BANK_TRANSFER_ACCOUNT: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
+  BANK_TRANSFER_IBAN: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
+  SUPPORT_WHATSAPP: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
+  // Bearer token for `POST /api/admin/transfers/:reference/confirm` (a person at Kandrop confirming
+  // a transfer arrived). Unset = that endpoint does not exist.
+  ADMIN_API_TOKEN: z.preprocess((v) => (v === "" ? undefined : v), z.string().min(32).optional()),
   // `sandbox` simulates every payment. `live` needs a real provider integration (none yet).
   PAYMENTS_MODE: z.enum(["sandbox", "live"]).default("sandbox"),
 });

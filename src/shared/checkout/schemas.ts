@@ -15,7 +15,18 @@ export type CheckoutValidationCode =
   | "card_cvc_invalid"
   | "card_name_required";
 
-export const PAYMENT_METHODS = ["multicaixa_express", "unitel_money", "card"] as const;
+/**
+ * `bank_transfer` is different in kind: nothing is processed automatically. It is created only by
+ * `POST /api/payments/transfer` (never by `paymentRequestSchema`), only for a store paying for its
+ * Kandrop plan, and it stays `pending` until the transfer is validated (by hand, or simulated in
+ * sandbox mode).
+ */
+export const PAYMENT_METHODS = [
+  "multicaixa_express",
+  "unitel_money",
+  "card",
+  "bank_transfer",
+] as const;
 export type PaymentMethod = (typeof PAYMENT_METHODS)[number];
 export const MOBILE_METHODS = ["multicaixa_express", "unitel_money"] as const;
 export type MobileMethod = (typeof MOBILE_METHODS)[number];
@@ -118,6 +129,9 @@ export const paymentRequestSchema = z.discriminatedUnion("method", [
   z.object({ sessionId, method: z.literal("unitel_money"), phone: phoneSchema }),
   z.object({ sessionId, method: z.literal("card"), card: cardSchema }),
 ]);
+
+/** The body of `POST /api/payments/transfer`. */
+export const transferRequestSchema = z.object({ sessionId });
 
 export type PaymentRequest = z.output<typeof paymentRequestSchema>;
 export type PaymentRequestInput = z.input<typeof paymentRequestSchema>;

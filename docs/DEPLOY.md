@@ -30,17 +30,19 @@ they are done. None of them is a build problem; they are unfinished product.
 All are read in `src/server/config/env.ts` (validated on the first request, not at build, so
 `next build` needs none). Documented, with comments, in `.env.example`.
 
-| Variable                                                     | Production                         | Purpose                                                                       |
-| ------------------------------------------------------------ | ---------------------------------- | ----------------------------------------------------------------------------- |
-| `SESSION_SECRET`                                             | **required** (≥ 32 chars)          | Signs session JWTs. Without it the app refuses requests in production.        |
-| `APP_URL`                                                    | recommended                        | Public base URL (no trailing slash). Webhook callback and server-built links. |
-| `PAYMENTS_MODE`                                              | `sandbox` (only option that works) | `live` is refused until a provider exists.                                    |
-| `MULTICAIXA_WEBHOOK_SECRET`                                  | recommended (≥ 32 chars)           | Signs the webhook. Empty = random per process (one instance only).            |
-| `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` | not used yet                       | Supabase project URL and public anon key (`src/lib/supabase`).                |
-| `SUPABASE_SERVICE_ROLE_KEY`                                  | not used yet                       | **Secret**, bypasses RLS, server only.                                        |
-| `PORT`                                                       | optional                           | Listening port (default 3000).                                                |
-| `AUTH_DEV_BYPASS`                                            | must be `false`                    | The app throws at start-up in production if true.                             |
-| `KANDROP_DEMO_EVENTS`                                        | `false`                            | `true` seeds demo data into every store; a warning is logged.                 |
+| Variable                                                         | Production                         | Purpose                                                                                                          |
+| ---------------------------------------------------------------- | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `SESSION_SECRET`                                                 | **required** (≥ 32 chars)          | Signs session JWTs. Without it the app refuses requests in production.                                           |
+| `APP_URL`                                                        | recommended                        | Public base URL (no trailing slash). Webhook callback and server-built links.                                    |
+| `PAYMENTS_MODE`                                                  | `sandbox` (only option that works) | `live` is refused until a provider exists.                                                                       |
+| `MULTICAIXA_WEBHOOK_SECRET`                                      | recommended (≥ 32 chars)           | Signs the webhook. Empty = random per process (one instance only).                                               |
+| `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY`     | not used yet                       | Supabase project URL and public anon key (`src/lib/supabase`).                                                   |
+| `SUPABASE_SERVICE_ROLE_KEY`                                      | not used yet                       | **Secret**, bypasses RLS, server only.                                                                           |
+| `BANK_TRANSFER_BANK` / `_ACCOUNT` / `_IBAN` / `SUPPORT_WHATSAPP` | to offer bank transfer             | Account and support number shown for paying a plan by transfer. Never invent them: payers would send real money. |
+| `ADMIN_API_TOKEN`                                                | to confirm transfers               | Bearer token (≥ 32 chars) for `POST /api/admin/transfers/:reference/confirm`.                                    |
+| `PORT`                                                           | optional                           | Listening port (default 3000).                                                                                   |
+| `AUTH_DEV_BYPASS`                                                | must be `false`                    | The app throws at start-up in production if true.                                                                |
+| `KANDROP_DEMO_EVENTS`                                            | `false`                            | `true` seeds demo data into every store; a warning is logged.                                                    |
 
 There is no separate "API URL": the API is the same app under `/api`. The only outbound callback
 is the sandbox Multicaixa webhook (`APP_URL` + `/api/webhooks/multicaixa`).

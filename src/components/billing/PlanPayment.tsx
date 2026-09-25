@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { SandboxBanner } from "@/components/checkout/CheckoutChrome";
 import { PaymentForm } from "@/components/checkout/PaymentForm";
 import { PendingPanel } from "@/components/checkout/StatePanels";
+import { TransferPendingPanel } from "@/components/checkout/TransferPendingPanel";
 import { usePaymentPolling } from "@/components/checkout/usePaymentPolling";
 import { useFormatters } from "@/components/dashboard/useFormatters";
 import type { ApiErrorCode } from "@/server/http/errors";
@@ -83,7 +84,13 @@ export function PlanPayment({
     [checkout, onPaid]
   );
 
-  usePaymentPolling(phase.kind === "pending" ? phase.payment.id : null, apply);
+  // A transfer is checked less often (5 s): a person validates it, not a phone.
+  const waitingOnTransfer = phase.kind === "pending" && phase.payment.method === "bank_transfer";
+  usePaymentPolling(
+    phase.kind === "pending" ? phase.payment.id : null,
+    apply,
+    waitingOnTransfer ? 5000 : undefined
+  );
 
   async function cancel() {
     if (phase.kind !== "pending") return;
@@ -125,6 +132,20 @@ export function PlanPayment({
   }
 
   const { session } = phase;
+  if (phase.kind === "pending" && phase.payment.method === "bank_transfer" && session.transfer) {
+    return (
+      <div className="mt-6">
+        <TransferPendingPanel
+          payment={phase.payment}
+          info={session.transfer}
+          amountLabel={f.money(session.amount)}
+          planName={names(plan)}
+          onCancel={cancel}
+          cancelling={cancelling}
+        />
+      </div>
+    );
+  }
   if (phase.kind === "pending") {
     return (
       <div className="mt-6">
@@ -163,6 +184,7 @@ export function PlanPayment({
       <div className="mt-6">
         <PaymentForm
           inline
+          transfer={session.transfer}
           sessionId={session.sessionId}
           totalLabel={f.money(session.amount)}
           notice={phase.notice}

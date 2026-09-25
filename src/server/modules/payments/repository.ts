@@ -10,6 +10,8 @@ export const paymentRepository = {
     payments.set(payment.id, payment);
     return payment;
   },
+  byReference: (reference: string) =>
+    [...payments.values()].find((p) => p.reference === reference) ?? null,
   byProviderRef: (ref: string) => [...payments.values()].find((p) => p.providerRef === ref) ?? null,
   /** Newest first. */
   bySession(sessionId: string) {
