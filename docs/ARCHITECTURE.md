@@ -589,7 +589,7 @@ and the affiliate rate are read from `shared/payouts` and `shared/affiliates`, n
 - **The ticket form is a preview**: it validates and shows a toast, but nothing is sent, and the page and the toast say so (a
   "sent!" would make a merchant wait for a reply that never comes). Needs a `tickets` table, an inbox for the team and an e-mail/WhatsApp notification.
 - **Confirm the commitments in the copy**: "answers in minutes", "answers within 24 hours" and "Mon–Sat, 08h–20h; closed Sundays and
-  national holidays" are the owner's figures, not measured. The default e-mail is on the `ikaruspay.com` domain, not Kandrop's.
+  national holidays" are the owner's figures, not measured. The default inbox is `suporte@kandrop.com`: the mailbox must exist before launch.
 - Withdrawal times: real ones depend on the bank and are not defined; the FAQ deliberately gives none. A merchant who has not paid cannot open this page (the gate), so an unpaid account has no support screen: only the WhatsApp of the bank-transfer step.
 
 ## Status

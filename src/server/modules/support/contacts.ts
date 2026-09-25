@@ -11,9 +11,9 @@ export interface SupportContacts {
  * The contact details on the Support page. They are the ones the product owner gave; each can be
  * overridden from the environment (`SUPPORT_WHATSAPP`, shared with the bank-transfer proofs, and
  * `SUPPORT_EMAIL`), so that changing them never needs a code change.
- * NOTE: the default e-mail is on the `ikaruspay.com` domain, not Kandrop's: confirm it is intended.
+ * The default inbox is `suporte@kandrop.com`: make sure that mailbox exists before launch.
  */
-const DEFAULTS: SupportContacts = { whatsapp: "973966207", email: "suporte@ikaruspay.com" };
+const DEFAULTS: SupportContacts = { whatsapp: "973966207", email: "suporte@kandrop.com" };
 
 export function supportContacts(): SupportContacts {
   const env = getEnv();
