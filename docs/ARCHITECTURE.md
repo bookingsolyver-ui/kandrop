@@ -576,6 +576,22 @@ A strict SaaS paywall: **no paid period, no dashboard.** Sign-up always ends at 
 - EUR/USD are not offered (they need a real processor). Bank transfer is manual: someone at Kandrop must confirm each one (see above); there is no admin screen for it yet, only the endpoint, and no automatic reconciliation with the bank statement.
 - If sign-up moves to Supabase Auth, keep `hasAccess` as the single rule and read the subscription from the database.
 
+## Support Center (`/[locale]/dashboard/support`)
+
+Three contact cards side by side (WhatsApp with a `wa.me` chat link, e-mail with a `mailto:`, opening hours), a quiet notice
+with three support/verification rules, a five-question FAQ accordion (withdrawals, their timing, cancelling the subscription,
+cancelling an order, affiliate commissions) and a ticket form. The FAQ states only what the product does (the payout minimum
+and the affiliate rate are read from `shared/payouts` and `shared/affiliates`, not typed into the copy). Contacts come from
+`server/modules/support/contacts.ts`, overridable by `SUPPORT_WHATSAPP` / `SUPPORT_EMAIL`. Behind the payment gate like the rest of the dashboard.
+
+**Before this becomes real**
+
+- **The ticket form is a preview**: it validates and shows a toast, but nothing is sent, and the page and the toast say so (a
+  "sent!" would make a merchant wait for a reply that never comes). Needs a `tickets` table, an inbox for the team and an e-mail/WhatsApp notification.
+- **Confirm the commitments in the copy**: "answers in minutes", "answers within 24 hours" and "Mon–Sat, 08h–20h; closed Sundays and
+  national holidays" are the owner's figures, not measured. The default e-mail is on the `ikaruspay.com` domain, not Kandrop's.
+- Withdrawal times: real ones depend on the bank and are not defined; the FAQ deliberately gives none. A merchant who has not paid cannot open this page (the gate), so an unpaid account has no support screen: only the WhatsApp of the bank-transfer step.
+
 ## Status
 
 Stubbed and to be implemented: persistence (users are in-memory),

@@ -38,6 +38,9 @@ const schema = z.object({
   BANK_TRANSFER_ACCOUNT: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
   BANK_TRANSFER_IBAN: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
   SUPPORT_WHATSAPP: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
+  // The support inbox shown on the Support page (the WhatsApp number is `SUPPORT_WHATSAPP`, shared with
+  // the bank-transfer proofs). Both fall back to the values in `support/contacts.ts`.
+  SUPPORT_EMAIL: z.preprocess((v) => (v === "" ? undefined : v), z.email().optional()),
   // Bearer token for `POST /api/admin/transfers/:reference/confirm` (a person at Kandrop confirming
   // a transfer arrived). Unset = that endpoint does not exist.
   ADMIN_API_TOKEN: z.preprocess((v) => (v === "" ? undefined : v), z.string().min(32).optional()),

@@ -794,8 +794,7 @@
     "features": {
       "catalog": "Products from selected B2B suppliers, with cost price and stock, ready to sell in your store.",
       "landingPages": "Conversion-focused sales pages built from your products.",
-      "customers": "All your customers in one place, with the history of their orders.",
-      "support": "Talk to the Kandrop team whenever you need help."
+      "customers": "All your customers in one place, with the history of their orders."
     }
   },
   "Marketing": {
@@ -1582,6 +1581,87 @@
       "banner": "Account created. Choose your plan and complete the payment to access the dashboard.",
       "signedIn": "Signed in as {email}",
       "logout": "Sign out"
+    }
+  },
+  "Support": {
+    "title": "Support Center",
+    "subtitle": "We are here to help. Choose the channel that suits you best.",
+    "channels": {
+      "label": "Contact channels",
+      "whatsapp": {
+        "name": "WhatsApp",
+        "speed": "Answers in minutes",
+        "cta": "Start a chat",
+        "ctaLabel": "Start a WhatsApp chat with {number}",
+        "message": "Hello! I need help with my Kandrop account."
+      },
+      "email": {
+        "name": "E-mail",
+        "speed": "Answers within 24 hours",
+        "cta": "Send an e-mail",
+        "ctaLabel": "Send an e-mail to {email}",
+        "subject": "Kandrop support request"
+      },
+      "hours": {
+        "name": "Opening hours",
+        "days": "Monday to Saturday",
+        "time": "8 am to 8 pm",
+        "holidays": "Sundays and national holidays: closed.",
+        "zone": "Luanda time"
+      }
+    },
+    "info": {
+      "title": "Important information",
+      "items": [
+        "Always give the e-mail of your account and, if it is about a payment, the reference (KD-…). It helps us answer faster.",
+        "We never ask for your password, PIN or confirmation codes. Do not share them with anyone, including us.",
+        "For your security we may ask you to confirm your identity before changing account details, bank details or withdrawals."
+      ]
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "subtitle": "The quickest answers to the most common questions.",
+      "q1": {
+        "q": "How do I make a withdrawal?",
+        "a": "In Wallet, press “Request a withdrawal”, choose the amount and confirm. You need your bank details (Angolan IBAN) saved in Settings › Bank details, and the minimum is {min}. Only the store owner can request withdrawals."
+      },
+      "q2": {
+        "q": "How long does a withdrawal take?",
+        "a": "The request stays “Pending” in the Wallet history until it is completed, and only one withdrawal can be in progress at a time. How long the money takes to reach your account depends on the destination bank; if it takes longer than expected, contact us with the withdrawal reference."
+      },
+      "q3": {
+        "q": "How do I cancel my subscription?",
+        "a": "The subscription is monthly (30 days), with no lock-in and no automatic renewal: if you do not renew it, access to the dashboard ends when the paid period ends. You can see the end date and renew in Billing and plans (the button on the plan card in the side menu leads there)."
+      },
+      "q4": {
+        "q": "How do I cancel an order?",
+        "a": "Open the order in Orders and change its status to “Cancelled”. This is possible while it is “Pending” or “Processing”; once “Shipped” it can no longer be cancelled from the dashboard, and you should contact us."
+      },
+      "q5": {
+        "q": "How do affiliate commissions work?",
+        "a": "You earn {rate} recurring commission for every active merchant (who subscribes and pays for a plan) that you bring through your exclusive link. On the Affiliates page you see the clicks, sign-ups, referrals and available commission."
+      }
+    },
+    "ticket": {
+      "title": "Open a support ticket",
+      "intro": "Describe what you need. The more detail, the faster we can help.",
+      "subject": "Subject",
+      "subjectPlaceholder": "E.g.: Withdrawal pending",
+      "message": "Message",
+      "messageHint": "Say what happened and, if you know it, the payment reference or the order number.",
+      "submit": "Send Ticket",
+      "preview": "Sending tickets is not connected to the team yet. For an answer now, use WhatsApp or the e-mail above.",
+      "toast": {
+        "title": "Ticket prepared",
+        "body": "It is not sent to the team yet (preview). For an answer now, use WhatsApp or the e-mail above.",
+        "close": "Dismiss"
+      }
+    },
+    "validation": {
+      "subject_required": "Enter the subject.",
+      "subject_too_short": "The subject looks too short.",
+      "message_required": "Write your message.",
+      "message_too_short": "Please describe what you need (at least 10 characters)."
     }
   }
 }

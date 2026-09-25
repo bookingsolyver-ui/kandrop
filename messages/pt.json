@@ -794,8 +794,7 @@
     "features": {
       "catalog": "Produtos de fornecedores B2B selecionados, com preço de custo e stock, prontos a vender na sua loja.",
       "landingPages": "Páginas de venda focadas na conversão, criadas a partir dos seus produtos.",
-      "customers": "Todos os seus clientes num só lugar, com o histórico das respetivas encomendas.",
-      "support": "Fale com a equipa Kandrop sempre que precisar de ajuda."
+      "customers": "Todos os seus clientes num só lugar, com o histórico das respetivas encomendas."
     }
   },
   "Marketing": {
@@ -1582,6 +1581,87 @@
       "banner": "Conta criada com sucesso. Escolha o seu plano e conclua o pagamento para aceder ao painel.",
       "signedIn": "Sessão iniciada como {email}",
       "logout": "Terminar sessão"
+    }
+  },
+  "Support": {
+    "title": "Centro de Suporte",
+    "subtitle": "Estamos aqui para ajudar. Escolha o canal que lhe for mais conveniente.",
+    "channels": {
+      "label": "Canais de contacto",
+      "whatsapp": {
+        "name": "WhatsApp",
+        "speed": "Resposta em minutos",
+        "cta": "Iniciar conversa",
+        "ctaLabel": "Iniciar conversa no WhatsApp com {number}",
+        "message": "Olá! Preciso de ajuda com a minha conta Kandrop."
+      },
+      "email": {
+        "name": "E-mail",
+        "speed": "Resposta até 24 horas",
+        "cta": "Enviar e-mail",
+        "ctaLabel": "Enviar e-mail para {email}",
+        "subject": "Pedido de suporte Kandrop"
+      },
+      "hours": {
+        "name": "Horário de atendimento",
+        "days": "Segunda a sábado",
+        "time": "08h às 20h",
+        "holidays": "Domingos e feriados nacionais: encerrado.",
+        "zone": "Hora de Luanda"
+      }
+    },
+    "info": {
+      "title": "Informações importantes",
+      "items": [
+        "Indique sempre o e-mail da sua conta e, se o assunto for um pagamento, a referência (KD-…). Ajuda-nos a responder mais depressa.",
+        "Nunca lhe pedimos a senha, o PIN nem códigos de confirmação. Não os partilhe com ninguém, nem connosco.",
+        "Por segurança, podemos pedir-lhe que confirme a sua identidade antes de alterar dados da conta, dados bancários ou levantamentos."
+      ]
+    },
+    "faq": {
+      "title": "Perguntas frequentes",
+      "subtitle": "As respostas mais rápidas às dúvidas mais comuns.",
+      "q1": {
+        "q": "Como faço um levantamento?",
+        "a": "Na Carteira, carregue em «Solicitar levantamento», escolha o montante e confirme. Precisa de ter os dados bancários (IBAN angolano) guardados em Configurações › Dados bancários, e o valor mínimo é {min}. Só o proprietário da loja pode pedir levantamentos."
+      },
+      "q2": {
+        "q": "Quanto tempo demora um levantamento?",
+        "a": "O pedido fica «Pendente» no histórico da Carteira até ser concluído, e só pode haver um levantamento em curso de cada vez. O prazo até o dinheiro chegar à sua conta depende do banco de destino; se demorar mais do que o esperado, fale connosco com a referência do levantamento."
+      },
+      "q3": {
+        "q": "Como cancelo a minha subscrição?",
+        "a": "A subscrição é mensal (30 dias), sem fidelização e sem renovação automática: se não a renovar, o acesso ao painel termina no fim do período pago. Pode ver a data de fim e renovar em Faturação e planos (o botão do cartão do plano, no menu lateral, leva lá)."
+      },
+      "q4": {
+        "q": "Como cancelo uma encomenda?",
+        "a": "Abra a encomenda em Encomendas e mude o estado para «Cancelado». É possível enquanto estiver «Pendente» ou «Em processamento»; depois de «Enviado» já não pode ser cancelada pelo painel, e nesse caso deve falar connosco."
+      },
+      "q5": {
+        "q": "Como funcionam as comissões de afiliados?",
+        "a": "Recebe {rate} de comissão recorrente por cada lojista ativo (que subscreve e paga um plano) que trouxer pelo seu link exclusivo. Na página Afiliados vê os cliques, os registos, os indicados e a comissão disponível."
+      }
+    },
+    "ticket": {
+      "title": "Abrir ticket de suporte",
+      "intro": "Descreva o que precisa. Quanto mais detalhes, mais depressa conseguimos ajudar.",
+      "subject": "Assunto",
+      "subjectPlaceholder": "Ex.: Levantamento pendente",
+      "message": "Mensagem",
+      "messageHint": "Diga o que aconteceu e, se souber, a referência do pagamento ou o número da encomenda.",
+      "submit": "Enviar Ticket",
+      "preview": "O envio de tickets ainda não está ligado à equipa. Para uma resposta já, use o WhatsApp ou o e-mail acima.",
+      "toast": {
+        "title": "Ticket preparado",
+        "body": "Ainda não é enviado à equipa (pré-visualização). Para uma resposta agora, use o WhatsApp ou o e-mail acima.",
+        "close": "Fechar aviso"
+      }
+    },
+    "validation": {
+      "subject_required": "Indique o assunto.",
+      "subject_too_short": "O assunto parece curto demais.",
+      "message_required": "Escreva a sua mensagem.",
+      "message_too_short": "Descreva melhor o que precisa (pelo menos 10 caracteres)."
     }
   }
 }

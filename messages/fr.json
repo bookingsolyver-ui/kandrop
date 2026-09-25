@@ -794,8 +794,7 @@
     "features": {
       "catalog": "Des produits de fournisseurs B2B sélectionnés, avec prix de revient et stock, prêts à vendre dans votre boutique.",
       "landingPages": "Des pages de vente axées sur la conversion, créées à partir de vos produits.",
-      "customers": "Tous vos clients au même endroit, avec l’historique de leurs commandes.",
-      "support": "Parlez à l’équipe Kandrop chaque fois que vous avez besoin d’aide."
+      "customers": "Tous vos clients au même endroit, avec l’historique de leurs commandes."
     }
   },
   "Marketing": {
@@ -1582,6 +1581,87 @@
       "banner": "Compte créé. Choisissez votre offre et finalisez le paiement pour accéder au tableau de bord.",
       "signedIn": "Connecté en tant que {email}",
       "logout": "Se déconnecter"
+    }
+  },
+  "Support": {
+    "title": "Centre d’assistance",
+    "subtitle": "Nous sommes là pour vous aider. Choisissez le canal qui vous convient le mieux.",
+    "channels": {
+      "label": "Canaux de contact",
+      "whatsapp": {
+        "name": "WhatsApp",
+        "speed": "Réponse en quelques minutes",
+        "cta": "Démarrer la conversation",
+        "ctaLabel": "Démarrer une conversation WhatsApp avec {number}",
+        "message": "Bonjour ! J’ai besoin d’aide avec mon compte Kandrop."
+      },
+      "email": {
+        "name": "E-mail",
+        "speed": "Réponse sous 24 heures",
+        "cta": "Envoyer un e-mail",
+        "ctaLabel": "Envoyer un e-mail à {email}",
+        "subject": "Demande d’assistance Kandrop"
+      },
+      "hours": {
+        "name": "Horaires d’ouverture",
+        "days": "Du lundi au samedi",
+        "time": "8 h à 20 h",
+        "holidays": "Dimanches et jours fériés nationaux : fermé.",
+        "zone": "Heure de Luanda"
+      }
+    },
+    "info": {
+      "title": "Informations importantes",
+      "items": [
+        "Indiquez toujours l’e-mail de votre compte et, s’il s’agit d’un paiement, la référence (KD-…). Cela nous aide à répondre plus vite.",
+        "Nous ne vous demandons jamais votre mot de passe, votre PIN ni de codes de confirmation. Ne les partagez avec personne, pas même avec nous.",
+        "Par sécurité, nous pouvons vous demander de confirmer votre identité avant de modifier les données du compte, les coordonnées bancaires ou les retraits."
+      ]
+    },
+    "faq": {
+      "title": "Questions fréquentes",
+      "subtitle": "Les réponses les plus rapides aux questions les plus courantes.",
+      "q1": {
+        "q": "Comment faire un retrait ?",
+        "a": "Dans Portefeuille, appuyez sur « Demander un retrait », choisissez le montant et confirmez. Vous devez avoir enregistré vos coordonnées bancaires (IBAN angolais) dans Paramètres › Coordonnées bancaires, et le minimum est de {min}. Seul le propriétaire de la boutique peut demander des retraits."
+      },
+      "q2": {
+        "q": "Combien de temps prend un retrait ?",
+        "a": "La demande reste « En attente » dans l’historique du Portefeuille jusqu’à son aboutissement, et un seul retrait peut être en cours à la fois. Le délai avant que l’argent n’arrive sur votre compte dépend de la banque de destination ; s’il dépasse ce qui est prévu, contactez-nous avec la référence du retrait."
+      },
+      "q3": {
+        "q": "Comment résilier mon abonnement ?",
+        "a": "L’abonnement est mensuel (30 jours), sans engagement et sans renouvellement automatique : si vous ne le renouvelez pas, l’accès au tableau de bord prend fin à la fin de la période payée. Vous pouvez voir la date de fin et renouveler dans Facturation et offres (le bouton de la carte de l’offre, dans le menu latéral, y mène)."
+      },
+      "q4": {
+        "q": "Comment annuler une commande ?",
+        "a": "Ouvrez la commande dans Commandes et passez son statut à « Annulée ». C’est possible tant qu’elle est « En attente » ou « En préparation » ; une fois « Expédiée », elle ne peut plus être annulée depuis le tableau de bord, et vous devez alors nous contacter."
+      },
+      "q5": {
+        "q": "Comment fonctionnent les commissions d’affiliation ?",
+        "a": "Vous recevez {rate} de commission récurrente pour chaque commerçant actif (qui souscrit et paie une offre) que vous amenez avec votre lien exclusif. Sur la page Affiliés, vous voyez les clics, les inscriptions, les parrainés et la commission disponible."
+      }
+    },
+    "ticket": {
+      "title": "Ouvrir un ticket d’assistance",
+      "intro": "Décrivez votre besoin. Plus il y a de détails, plus nous pouvons vous aider vite.",
+      "subject": "Sujet",
+      "subjectPlaceholder": "Ex. : Retrait en attente",
+      "message": "Message",
+      "messageHint": "Dites ce qui s’est passé et, si vous la connaissez, la référence du paiement ou le numéro de la commande.",
+      "submit": "Envoyer le ticket",
+      "preview": "L’envoi de tickets n’est pas encore relié à l’équipe. Pour une réponse tout de suite, utilisez WhatsApp ou l’e-mail ci-dessus.",
+      "toast": {
+        "title": "Ticket préparé",
+        "body": "Il n’est pas encore envoyé à l’équipe (aperçu). Pour une réponse tout de suite, utilisez WhatsApp ou l’e-mail ci-dessus.",
+        "close": "Fermer"
+      }
+    },
+    "validation": {
+      "subject_required": "Indiquez le sujet.",
+      "subject_too_short": "Le sujet semble trop court.",
+      "message_required": "Écrivez votre message.",
+      "message_too_short": "Décrivez mieux votre besoin (au moins 10 caractères)."
     }
   }
 }
