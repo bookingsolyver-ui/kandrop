@@ -1,5 +1,4 @@
-import { PLANS } from "@/server/modules/plan/limits";
-import type { SignupPlan } from "@/shared/subscribe/schemas";
+import { PLANS, type PlanKey } from "@/server/modules/plan/limits";
 
 export interface PlanFeature {
   /** A key of `Marketing.pricing.features` (the same wording as the landing page). */
@@ -18,8 +17,8 @@ export interface PlanFeature {
   soon?: boolean;
 }
 
-/** What each plan of the funnel lists. Starter's limits are the real ones the platform enforces. */
-export const PLAN_FEATURES: Record<SignupPlan, PlanFeature[]> = {
+/** What each plan lists. The limits are the real ones the platform enforces. */
+export const PLAN_FEATURES: Record<PlanKey, PlanFeature[]> = {
   starter: [
     { key: "products", count: PLANS.starter.products },
     { key: "landingPages", count: PLANS.starter.landingPages },

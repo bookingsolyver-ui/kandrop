@@ -1,4 +1,5 @@
 import type { Session } from "@/server/auth/types";
+import { ApiError } from "@/server/http/errors";
 import { planOf } from "@/server/modules/billing/plan";
 import { productRepository } from "@/server/modules/products/repository";
 import { PLANS, type PlanKey } from "./limits";
@@ -17,6 +18,7 @@ export interface PlanUsage {
 /** What the store has used of its plan. Only numbers that really exist are reported. */
 export async function getPlan(auth: Session): Promise<PlanUsage> {
   const plan = planOf(auth.storeId);
+  if (!plan) throw new ApiError("payment_required");
   const limits = PLANS[plan];
   return {
     plan,

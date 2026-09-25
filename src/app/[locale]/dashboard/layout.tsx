@@ -6,9 +6,8 @@ import type { ReactNode } from "react";
 import { LiveProvider } from "@/components/dashboard/LiveProvider";
 import { AppShell } from "@/components/shell/AppShell";
 import { SIDEBAR_COOKIE } from "@/components/shell/constants";
-import { redirect } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
-import { readSession } from "@/server/auth/session";
+import { requirePaidSession } from "@/server/auth/pageGate";
 import { getMe } from "@/server/modules/auth/service";
 import { getStore } from "@/server/modules/store/service";
 
@@ -24,11 +23,12 @@ export default async function DashboardLayout({
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
 
-  // Page-level gate for the UI. The API enforces the same rule independently (requireSession).
-  const session = await readSession();
-  if (!session) redirect({ href: "/login", locale });
+  // Page-level gate for the UI: signed in AND paid (else /login or /checkout). The API enforces the
+  // same rule independently (requireSession). A layout is not re-run on client-side navigation, so
+  // every page repeats the check with the same helper.
+  const session = await requirePaidSession(locale);
 
-  const [me, store, jar] = await Promise.all([getMe(session!), getStore(session!), cookies()]);
+  const [me, store, jar] = await Promise.all([getMe(session), getStore(session), cookies()]);
 
   return (
     <LiveProvider>

@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { getEnv } from "../config/env";
 import { ApiError } from "../http/errors";
+import { hasAccess } from "./access";
 import { verifySession } from "./jwt";
 import type { Session } from "./types";
 
@@ -34,10 +35,18 @@ async function resolveSession(token: string | undefined): Promise<Session | null
   return null;
 }
 
-/** For API route handlers. Every protected route goes through this single gate. */
-export async function requireSession(req: Request): Promise<Session> {
+/**
+ * For API route handlers. Every protected route goes through this single gate: a valid session,
+ * AND an active paid subscription (`payment_required`, 402, otherwise). The few routes an unpaid
+ * account must reach — who am I, start a payment — opt out with `{ allowUnpaid: true }`.
+ */
+export async function requireSession(
+  req: Request,
+  opts: { allowUnpaid?: boolean } = {}
+): Promise<Session> {
   const session = await resolveSession(tokenFromRequest(req));
   if (!session) throw new ApiError("unauthenticated");
+  if (!opts.allowUnpaid && !hasAccess(session)) throw new ApiError("payment_required");
   return session;
 }
 

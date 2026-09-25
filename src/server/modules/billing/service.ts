@@ -21,18 +21,14 @@ import type { BillingOverview, PublicInvoice, PublicPlan, UpgradeSession } from 
 const KZ = 100;
 /** Sessions that carry a plan payment belong to the platform, never to the store paying. */
 const PLATFORM_STORE_ID = "sto_kandrop";
-const PLAN_NAMES: Record<PlanKey, string> = {
-  starter: "Starter",
-  growth: "Growth",
-  scale: "Scale",
-};
+const PLAN_NAMES: Record<PlanKey, string> = { starter: "Starter", pro: "Pro" };
 
 function requireOwner(auth: Session) {
   if (auth.role !== "owner") throw new ApiError("forbidden");
 }
 
 function action(plan: PlanKey, current: PlanKey): PublicPlan["action"] {
-  if (plan === current) return plan === "starter" ? "current" : "renew";
+  if (plan === current) return "renew";
   return planRank(plan) > planRank(current) ? "upgrade" : "included";
 }
 
@@ -64,12 +60,13 @@ export async function getBilling(auth: Session): Promise<BillingOverview> {
   const now = Date.now();
   const plan = planOf(auth.storeId, now);
   const sub = billingRepository.subscription(auth.storeId);
+  // The payment gate keeps unpaid stores out of here; this is the same rule, in the service.
+  if (!plan || !sub) throw new ApiError("payment_required");
   const usage = (await getPlan(auth)).usage;
 
   return {
     plan,
-    periodEnd: plan === "starter" || !sub ? null : new Date(sub.periodEnd).toISOString(),
-    lapsedPlan: plan === "starter" && sub && sub.periodEnd <= now ? sub.plan : null,
+    periodEnd: new Date(sub.periodEnd).toISOString(),
     usage,
     plans: PLAN_KEYS.map((key) => ({
       key,
@@ -90,7 +87,8 @@ export async function getBilling(auth: Session): Promise<BillingOverview> {
 export async function startUpgrade(auth: Session, input: UpgradeInput): Promise<UpgradeSession> {
   requireOwner(auth);
   const { plan } = upgradeSchema.parse(input);
-  if (planRank(plan) < planRank(planOf(auth.storeId))) throw new ApiError("plan_not_upgradable");
+  const current = planOf(auth.storeId);
+  if (current && planRank(plan) < planRank(current)) throw new ApiError("plan_not_upgradable");
 
   const amount = PLAN_PRICES[plan] * KZ;
   const session = buildCheckout({

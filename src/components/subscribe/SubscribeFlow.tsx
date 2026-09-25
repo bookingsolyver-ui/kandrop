@@ -2,51 +2,40 @@
 
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
-import { useFields } from "@/components/checkout/useFields";
+import { PlanPayment } from "@/components/billing/PlanPayment";
+import { useLogout } from "@/components/auth/useLogout";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { KandropLogo } from "@/components/receipt/KandropLogo";
-import {
-  detailsErrors,
-  priceMinor,
-  type Currency,
-  type DetailsCode,
-  type DetailsField,
-  type SignupPlan,
-} from "@/shared/subscribe/schemas";
-import { CurrencyToggle } from "./CurrencyToggle";
-import { DetailsStep } from "./DetailsStep";
+import { useRouter } from "@/i18n/navigation";
+import type { PlanKey } from "@/server/modules/plan/limits";
 import { OrderSummary } from "./OrderSummary";
-import { PaymentStep, type PaidWith } from "./PaymentStep";
 import { PlanStep } from "./PlanStep";
-import { Stepper } from "./Stepper";
-import { SuccessPanel } from "./SuccessPanel";
-import { useSubscribeMoney } from "./useSubscribeMoney";
+import { Stepper, type StepId } from "./Stepper";
 
-type Step = 1 | 2 | 3;
 const H1 =
   "font-serif text-[clamp(1.875rem,4vw,2.75rem)] leading-[1.08] font-normal tracking-[-0.02em] outline-none";
 
-function Flow({ onRestart }: { onRestart: () => void }) {
+/** How long the confirmation stays on screen before the dashboard opens by itself. */
+const REDIRECT_MS = 2200;
+
+/**
+ * THE PAYMENT GATE'S DOOR. Where an account with nothing paid lands (after sign-up, after a sign-in,
+ * or when it tries to open the dashboard): choose a plan, pay, and the dashboard opens. Two steps,
+ * all in state (no page reloads). The payment is the real (sandbox) one — the same as the
+ * billing page — so confirming it activates the plan on the server and lifts the gate.
+ */
+export function SubscribeFlow({ email, sandbox }: { email: string; sandbox: boolean }) {
   const t = useTranslations("Subscribe");
-  const money = useSubscribeMoney();
-  const [step, setStep] = useState<Step>(1);
-  const [plan, setPlan] = useState<SignupPlan | null>(null);
-  const [currency, setCurrency] = useState<Currency>("AOA");
-  const [paidWith, setPaidWith] = useState<PaidWith | null>(null);
+  const names = useTranslations("Shell.plan.names");
+  const router = useRouter();
+  const { logout, pending: leaving } = useLogout();
+  const [step, setStep] = useState<StepId>("plan");
+  const [plan, setPlan] = useState<PlanKey | null>(null);
+  const [paid, setPaid] = useState(false);
   const heading = useRef<HTMLHeadingElement>(null);
+  const shown = useRef<StepId>(step);
 
-  // The details live up here so they survive going back and forth between the steps.
-  const form = useFields<DetailsField, DetailsCode>(
-    { fullName: "", email: "", whatsapp: "", password: "", province: "" },
-    detailsErrors,
-    "sub"
-  );
-  const detailsValid = Object.keys(detailsErrors(form.values)).length === 0;
-  const reachable: Step = plan ? (detailsValid ? 3 : 2) : 1;
-
-  // A new step is a new screen: bring its title into view and into focus. Only when the step really
-  // changed (not on first paint, and not on the second run React's dev mode gives every effect).
-  const shown = useRef<Step>(step);
+  // A new step is a new screen: bring its title into view and into focus (only when it really changed).
   useEffect(() => {
     if (shown.current === step) return;
     shown.current = step;
@@ -54,15 +43,20 @@ function Flow({ onRestart }: { onRestart: () => void }) {
     heading.current?.scrollIntoView({ block: "start", behavior: "auto" });
   }, [step]);
 
-  function go(target: Step) {
-    if (target <= reachable) setStep(target);
-  }
+  // Paid: the gate is open now. Give the confirmation a moment, then go in.
+  useEffect(() => {
+    if (!paid) return;
+    const timer = setTimeout(() => {
+      router.replace("/dashboard");
+      router.refresh();
+    }, REDIRECT_MS);
+    return () => clearTimeout(timer);
+  }, [paid, router]);
 
-  const summary = plan && (
-    <div className="order-first lg:order-none lg:col-start-2 lg:row-start-1">
-      <OrderSummary plan={plan} currency={currency} onChange={() => setStep(1)} />
-    </div>
-  );
+  const goToDashboard = () => {
+    router.replace("/dashboard");
+    router.refresh();
+  };
 
   return (
     <div className="marketing min-h-screen bg-page text-ink">
@@ -72,87 +66,107 @@ function Flow({ onRestart }: { onRestart: () => void }) {
       >
         {t("skip")}
       </a>
-      <p className="border-b border-series-2 bg-series-2/10 px-4 py-2.5 text-center text-[13px] leading-snug font-medium">
-        {t("banner")}
+      <p className="border-b border-accent/40 bg-accent/10 px-4 py-2.5 text-center text-[13px] leading-snug font-medium">
+        {t("gate.banner")}
       </p>
 
       <header className="border-b border-line">
-        {/* On a phone the currency toggle drops to its own row: all three do not fit in one. */}
-        <div className="mx-auto flex min-h-16 max-w-5xl flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3 sm:px-6">
+        <div className="mx-auto flex min-h-16 max-w-5xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 sm:px-6">
           <div className="mr-auto">
             <KandropLogo />
           </div>
-          <div className="order-last flex w-full justify-end sm:order-none sm:w-auto">
-            <CurrencyToggle value={currency} onChange={setCurrency} />
-          </div>
+          <p className="hidden min-w-0 truncate text-[13px] text-ink-muted md:block">
+            {t("gate.signedIn", { email })}
+          </p>
+          <button
+            type="button"
+            onClick={logout}
+            disabled={leaving}
+            className="min-h-11 rounded px-1 text-sm text-ink-2 underline underline-offset-4 hover:text-ink"
+          >
+            {t("gate.logout")}
+          </button>
           <LocaleSwitcher />
         </div>
       </header>
 
       <main id="conteudo" className="mx-auto max-w-5xl px-4 pt-8 pb-24 sm:px-6 sm:pt-10">
-        {paidWith && plan ? (
-          <SuccessPanel
-            plan={t(`plan.names.${plan}`)}
-            method={paidWith}
-            amount={money(priceMinor(plan, currency), currency)}
-            onRestart={onRestart}
-          />
+        {paid && plan ? (
+          <section className="mx-auto max-w-xl rounded-lg border border-line bg-surface p-8 text-center sm:p-10">
+            <span
+              aria-hidden
+              className="mx-auto mb-5 grid size-14 place-items-center rounded-full border border-accent text-accent"
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M6 12.5l4 4 8-9" />
+              </svg>
+            </span>
+            <div role="status">
+              <h1 className="font-serif text-[1.75rem] leading-tight">{t("success.title")}</h1>
+              <p className="mx-auto mt-3 max-w-sm text-ink-2">
+                {t("success.body", { plan: names(plan) })}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={goToDashboard}
+              className="mt-7 h-12 rounded-md bg-action px-8 text-[0.9375rem] font-semibold text-on-action hover:opacity-90"
+            >
+              {t("success.go")}
+            </button>
+          </section>
         ) : (
           <>
-            <Stepper step={step} reachable={reachable} onGo={go} />
+            <Stepper current={step} reachable={plan ? "payment" : "plan"} onGo={setStep} />
 
             <div className="mt-8">
-              {step === 1 && (
+              {step === "plan" && (
                 <>
                   <h1 ref={heading} tabIndex={-1} className={H1}>
                     {t("plan.title")}
                   </h1>
                   <p className="mt-3 mb-8 text-lg text-ink-2">{t("plan.subtitle")}</p>
                   <PlanStep
-                    currency={currency}
                     selected={plan}
                     onChoose={(chosen) => {
                       setPlan(chosen);
-                      setStep(2);
+                      setStep("payment");
                     }}
                   />
                 </>
               )}
 
-              {step === 2 && plan && (
+              {step === "payment" && plan && (
                 <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-12">
-                  {summary}
-                  <section
-                    aria-labelledby="details-title"
-                    className="lg:col-start-1 lg:row-start-1"
-                  >
-                    <h1 id="details-title" ref={heading} tabIndex={-1} className={H1}>
-                      {t("details.title")}
-                    </h1>
-                    <p className="mt-3 mb-7 text-ink-2">{t("details.subtitle")}</p>
-                    <DetailsStep
-                      form={form}
-                      onContinue={() => setStep(3)}
-                      onBack={() => setStep(1)}
-                    />
-                  </section>
-                </div>
-              )}
-
-              {step === 3 && plan && (
-                <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-12">
-                  {summary}
+                  <div className="order-first lg:order-none lg:col-start-2 lg:row-start-1">
+                    <OrderSummary plan={plan} onChange={() => setStep("plan")} />
+                  </div>
                   <section aria-labelledby="pay-title" className="lg:col-start-1 lg:row-start-1">
-                    <h1 id="pay-title" ref={heading} tabIndex={-1} className={`${H1} mb-7`}>
+                    <h1 id="pay-title" ref={heading} tabIndex={-1} className={H1}>
                       {t("pay.title")}
                     </h1>
-                    <PaymentStep
-                      key={currency}
+                    <PlanPayment
+                      key={plan}
                       plan={plan}
-                      currency={currency}
-                      onBack={() => setStep(2)}
-                      onDone={setPaidWith}
+                      sandbox={sandbox}
+                      onPaid={() => setPaid(true)}
                     />
+                    <button
+                      type="button"
+                      onClick={() => setStep("plan")}
+                      className="mt-6 min-h-11 rounded px-1 text-sm text-ink-2 underline underline-offset-4 hover:text-ink"
+                    >
+                      {t("pay.back")}
+                    </button>
                   </section>
                 </div>
               )}
@@ -162,10 +176,4 @@ function Flow({ onRestart }: { onRestart: () => void }) {
       </main>
     </div>
   );
-}
-
-/** The public subscription funnel: plan → details → payment, all in state (no page reloads). */
-export function SubscribeFlow() {
-  const [run, setRun] = useState(0);
-  return <Flow key={run} onRestart={() => setRun((n) => n + 1)} />;
 }

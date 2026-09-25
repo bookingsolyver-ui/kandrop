@@ -3,9 +3,9 @@ import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { ProductForm } from "@/components/products/ProductForm";
-import { Link, redirect } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
-import { readSession } from "@/server/auth/session";
+import { requirePaidSession } from "@/server/auth/pageGate";
 import { ApiError } from "@/server/http/errors";
 import { getProduct } from "@/server/modules/products/service";
 import { PageTransition } from "@/components/shell/PageTransition";
@@ -27,8 +27,7 @@ export default async function EditProductPage({ params }: Props) {
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
 
-  const session = await readSession();
-  if (!session) redirect({ href: "/login", locale });
+  const session = await requirePaidSession(locale);
 
   // A missing product and another store's product look the same: a 404.
   const product = await getProduct(session!, id).catch((err: unknown) => {

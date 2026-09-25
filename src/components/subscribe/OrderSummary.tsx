@@ -1,9 +1,9 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { priceMinor, type Currency, type SignupPlan } from "@/shared/subscribe/schemas";
+import { useFormatters } from "@/components/dashboard/useFormatters";
+import { PLAN_PRICES, type PlanKey } from "@/server/modules/plan/limits";
 import { PLAN_FEATURES } from "./plans";
-import { useSubscribeMoney } from "./useSubscribeMoney";
 
 const Tick = () => (
   <svg
@@ -24,22 +24,14 @@ const Tick = () => (
 
 /**
  * The purchase at a glance: the plan, what it includes (a check list) and the total. Sticky beside
- * the form from `lg`; on phones the list is left out (the form is what matters there) and only the
- * plan and total show, above it.
+ * the payment from `lg`; on phones the list is left out (the payment is what matters there) and
+ * only the plan and total show, above it.
  */
-export function OrderSummary({
-  plan,
-  currency,
-  onChange,
-}: {
-  plan: SignupPlan;
-  currency: Currency;
-  onChange?: () => void;
-}) {
+export function OrderSummary({ plan, onChange }: { plan: PlanKey; onChange?: () => void }) {
   const t = useTranslations("Subscribe");
   const features = useTranslations("Marketing.pricing");
-  const money = useSubscribeMoney();
-  const price = money(priceMinor(plan, currency), currency);
+  const names = useTranslations("Shell.plan.names");
+  const f = useFormatters();
 
   return (
     <aside
@@ -55,7 +47,7 @@ export function OrderSummary({
       <div className="mt-3 flex items-start justify-between gap-4">
         <div>
           <p className="font-serif text-[1.5rem] leading-tight font-medium">
-            {t("summary.plan", { plan: t(`plan.names.${plan}`) })}
+            {t("summary.plan", { plan: names(plan) })}
           </p>
           <p className="mt-0.5 text-[13px] text-ink-muted">{t("summary.billing")}</p>
         </div>
@@ -89,7 +81,7 @@ export function OrderSummary({
       <div className="mt-5 flex items-baseline justify-between gap-4 border-t border-line pt-4">
         <p className="text-sm font-semibold">{t("summary.total")}</p>
         <p className="text-[1.5rem] leading-none font-semibold tracking-tight tabular-nums">
-          {price}
+          {f.money(PLAN_PRICES[plan] * 100)}
         </p>
       </div>
     </aside>

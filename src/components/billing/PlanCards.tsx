@@ -8,7 +8,7 @@ import type { PlanKey } from "@/server/modules/plan/limits";
 import type { PaidPlan } from "@/shared/billing/schemas";
 
 /** The most complete plan gets the neon edge: flat, no glow (see PRODUCT.md). */
-const HIGHLIGHT: PlanKey = "scale";
+const HIGHLIGHT: PlanKey = "pro";
 
 const Check = () => (
   <svg
@@ -35,7 +35,7 @@ function PlanCard({ plan, onChoose }: { plan: PublicPlan; onChoose: (plan: PaidP
   const tier = TIERS.find((candidate) => candidate.key === plan.key)!;
   const highlighted = plan.key === HIGHLIGHT;
   const current = plan.action === "current" || plan.action === "renew";
-  const paid = plan.key !== "starter";
+  const paid = plan.price > 0;
 
   return (
     <li

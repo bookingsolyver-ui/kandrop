@@ -31,7 +31,7 @@ export async function Pricing() {
           <p className="mt-5 text-lg leading-relaxed text-ink-2">{t("subtitle")}</p>
         </div>
 
-        <ul className="mt-14 grid items-stretch gap-5 lg:grid-cols-3">
+        <ul className="mx-auto mt-14 grid max-w-4xl items-stretch gap-5 md:grid-cols-2">
           {TIERS.map((tier, i) => {
             const name = t(`plans.${tier.key}.name`);
             return (

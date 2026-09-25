@@ -28,8 +28,9 @@ export function LoginForm() {
     submit: (values) => postAuth("/api/auth/login", values),
     // Never keep a rejected password around; put the cursor back where the fix happens.
     resetFieldOn: { code: "invalid_credentials", field: "password" },
-    onSuccess: () => {
-      router.replace("/dashboard");
+    // Already paid → the dashboard; not paid yet → the payment step.
+    onSuccess: ({ subscription }) => {
+      router.replace(subscription === "active" ? "/dashboard" : "/checkout");
       router.refresh();
     },
   });

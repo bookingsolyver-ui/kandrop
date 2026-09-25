@@ -3,6 +3,7 @@ import { setSessionCookie } from "@/server/auth/session";
 import { attemptLimiter, clientIp } from "@/server/http/rateLimit";
 import { assertSameOrigin, handle, json, readJson } from "@/server/http/respond";
 import { ApiError } from "@/server/http/errors";
+import { subscriptionStateOf } from "@/server/auth/access";
 import { authenticate, toMe, toSession } from "@/server/modules/auth/service";
 import type { LoginInput } from "@/shared/auth/schemas";
 
@@ -29,9 +30,11 @@ export const POST = handle(async (req) => {
     const user = await authenticate(body);
     perAccount.reset(accountKey);
 
-    const { token, expiresAt } = await signSession(toSession(user));
+    const session = toSession(user);
+    const { token, expiresAt } = await signSession(session);
     await setSessionCookie(token, expiresAt);
-    return json({ user: toMe(user) });
+    // `pending` = nothing paid yet: the browser goes to /checkout instead of the dashboard.
+    return json({ user: toMe(user), subscription: subscriptionStateOf(session) });
   } catch (err) {
     // Only credential failures count; malformed input is rejected before it costs anything.
     if (err instanceof ApiError && err.code === "invalid_credentials") {

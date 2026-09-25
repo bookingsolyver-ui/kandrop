@@ -45,10 +45,8 @@ export interface PublicPlan {
 
 export interface BillingOverview {
   plan: PlanKey;
-  /** End of the paid period, ISO; `null` on Starter. */
-  periodEnd: string | null;
-  /** A paid plan that ran out (the store is back on Starter). */
-  lapsedPlan: PaidPlan | null;
+  /** End of the paid period, ISO. */
+  periodEnd: string;
   usage: {
     landingPages: { used: number; limit: number | null };
     products: { used: number; limit: number | null };

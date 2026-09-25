@@ -117,7 +117,7 @@ runtime that allows long-lived responses (not serverless functions with short ti
 - **Flow:** merchant creates a session → buyer opens `/checkout?session=chk_…` → pays. Mobile money
   (Multicaixa Express, Unitel Money) returns `pending` (202) and the page polls every 2 s until the payer
   confirms on their phone; cards answer immediately. In sandbox, opening `/checkout?demo` creates a demo
-  cart (a bare `/checkout` is now the subscription funnel, below).
+  cart (a bare `/checkout` is the payment gate's page, below).
 - **Server is the authority:** totals are computed from the items (a client-sent `total` is ignored); the
   phone (`9` + 8 digits, `+244`/`00244` accepted) and card (Luhn, expiry, CVC) are re-validated with the same
   Zod schemas the form uses (`shared/checkout/schemas.ts`).
@@ -220,7 +220,7 @@ locale-aware equivalent of `app/dashboard/layout.tsx` (the `[locale]` segment co
 - **Plan card** (sidebar foot, `shell/PlanCard.tsx` + `PlanProvider`): plan and real usage from `GET /api/plan`,
   fetched once per navigation and shared by the sidebar and the drawer. Products are counted from the catalogue and the
   limit is **enforced** (`403 plan_limit_reached` on the 51st); landing pages are zero because the feature does not exist
-  yet. Amber from 80 %, red when full. "Upgrade" leads to a "coming soon" Plans page. Stub: everyone is on Starter.
+  yet. Amber from 80 %, red when full. "Upgrade" leads to the billing page (`/dashboard/billing`).
 - **Header:** breadcrumbs derived from the URL, the real-time connection state (Server-Sent Events, not a WebSocket —
   see "Real-time: why SSE first"; one `EventSource` in `LiveProvider` for the whole area), language, account menu.
 - **Accessibility:** skip link to `#content`, `aria-current="page"`, the active item is marked by shape (bar + colour).
@@ -484,11 +484,12 @@ pinned "Buy now" button that goes straight to the existing checkout. Mobile-firs
 The merchant's own subscription to Kandrop (SaaS billing): current plan and usage, the plan cards, a payment dialog and the invoice
 history. Owner only (it is the account's money). The plan card in the sidebar links here.
 
-- **One source for plans**: `modules/plan/limits.ts` holds keys, limits (`null` = unlimited) and prices. The landing page's
-  tiers, the affiliates' commissions and this page all read it. **Prices and the Growth/Scale limits are placeholders.**
+- **One source for plans**: `modules/plan/limits.ts` holds keys, limits (`null` = unlimited) and prices: **Starter 14.999 Kz**
+  (50 products, 5 landing pages) and **Pro 34.999 Kz** (unlimited). There is **no free plan**. The landing page's tiers, the
+  affiliates' commissions, the payment-gate page and this page all read it. The tax treatment (IVA) is still undecided.
 - **Which plan a store is on** is never stored as a flag: `billing/plan.ts#planOf` reads the paid period (`periodEnd`) against
-  the clock, so a lapsed plan cannot linger (back to Starter, the page says so). Only the product limit is enforced
-  (`products/service.ts`); landing pages are not built (usage 0). Other plan advantages are **not gated**.
+  the clock and returns `null` when there is none: that `null` is what the **payment gate** keys on (next section). Only the
+  product limit is enforced (`products/service.ts`); landing pages are not built (usage 0). Other advantages are **not gated**.
 - **Paying**: `POST /api/billing/checkout {plan}` creates an ordinary checkout session owned by the platform
   (`sto_kandrop`, so the money never lands in the merchant's own wallet) tagged with `subscription`. The dialog then reuses the
   buyer's `PaymentForm` (`inline`) and `usePaymentPolling` (Multicaixa Express first, Unitel Money, card). When a payment is
@@ -530,28 +531,34 @@ or locked (lock). Any signed-in person can use it; progress belongs to the perso
 - A `lesson_progress` table, certificates or badges if wanted, and analytics on drop-off per lesson. Nothing gates the course by
   plan today.
 
-## Subscription funnel (`/[locale]/checkout`, no parameters)
+## Payment gate (`/[locale]/checkout` without parameters, `server/auth/access.ts`)
 
-A three-step signup-and-pay flow managed entirely in client state (no reloads): **Plan** (Starter / Pro cards, with a
-quiet Kz / EUR / USD toggle) → **Details** (name, e-mail, WhatsApp, password, province; a sticky purchase summary beside it)
-→ **Payment** (Kz: Multicaixa Express asks for the mobile number, or bank transfer shows an example IBAN and asks for the
-receipt; EUR/USD: a card form). Step 3 cannot be reached until step 2 validates (the stepper only offers steps you may reach,
-and every error is shown at once with focus on the first invalid field). Validation reuses the sign-up and checkout schemas
-(`shared/subscribe/schemas.ts`: password rules, Angolan mobile, Luhn card), so a valid entry here is a valid account later.
+A strict SaaS paywall: **no paid period, no dashboard.** Sign-up always ends at `/checkout`, never at `/dashboard`.
 
-- **It is a PROTOTYPE and says so** (banner on every step and a note on the last one): no request is made, nothing is
-  stored, no account is created and nothing is charged. The "provider" answers after a short simulated wait. The bank
-  transfer IBAN is fictional and marked as an example; the receipt is validated in the browser (JPG/PNG/PDF, 5 MB) and never uploaded.
-- **Same address as the buyer checkout**: `/checkout?session=…` is unchanged and `/checkout?demo` makes the sandbox demo
-  cart; only a bare `/checkout` shows the funnel.
+- **The rule** (`hasAccess`): a session may use the merchant area only while its store has an active paid period
+  (`planOf(storeId) !== null`). A new account has none; an account whose 30 days ran out has none again. Computed from the
+  clock on every request, never from a stored flag. The only exception is the `AUTH_DEV_BYPASS` demo user (refused in production).
+- **Enforced twice, server side.** _APIs_: `requireSession(req)` answers **402 `payment_required`** for a valid session
+  without access; the only routes that opt out (`{ allowUnpaid: true }`) are `GET /api/me` and `POST /api/billing/checkout`
+  (start paying); auth routes and public pages (storefront, buyer checkout, webhooks) are outside it. _Pages_: the dashboard
+  layout and every dashboard page call `requirePaidSession(locale)` (redirect to `/login`, or to `/checkout`, keeping the locale);
+  a layout is not re-run on client-side navigation, hence the per-page repeat. The browser's API client sends a 402 to `/checkout` too.
+- **Where people land.** `POST /api/auth/register` and `/login` return `subscription: "active" | "pending"`: the register form
+  goes to `/checkout`, the login form to `/dashboard` only when active, else `/checkout`.
+- **`/checkout` (no parameters)** is the gate's door: signed out → `/register`; already paid → `/dashboard`; otherwise two steps
+  in client state (**Plan**, then **Payment**). The payment is the _real_ sandbox one, shared with the billing dialog
+  (`billing/PlanPayment.tsx`: Multicaixa Express, Unitel Money, card): confirming it activates the plan in `markPaid`, and
+  the page then opens the dashboard by itself. `/checkout?session=…` (buyer checkout) and `/checkout?demo` are unchanged.
+- The earlier three-step prototype (details form, EUR/USD card, bank transfer with receipt upload) was removed: nothing
+  could process those payments and the account now exists before this page. It is in git history (`020c9f9`).
 
 **Before this becomes real**
 
-- **The prices contradict the rest of the product.** 14.999 Kz (Starter) and 34.999 Kz (Pro) are the figures requested for
-  this flow; the billing page and the landing page use Starter (free), Growth and Scale (`plan/limits.ts`). Pick one catalogue.
-- EUR and USD amounts are derived at fixed reference rates (`REFERENCE_RATE`), not what a card processor would charge.
-- Wire it up: create the account (`/api/auth/register`), charge through the real provider, and set the plan
-  (`billing/activation`). A card form must be a processor's hosted field (Stripe Elements or similar), never our own inputs.
+- **Nothing is charged for real**: payments are the sandbox simulator (see `DEPLOY.md`), and accounts live in memory.
+- No renewal reminders or grace period: when the 30 days end the next request is a 402 and the next page a redirect to `/checkout`.
+  A public store of a lapsed merchant still sells (the storefront does not check the subscription).
+- Bank transfer and EUR/USD are not offered: they need manual verification / a real processor.
+- If sign-up moves to Supabase Auth, keep `hasAccess` as the single rule and read the subscription from the database.
 
 ## Status
 

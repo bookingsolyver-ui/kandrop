@@ -2,39 +2,39 @@
 
 import { useTranslations } from "next-intl";
 
-const STEPS = ["plan", "details", "payment"] as const;
+export type StepId = "plan" | "payment";
+const STEPS: StepId[] = ["plan", "payment"];
 
 /**
- * The three steps as a list: done (tick), current, and still to come. A step you can already
- * reach is a button (so you can go back); the others are plain text. The current one is
- * `aria-current="step"`.
+ * The steps as a list: done (tick), current, and still to come. A step you can already reach is a
+ * button (so you can go back); the others are plain text. The current one is `aria-current="step"`.
  */
 export function Stepper({
-  step,
+  current,
   reachable,
   onGo,
 }: {
-  step: 1 | 2 | 3;
-  /** The highest step the visitor may jump to (3 only once the details are valid). */
-  reachable: 1 | 2 | 3;
-  onGo: (step: 1 | 2 | 3) => void;
+  current: StepId;
+  /** The last step the visitor may jump to (payment needs a chosen plan). */
+  reachable: StepId;
+  onGo: (step: StepId) => void;
 }) {
   const t = useTranslations("Subscribe.steps");
+  const at = (id: StepId) => STEPS.indexOf(id);
 
   return (
     <nav aria-label={t("label")}>
       <ol className="flex items-center gap-2 sm:gap-3">
         {STEPS.map((id, i) => {
-          const n = (i + 1) as 1 | 2 | 3;
-          const done = n < step;
-          const current = n === step;
-          const canGo = n <= reachable && !current;
+          const done = at(id) < at(current);
+          const isCurrent = id === current;
+          const canGo = at(id) <= at(reachable) && !isCurrent;
           const body = (
             <>
               <span
                 aria-hidden
                 className={`grid size-7 shrink-0 place-items-center rounded-full border text-[13px] font-semibold tabular-nums ${
-                  current
+                  isCurrent
                     ? "border-accent bg-accent text-on-action"
                     : done
                       ? "border-accent text-accent"
@@ -55,10 +55,10 @@ export function Stepper({
                     <path d="m3 7.5 2.5 2.5L11 4" />
                   </svg>
                 ) : (
-                  n
+                  i + 1
                 )}
               </span>
-              <span className={`text-sm ${current ? "font-semibold text-ink" : "text-ink-2"}`}>
+              <span className={`text-sm ${isCurrent ? "font-semibold text-ink" : "text-ink-2"}`}>
                 {t(id)}
                 {done && <span className="sr-only"> — {t("completed")}</span>}
               </span>
@@ -67,13 +67,13 @@ export function Stepper({
           return (
             <li
               key={id}
-              aria-current={current ? "step" : undefined}
+              aria-current={isCurrent ? "step" : undefined}
               className="flex items-center gap-2 sm:gap-3"
             >
               {canGo ? (
                 <button
                   type="button"
-                  onClick={() => onGo(n)}
+                  onClick={() => onGo(id)}
                   className="flex min-h-11 items-center gap-2 rounded-md hover:text-ink"
                 >
                   {body}

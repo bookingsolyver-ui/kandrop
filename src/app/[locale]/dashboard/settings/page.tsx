@@ -7,9 +7,8 @@ import { Panel } from "@/components/dashboard/Panel";
 import { BankAccountForm } from "@/components/settings/BankAccountForm";
 import { SettingsTabs } from "@/components/settings/SettingsTabs";
 import { isSettingsTab } from "@/components/settings/tabs";
-import { redirect } from "@/i18n/navigation";
 import { formatLocales, routing } from "@/i18n/routing";
-import { readSession } from "@/server/auth/session";
+import { requirePaidSession } from "@/server/auth/pageGate";
 import { getMe } from "@/server/modules/auth/service";
 import { getBankAccount } from "@/server/modules/bank/service";
 import { getStore } from "@/server/modules/store/service";
@@ -51,8 +50,7 @@ export default async function SettingsPage({ params, searchParams }: Props) {
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
 
-  const session = await readSession();
-  if (!session) redirect({ href: "/login", locale });
+  const session = await requirePaidSession(locale);
   const { tab } = await searchParams;
   const [me, store, bank, t] = await Promise.all([
     getMe(session!),

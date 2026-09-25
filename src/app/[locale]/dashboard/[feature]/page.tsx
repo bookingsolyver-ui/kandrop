@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { requirePaidSession } from "@/server/auth/pageGate";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -28,6 +29,7 @@ export default async function ComingSoonPage({ params }: Props) {
   const item = featureOf(feature);
   if (!hasLocale(routing.locales, locale) || !item) notFound();
   setRequestLocale(locale);
+  await requirePaidSession(locale);
   const t = await getTranslations("Shell");
   const c = await getTranslations("ComingSoon");
   const group = NAV_GROUPS.find((g) => g.items.some((i) => i.key === item.key));

@@ -4,9 +4,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { AutomationsView } from "@/components/automations/AutomationsView";
 import { PageTransition } from "@/components/shell/PageTransition";
-import { redirect } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
-import { readSession } from "@/server/auth/session";
+import { requirePaidSession } from "@/server/auth/pageGate";
 import { getStore } from "@/server/modules/store/service";
 
 // Depends on the session: never prerender.
@@ -26,8 +25,7 @@ export default async function AutomationsPage({ params }: Props) {
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
 
-  const session = await readSession();
-  if (!session) redirect({ href: "/login", locale });
+  const session = await requirePaidSession(locale);
   const [store, t, shell] = await Promise.all([
     getStore(session!),
     getTranslations("Automations"),

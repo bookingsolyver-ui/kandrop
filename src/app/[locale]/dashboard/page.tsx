@@ -1,4 +1,5 @@
 import { hasLocale } from "next-intl";
+import { requirePaidSession } from "@/server/auth/pageGate";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { DashboardView } from "@/components/dashboard/DashboardView";
@@ -9,6 +10,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
+  await requirePaidSession(locale);
   const t = await getTranslations("Dashboard");
 
   return (

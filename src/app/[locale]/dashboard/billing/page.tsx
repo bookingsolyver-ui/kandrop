@@ -5,9 +5,8 @@ import { notFound } from "next/navigation";
 import { BillingView } from "@/components/billing/BillingView";
 import { ListMessage } from "@/components/data/ListStates";
 import { PageTransition } from "@/components/shell/PageTransition";
-import { redirect } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
-import { readSession } from "@/server/auth/session";
+import { requirePaidSession } from "@/server/auth/pageGate";
 
 // Depends on the session and on the clock (plan periods): never prerender.
 export const dynamic = "force-dynamic";
@@ -26,8 +25,7 @@ export default async function BillingPage({ params }: Props) {
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
 
-  const session = await readSession();
-  if (!session) redirect({ href: "/login", locale });
+  const session = await requirePaidSession(locale);
   const t = await getTranslations("Billing");
 
   return (

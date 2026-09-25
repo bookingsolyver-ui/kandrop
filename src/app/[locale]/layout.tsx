@@ -45,7 +45,13 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
 
   return (
-    <html lang={locale} className={`${sans.variable} ${serif.variable}`}>
+    // `data-scroll-behavior`: the public pages scroll smoothly (see `.marketing`); this tells Next to
+    // pause that during route transitions, as it asks.
+    <html
+      lang={locale}
+      data-scroll-behavior="smooth"
+      className={`${sans.variable} ${serif.variable}`}
+    >
       <body>
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
       </body>

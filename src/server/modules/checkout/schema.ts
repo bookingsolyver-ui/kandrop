@@ -1,3 +1,5 @@
+import type { PlanKey } from "@/server/modules/plan/limits";
+
 export interface CheckoutItem {
   /** Merchant catalogue name — user content, not a translatable UI string. */
   name: string;
@@ -23,7 +25,7 @@ export interface CheckoutSession {
    * Set when this session is a store paying for its Kandrop plan (the money is Kandrop's, not
    * the store's): once paid, `billing/activation` switches that store's plan on.
    */
-  subscription?: { storeId: string; plan: "growth" | "scale" };
+  subscription?: { storeId: string; plan: PlanKey };
   createdAt: number;
   expiresAt: number;
 }

@@ -140,7 +140,9 @@ function assertOffer(p: ProductRecord, deadlineChanged: boolean) {
 export async function createProduct(auth: Session, input: unknown): Promise<PublicProduct> {
   const data = createProductSchema.parse(input);
   // The plan's product limit is real: the sidebar's plan card shows it, so it must hold.
-  const limit = PLANS[planOf(auth.storeId)].products;
+  const plan = planOf(auth.storeId);
+  if (!plan) throw new ApiError("payment_required");
+  const limit = PLANS[plan].products;
   if (limit !== null && productRepository.all(auth.storeId).length >= limit) {
     throw new ApiError("plan_limit_reached");
   }

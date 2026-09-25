@@ -93,7 +93,7 @@ export function PlanCard({ collapsed }: { collapsed: boolean }) {
         className="mt-3 flex h-9 w-full items-center justify-center gap-2 rounded-md bg-accent text-sm font-semibold text-on-action hover:opacity-90"
       >
         <UpgradeIcon size={16} />
-        {plan?.plan === "scale" ? t("manage") : t("upgrade")}
+        {plan?.plan === "pro" ? t("manage") : t("upgrade")}
       </Link>
     </section>
   );

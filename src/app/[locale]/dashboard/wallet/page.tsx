@@ -3,9 +3,8 @@ import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { PayoutsView } from "@/components/payouts/PayoutsView";
-import { redirect } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
-import { readSession } from "@/server/auth/session";
+import { requirePaidSession } from "@/server/auth/pageGate";
 import { PageTransition } from "@/components/shell/PageTransition";
 
 // Depends on the session: never prerender.
@@ -25,8 +24,7 @@ export default async function PayoutsPage({ params }: Props) {
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
 
-  const session = await readSession();
-  if (!session) redirect({ href: "/login", locale });
+  const session = await requirePaidSession(locale);
   const t = await getTranslations("Payouts");
 
   return (

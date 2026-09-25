@@ -18,20 +18,20 @@ const DAY = 86_400_000;
 /** SANDBOX referrals: made-up people, so the screen can be reviewed. Newest first. */
 const EXAMPLES: Array<[string, number, ReferralPlan, PaymentState, number]> = [
   // [e-mail, days ago, plan, payment, months paid]
-  ["joao.mendes@gmail.com", 4, "growth", "paid", 1],
-  ["ana.paulo@hotmail.com", 9, "starter", "free", 0],
-  ["carlos.neto@gmail.com", 15, "scale", "paid", 1],
-  ["luzia.baptista@outlook.com", 21, "growth", "pending", 0],
-  ["mauro.diogo@gmail.com", 28, "starter", "free", 0],
-  ["telma.cardoso@gmail.com", 37, "growth", "paid", 2],
-  ["ivo.sequeira@yahoo.com", 44, "growth", "overdue", 1],
-  ["nadia.fonseca@gmail.com", 52, "scale", "paid", 2],
-  ["rui.tavares@hotmail.com", 61, "starter", "free", 0],
-  ["sofia.lourenco@gmail.com", 66, "growth", "paid", 3],
-  ["edson.kiala@outlook.com", 73, "starter", "free", 0],
-  ["marta.bento@gmail.com", 81, "scale", "pending", 2],
-  ["paulo.gaspar@gmail.com", 90, "growth", "paid", 3],
-  ["helena.rocha@yahoo.com", 96, "starter", "free", 0],
+  ["joao.mendes@gmail.com", 4, "starter", "paid", 1],
+  ["ana.paulo@hotmail.com", 9, "starter", "pending", 0],
+  ["carlos.neto@gmail.com", 15, "pro", "paid", 1],
+  ["luzia.baptista@outlook.com", 21, "starter", "pending", 0],
+  ["mauro.diogo@gmail.com", 28, "starter", "pending", 0],
+  ["telma.cardoso@gmail.com", 37, "starter", "paid", 2],
+  ["ivo.sequeira@yahoo.com", 44, "starter", "overdue", 1],
+  ["nadia.fonseca@gmail.com", 52, "pro", "paid", 2],
+  ["rui.tavares@hotmail.com", 61, "starter", "pending", 0],
+  ["sofia.lourenco@gmail.com", 66, "starter", "paid", 3],
+  ["edson.kiala@outlook.com", 73, "starter", "pending", 0],
+  ["marta.bento@gmail.com", 81, "pro", "pending", 2],
+  ["paulo.gaspar@gmail.com", 90, "starter", "paid", 3],
+  ["helena.rocha@yahoo.com", 96, "starter", "pending", 0],
 ];
 const EXAMPLE_CLICKS = 212;
 

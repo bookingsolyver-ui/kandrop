@@ -71,21 +71,11 @@ export function CurrentPlan({ data }: { data: BillingOverview }) {
           {t("name", { plan: names(data.plan) })}
         </h2>
         <p className="mt-2 text-ink-2">
-          {data.periodEnd
-            ? t("active", {
-                price: f.money(PLAN_PRICES[data.plan] * 100),
-                date: date(data.periodEnd),
-              })
-            : t("free")}
+          {t("active", {
+            price: f.money(PLAN_PRICES[data.plan] * 100),
+            date: date(data.periodEnd),
+          })}
         </p>
-        {data.lapsedPlan && (
-          <p
-            role="status"
-            className="mt-4 rounded-md border border-series-2 px-4 py-3 text-sm leading-snug"
-          >
-            {t("lapsed", { plan: names(data.lapsedPlan) })}
-          </p>
-        )}
       </div>
 
       <div role="group" aria-label={t("meters")} className="space-y-5 self-center">

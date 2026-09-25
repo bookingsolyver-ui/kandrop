@@ -7,11 +7,11 @@ import { z } from "zod";
  */
 export const COMMISSION_BPS = 2_000;
 
-export const REFERRAL_PLANS = ["starter", "growth", "scale"] as const;
+export const REFERRAL_PLANS = ["starter", "pro"] as const;
 export type ReferralPlan = (typeof REFERRAL_PLANS)[number];
 
-/** `free` = the referred store is on the free plan, so there is nothing to pay. */
-export const PAYMENT_STATES = ["paid", "pending", "overdue", "free"] as const;
+/** `pending` = signed up and chose a plan but has not paid yet (the payment gate holds them at checkout). */
+export const PAYMENT_STATES = ["paid", "pending", "overdue"] as const;
 export type PaymentState = (typeof PAYMENT_STATES)[number];
 
 /** A month of commission on a plan that costs `priceMinor`, in minor units (integers only). */

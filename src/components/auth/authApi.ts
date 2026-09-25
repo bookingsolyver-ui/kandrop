@@ -5,7 +5,8 @@ import { firstErrorPerField, type ValidationCode } from "@/shared/auth/schemas";
 export type FieldError = ValidationCode | "email_taken";
 
 export type AuthResult =
-  | { ok: true }
+  /** `subscription`: whether the account already has an active plan (decides where to go next). */
+  | { ok: true; subscription: "active" | "pending" }
   | {
       ok: false;
       /** Form-level failure code (translated through `Errors.<code>`). Absent when only fields failed. */
@@ -33,7 +34,10 @@ export async function postAuth(url: string, body: unknown): Promise<AuthResult> 
     // Offline / DNS / connection reset: nothing more specific to say than "try again".
     return { ok: false, code: "internal", fieldErrors: {} };
   }
-  if (res.ok) return { ok: true };
+  if (res.ok) {
+    const body = (await res.json().catch(() => ({}))) as { subscription?: "active" | "pending" };
+    return { ok: true, subscription: body.subscription === "active" ? "active" : "pending" };
+  }
 
   const payload = (await res.json().catch(() => ({}))) as ApiBody;
   const code = payload.error?.code ?? "internal";

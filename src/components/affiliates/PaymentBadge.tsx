@@ -5,7 +5,6 @@ const TONE: Record<PaymentState, string> = {
   paid: "text-up",
   pending: "text-ink-muted",
   overdue: "text-down",
-  free: "text-ink-muted",
 };
 
 /** The label carries the meaning; the glyph (tick / clock / exclamation / dash) is a second cue. */
@@ -38,7 +37,6 @@ export function PaymentBadge({ state }: { state: PaymentState }) {
             <path d="M6 3.5v3M6 8.5v.01" />
           </>
         )}
-        {state === "free" && <path d="M3 6h6" />}
       </svg>
       {t(state)}
     </span>

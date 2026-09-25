@@ -12,7 +12,7 @@ interface Options<F extends string> {
   initial: Record<F, string>;
   validate: (values: Record<F, string>) => Partial<Record<F, FieldError>>;
   submit: (values: Record<F, string>) => Promise<AuthResult>;
-  onSuccess: () => void;
+  onSuccess: (result: Extract<AuthResult, { ok: true }>) => void;
   /** After this form-level failure, empty `field` and put the cursor there (e.g. wrong password). */
   resetFieldOn?: { code: ApiErrorCode; field: F };
 }
@@ -54,7 +54,7 @@ export function useAuthForm<F extends string>(opts: Options<F>) {
 
     setPending(true);
     const result = await submit(values);
-    if (result.ok) return onSuccess(); // keep `pending` on: the page is about to navigate away
+    if (result.ok) return onSuccess(result); // keep `pending` on: the page is about to navigate away
     setPending(false);
 
     const fieldErrors = result.fieldErrors as Partial<Record<F, FieldError>>;

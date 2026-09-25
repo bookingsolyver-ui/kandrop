@@ -29,8 +29,9 @@ export function RegisterForm() {
     },
     // The UI language at sign-up becomes the account's language for future e-mails.
     submit: (values) => postAuth("/api/auth/register", { ...values, locale }),
+    // A new account has paid nothing: straight to the payment step, never to the dashboard.
     onSuccess: () => {
-      router.replace("/dashboard");
+      router.replace("/checkout");
       router.refresh();
     },
   });

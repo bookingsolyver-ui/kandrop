@@ -87,7 +87,8 @@
     "delivery_exists": "Cette commande a déjà une livraison attribuée.",
     "out_of_stock": "Ce produit est épuisé. Veuillez réessayer plus tard.",
     "plan_not_upgradable": "Vous avez déjà une offre supérieure active. Vous pouvez seulement renouveler votre offre ou passer à une offre supérieure.",
-    "lesson_locked": "Terminez les leçons précédentes pour débloquer celle-ci."
+    "lesson_locked": "Terminez les leçons précédentes pour débloquer celle-ci.",
+    "payment_required": "Un abonnement actif est nécessaire pour continuer. Choisissez une offre et finalisez le paiement."
   },
   "Auth": {
     "login": {
@@ -572,8 +573,7 @@
       "label": "Offre actuelle",
       "names": {
         "starter": "Starter",
-        "growth": "Growth",
-        "scale": "Scale"
+        "pro": "Pro"
       },
       "landingPages": "Landing pages",
       "products": "Produits",
@@ -841,13 +841,9 @@
           "name": "Starter",
           "tagline": "Pour valider votre premier produit."
         },
-        "growth": {
-          "name": "Growth",
-          "tagline": "Pour ceux qui vendent déjà et veulent accélérer."
-        },
-        "scale": {
-          "name": "Scale",
-          "tagline": "Pour les activités à gros volume."
+        "pro": {
+          "name": "Pro",
+          "tagline": "Pour ceux qui vendent sérieusement et veulent grandir sans limites."
         }
       },
       "features": {
@@ -1150,14 +1146,12 @@
     },
     "plans": {
       "starter": "Starter",
-      "growth": "Growth",
-      "scale": "Scale"
+      "pro": "Pro"
     },
     "payment": {
       "paid": "Payé",
       "pending": "En attente",
-      "overdue": "En retard",
-      "free": "Offre gratuite"
+      "overdue": "En retard"
     },
     "empty": {
       "title": "Aucun parrainé pour l’instant",
@@ -1262,9 +1256,7 @@
     "current": {
       "label": "Offre actuelle",
       "name": "Offre {plan}",
-      "free": "Gratuite, sans renouvellement",
       "active": "{price} par mois · active jusqu’au {date}",
-      "lapsed": "Votre offre {plan} est terminée. Vous êtes sur Starter jusqu’au renouvellement.",
       "landingPages": "{used} pages de vente utilisées sur {limit}",
       "products": "{used} produits utilisés sur {limit}",
       "landingPagesUnlimited": "Pages de vente illimitées · {used} en cours",
@@ -1434,49 +1426,31 @@
   },
   "Subscribe": {
     "meta": {
-      "title": "Souscrire à Kandrop",
-      "description": "Choisissez votre offre, saisissez vos informations et payez en kwanzas, euros ou dollars."
+      "title": "Choisissez votre offre",
+      "description": "Choisissez une offre et finalisez le paiement pour accéder au tableau de bord Kandrop."
     },
-    "banner": "Prototype du parcours d’abonnement : aucune donnée n’est enregistrée et rien n’est débité.",
     "skip": "Aller au contenu",
-    "currency": {
-      "label": "Devise",
-      "AOA": "Kz",
-      "EUR": "EUR",
-      "USD": "USD"
+    "gate": {
+      "banner": "Votre compte est créé. Choisissez une offre et payez pour accéder au tableau de bord.",
+      "signedIn": "Connecté en tant que {email}",
+      "logout": "Se déconnecter"
     },
     "steps": {
       "label": "Étapes de l’abonnement",
       "plan": "Offre",
-      "details": "Informations",
       "payment": "Paiement",
       "completed": "terminée"
     },
     "plan": {
       "title": "Choisissez votre offre",
-      "subtitle": "Payez au mois, sans engagement.",
+      "subtitle": "Payez au mois, sans engagement. Le tableau de bord s’ouvre dès que le paiement est confirmé.",
       "perMonth": "/ mois",
       "choose": "Choisir {plan}",
       "recommended": "Recommandée",
-      "rates": "Les montants en EUR et USD sont approximatifs, calculés à un taux de change de référence.",
-      "names": {
-        "starter": "Starter",
-        "pro": "Pro"
-      },
       "soon": "Bientôt"
     },
-    "details": {
-      "title": "Vos informations",
-      "subtitle": "Pour créer votre compte Kandrop.",
-      "fullName": "Nom complet",
-      "email": "E-mail",
-      "whatsapp": "WhatsApp",
-      "whatsappHint": "9 chiffres, sans l’indicatif.",
-      "password": "Mot de passe",
-      "passwordHint": "Au moins 10 caractères, avec des lettres et des chiffres.",
-      "province": "Province",
-      "provincePlaceholder": "Choisissez la province",
-      "continue": "Continuer vers le paiement",
+    "pay": {
+      "title": "Paiement",
       "back": "Changer d’offre"
     },
     "summary": {
@@ -1486,73 +1460,10 @@
       "total": "Total à payer",
       "change": "Changer d’offre"
     },
-    "pay": {
-      "title": "Paiement",
-      "back": "Retour aux informations",
-      "methods": "Moyen de paiement",
-      "tabs": {
-        "multicaixa": "Multicaixa Express",
-        "bank": "Virement bancaire",
-        "card": "Carte bancaire"
-      },
-      "phone": "Numéro de mobile",
-      "phoneHint": "Saisissez les 9 chiffres, sans l’indicatif.",
-      "multicaixaNote": "Vous recevrez une demande de confirmation dans l’application Multicaixa Express.",
-      "pay": "Payer {amount}",
-      "paying": "Traitement…",
-      "waitingTitle": "En attente de confirmation dans l’application Multicaixa Express",
-      "waitingBody": "Ouvrez l’application et approuvez le paiement de {amount}. Simulation : la confirmation arrive toute seule dans un instant.",
-      "bank": {
-        "title": "Virement bancaire",
-        "intro": "Virez {amount} sur le compte ci-dessous et joignez le justificatif.",
-        "iban": "IBAN",
-        "holder": "Titulaire",
-        "holderName": "Kandrop (exemple)",
-        "copy": "Copier l’IBAN",
-        "copied": "IBAN copié",
-        "example": "IBAN d’exemple : ne l’utilisez pas pour envoyer de l’argent.",
-        "proof": "Justificatif de virement",
-        "proofHint": "Image (JPG ou PNG) ou PDF, jusqu’à 5 Mo.",
-        "choose": "Choisir un fichier",
-        "replace": "Remplacer le fichier",
-        "remove": "Retirer",
-        "send": "Envoyer le justificatif",
-        "sending": "Envoi…",
-        "chosen": "Fichier choisi"
-      },
-      "card": {
-        "title": "Carte bancaire",
-        "note": "Champs d’exemple, reliés à aucun processeur de paiement : rien n’est envoyé ni enregistré.",
-        "test": "Carte de test : 4242 4242 4242 4242, une date future et n’importe quel CVC."
-      }
-    },
-    "validation": {
-      "name_required": "Indiquez votre nom.",
-      "name_too_short": "Ce nom semble trop court.",
-      "email_required": "Indiquez votre e-mail.",
-      "email_invalid": "Cet e-mail ne semble pas valide.",
-      "phone_required": "Indiquez votre numéro WhatsApp.",
-      "phone_invalid": "Saisissez un numéro angolais de 9 chiffres commençant par 9.",
-      "password_required": "Créez un mot de passe.",
-      "password_too_short": "Le mot de passe doit contenir au moins 10 caractères.",
-      "password_too_long": "Le mot de passe est trop long.",
-      "password_needs_letter_number": "Utilisez des lettres et des chiffres.",
-      "password_too_common": "Ce mot de passe est trop courant. Choisissez-en un autre.",
-      "password_contains_email": "Le mot de passe ne doit pas contenir votre e-mail.",
-      "province_required": "Choisissez votre province.",
-      "proof_required": "Joignez le justificatif du virement.",
-      "proof_type": "Le fichier doit être une image JPG ou PNG, ou un PDF.",
-      "proof_too_large": "Le fichier dépasse 5 Mo."
-    },
     "success": {
-      "title": "Abonnement {plan} enregistré",
-      "card": "Nous avons reçu le paiement de {amount}.",
-      "multicaixa": "Le paiement de {amount} a été confirmé.",
-      "bank": "Justificatif reçu. Dès que nous aurons confirmé le virement de {amount}, l’offre sera active.",
-      "bankTitle": "Justificatif reçu",
-      "prototype": "Ceci est une simulation : rien n’a été débité, aucun fichier n’a été envoyé et aucun compte n’a été créé.",
-      "register": "Créer un vrai compte",
-      "restart": "Recommencer"
+      "title": "Paiement confirmé",
+      "body": "L’offre {plan} est active. Ouverture de votre tableau de bord…",
+      "go": "Aller au tableau de bord"
     }
   }
 }

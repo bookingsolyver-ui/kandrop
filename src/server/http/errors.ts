@@ -23,6 +23,7 @@ export type ApiErrorCode =
   | "out_of_stock"
   | "plan_not_upgradable"
   | "lesson_locked"
+  | "payment_required"
   | "payments_unavailable"
   | "validation_failed"
   | "payload_too_large"
@@ -50,6 +51,7 @@ const STATUS: Record<ApiErrorCode, number> = {
   out_of_stock: 409,
   plan_not_upgradable: 409,
   lesson_locked: 409,
+  payment_required: 402,
   payments_unavailable: 503,
   validation_failed: 422,
   payload_too_large: 413,

@@ -20,7 +20,7 @@ export interface Feature {
 }
 
 export interface Tier {
-  key: "starter" | "growth" | "scale";
+  key: "starter" | "pro";
   /** Whole Kwanzas per month; `0` renders as "Free". */
   price: number;
   featured?: boolean;
@@ -28,11 +28,9 @@ export interface Tier {
 }
 
 /**
- * !! PLACEHOLDER PRICES !! There is no commercial decision behind the Growth and Scale numbers
- * — they are proposals so the page can be designed and reviewed. Confirm (or replace) them, and
- * the tax treatment (Angolan IVA), before this page is public. Starter's limits are the real
- * ones the platform already enforces (`plan/limits.ts`); the other limits are proposals too.
- * Features flagged `soon` are not built yet.
+ * The two plans (see `plan/limits.ts`: there is no free tier). Prices and Starter's limits are the
+ * real ones the platform uses; features flagged `soon` are not built yet and are tagged "Soon"
+ * rather than promised.
  */
 export const TIERS: Tier[] = [
   {
@@ -46,21 +44,9 @@ export const TIERS: Tier[] = [
     ],
   },
   {
-    key: "growth",
-    price: PLAN_PRICES.growth,
+    key: "pro",
+    price: PLAN_PRICES.pro,
     featured: true,
-    features: [
-      { key: "products", count: PLANS.growth.products },
-      { key: "landingPages", count: PLANS.growth.landingPages },
-      { key: "multicaixa" },
-      { key: "payouts" },
-      { key: "catalog", soon: true },
-      { key: "whatsapp", soon: true },
-    ],
-  },
-  {
-    key: "scale",
-    price: PLAN_PRICES.scale,
     features: [
       { key: "productsUnlimited" },
       { key: "landingPagesUnlimited" },

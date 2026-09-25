@@ -40,6 +40,13 @@ export async function request<T, F extends string = string>(
   if (res.ok && body.data !== undefined) return { ok: true, data: body.data };
 
   const code = body.error?.code ?? "internal";
+  // The plan ran out while the page was open: the payment gate applies here too. (Not on the
+  // `/checkout` page itself, whose own requests are the ones that start the payment.)
+  if (code === "payment_required" && !location.pathname.includes("/checkout")) {
+    // A full navigation on purpose: this runs outside React, and the server decides what comes next.
+    // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- no router here
+    window.location.href = `/${location.pathname.split("/")[1] || "pt"}/checkout`;
+  }
   return {
     ok: false,
     code,

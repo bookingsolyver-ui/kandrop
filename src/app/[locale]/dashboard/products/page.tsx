@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { requirePaidSession } from "@/server/auth/pageGate";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -20,6 +21,7 @@ export default async function ProductsPage({ params }: Props) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
+  await requirePaidSession(locale);
   const t = await getTranslations("Catalog");
 
   return (

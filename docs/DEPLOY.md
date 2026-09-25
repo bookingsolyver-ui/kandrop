@@ -78,7 +78,8 @@ Node ≥ 20.9. Health check: `GET /api/health` → `{"status":"ok"}`.
 
 1. `GET /api/health` is `ok`.
 2. Register, log in, open every menu item; nothing 500s (the logs would show `[api] unhandled error`).
-3. Create a product, open its public page (`/pt/loja/<slug>`), press "Buy now", pay in the sandbox
+3. Register: the account lands on `/checkout` (payment gate). Pay a plan in the sandbox (card `4242 4242 4242 4242`), then the
+   dashboard opens. Create a product, open its public page (`/pt/loja/<slug>`), press "Buy now", pay in the sandbox
    with `9xxxxxxxx` (Multicaixa confirms after 5–10 s through the signed webhook, so `APP_URL` must
    be reachable from the server itself).
 4. The logs show no `[env]` warning you did not expect.
