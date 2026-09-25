@@ -1431,5 +1431,128 @@
         "description": "Comment réagir à une livraison échouée et garder le client."
       }
     }
+  },
+  "Subscribe": {
+    "meta": {
+      "title": "Souscrire à Kandrop",
+      "description": "Choisissez votre offre, saisissez vos informations et payez en kwanzas, euros ou dollars."
+    },
+    "banner": "Prototype du parcours d’abonnement : aucune donnée n’est enregistrée et rien n’est débité.",
+    "skip": "Aller au contenu",
+    "currency": {
+      "label": "Devise",
+      "AOA": "Kz",
+      "EUR": "EUR",
+      "USD": "USD"
+    },
+    "steps": {
+      "label": "Étapes de l’abonnement",
+      "plan": "Offre",
+      "details": "Informations",
+      "payment": "Paiement",
+      "completed": "terminée"
+    },
+    "plan": {
+      "title": "Choisissez votre offre",
+      "subtitle": "Payez au mois, sans engagement.",
+      "perMonth": "/ mois",
+      "choose": "Choisir {plan}",
+      "recommended": "Recommandée",
+      "rates": "Les montants en EUR et USD sont approximatifs, calculés à un taux de change de référence.",
+      "names": {
+        "starter": "Starter",
+        "pro": "Pro"
+      },
+      "soon": "Bientôt"
+    },
+    "details": {
+      "title": "Vos informations",
+      "subtitle": "Pour créer votre compte Kandrop.",
+      "fullName": "Nom complet",
+      "email": "E-mail",
+      "whatsapp": "WhatsApp",
+      "whatsappHint": "9 chiffres, sans l’indicatif.",
+      "password": "Mot de passe",
+      "passwordHint": "Au moins 10 caractères, avec des lettres et des chiffres.",
+      "province": "Province",
+      "provincePlaceholder": "Choisissez la province",
+      "continue": "Continuer vers le paiement",
+      "back": "Changer d’offre"
+    },
+    "summary": {
+      "title": "Récapitulatif",
+      "plan": "Offre {plan}",
+      "billing": "Facturation mensuelle",
+      "total": "Total à payer",
+      "change": "Changer d’offre"
+    },
+    "pay": {
+      "title": "Paiement",
+      "back": "Retour aux informations",
+      "methods": "Moyen de paiement",
+      "tabs": {
+        "multicaixa": "Multicaixa Express",
+        "bank": "Virement bancaire",
+        "card": "Carte bancaire"
+      },
+      "phone": "Numéro de mobile",
+      "phoneHint": "Saisissez les 9 chiffres, sans l’indicatif.",
+      "multicaixaNote": "Vous recevrez une demande de confirmation dans l’application Multicaixa Express.",
+      "pay": "Payer {amount}",
+      "paying": "Traitement…",
+      "waitingTitle": "En attente de confirmation dans l’application Multicaixa Express",
+      "waitingBody": "Ouvrez l’application et approuvez le paiement de {amount}. Simulation : la confirmation arrive toute seule dans un instant.",
+      "bank": {
+        "title": "Virement bancaire",
+        "intro": "Virez {amount} sur le compte ci-dessous et joignez le justificatif.",
+        "iban": "IBAN",
+        "holder": "Titulaire",
+        "holderName": "Kandrop (exemple)",
+        "copy": "Copier l’IBAN",
+        "copied": "IBAN copié",
+        "example": "IBAN d’exemple : ne l’utilisez pas pour envoyer de l’argent.",
+        "proof": "Justificatif de virement",
+        "proofHint": "Image (JPG ou PNG) ou PDF, jusqu’à 5 Mo.",
+        "choose": "Choisir un fichier",
+        "replace": "Remplacer le fichier",
+        "remove": "Retirer",
+        "send": "Envoyer le justificatif",
+        "sending": "Envoi…",
+        "chosen": "Fichier choisi"
+      },
+      "card": {
+        "title": "Carte bancaire",
+        "note": "Champs d’exemple, reliés à aucun processeur de paiement : rien n’est envoyé ni enregistré.",
+        "test": "Carte de test : 4242 4242 4242 4242, une date future et n’importe quel CVC."
+      }
+    },
+    "validation": {
+      "name_required": "Indiquez votre nom.",
+      "name_too_short": "Ce nom semble trop court.",
+      "email_required": "Indiquez votre e-mail.",
+      "email_invalid": "Cet e-mail ne semble pas valide.",
+      "phone_required": "Indiquez votre numéro WhatsApp.",
+      "phone_invalid": "Saisissez un numéro angolais de 9 chiffres commençant par 9.",
+      "password_required": "Créez un mot de passe.",
+      "password_too_short": "Le mot de passe doit contenir au moins 10 caractères.",
+      "password_too_long": "Le mot de passe est trop long.",
+      "password_needs_letter_number": "Utilisez des lettres et des chiffres.",
+      "password_too_common": "Ce mot de passe est trop courant. Choisissez-en un autre.",
+      "password_contains_email": "Le mot de passe ne doit pas contenir votre e-mail.",
+      "province_required": "Choisissez votre province.",
+      "proof_required": "Joignez le justificatif du virement.",
+      "proof_type": "Le fichier doit être une image JPG ou PNG, ou un PDF.",
+      "proof_too_large": "Le fichier dépasse 5 Mo."
+    },
+    "success": {
+      "title": "Abonnement {plan} enregistré",
+      "card": "Nous avons reçu le paiement de {amount}.",
+      "multicaixa": "Le paiement de {amount} a été confirmé.",
+      "bank": "Justificatif reçu. Dès que nous aurons confirmé le virement de {amount}, l’offre sera active.",
+      "bankTitle": "Justificatif reçu",
+      "prototype": "Ceci est une simulation : rien n’a été débité, aucun fichier n’a été envoyé et aucun compte n’a été créé.",
+      "register": "Créer un vrai compte",
+      "restart": "Recommencer"
+    }
   }
 }

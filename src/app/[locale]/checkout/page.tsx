@@ -4,6 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { BlockedPanel } from "@/components/checkout/StatePanels";
 import { CheckoutView } from "@/components/checkout/CheckoutView";
+import { SubscribeFlow } from "@/components/subscribe/SubscribeFlow";
 import { redirect } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { getEnv } from "@/server/config/env";
@@ -14,20 +15,29 @@ export const dynamic = "force-dynamic";
 
 type Props = {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ session?: string }>;
+  searchParams: Promise<{ session?: string; demo?: string }>;
 };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
+  const { session, demo } = await searchParams;
+  if (!session && demo === undefined) {
+    // The public subscription funnel (no session): an ordinary, indexable page.
+    const s = await getTranslations({ locale, namespace: "Subscribe.meta" });
+    return { title: `${s("title")} — Kandrop`, description: s("description") };
+  }
   const t = await getTranslations({ locale, namespace: "Checkout" });
   // A payment page must never be indexed or shared through search results.
   return { title: `${t("title")} — Kandrop`, robots: { index: false, follow: false } };
 }
 
 /**
- * Public buyer page. Reached with `?session=<id>` created by the merchant (POST /api/checkout).
- * In sandbox mode, opening `/checkout` bare creates a demo cart so the flow can be tried at once.
+ * Two things live at this address:
+ *  - `/checkout` (no parameters): the public subscription funnel — plan, details, payment.
+ *  - `/checkout?session=<id>`: the buyer's payment page, created by a merchant (POST /api/checkout)
+ *    or by "Buy now" on a product page. In sandbox mode, `/checkout?demo` creates a demo cart so
+ *    that flow can be tried at once (it used to be what a bare `/checkout` did).
  */
 export default async function CheckoutPage({ params, searchParams }: Props) {
   const { locale } = await params;
@@ -35,12 +45,14 @@ export default async function CheckoutPage({ params, searchParams }: Props) {
   setRequestLocale(locale);
 
   const sandbox = getEnv().PAYMENTS_MODE === "sandbox";
-  const { session } = await searchParams;
+  const { session, demo } = await searchParams;
+
+  if (!session && demo === undefined) return <SubscribeFlow />;
 
   if (!session) {
     if (!sandbox) notFound();
-    const demo = createDemoCheckout();
-    redirect({ href: { pathname: "/checkout", query: { session: demo.id } }, locale });
+    const demoCheckout = createDemoCheckout();
+    redirect({ href: { pathname: "/checkout", query: { session: demoCheckout.id } }, locale });
   }
 
   const checkout = session ? getPublicCheckout(session) : null;

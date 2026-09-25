@@ -116,8 +116,8 @@ runtime that allows long-lived responses (not serverless functions with short ti
 
 - **Flow:** merchant creates a session → buyer opens `/checkout?session=chk_…` → pays. Mobile money
   (Multicaixa Express, Unitel Money) returns `pending` (202) and the page polls every 2 s until the payer
-  confirms on their phone; cards answer immediately. In sandbox, opening `/checkout` with no session
-  creates a demo cart.
+  confirms on their phone; cards answer immediately. In sandbox, opening `/checkout?demo` creates a demo
+  cart (a bare `/checkout` is now the subscription funnel, below).
 - **Server is the authority:** totals are computed from the items (a client-sent `total` is ignored); the
   phone (`9` + 8 digits, `+244`/`00244` accepted) and card (Luhn, expiry, CVC) are re-validated with the same
   Zod schemas the form uses (`shared/checkout/schemas.ts`).
@@ -529,6 +529,29 @@ or locked (lock). Any signed-in person can use it; progress belongs to the perso
   end), not by a button.
 - A `lesson_progress` table, certificates or badges if wanted, and analytics on drop-off per lesson. Nothing gates the course by
   plan today.
+
+## Subscription funnel (`/[locale]/checkout`, no parameters)
+
+A three-step signup-and-pay flow managed entirely in client state (no reloads): **Plan** (Starter / Pro cards, with a
+quiet Kz / EUR / USD toggle) → **Details** (name, e-mail, WhatsApp, password, province; a sticky purchase summary beside it)
+→ **Payment** (Kz: Multicaixa Express asks for the mobile number, or bank transfer shows an example IBAN and asks for the
+receipt; EUR/USD: a card form). Step 3 cannot be reached until step 2 validates (the stepper only offers steps you may reach,
+and every error is shown at once with focus on the first invalid field). Validation reuses the sign-up and checkout schemas
+(`shared/subscribe/schemas.ts`: password rules, Angolan mobile, Luhn card), so a valid entry here is a valid account later.
+
+- **It is a PROTOTYPE and says so** (banner on every step and a note on the last one): no request is made, nothing is
+  stored, no account is created and nothing is charged. The "provider" answers after a short simulated wait. The bank
+  transfer IBAN is fictional and marked as an example; the receipt is validated in the browser (JPG/PNG/PDF, 5 MB) and never uploaded.
+- **Same address as the buyer checkout**: `/checkout?session=…` is unchanged and `/checkout?demo` makes the sandbox demo
+  cart; only a bare `/checkout` shows the funnel.
+
+**Before this becomes real**
+
+- **The prices contradict the rest of the product.** 14.999 Kz (Starter) and 34.999 Kz (Pro) are the figures requested for
+  this flow; the billing page and the landing page use Starter (free), Growth and Scale (`plan/limits.ts`). Pick one catalogue.
+- EUR and USD amounts are derived at fixed reference rates (`REFERENCE_RATE`), not what a card processor would charge.
+- Wire it up: create the account (`/api/auth/register`), charge through the real provider, and set the plan
+  (`billing/activation`). A card form must be a processor's hosted field (Stripe Elements or similar), never our own inputs.
 
 ## Status
 
