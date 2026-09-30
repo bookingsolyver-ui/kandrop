@@ -210,7 +210,7 @@ export function KaiDashboard() {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-[1.6fr_1fr]">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
         <div className="flex flex-col">
           <div className={`${card} flex flex-1 flex-col`}>
             <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -247,7 +247,7 @@ export function KaiDashboard() {
                 {t("orderStatus.title")}
               </h3>
             </div>
-            <div className="flex flex-1 flex-col items-center gap-4 sm:flex-row sm:gap-6">
+            <div className="flex flex-1 flex-col items-center justify-center gap-4 sm:flex-row sm:flex-wrap sm:gap-6">
               {/* The gauge is a 180 px square whose lower part (the gap of the arc) is empty, so the
                   box is cropped to 156 px; the text is centred on the square, i.e. on the hole. */}
               <div className="relative h-[156px] w-[180px] shrink-0">
@@ -259,11 +259,11 @@ export function KaiDashboard() {
                       value: view?.status[r.key] ?? 0,
                     }))}
                   />
-                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center">
                     <span className="mono-num text-[34px] leading-none font-extrabold tracking-[-0.03em] text-[var(--ink-900)]">
                       {view?.statusTotal ?? 0}
                     </span>
-                    <span className="mt-1.5 max-w-[92px] text-center text-[10px] leading-tight text-[var(--ink-600)]">
+                    <span className="mt-1.5 max-w-[92px] text-[10px] leading-tight text-[var(--ink-600)]">
                       {t("orderStatus.caption")}
                     </span>
                   </div>
