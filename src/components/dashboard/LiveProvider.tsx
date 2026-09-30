@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useCallback, useEffect, useState, type ReactNode } from "react";
 import type { DashboardSummary } from "@/server/modules/dashboard/schema";
 
 export type LiveStatus = "connecting" | "live" | "reconnecting";
@@ -10,7 +10,13 @@ export interface LiveState {
   status: LiveStatus;
   /** `true` once a pushed update has arrived: values changing now are live changes. */
   isLive: boolean;
+  /** Fetches a fresh snapshot now (e.g. after loading demo data). */
+  refresh: () => Promise<void>;
 }
+
+/** How often the snapshot is re-read while the tab is visible: the push channel (SSE) is not
+ * available on every host (serverless), so this keeps the numbers and "updated at" moving. */
+const POLL_MS = 12_000;
 
 export const LiveContext = createContext<LiveState | null>(null);
 
@@ -29,6 +35,16 @@ export function LiveProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<LiveStatus>("connecting");
   const [pushes, setPushes] = useState(0);
 
+  const refresh = useCallback(async () => {
+    try {
+      const res = await fetch("/api/dashboard/summary", { cache: "no-store" });
+      if (!res.ok) throw new Error(String(res.status));
+      setSummary(((await res.json()) as { data: DashboardSummary }).data);
+    } catch (err) {
+      console.error("[dashboard] refresh failed", err);
+    }
+  }, []);
+
   useEffect(() => {
     const controller = new AbortController();
     // Leaving the page cancels in-flight requests with a TypeError that never reaches `abort()`:
@@ -37,13 +53,20 @@ export function LiveProvider({ children }: { children: ReactNode }) {
     const onLeave = () => (leaving = true);
     window.addEventListener("pagehide", onLeave);
 
-    fetch("/api/dashboard/summary", { signal: controller.signal })
-      .then((res) => (res.ok ? res.json() : Promise.reject(new Error(String(res.status)))))
-      .then((body: { data: DashboardSummary }) => setSummary((current) => current ?? body.data))
-      .catch((err: unknown) => {
-        if (!controller.signal.aborted && !leaving)
-          console.error("[dashboard] snapshot failed", err);
-      });
+    // Snapshot for first paint, then again every POLL_MS while the tab is visible (and at once when
+    // it becomes visible again).
+    const poll = () =>
+      fetch("/api/dashboard/summary", { signal: controller.signal, cache: "no-store" })
+        .then((res) => (res.ok ? res.json() : Promise.reject(new Error(String(res.status)))))
+        .then((body: { data: DashboardSummary }) => setSummary(body.data))
+        .catch((err: unknown) => {
+          if (!controller.signal.aborted && !leaving)
+            console.error("[dashboard] snapshot failed", err);
+        });
+    void poll();
+    const timer = setInterval(() => document.visibilityState === "visible" && void poll(), POLL_MS);
+    const onVisible = () => document.visibilityState === "visible" && void poll();
+    document.addEventListener("visibilitychange", onVisible);
 
     // EventSource reconnects on its own; the server advertises `retry: 3000`.
     const source = new EventSource("/api/dashboard/stream");
@@ -57,13 +80,15 @@ export function LiveProvider({ children }: { children: ReactNode }) {
 
     return () => {
       window.removeEventListener("pagehide", onLeave);
+      document.removeEventListener("visibilitychange", onVisible);
+      clearInterval(timer);
       controller.abort();
       source.close();
     };
   }, []);
 
   return (
-    <LiveContext.Provider value={{ summary, status, isLive: pushes > 0 }}>
+    <LiveContext.Provider value={{ summary, status, isLive: pushes > 0, refresh }}>
       {children}
     </LiveContext.Provider>
   );

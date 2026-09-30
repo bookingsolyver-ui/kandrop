@@ -19,6 +19,13 @@
     "fr": "Français"
   },
   "Dashboard": {
+    "demo": {
+      "title": "No data yet",
+      "body": "Your store has no sales yet. You can load demo data (orders, products, payouts…) to explore the dashboard. It is sample data and stays saved in the store.",
+      "action": "Load demo data",
+      "loading": "Loading…",
+      "error": "Could not load the demo data. Please try again."
+    },
     "eyebrow": "Merchant dashboard",
     "title": "Dashboard",
     "subtitle": "Your dropshipping store's performance, in real time.",

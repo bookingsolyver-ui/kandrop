@@ -1,7 +1,7 @@
 import { randomBytes } from "node:crypto";
-import { getEnv } from "@/server/config/env";
 import { orderRepository } from "@/server/modules/orders/repository";
 import { COURIERS, couriersFor } from "./couriers";
+import { isDemoStore } from "@/server/modules/store/demo";
 import { db, must, rows } from "@/server/db/client";
 import type { DeliveryRecord } from "./schema";
 
@@ -52,7 +52,7 @@ const fromRow = (row: Record<string, unknown>): DeliveryRecord => ({
 
 /** The demo orders that shipped already have their deliveries, consistent with their history. */
 async function seedIfDemo(storeId: string) {
-  if (!(storeId === "sto_demo" || getEnv().KANDROP_DEMO_EVENTS)) return;
+  if (!(await isDemoStore(storeId))) return;
   const { count, error } = await db()
     .from("deliveries")
     .select("id", { count: "exact", head: true })

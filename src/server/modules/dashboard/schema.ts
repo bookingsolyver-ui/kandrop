@@ -54,6 +54,8 @@ export const dashboardSummarySchema = z.object({
   revenueSeries: z.array(revenuePointSchema),
   topProducts: z.array(topProductSchema),
   updatedAt: z.iso.datetime(),
+  /** The numbers are sample data (demo mode), not the store's own. */
+  demo: z.boolean(),
 });
 
 export type DashboardSummary = z.infer<typeof dashboardSummarySchema>;

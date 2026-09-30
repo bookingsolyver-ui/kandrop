@@ -1,5 +1,5 @@
 import { randomBytes } from "node:crypto";
-import { getEnv } from "@/server/config/env";
+import { isDemoStore } from "@/server/modules/store/demo";
 import { db, must, rows } from "@/server/db/client";
 import type { PayoutRecord } from "./schema";
 
@@ -58,7 +58,7 @@ const fromRow = (row: Record<string, unknown>): PayoutRecord => ({
 
 /** Sandbox stores (or any store when demo mode is on) start with a month-by-month history. */
 async function seedIfDemo(storeId: string) {
-  if (!(storeId === "sto_demo" || getEnv().KANDROP_DEMO_EVENTS)) return;
+  if (!(await isDemoStore(storeId))) return;
   const { count, error } = await db()
     .from("payouts")
     .select("id", { count: "exact", head: true })

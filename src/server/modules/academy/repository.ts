@@ -1,5 +1,5 @@
+import { isDemoStore } from "@/server/modules/store/demo";
 import { db, must, rows } from "@/server/db/client";
-import { getEnv } from "@/server/config/env";
 import { LESSONS } from "@/shared/academy/course";
 
 /**
@@ -21,7 +21,7 @@ export const academyRepository = {
       await db().from("academy_profiles").select("example").eq("user_id", userId).maybeSingle()
     );
     if (!profile) {
-      const demo = storeId === "sto_demo" || getEnv().KANDROP_DEMO_EVENTS;
+      const demo = await isDemoStore(storeId);
       const now = Date.now();
       must(
         "academy_profiles.create",

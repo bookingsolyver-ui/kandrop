@@ -12,3 +12,10 @@ export async function getStore(session: Session): Promise<Store> {
   const owner = await userRepository.findById(session.userId);
   return storeRepository.ensure(session.storeId, owner?.storeName ?? "Loja Demo", session.userId);
 }
+
+/** "Load demo data": owner only. The store then shows sample numbers, orders, products and so on. */
+export async function enableDemoData(session: Session): Promise<void> {
+  if (session.role !== "owner") throw new ApiError("forbidden");
+  const store = await getStore(session); // makes sure the store row exists
+  await storeRepository.enableDemo(store.id);
+}

@@ -171,6 +171,7 @@ export function snapshot(): DashboardSummary {
         marginRate: p.marginRate,
       })),
     updatedAt: new Date().toISOString(),
+    demo: true,
   };
 }
 

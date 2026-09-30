@@ -1,6 +1,6 @@
 import { randomBytes } from "node:crypto";
-import { getEnv } from "@/server/config/env";
 import type { PaymentState, ReferralPlan } from "@/shared/affiliates/schemas";
+import { isDemoStore } from "@/server/modules/store/demo";
 import { db, isUniqueViolation, must, rows } from "@/server/db/client";
 import type { AffiliateRecord, ReferralRecord } from "./schema";
 
@@ -26,7 +26,6 @@ const EXAMPLES: Array<[string, number, ReferralPlan, PaymentState, number]> = [
 ];
 const EXAMPLE_CLICKS = 212;
 
-const isDemo = (storeId: string) => storeId === "sto_demo" || getEnv().KANDROP_DEMO_EVENTS;
 
 /** `Filipe de Oliveira` → `filipe`: first name, no accents, letters and digits only. */
 export function slugOf(fullName: string): string {
@@ -89,7 +88,7 @@ export const affiliateRepository = {
     const existing = await load(storeId);
     if (existing) return existing;
 
-    const example = isDemo(storeId);
+    const example = await isDemoStore(storeId);
     const base = slugOf(fullName);
     for (let n = 0; n < 110; n++) {
       const { error } = await db()

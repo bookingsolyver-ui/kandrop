@@ -19,6 +19,13 @@
     "fr": "Français"
   },
   "Dashboard": {
+    "demo": {
+      "title": "Pas encore de données",
+      "body": "Votre boutique n’a pas encore de ventes. Vous pouvez charger des données de démonstration (commandes, produits, retraits…) pour explorer le tableau de bord. Ce sont des données d’exemple, conservées dans la boutique.",
+      "action": "Charger les données de démonstration",
+      "loading": "Chargement…",
+      "error": "Impossible de charger les données de démonstration. Réessayez."
+    },
     "eyebrow": "Tableau de bord marchand",
     "title": "Tableau de bord",
     "subtitle": "La performance de votre boutique de dropshipping, en temps réel.",

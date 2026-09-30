@@ -19,6 +19,13 @@
     "fr": "Français"
   },
   "Dashboard": {
+    "demo": {
+      "title": "Ainda sem dados",
+      "body": "A sua loja ainda não tem vendas. Pode carregar dados de demonstração (encomendas, produtos, levantamentos…) para explorar o painel. São dados de exemplo e ficam guardados na loja.",
+      "action": "Carregar dados de demonstração",
+      "loading": "A carregar…",
+      "error": "Não foi possível carregar os dados de demonstração. Tente novamente."
+    },
     "eyebrow": "Painel do lojista",
     "title": "Dashboard",
     "subtitle": "O desempenho da sua loja de dropshipping, em tempo real.",

@@ -11,6 +11,10 @@ import { requirePaidSession } from "@/server/auth/pageGate";
 import { getMe } from "@/server/modules/auth/service";
 import { getStore } from "@/server/modules/store/service";
 
+// Never cached: every page of the merchant area depends on the session and on live data.
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 /** App shell for every page of the merchant area (`/[locale]/dashboard/**`). */
 export default async function DashboardLayout({
   children,

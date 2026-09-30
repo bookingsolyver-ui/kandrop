@@ -1,9 +1,9 @@
-import { getEnv } from "@/server/config/env";
 import { randomBytes } from "node:crypto";
 import { DEMO_PRODUCTS, KZ } from "@/server/modules/products/repository";
 import type { PaymentMethod } from "@/shared/checkout/schemas";
 import type { OrderStatus } from "@/shared/orders/schemas";
 import type { OrderAddress, OrderRecord } from "./schema";
+import { isDemoStore } from "@/server/modules/store/demo";
 import { db, must, rows } from "@/server/db/client";
 
 const HOUR = 60 * 60 * 1000;
@@ -214,7 +214,7 @@ const toRow = (o: OrderRecord) => ({
 
 /** Sandbox stores (or any store when demo mode is on) start with a consistent demo set. */
 async function seedIfDemo(storeId: string) {
-  if (!(storeId === "sto_demo" || getEnv().KANDROP_DEMO_EVENTS)) return;
+  if (!(await isDemoStore(storeId))) return;
   const { count, error } = await db()
     .from("orders")
     .select("id", { count: "exact", head: true })

@@ -22,6 +22,16 @@ export const storeRepository = {
     return row ? fromRow(row) : null;
   },
 
+  /** Switches the sample data on for the store (kept in `settings.demo`). */
+  async enableDemo(id: string): Promise<void> {
+    const row = must(
+      "stores.settings",
+      await db().from("stores").select("settings").eq("id", id).maybeSingle()
+    );
+    const settings = { ...((row?.settings as object | null) ?? {}), demo: true };
+    must("stores.enableDemo", await db().from("stores").update({ settings }).eq("id", id));
+  },
+
   /** Creates the store row the first time it is needed (a concurrent creation keeps the first). */
   async ensure(id: string, name: string, ownerId: string): Promise<Store> {
     must(

@@ -1,5 +1,6 @@
-import { randomBytes } from "node:crypto";
+import { createHash, randomBytes } from "node:crypto";
 import type { ProductCategory, ProductStatus } from "@/shared/products/schemas";
+import { isDemoStore } from "@/server/modules/store/demo";
 import { db, isUniqueViolation, must, rows } from "@/server/db/client";
 import type { LoadedImage, ProductRecord } from "./schema";
 
@@ -96,12 +97,19 @@ function fromRow(row: Record<string, unknown>): ProductRecord {
 const DEMO_STORE = "sto_demo";
 const DEMO_SLUGS = new Set(DEMO_PRODUCTS.map(([title]) => slugify(title)));
 
-/** The sandbox catalogue: created the first time the sandbox store is looked at. */
-async function seedDemo() {
+/** Public slugs are unique across stores: the sandbox store keeps the plain ones, others get a tail. */
+const demoSlug = (storeId: string, title: string) =>
+  storeId === DEMO_STORE
+    ? slugify(title)
+    : `${slugify(title)}-${createHash("sha1").update(storeId).digest("hex").slice(0, 6)}`;
+
+/** The demo catalogue: created the first time a demo store is looked at. */
+async function seedDemo(storeId: string) {
+  if (!(await isDemoStore(storeId))) return;
   const { count, error } = await db()
     .from("products")
     .select("id", { count: "exact", head: true })
-    .eq("store_id", DEMO_STORE);
+    .eq("store_id", storeId);
   if (error || count !== 0) return;
 
   const now = Date.now();
@@ -110,7 +118,7 @@ async function seedDemo() {
     const [stock, regular, minutes] = DEMO_OFFERS[i] ?? [null, null, null];
     return toRow({
       id: newProductId(),
-      storeId: DEMO_STORE,
+      storeId,
       title,
       description: "",
       category,
@@ -118,7 +126,7 @@ async function seedDemo() {
       costPrice: cost * KZ,
       salePrice: sale * KZ,
       images: [],
-      slug: slugify(title),
+      slug: demoSlug(storeId, title),
       stock,
       compareAtPrice: regular === null ? null : regular * KZ,
       offerEndsAt: minutes === null ? null : now + minutes * 60_000 - 1_000,
@@ -136,7 +144,7 @@ async function seedDemo() {
 /** Every call takes the `storeId` so tenant scoping cannot be forgotten by a caller. */
 export const productRepository = {
   async all(storeId: string): Promise<ProductRecord[]> {
-    if (storeId === DEMO_STORE) await seedDemo();
+    await seedDemo(storeId);
     const data = rows(
       "products.all",
       await db().from("products").select("*").eq("store_id", storeId)
@@ -145,7 +153,7 @@ export const productRepository = {
   },
 
   async get(storeId: string, id: string): Promise<ProductRecord | null> {
-    if (storeId === DEMO_STORE) await seedDemo();
+    await seedDemo(storeId);
     const data = must(
       "products.get",
       await db().from("products").select("*").eq("store_id", storeId).eq("id", id).maybeSingle()
@@ -209,7 +217,7 @@ export const productRepository = {
       must("products.bySlug", await db().from("products").select("*").eq("slug", slug).maybeSingle());
     let row = await find();
     if (!row && DEMO_SLUGS.has(slug)) {
-      await seedDemo();
+      await seedDemo(DEMO_STORE);
       row = await find();
     }
     return row ? fromRow(row) : null;

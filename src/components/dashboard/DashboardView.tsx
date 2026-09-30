@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { useState } from "react";
 import { Delta } from "./Delta";
 import { KpiCell, KpiSkeleton, KpiStrip } from "./KpiCard";
 import { Money } from "./Money";
@@ -12,7 +13,23 @@ import { useFormatters } from "./useFormatters";
 export function DashboardView() {
   const t = useTranslations("Dashboard");
   const f = useFormatters();
-  const { summary, isLive } = useDashboardLive();
+  const { summary, isLive, refresh } = useDashboardLive();
+  const [loading, setLoading] = useState(false);
+  const [failed, setFailed] = useState(false);
+
+  async function loadDemo() {
+    setLoading(true);
+    setFailed(false);
+    try {
+      const res = await fetch("/api/demo", { method: "POST" });
+      if (!res.ok) throw new Error(String(res.status));
+      await refresh();
+    } catch {
+      setFailed(true);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const change = (pct: number) => (
     <p>
@@ -35,6 +52,27 @@ export function DashboardView() {
           </p>
         )}
       </div>
+
+      {summary && !summary.demo && (
+        <section className="rounded-md border border-line bg-surface p-5">
+          <h2 className="font-medium">{t("demo.title")}</h2>
+          <p className="mt-1 max-w-xl text-sm text-ink-2">{t("demo.body")}</p>
+          <button
+            type="button"
+            onClick={loadDemo}
+            disabled={loading}
+            aria-busy={loading}
+            className="mt-4 min-h-11 rounded-md bg-action px-5 text-sm font-semibold text-on-action hover:opacity-90 disabled:opacity-60"
+          >
+            {loading ? t("demo.loading") : t("demo.action")}
+          </button>
+          {failed && (
+            <p role="alert" className="mt-3 text-sm text-down">
+              {t("demo.error")}
+            </p>
+          )}
+        </section>
+      )}
 
       {summary ? (
         <KpiStrip>
