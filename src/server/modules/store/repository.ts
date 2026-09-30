@@ -1,13 +1,20 @@
 import { db, must } from "@/server/db/client";
 import type { Store } from "./schema";
 
-const fromRow = (row: Record<string, unknown>): Store => ({
-  id: String(row.id),
-  name: String(row.name),
-  nif: row.nif === null ? null : String(row.nif),
-  currency: "AOA",
-  status: row.status as Store["status"],
-});
+/**
+ * The project's `stores` table is (id, name, slug, owner_id, settings jsonb, created_at): the tax
+ * number and the verification status live in `settings`, which has room for them.
+ */
+const fromRow = (row: Record<string, unknown>): Store => {
+  const settings = (row.settings ?? {}) as { nif?: string | null; status?: Store["status"] };
+  return {
+    id: String(row.id),
+    name: String(row.name),
+    nif: settings.nif ?? null,
+    currency: "AOA",
+    status: settings.status ?? "pending_verification",
+  };
+};
 
 export const storeRepository = {
   async get(id: string): Promise<Store | null> {
@@ -16,13 +23,18 @@ export const storeRepository = {
   },
 
   /** Creates the store row the first time it is needed (a concurrent creation keeps the first). */
-  async ensure(id: string, name: string): Promise<Store> {
+  async ensure(id: string, name: string, ownerId: string): Promise<Store> {
     must(
       "stores.ensure",
       await db()
         .from("stores")
-        .upsert({ id, name }, { onConflict: "id", ignoreDuplicates: true })
+        .upsert(
+          { id, name, slug: id, owner_id: ownerId, settings: {}, created_at: Date.now() },
+          { onConflict: "id", ignoreDuplicates: true }
+        )
     );
-    return (await this.get(id)) ?? { id, name, nif: null, currency: "AOA", status: "pending_verification" };
+    return (
+      (await this.get(id)) ?? { id, name, nif: null, currency: "AOA", status: "pending_verification" }
+    );
   },
 };

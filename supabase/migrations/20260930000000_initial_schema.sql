@@ -21,14 +21,15 @@ create table if not exists users (
 create unique index if not exists users_email_key on users (lower(email));
 create index if not exists users_store_idx on users (store_id);
 
+-- `stores` already existed in the project as (id, name, slug, owner_id, settings jsonb, created_at bigint),
+-- so it is not redefined here: the app keeps the tax number and status inside `settings`.
 create table if not exists stores (
   id         text primary key,
   name       text not null,
-  nif        text,
-  currency   text not null default 'AOA' check (currency = 'AOA'),
-  status     text not null default 'pending_verification'
-             check (status in ('pending_verification', 'active', 'suspended')),
-  created_at timestamptz not null default now()
+  slug       text not null,
+  owner_id   text not null,
+  settings   jsonb not null default '{}',
+  created_at bigint not null
 );
 
 create table if not exists products (

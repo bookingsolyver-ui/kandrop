@@ -10,5 +10,5 @@ export async function getStore(session: Session): Promise<Store> {
   const existing = await storeRepository.get(session.storeId);
   if (existing) return existing;
   const owner = await userRepository.findById(session.userId);
-  return storeRepository.ensure(session.storeId, owner?.storeName ?? "Loja Demo");
+  return storeRepository.ensure(session.storeId, owner?.storeName ?? "Loja Demo", session.userId);
 }

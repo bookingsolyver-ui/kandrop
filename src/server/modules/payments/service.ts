@@ -202,6 +202,26 @@ export async function cancelPayment(id: string): Promise<PublicPayment | null> {
   return toPublic(payment);
 }
 
+/**
+ * DEVELOPMENT SHORTCUT: forces a pending payment to `success`, exactly as if the provider had
+ * confirmed it (receipt issued, plan activated), so the flow can be tested without approving
+ * anything in Multicaixa Express. Refused (as "not found") unless the payments are simulated AND
+ * this is not a production build. A payment that is no longer pending is returned untouched.
+ */
+export async function simulatePaymentSuccess(id: string): Promise<PublicPayment | null> {
+  const env = getEnv();
+  if (env.PAYMENTS_MODE !== "sandbox" || env.NODE_ENV === "production") {
+    throw new ApiError("not_found");
+  }
+  const payment = await paymentRepository.get(id);
+  if (!payment) return null;
+  if ((await settle(payment)).status === "pending") {
+    payment.settle = undefined;
+    await markPaid(payment);
+  }
+  return toPublic(payment);
+}
+
 /** In sandbox mode a "bank" validates the transfer by itself after this long (a person would, for real). */
 const SANDBOX_TRANSFER_CONFIRM_MS = 20_000;
 

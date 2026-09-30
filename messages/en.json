@@ -154,7 +154,9 @@
       "phoneDecline": "End in 00 to simulate a decline on the phone.",
       "phoneFunds": "End in 01 to simulate insufficient funds.",
       "cardOk": "Card 4242 4242 4242 4242: payment approved.",
-      "cardDecline": "Card 4000 0000 0000 0002: card declined."
+      "cardDecline": "Card 4000 0000 0000 0002: card declined.",
+      "simulateHint": "[Test only] Instead of approving in the app, you can force the confirmation.",
+      "simulateSuccess": "Simulate approved payment"
     },
     "summary": {
       "title": "Order summary",

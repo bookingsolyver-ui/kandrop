@@ -84,49 +84,51 @@
 }
 
 /*
- * Merchant workspace (everything inside the dashboard shell): dark only, whatever the device
- * says, on a near-black graphite ("ink-900") with ONE accent — a neon green used for what is
- * active or actionable (current nav item, primary buttons, focus, live status) and nothing else.
- * Flat: no gradients, no glow. Same roles as above, so no component changes per theme.
+ * Merchant workspace (everything inside the dashboard shell) and the public marketing site: a LIGHT
+ * theme on a soft grey page with white cards, ONE accent (a burnt orange) for what is active or
+ * actionable (current nav item, primary buttons, focus, live status) and a purple second series for
+ * charts. Flat: no gradients, no glow (the marketing hero is the one exception, below). Same roles
+ * as above, so no component changes per theme. The accent is deliberately darker than a bright
+ * orange: white text on #ff6b35 is only 2.9:1, on this one 5.2:1.
  *
- * Contrast (WCAG 2.2, computed): ink 17:1 · ink-2 10:1 · ink-muted 6.3:1 · accent on page 13.7:1 ·
- * button label on accent 13.1:1 · field border 4:1 (needs 3:1). Buyer-facing pages (checkout,
+ * Contrast (WCAG 2.2, on white): ink 17:1 · ink-2 8:1 · ink-muted 5.3:1 · accent 5.2:1 ·
+ * button label on accent 5.2:1 · field border 3.4:1 (needs 3:1). Buyer-facing pages (checkout,
  * receipt) are not in the workspace and keep the light/dark themes above.
  */
 .workspace,
 .marketing {
-  color-scheme: dark;
-  --page: #0a0b0c; /* ink-900 */
-  --surface: #111315;
-  --ink: #f1f3f2;
-  --ink-2: #b9c0bc;
-  --ink-muted: #8f9893;
-  --line: #262a2d;
-  --axis: #3a4145;
-  --field: #6e767c;
-  --brand: #0f1c15; /* the one tinted panel: the wallet balance, the highlighted KPI */
-  --on-brand: #f1f3f2;
-  --on-brand-muted: #a9b5ae;
-  --accent: #3df58f;
+  color-scheme: light;
+  --page: #f6f6f8;
+  --surface: #ffffff;
+  --ink: #17171c;
+  --ink-2: #464652;
+  --ink-muted: #666674;
+  --line: #e6e6ea;
+  --axis: #cdcdd5;
+  --field: #868694;
+  --brand: #fff1e8; /* the one tinted panel: the wallet balance, the highlighted KPI */
+  --on-brand: #17171c;
+  --on-brand-muted: #5a4a40;
+  --accent: #c2410c;
   --select: var(--accent);
   --action: var(--accent);
-  --on-action: #03150b;
+  --on-action: #ffffff;
   --focus: var(--accent);
-  --series-1: #4a87d8;
-  --series-2: #b8821b;
-  --up: #3ed17e;
-  --down: #ff7a7a;
+  --series-1: #6d28d9;
+  --series-2: #c2410c;
+  --up: #15803d;
+  --down: #b91c1c;
   background: var(--page);
   color: var(--ink);
 }
 
-/* Overscroll, scrollbars and native controls must be dark too, not just the shell's own box. */
+/* Overscroll, scrollbars and native controls follow the workspace theme, not just the shell's own box. */
 html:has(.workspace),
 body:has(.workspace),
 html:has(.marketing),
 body:has(.marketing) {
-  color-scheme: dark;
-  background: #0a0b0c;
+  color-scheme: light;
+  background: #f6f6f8;
 }
 
 @theme inline {
@@ -259,7 +261,7 @@ h2 {
 }
 
 /*
- * Public marketing site (`.marketing`, same dark tokens as the workspace). The one place a soft
+ * Public marketing site (`.marketing`, same tokens as the workspace). The one place a soft
  * glow of the accent is allowed — behind the hero and behind the recommended plan — because a
  * sales page has to draw the eye; everywhere else the accent stays flat. Every animation runs
  * only when the visitor has not asked for reduced motion, and nothing is hidden without it: with

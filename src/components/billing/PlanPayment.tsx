@@ -6,6 +6,7 @@ import { SandboxBanner } from "@/components/checkout/CheckoutChrome";
 import { PaymentForm } from "@/components/checkout/PaymentForm";
 import { PendingPanel } from "@/components/checkout/StatePanels";
 import { TransferPendingPanel } from "@/components/checkout/TransferPendingPanel";
+import { simulatePaymentSuccess } from "@/components/checkout/simulateApi";
 import { usePaymentPolling } from "@/components/checkout/usePaymentPolling";
 import { useFormatters } from "@/components/dashboard/useFormatters";
 import type { ApiErrorCode } from "@/server/http/errors";
@@ -103,6 +104,12 @@ export function PlanPayment({
     }
   }
 
+  async function simulate() {
+    if (phase.kind !== "pending") return;
+    const paid = await simulatePaymentSuccess(phase.payment.id);
+    if (paid) apply(paid);
+  }
+
   if (phase.kind === "starting") {
     return (
       <p role="status" className="mt-8 mb-6 text-ink-2">
@@ -155,6 +162,7 @@ export function PlanPayment({
           storeName="Kandrop"
           onCancel={cancel}
           cancelling={cancelling}
+          onSimulate={sandbox ? simulate : undefined}
         />
       </div>
     );

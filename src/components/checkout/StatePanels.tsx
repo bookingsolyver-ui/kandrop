@@ -72,12 +72,15 @@ export function PendingPanel({
   storeName,
   onCancel,
   cancelling,
+  onSimulate,
 }: {
   payment: PublicPayment;
   amountLabel: string;
   storeName: string;
   onCancel: () => void;
   cancelling: boolean;
+  /** Sandbox only: confirms the payment at once, in place of the payer's approval. */
+  onSimulate?: () => void;
 }) {
   const t = useTranslations("Checkout");
   const app = t(`method.${payment.method}.name`);
@@ -137,6 +140,19 @@ export function PendingPanel({
         {t("trust.noPin")}
       </p>
       <p className="mt-2 text-[13px] text-ink-muted">{t("pending.waiting")}</p>
+
+      {onSimulate && (
+        <div className="mx-auto mt-6 max-w-sm rounded-md border border-dashed border-field p-3">
+          <p className="text-[12px] text-ink-muted">{t("sandbox.simulateHint")}</p>
+          <button
+            type="button"
+            onClick={onSimulate}
+            className="mt-2 min-h-11 w-full rounded-md border border-field px-3 text-sm font-medium hover:bg-line/40"
+          >
+            {t("sandbox.simulateSuccess")}
+          </button>
+        </div>
+      )}
 
       <button
         type="button"

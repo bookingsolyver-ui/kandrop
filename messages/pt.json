@@ -154,7 +154,9 @@
       "phoneDecline": "Termine em 00 para simular uma recusa no telemóvel.",
       "phoneFunds": "Termine em 01 para simular saldo insuficiente.",
       "cardOk": "Cartão 4242 4242 4242 4242: pagamento aprovado.",
-      "cardDecline": "Cartão 4000 0000 0000 0002: cartão recusado."
+      "cardDecline": "Cartão 4000 0000 0000 0002: cartão recusado.",
+      "simulateHint": "[Só em teste] Em vez de aprovar na app, pode forçar a confirmação.",
+      "simulateSuccess": "Simular pagamento aprovado"
     },
     "summary": {
       "title": "Resumo da encomenda",

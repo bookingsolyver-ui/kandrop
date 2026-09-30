@@ -9,6 +9,7 @@ import type { FailureCode, PublicPayment } from "@/server/modules/payments/schem
 import { CheckoutHeader, SandboxBanner, TrustFooter } from "./CheckoutChrome";
 import { OrderSummary } from "./OrderSummary";
 import { PaymentForm } from "./PaymentForm";
+import { simulatePaymentSuccess } from "./simulateApi";
 import { usePaymentPolling } from "./usePaymentPolling";
 import { BlockedPanel, PendingPanel, RedirectingPanel } from "./StatePanels";
 
@@ -74,6 +75,12 @@ export function CheckoutView({
     }
   }
 
+  async function simulate() {
+    if (phase.kind !== "pending") return;
+    const paid = await simulatePaymentSuccess(phase.payment.id);
+    if (paid) apply(paid);
+  }
+
   return (
     <div className="min-h-screen pb-28 lg:pb-12">
       <CheckoutHeader storeName={checkout.storeName} />
@@ -112,6 +119,7 @@ export function CheckoutView({
               storeName={checkout.storeName}
               onCancel={cancel}
               cancelling={cancelling}
+              onSimulate={sandbox ? simulate : undefined}
             />
           )}
           {phase.kind === "redirecting" && <RedirectingPanel />}
