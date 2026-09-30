@@ -1797,5 +1797,12 @@
       "headlineA": "Pare de vender para os outros.",
       "headlineB": "Fique com a sua margem."
     }
+  },
+  "Crash": {
+    "title": "Algo correu mal",
+    "body": "Ocorreu um erro inesperado neste ecrã. Pode tentar de novo; se continuar, envie-nos a mensagem abaixo.",
+    "retry": "Tentar novamente",
+    "home": "Ir para o início",
+    "reference": "Referência"
   }
 }

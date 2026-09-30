@@ -1797,5 +1797,12 @@
       "headlineA": "Arrêtez de vendre pour les autres.",
       "headlineB": "Gardez votre marge."
     }
+  },
+  "Crash": {
+    "title": "Un problème est survenu",
+    "body": "Une erreur inattendue s’est produite sur cet écran. Vous pouvez réessayer ; si cela continue, envoyez-nous le message ci-dessous.",
+    "retry": "Réessayer",
+    "home": "Aller à l’accueil",
+    "reference": "Référence"
   }
 }

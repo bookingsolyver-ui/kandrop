@@ -1797,5 +1797,12 @@
       "headlineA": "Stop selling for others.",
       "headlineB": "Keep your margin."
     }
+  },
+  "Crash": {
+    "title": "Something went wrong",
+    "body": "An unexpected error happened on this screen. You can try again; if it keeps happening, send us the message below.",
+    "retry": "Try again",
+    "home": "Go to the home page",
+    "reference": "Reference"
   }
 }
