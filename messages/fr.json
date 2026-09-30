@@ -1761,5 +1761,41 @@
       "conversion": "{rate} % de conversion",
       "sales": "ventes"
     }
+  },
+  "Login": {
+    "signupPrompt": "Pas encore de compte ?",
+    "signupLink": "Inscrivez-vous",
+    "welcome": "Bon retour",
+    "headingA": "Accédez à votre",
+    "headingB": "compte",
+    "sub": "Continuez à développer votre boutique de dropshipping.",
+    "emailPlaceholder": "votreemail@domaine.com",
+    "passwordPlaceholder": "Votre mot de passe",
+    "or": "ou",
+    "signupCta": "Inscrivez-vous maintenant !",
+    "secure": "Connexion sécurisée (HTTPS)",
+    "support": "Support humain",
+    "example": "Exemple",
+    "panel": {
+      "tag": "Conçu pour les vendeurs en Angola",
+      "headlineA": "Arrêtez de vendre",
+      "headlineB": "pour les autres.",
+      "headlineC": "Gardez votre marge.",
+      "body": "Kandrop relie votre boutique aux paiements en kwanzas, à la logistique et aux automatisations WhatsApp — le tout dans un seul tableau de bord.",
+      "saleLabel": "Félicitations, vous avez vendu !",
+      "saleAmount": "26 856,00 Kz",
+      "saleNote": "Paiement confirmé à l’instant • Multicaixa Express",
+      "goal": "Objectif du jour : 35 000,00 Kz",
+      "paid": "Payé",
+      "statA": "Kz",
+      "statALabel": "Paiements en kwanzas",
+      "statB": "WhatsApp",
+      "statBLabel": "Automatisations des ventes"
+    },
+    "mobile": {
+      "create": "Créer un compte",
+      "headlineA": "Arrêtez de vendre pour les autres.",
+      "headlineB": "Gardez votre marge."
+    }
   }
 }

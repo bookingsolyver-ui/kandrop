@@ -151,6 +151,13 @@ body:has(.marketing) {
   --color-series-2: var(--series-2);
   --color-up: var(--up);
   --color-down: var(--down);
+  /* shadcn-style names used by the sign-in page */
+  --color-primary: var(--kai-orange);
+  --color-border: var(--ink-200);
+  --color-card: #ffffff;
+  --color-input: #ffffff;
+  --color-foreground: var(--ink-900);
+  --color-muted-foreground: var(--ink-500);
   --font-sans: var(--font-hanken), system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-serif: var(--font-newsreader), Georgia, serif;
 }

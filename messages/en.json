@@ -1761,5 +1761,41 @@
       "conversion": "{rate}% conversion",
       "sales": "sales"
     }
+  },
+  "Login": {
+    "signupPrompt": "Don’t have an account?",
+    "signupLink": "Sign up",
+    "welcome": "Welcome back",
+    "headingA": "Access your",
+    "headingB": "account",
+    "sub": "Keep growing your dropshipping store.",
+    "emailPlaceholder": "youremail@domain.com",
+    "passwordPlaceholder": "Your password",
+    "or": "or",
+    "signupCta": "Sign up now!",
+    "secure": "Secure connection (HTTPS)",
+    "support": "Human support",
+    "example": "Example",
+    "panel": {
+      "tag": "Built for sellers in Angola",
+      "headlineA": "Stop selling",
+      "headlineB": "for others.",
+      "headlineC": "Keep your margin.",
+      "body": "Kandrop connects your store to payments in Kwanzas, logistics and WhatsApp automations — all in one dashboard.",
+      "saleLabel": "Congratulations, you sold!",
+      "saleAmount": "Kz 26,856.00",
+      "saleNote": "Payment confirmed now • Multicaixa Express",
+      "goal": "Daily goal: Kz 35,000.00",
+      "paid": "Paid",
+      "statA": "Kz",
+      "statALabel": "Payments in Kwanzas",
+      "statB": "WhatsApp",
+      "statBLabel": "Sales automations"
+    },
+    "mobile": {
+      "create": "Sign up",
+      "headlineA": "Stop selling for others.",
+      "headlineB": "Keep your margin."
+    }
   }
 }
