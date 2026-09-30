@@ -75,13 +75,13 @@ export default async function LandingPage({ params }: Props) {
               className="enter mt-10 flex flex-col gap-3 sm:flex-row"
               style={{ "--i": 3 } as React.CSSProperties}
             >
-              <BrandLink href="/register" size="lg">
+              <BrandLink href="/register" size="lg" className="w-full sm:w-auto">
                 {t("primary")}
                 <ArrowIcon />
               </BrandLink>
               <Link
                 href="/#planos"
-                className="inline-flex h-14 items-center justify-center rounded-xl border border-[var(--ink-200)] bg-white px-8 text-base font-semibold text-[var(--ink-900)] transition-colors hover:border-[var(--ink-300)]"
+                className="inline-flex h-14 w-full items-center justify-center rounded-xl border border-[var(--ink-200)] bg-white px-8 text-base font-semibold sm:w-auto text-[var(--ink-900)] transition-colors hover:border-[var(--ink-300)]"
               >
                 {t("secondary")}
               </Link>

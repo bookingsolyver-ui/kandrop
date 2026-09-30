@@ -25,7 +25,7 @@ const LOGO = (
     width={1024}
     height={206}
     priority
-    className="h-8 w-auto object-contain"
+    className="h-6 w-auto object-contain min-[400px]:h-7 md:h-8"
   />
 );
 
@@ -50,7 +50,7 @@ export function MarketingNav() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--ink-200)] bg-white/90 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-7xl items-center gap-10 px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 sm:px-6 md:gap-10 lg:px-8">
         <Link href="/" aria-label="Kandrop" className="inline-flex shrink-0 items-center rounded-md">
           {LOGO}
         </Link>
@@ -75,13 +75,16 @@ export function MarketingNav() {
           </ul>
         </nav>
 
-        <div className="ml-auto flex items-center gap-3">
+        <div className="ml-auto flex items-center gap-2 md:gap-3">
           <div className="hidden md:block">
             <LocaleSwitcher className={LOCALE_PILL} />
           </div>
-          <BrandLink href="/login" size="sm" className="hidden sm:inline-flex">
-            {t("login")}
-          </BrandLink>
+          {/* A wrapper, not `hidden` on the link itself: the button's own `inline-flex` would win. */}
+          <div className="hidden md:block">
+            <BrandLink href="/login" size="sm">
+              {t("login")}
+            </BrandLink>
+          </div>
           <BrandLink href="/register" size="sm">
             {t("start")}
           </BrandLink>
@@ -90,7 +93,7 @@ export function MarketingNav() {
             onClick={() => sheet.current?.showModal()}
             aria-label={t("open")}
             aria-haspopup="dialog"
-            className="grid size-11 place-items-center rounded-full border border-[var(--ink-200)] bg-white text-[var(--ink-700)] hover:text-[var(--ink-900)] md:hidden"
+            className="grid size-10 shrink-0 place-items-center rounded-full border border-[var(--ink-200)] bg-white text-[var(--ink-700)] hover:text-[var(--ink-900)] md:hidden"
           >
             <MenuIcon />
           </button>
