@@ -263,12 +263,12 @@ export function LoginScreen() {
               </div>
 
               <div className="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 sm:mt-5">
-                <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                <span className="inline-flex items-center gap-1.5 text-xs whitespace-nowrap text-muted-foreground">
                   <ShieldCheckIcon />
                   {t("secure")}
                 </span>
                 <span aria-hidden className="hidden h-3 w-px bg-border sm:block" />
-                <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                <span className="inline-flex items-center gap-1.5 text-xs whitespace-nowrap text-muted-foreground">
                   <CheckCircleIcon className="text-emerald-600" />
                   {t("support")}
                 </span>
