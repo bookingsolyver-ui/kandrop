@@ -1804,5 +1804,36 @@
     "retry": "Tentar novamente",
     "home": "Ir para o início",
     "reference": "Referência"
+  },
+  "Register": {
+    "badge": "Registo rápido",
+    "headingA": "Crie a sua",
+    "headingB": "conta",
+    "sub": "Comece a vender em minutos. Sem fidelidade: pague só 30 dias de cada vez.",
+    "fullNamePlaceholder": "O seu nome",
+    "storePlaceholder": "O nome da sua loja",
+    "passwordPlaceholder": "Crie uma palavra-passe",
+    "loginPrompt": "Já tem conta?",
+    "loginLink": "Entrar",
+    "panel": {
+      "tag": "Crie a conta em 1 minuto",
+      "headlineA": "Comece hoje.",
+      "headlineB": "Venda amanhã.",
+      "body": "Sem fidelidade. Escolha o seu plano, venda sem stock e receba em Kwanzas na sua conta bancária angolana.",
+      "saleLabel": "A sua primeira venda",
+      "saleAmount": "Kz 19.700,00",
+      "saleNote": "Pagamento confirmado • Multicaixa Express",
+      "statA": "Kz",
+      "statALabel": "Pagamentos em Kwanzas",
+      "statB": "30 dias",
+      "statBLabel": "Sem fidelidade",
+      "statC": "24/7",
+      "statCLabel": "Suporte humano"
+    },
+    "mobile": {
+      "login": "Entrar",
+      "headlineA": "Comece hoje.",
+      "headlineB": "Venda amanhã."
+    }
   }
 }

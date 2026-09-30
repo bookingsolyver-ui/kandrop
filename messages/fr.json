@@ -1804,5 +1804,36 @@
     "retry": "Réessayer",
     "home": "Aller à l’accueil",
     "reference": "Référence"
+  },
+  "Register": {
+    "badge": "Inscription rapide",
+    "headingA": "Créez votre",
+    "headingB": "compte",
+    "sub": "Commencez à vendre en quelques minutes. Sans engagement : payez 30 jours à la fois.",
+    "fullNamePlaceholder": "Votre nom",
+    "storePlaceholder": "Le nom de votre boutique",
+    "passwordPlaceholder": "Créez un mot de passe",
+    "loginPrompt": "Déjà un compte ?",
+    "loginLink": "Se connecter",
+    "panel": {
+      "tag": "Créez votre compte en 1 minute",
+      "headlineA": "Commencez aujourd’hui.",
+      "headlineB": "Vendez demain.",
+      "body": "Sans engagement. Choisissez votre offre, vendez sans stock et soyez payé en kwanzas sur votre compte bancaire angolais.",
+      "saleLabel": "Votre première vente",
+      "saleAmount": "19 700,00 Kz",
+      "saleNote": "Paiement confirmé • Multicaixa Express",
+      "statA": "Kz",
+      "statALabel": "Paiements en kwanzas",
+      "statB": "30 jours",
+      "statBLabel": "Sans engagement",
+      "statC": "24/7",
+      "statCLabel": "Support humain"
+    },
+    "mobile": {
+      "login": "Se connecter",
+      "headlineA": "Commencez aujourd’hui.",
+      "headlineB": "Vendez demain."
+    }
   }
 }

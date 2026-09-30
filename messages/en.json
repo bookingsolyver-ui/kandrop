@@ -1804,5 +1804,36 @@
     "retry": "Try again",
     "home": "Go to the home page",
     "reference": "Reference"
+  },
+  "Register": {
+    "badge": "Quick sign-up",
+    "headingA": "Create your",
+    "headingB": "account",
+    "sub": "Start selling in minutes. No lock-in: pay only 30 days at a time.",
+    "fullNamePlaceholder": "Your name",
+    "storePlaceholder": "Your store’s name",
+    "passwordPlaceholder": "Create a password",
+    "loginPrompt": "Already have an account?",
+    "loginLink": "Sign in",
+    "panel": {
+      "tag": "Create your account in 1 minute",
+      "headlineA": "Start today.",
+      "headlineB": "Sell tomorrow.",
+      "body": "No lock-in. Pick your plan, sell without stock and get paid in Kwanzas into your Angolan bank account.",
+      "saleLabel": "Your first sale",
+      "saleAmount": "Kz 19,700.00",
+      "saleNote": "Payment confirmed • Multicaixa Express",
+      "statA": "Kz",
+      "statALabel": "Payments in Kwanzas",
+      "statB": "30 days",
+      "statBLabel": "No lock-in",
+      "statC": "24/7",
+      "statCLabel": "Human support"
+    },
+    "mobile": {
+      "login": "Sign in",
+      "headlineA": "Start today.",
+      "headlineB": "Sell tomorrow."
+    }
   }
 }
