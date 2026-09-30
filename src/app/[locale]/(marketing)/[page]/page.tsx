@@ -5,8 +5,8 @@ import { notFound } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 
-/** Public pages that exist in the navigation but are not written yet: `/afiliados`, `/sobre`. */
-const PAGES = { afiliados: "affiliates", sobre: "about" } as const;
+/** Public pages in the navigation that are not written yet: `/sobre` (`/afiliados` has its own page). */
+const PAGES = { sobre: "about" } as const;
 type Props = { params: Promise<{ locale: string; page: string }> };
 
 const keyOf = (page: string) => (PAGES as Record<string, "affiliates" | "about">)[page];

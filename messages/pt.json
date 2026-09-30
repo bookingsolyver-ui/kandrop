@@ -1835,5 +1835,72 @@
       "headlineA": "Comece hoje.",
       "headlineB": "Venda amanhã."
     }
+  },
+  "AffiliatesPage": {
+    "meta": {
+      "title": "Programa de Afiliados — Kandrop",
+      "description": "Recomende a Kandrop a outros lojistas e ganhe uma comissão recorrente por cada subscrição paga."
+    },
+    "hero": {
+      "eyebrow": "Programa de afiliados",
+      "titleA": "Ganhe dinheiro a recomendar",
+      "titleB": "a Kandrop.",
+      "subtitle": "Partilhe o seu link com quem quer vender online em Angola e receba uma comissão recorrente por cada lojista que subscrever um plano.",
+      "cta": "Quero ser afiliado",
+      "secondary": "Ver como funciona",
+      "note": "Registo gratuito. Sem fidelidade.",
+      "panel": {
+        "title": "O seu link de afiliado",
+        "clicks": "Cliques",
+        "signups": "Registos",
+        "paying": "A pagar",
+        "clicksValue": "212",
+        "signupsValue": "14",
+        "payingValue": "6",
+        "example": "Exemplo ilustrativo, com dados fictícios."
+      }
+    },
+    "how": {
+      "eyebrow": "Como funciona",
+      "title": "Três passos entre si e a primeira comissão.",
+      "steps": {
+        "signup": {
+          "title": "Registe-se gratuitamente",
+          "body": "Crie a sua conta Kandrop em menos de um minuto. O seu link exclusivo fica disponível no separador Afiliados do painel."
+        },
+        "share": {
+          "title": "Partilhe o seu link exclusivo",
+          "body": "Envie-o por WhatsApp, redes sociais ou na sua comunidade. Cada visita ao seu link é contada no painel."
+        },
+        "earn": {
+          "title": "Receba comissões",
+          "body": "Por cada lojista que subscreva um plano através do seu link, acumula comissão todos os meses em que ele pagar."
+        }
+      }
+    },
+    "perks": {
+      "eyebrow": "Vantagens",
+      "title": "Feito para quem recomenda, não para quem desiste.",
+      "items": {
+        "recurring": {
+          "title": "Comissões recorrentes",
+          "body": "Não ganha uma vez: enquanto o lojista que trouxe continuar a pagar o plano, a sua comissão volta todos os meses."
+        },
+        "payouts": {
+          "title": "Pagamentos rápidos em Kwanzas",
+          "body": "Levante o seu saldo para a sua conta bancária angolana, em Kwanzas, sem burocracia."
+        },
+        "dashboard": {
+          "title": "Dashboard em tempo real",
+          "body": "Acompanhe cliques, registos e quem já está a pagar, com os números a atualizar sozinhos."
+        }
+      }
+    },
+    "final": {
+      "titleA": "Comece hoje a",
+      "titleB": "recomendar a Kandrop.",
+      "body": "Crie a sua conta, copie o seu link e partilhe-o. O resto acompanha no painel.",
+      "cta": "Quero ser afiliado"
+    }
   }
 }

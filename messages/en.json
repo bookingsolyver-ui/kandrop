@@ -1835,5 +1835,72 @@
       "headlineA": "Start today.",
       "headlineB": "Sell tomorrow."
     }
+  },
+  "AffiliatesPage": {
+    "meta": {
+      "title": "Affiliate Programme — Kandrop",
+      "description": "Recommend Kandrop to other merchants and earn a recurring commission on every paid subscription."
+    },
+    "hero": {
+      "eyebrow": "Affiliate programme",
+      "titleA": "Earn money recommending",
+      "titleB": "Kandrop.",
+      "subtitle": "Share your link with people who want to sell online in Angola and earn a recurring commission for every merchant who subscribes to a plan.",
+      "cta": "I want to be an affiliate",
+      "secondary": "See how it works",
+      "note": "Free sign-up. No lock-in.",
+      "panel": {
+        "title": "Your affiliate link",
+        "clicks": "Clicks",
+        "signups": "Sign-ups",
+        "paying": "Paying",
+        "clicksValue": "212",
+        "signupsValue": "14",
+        "payingValue": "6",
+        "example": "Illustrative example with made-up data."
+      }
+    },
+    "how": {
+      "eyebrow": "How it works",
+      "title": "Three steps between you and your first commission.",
+      "steps": {
+        "signup": {
+          "title": "Sign up for free",
+          "body": "Create your Kandrop account in under a minute. Your exclusive link is waiting in the Affiliates tab of the dashboard."
+        },
+        "share": {
+          "title": "Share your exclusive link",
+          "body": "Send it on WhatsApp, social media or to your community. Every visit to your link is counted in the dashboard."
+        },
+        "earn": {
+          "title": "Earn commissions",
+          "body": "For every merchant who subscribes to a plan through your link, you earn a commission every month they pay."
+        }
+      }
+    },
+    "perks": {
+      "eyebrow": "Benefits",
+      "title": "Built for people who recommend, not for people who give up.",
+      "items": {
+        "recurring": {
+          "title": "Recurring commissions",
+          "body": "You do not earn once: as long as the merchant you brought keeps paying for the plan, your commission comes back every month."
+        },
+        "payouts": {
+          "title": "Fast payouts in Kwanzas",
+          "body": "Withdraw your balance to your Angolan bank account, in Kwanzas, without red tape."
+        },
+        "dashboard": {
+          "title": "Real-time dashboard",
+          "body": "Follow clicks, sign-ups and who is already paying, with numbers that update by themselves."
+        }
+      }
+    },
+    "final": {
+      "titleA": "Start today",
+      "titleB": "recommending Kandrop.",
+      "body": "Create your account, copy your link and share it. You follow the rest in the dashboard.",
+      "cta": "I want to be an affiliate"
+    }
   }
 }

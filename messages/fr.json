@@ -1835,5 +1835,72 @@
       "headlineA": "Commencez aujourd’hui.",
       "headlineB": "Vendez demain."
     }
+  },
+  "AffiliatesPage": {
+    "meta": {
+      "title": "Programme d’affiliation — Kandrop",
+      "description": "Recommandez Kandrop à d’autres commerçants et gagnez une commission récurrente pour chaque abonnement payé."
+    },
+    "hero": {
+      "eyebrow": "Programme d’affiliation",
+      "titleA": "Gagnez de l’argent en recommandant",
+      "titleB": "Kandrop.",
+      "subtitle": "Partagez votre lien avec ceux qui veulent vendre en ligne en Angola et gagnez une commission récurrente pour chaque commerçant qui souscrit à une offre.",
+      "cta": "Je veux devenir affilié",
+      "secondary": "Voir comment ça marche",
+      "note": "Inscription gratuite. Sans engagement.",
+      "panel": {
+        "title": "Votre lien d’affilié",
+        "clicks": "Clics",
+        "signups": "Inscriptions",
+        "paying": "Payants",
+        "clicksValue": "212",
+        "signupsValue": "14",
+        "payingValue": "6",
+        "example": "Exemple illustratif avec des données fictives."
+      }
+    },
+    "how": {
+      "eyebrow": "Comment ça marche",
+      "title": "Trois étapes entre vous et votre première commission.",
+      "steps": {
+        "signup": {
+          "title": "Inscrivez-vous gratuitement",
+          "body": "Créez votre compte Kandrop en moins d’une minute. Votre lien exclusif vous attend dans l’onglet Affiliés du tableau de bord."
+        },
+        "share": {
+          "title": "Partagez votre lien exclusif",
+          "body": "Envoyez-le sur WhatsApp, les réseaux sociaux ou à votre communauté. Chaque visite de votre lien est comptée dans le tableau de bord."
+        },
+        "earn": {
+          "title": "Recevez des commissions",
+          "body": "Pour chaque commerçant qui souscrit à une offre via votre lien, vous gagnez une commission chaque mois où il paie."
+        }
+      }
+    },
+    "perks": {
+      "eyebrow": "Avantages",
+      "title": "Conçu pour ceux qui recommandent, pas pour ceux qui abandonnent.",
+      "items": {
+        "recurring": {
+          "title": "Commissions récurrentes",
+          "body": "Vous ne gagnez pas une seule fois : tant que le commerçant que vous avez amené continue de payer son offre, votre commission revient chaque mois."
+        },
+        "payouts": {
+          "title": "Paiements rapides en kwanzas",
+          "body": "Retirez votre solde vers votre compte bancaire angolais, en kwanzas, sans paperasse."
+        },
+        "dashboard": {
+          "title": "Tableau de bord en temps réel",
+          "body": "Suivez les clics, les inscriptions et ceux qui paient déjà, avec des chiffres qui se mettent à jour tout seuls."
+        }
+      }
+    },
+    "final": {
+      "titleA": "Commencez aujourd’hui à",
+      "titleB": "recommander Kandrop.",
+      "body": "Créez votre compte, copiez votre lien et partagez-le. Vous suivez le reste dans le tableau de bord.",
+      "cta": "Je veux devenir affilié"
+    }
   }
 }
