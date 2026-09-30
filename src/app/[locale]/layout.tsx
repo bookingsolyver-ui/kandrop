@@ -1,23 +1,14 @@
 import type { Metadata } from "next";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Hanken_Grotesk, JetBrains_Mono, Newsreader, Plus_Jakarta_Sans } from "next/font/google";
+import { JetBrains_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
 
-const sans = Hanken_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-hanken",
-  display: "swap",
-});
-const serif = Newsreader({
-  subsets: ["latin"],
-  variable: "--font-newsreader",
-  display: "swap",
-});
-
+// The platform's one typeface (the waitlist uses it too). Exposed as `--font-jakarta`;
+// `--font-sans` (Tailwind's `font-sans`, and the `<body>`) reads it in globals.css.
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
   variable: "--font-jakarta",
@@ -73,7 +64,7 @@ export default async function LocaleLayout({
     <html
       lang={locale}
       data-scroll-behavior="smooth"
-      className={`${sans.variable} ${serif.variable} ${jakarta.variable} ${mono.variable}`}
+      className={`${jakarta.variable} ${mono.variable}`}
     >
       <body>
         <NextIntlClientProvider>{children}</NextIntlClientProvider>

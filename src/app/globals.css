@@ -158,8 +158,10 @@ body:has(.marketing) {
   --color-input: #ffffff;
   --color-foreground: var(--ink-900);
   --color-muted-foreground: var(--ink-500);
-  --font-sans: var(--font-hanken), system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-serif: var(--font-newsreader), Georgia, serif;
+  /* One family for the whole platform, the same as the waitlist: Plus Jakarta Sans. `font-serif` is
+     kept as the name of the heading style (see the weights below), it is no longer a serif face. */
+  --font-sans: var(--font-jakarta), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-serif: var(--font-jakarta), system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
 body {
@@ -275,24 +277,10 @@ h2 {
  * animations off (or unsupported) the page is simply complete.
  */
 .marketing {
-  /* Same type and colours as the dashboard and the sign-in page. */
-  font-family: var(--font-jakarta), var(--font-sans);
+  /* Same colours as the dashboard and the sign-in page. */
   --ink: var(--ink-900);
   --ink-2: var(--ink-600);
   --glow: color-mix(in oklab, var(--kai-orange) 16%, transparent);
-}
-/* The landing page's headings were serif; they now use the brand sans, heavier. */
-.marketing .font-serif {
-  font-family: var(--font-jakarta), var(--font-sans);
-}
-.marketing h1.font-serif,
-.marketing h2.font-serif {
-  font-weight: 800;
-  letter-spacing: -0.03em;
-}
-.marketing h3.font-serif {
-  font-weight: 700;
-  letter-spacing: -0.02em;
 }
 .marketing section[id] {
   scroll-margin-top: 5rem; /* the sticky navbar */
@@ -398,8 +386,15 @@ h2 {
   --sidebar-foreground: var(--ink-900);
 }
 
-.kai-shell {
-  font-family: var(--font-jakarta), var(--font-sans);
+/* Headings that used to be set in a serif face: the same sans, heavier, so they keep their weight. */
+h1.font-serif,
+h2.font-serif {
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+h3.font-serif {
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 .mono-num {
   font-family: var(--font-jetbrains), ui-monospace, monospace;
