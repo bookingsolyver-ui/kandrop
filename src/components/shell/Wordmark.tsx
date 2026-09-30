@@ -1,6 +1,7 @@
+import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 
-/** Serif wordmark; the collapsed rail keeps just the initial. */
+/** The K mark and the name; the collapsed rail keeps just the mark. */
 export function Wordmark({
   compact = false,
   onNavigate,
@@ -13,9 +14,17 @@ export function Wordmark({
       href="/dashboard"
       onClick={onNavigate}
       aria-label="Kandrop"
-      className="inline-flex min-h-11 items-center rounded font-serif text-2xl font-semibold tracking-tight text-ink"
+      className="inline-flex min-h-11 items-center gap-2.5 rounded font-serif text-2xl font-semibold tracking-tight text-ink"
     >
-      {compact ? "K" : "Kandrop"}
+      <Image
+        src="/brand/k-app.png"
+        alt=""
+        width={32}
+        height={32}
+        priority
+        className="size-8 shrink-0 rounded-lg"
+      />
+      {!compact && "Kandrop"}
     </Link>
   );
 }

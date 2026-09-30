@@ -24,7 +24,7 @@ export function KaiGauge({
         cy="90"
         r={R}
         fill="none"
-        stroke="#e8e3dc"
+        stroke="#e6e6e6"
         strokeWidth="14"
         strokeLinecap="round"
         strokeDasharray={`${ARC} ${C}`}

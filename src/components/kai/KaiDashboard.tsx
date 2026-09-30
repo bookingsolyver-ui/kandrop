@@ -89,7 +89,7 @@ function StatCard({
 
 const METHOD_STYLE = {
   multicaixa_express: { color: "rgb(0, 181, 160)", Icon: PhoneIcon },
-  unitel_money: { color: "rgb(255, 107, 26)", Icon: WalletIcon },
+  unitel_money: { color: "rgb(255, 90, 0)", Icon: WalletIcon },
   card: { color: "rgb(212, 182, 0)", Icon: CardIcon },
   bank_transfer: { color: "rgb(122, 122, 31)", Icon: BankIcon },
 } as const;
@@ -160,7 +160,7 @@ export function KaiDashboard() {
     );
 
   const statusRows = [
-    { key: "preparing", color: "rgb(255, 107, 26)" },
+    { key: "preparing", color: "rgb(255, 90, 0)" },
     { key: "shipped", color: "rgb(59, 130, 246)" },
     { key: "delivered", color: "rgb(22, 163, 74)" },
     { key: "returned", color: "rgb(220, 38, 38)" },
@@ -222,7 +222,7 @@ export function KaiDashboard() {
               </div>
               <div className="flex gap-4 text-xs">
                 <div className="flex items-center gap-2">
-                  <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: "rgb(255, 107, 26)" }} />
+                  <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: "rgb(255, 90, 0)" }} />
                   <span className="text-[var(--ink-600)]">{t("sold")}</span>
                 </div>
               </div>

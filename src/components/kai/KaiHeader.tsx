@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import { useState } from "react";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { useDashboardLive } from "@/components/dashboard/useDashboardLive";
@@ -38,7 +39,7 @@ export function KaiHeader({ firstName, onMenu }: { firstName: string; onMenu: ()
   return (
     <header
       className="sticky top-0 z-50 flex h-14 w-full shrink-0 items-center gap-2 border-b border-[var(--ink-200)] px-3 sm:h-16 sm:gap-4 sm:px-6"
-      style={{ background: "rgba(245, 242, 238, 0.85)", backdropFilter: "blur(16px) saturate(160%)" }}
+      style={{ background: "rgba(241, 241, 240, 0.85)", backdropFilter: "blur(16px) saturate(160%)" }}
     >
       <button
         type="button"
@@ -49,6 +50,10 @@ export function KaiHeader({ firstName, onMenu }: { firstName: string; onMenu: ()
       >
         <MenuBarsIcon size={20} />
       </button>
+
+      <Link href="/dashboard" aria-label="Kandrop" className="shrink-0 lg:hidden">
+        <Image src="/brand/k-app.png" alt="" width={28} height={28} className="size-7 rounded-lg" />
+      </Link>
 
       <div className="flex min-w-0 flex-col leading-tight">
         <span className="text-[11px] font-semibold tracking-[0.08em] text-[var(--ink-500)] uppercase">

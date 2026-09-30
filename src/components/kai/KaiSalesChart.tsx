@@ -60,31 +60,31 @@ export function KaiSalesChart({
       >
         <defs>
           <linearGradient id="kai-area" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="#ff6b1a" stopOpacity="0.35" />
-            <stop offset="100%" stopColor="#ff6b1a" stopOpacity="0" />
+            <stop offset="0%" stopColor="#ff5a00" stopOpacity="0.35" />
+            <stop offset="100%" stopColor="#ff5a00" stopOpacity="0" />
           </linearGradient>
         </defs>
         {ticks.map((v) => (
           <g key={v}>
-            <line x1={PAD.left} x2={W - PAD.right} y1={y(v)} y2={y(v)} stroke="#e8e3dc" strokeDasharray="3 4" />
-            <text x={PAD.left - 8} y={y(v) + 4} textAnchor="end" fontSize="11" fill="#857e73">
+            <line x1={PAD.left} x2={W - PAD.right} y1={y(v)} y2={y(v)} stroke="#e6e6e6" strokeDasharray="3 4" />
+            <text x={PAD.left - 8} y={y(v) + 4} textAnchor="end" fontSize="11" fill="#767676">
               {compact(v)}
             </text>
           </g>
         ))}
         {points.map((p, i) =>
           points.length <= 8 || i % Math.ceil(points.length / 7) === 0 ? (
-            <text key={p.date} x={x(i)} y={H - 10} textAnchor="middle" fontSize="11" fill="#857e73">
+            <text key={p.date} x={x(i)} y={H - 10} textAnchor="middle" fontSize="11" fill="#767676">
               {formatDay(p.date)}
             </text>
           ) : null
         )}
         {area && <path d={area} fill="url(#kai-area)" />}
-        {line && <path d={line} fill="none" stroke="#ff6b1a" strokeWidth="2.5" strokeLinejoin="round" />}
+        {line && <path d={line} fill="none" stroke="#ff5a00" strokeWidth="2.5" strokeLinejoin="round" />}
         {shown && hover !== null && (
           <>
-            <line x1={x(hover)} x2={x(hover)} y1={PAD.top} y2={PAD.top + innerH} stroke="#d3cdc3" />
-            <circle cx={x(hover)} cy={y(shown.gross)} r="5" fill="#fff" stroke="#ff6b1a" strokeWidth="2.5" />
+            <line x1={x(hover)} x2={x(hover)} y1={PAD.top} y2={PAD.top + innerH} stroke="#cfcfce" />
+            <circle cx={x(hover)} cy={y(shown.gross)} r="5" fill="#fff" stroke="#ff5a00" strokeWidth="2.5" />
           </>
         )}
       </svg>

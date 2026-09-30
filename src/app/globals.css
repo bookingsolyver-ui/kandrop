@@ -85,8 +85,8 @@
 
 /*
  * Merchant workspace (everything inside the dashboard shell) and the public marketing site: a LIGHT
- * theme on a soft grey page with white cards, ONE accent (a burnt orange) for what is active or
- * actionable (current nav item, primary buttons, focus, live status) and a purple second series for
+ * theme on a soft grey page with white cards, ONE accent (the brand orange) for what is active or
+ * actionable (current nav item, primary buttons, focus, live status) and black as the second series for
  * charts. Flat: no gradients, no glow (the marketing hero is the one exception, below). Same roles
  * as above, so no component changes per theme. The accent is deliberately darker than a bright
  * orange: white text on #ff6b35 is only 2.9:1, on this one 5.2:1.
@@ -98,24 +98,24 @@
 .workspace,
 .marketing {
   color-scheme: light;
-  --page: #f6f6f8;
+  --page: #f1f1f0;
   --surface: #ffffff;
-  --ink: #17171c;
-  --ink-2: #464652;
-  --ink-muted: #666674;
-  --line: #e6e6ea;
-  --axis: #cdcdd5;
-  --field: #868694;
-  --brand: #fff1e8; /* the one tinted panel: the wallet balance, the highlighted KPI */
-  --on-brand: #17171c;
+  --ink: #0d0d0d;
+  --ink-2: #3a3a3a;
+  --ink-muted: #5f5f5f;
+  --line: #e6e6e6;
+  --axis: #cfcfce;
+  --field: #858585;
+  --brand: #fff0e6; /* the one tinted panel: the wallet balance, the highlighted KPI */
+  --on-brand: #0d0d0d;
   --on-brand-muted: #5a4a40;
-  --accent: #c2410c;
+  --accent: #d94c00; /* orange as text/links */
   --select: var(--accent);
-  --action: var(--accent);
+  --action: #ff5a00; /* buttons: the brand orange */
   --on-action: #ffffff;
-  --focus: var(--accent);
-  --series-1: #6d28d9;
-  --series-2: #c2410c;
+  --focus: #ff5a00;
+  --series-1: #000000;
+  --series-2: #ff5a00;
   --up: #15803d;
   --down: #b91c1c;
   background: var(--page);
@@ -128,7 +128,7 @@ body:has(.workspace),
 html:has(.marketing),
 body:has(.marketing) {
   color-scheme: light;
-  background: #f6f6f8;
+  background: #f1f1f0;
 }
 
 @theme inline {
@@ -338,19 +338,20 @@ h2 {
  * `--kai-*`, `--r-*`, `--sh-*`); the reference file carries the names but not their definitions.
  */
 :root {
+  /* Kandrop palette (KANDROP_VISUAL/Paleta de cor.png): white, black, light greys, two oranges. */
   --ink-0: #ffffff;
-  --ink-50: #faf8f5;
-  --ink-100: #f5f2ee;
-  --ink-200: #e8e3dc;
-  --ink-300: #d3cdc3;
-  --ink-500: #857e73;
-  --ink-600: #655f56;
-  --ink-700: #46413a;
-  --ink-900: #1a1814;
-  --kai-orange: #ff6b1a;
-  --kai-orange-50: #fff1e8;
-  --kai-orange-300: #ffb07a;
-  --kai-orange-600: #d9520a;
+  --ink-50: #f8f8f7;
+  --ink-100: #f1f1f0;
+  --ink-200: #e6e6e6;
+  --ink-300: #cfcfce;
+  --ink-500: #767676;
+  --ink-600: #5a5a5a;
+  --ink-700: #3a3a3a;
+  --ink-900: #000000;
+  --kai-orange: #ff5a00; /* the brand orange */
+  --kai-orange-50: #fff0e6;
+  --kai-orange-300: #ff7e2e; /* the light end of the brand gradient */
+  --kai-orange-600: #d94c00; /* orange as TEXT on white: 4.6:1 */
   --kai-success: #15803d;
   --kai-success-bg: #dcfce7;
   --kai-warn: #a16207;
@@ -364,7 +365,7 @@ h2 {
   --sh-xs: 0 1px 2px rgba(26, 24, 20, 0.05);
   --sh-sm: 0 2px 6px rgba(26, 24, 20, 0.08);
   --sh-md: 0 8px 24px rgba(26, 24, 20, 0.1);
-  --sh-orange: 0 6px 16px rgba(255, 107, 26, 0.35);
+  --sh-orange: 0 6px 16px rgba(255, 90, 0, 0.35);
   --sidebar-width: 16rem;
   --sidebar-width-icon: 6.5rem;
   /* shadcn-style aliases used by the reference markup */
@@ -395,10 +396,10 @@ h2 {
 @keyframes kai-glow {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgba(255, 107, 26, 0.35);
+    box-shadow: 0 0 0 0 rgba(255, 90, 0, 0.35);
   }
   50% {
-    box-shadow: 0 0 0 8px rgba(255, 107, 26, 0);
+    box-shadow: 0 0 0 8px rgba(255, 90, 0, 0);
   }
 }
 .animate-banner-glow {

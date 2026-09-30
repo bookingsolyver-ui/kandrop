@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import { useLogout } from "@/components/auth/useLogout";
 import { Link, usePathname } from "@/i18n/navigation";
 import { ALL_NAV_ITEMS, isCurrent, type NavItem, type NavKey } from "@/components/shell/nav";
@@ -90,9 +91,23 @@ export function KaiSidebar({
               <Link
                 href="/dashboard"
                 aria-label="Kandrop"
-                className="inline-flex items-center rounded-md font-serif text-[26px] leading-none font-semibold tracking-tight text-[var(--ink-900)] outline-none transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-[var(--kai-orange)]/40"
+                className="inline-flex items-center gap-2.5 rounded-md font-serif text-[26px] leading-none font-semibold tracking-tight text-[var(--ink-900)] outline-none transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-[var(--kai-orange)]/40"
               >
-                {collapsed ? "K" : "Kandrop"}
+                {collapsed ? (
+                  <Image src="/brand/k-mark.png" alt="" width={40} height={40} priority className="size-10" />
+                ) : (
+                  <>
+                    <Image
+                      src="/brand/k-app.png"
+                      alt=""
+                      width={36}
+                      height={36}
+                      priority
+                      className="size-9 shrink-0 rounded-[10px]"
+                    />
+                    Kandrop
+                  </>
+                )}
               </Link>
             </div>
             <div className="mx-1 h-px bg-[var(--ink-200)]" />

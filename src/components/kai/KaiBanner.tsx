@@ -5,9 +5,9 @@ import { useEffect, useState } from "react";
 import { Link } from "@/i18n/navigation";
 
 const SLIDES = [
-  { key: "academy", href: "/dashboard/academy", from: "#ff6b1a", to: "#c2410c" },
-  { key: "affiliates", href: "/dashboard/affiliates", from: "#1a1814", to: "#46413a" },
-  { key: "whatsapp", href: "/dashboard/automations", from: "#15803d", to: "#166534" },
+  { key: "academy", href: "/dashboard/academy", from: "#ff7e2e", to: "#ff5a00" },
+  { key: "affiliates", href: "/dashboard/affiliates", from: "#000000", to: "#3a3a3a" },
+  { key: "whatsapp", href: "/dashboard/automations", from: "#000000", to: "#ff5a00" },
 ] as const;
 
 /** Rotating promo banner (changes every 6 s, never while the pointer is over it or motion is reduced). */
