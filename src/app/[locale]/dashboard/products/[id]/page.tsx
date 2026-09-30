@@ -38,7 +38,7 @@ export default async function EditProductPage({ params }: Props) {
 
   return (
     <PageTransition>
-      <main>
+      <div>
         <header className="mb-8 max-w-2xl">
           <Link
             href="/dashboard/products"
@@ -52,7 +52,7 @@ export default async function EditProductPage({ params }: Props) {
           <p className="mt-3 text-base text-ink-2">{t("editSubtitle")}</p>
         </header>
         <ProductForm product={product} />
-      </main>
+      </div>
     </PageTransition>
   );
 }

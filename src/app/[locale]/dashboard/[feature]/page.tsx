@@ -36,7 +36,7 @@ export default async function ComingSoonPage({ params }: Props) {
 
   return (
     <PageTransition>
-      <main>
+      <div>
         <header className="mb-8 max-w-2xl">
           <p className="text-[11px] font-medium tracking-[0.18em] text-ink-muted uppercase">
             {group ? t(`groups.${group.key}`) : t("nav.plans")}
@@ -53,7 +53,7 @@ export default async function ComingSoonPage({ params }: Props) {
           <p className="mt-5 text-lg leading-relaxed text-ink">{c(`features.${item.key}`)}</p>
           <p className="mt-3 text-sm text-ink-muted">{c("note")}</p>
         </section>
-      </main>
+      </div>
     </PageTransition>
   );
 }

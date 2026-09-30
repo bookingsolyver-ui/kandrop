@@ -39,7 +39,7 @@ export function KaiHeader({ firstName, onMenu }: { firstName: string; onMenu: ()
 
   return (
     <header
-      className="sticky top-0 z-50 flex h-14 w-full shrink-0 items-center gap-2 border-b border-[var(--ink-200)] px-3 sm:h-16 sm:gap-4 sm:px-6"
+      className="sticky top-0 z-40 flex h-16 w-full shrink-0 items-center gap-2 border-b border-[var(--ink-200)] px-3 sm:gap-4 sm:px-6"
       style={{ background: "rgba(241, 241, 240, 0.85)", backdropFilter: "blur(16px) saturate(160%)" }}
     >
       <button

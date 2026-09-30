@@ -26,7 +26,7 @@ export default async function ProductsPage({ params }: Props) {
 
   return (
     <PageTransition>
-      <main>
+      <div>
         <header className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-2xl">
             <p className="text-[11px] font-medium tracking-[0.18em] text-ink-muted uppercase">
@@ -45,7 +45,7 @@ export default async function ProductsPage({ params }: Props) {
           </Link>
         </header>
         <ProductsView />
-      </main>
+      </div>
     </PageTransition>
   );
 }

@@ -25,7 +25,7 @@ export default async function OrdersPage({ params }: Props) {
 
   return (
     <PageTransition>
-      <main>
+      <div>
         <header className="mb-8 max-w-2xl">
           <p className="text-[11px] font-medium tracking-[0.18em] text-ink-muted uppercase">
             {t("eyebrow")}
@@ -36,7 +36,7 @@ export default async function OrdersPage({ params }: Props) {
           <p className="mt-3 text-base text-ink-2">{t("subtitle")}</p>
         </header>
         <OrdersView />
-      </main>
+      </div>
     </PageTransition>
   );
 }

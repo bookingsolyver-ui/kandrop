@@ -34,7 +34,7 @@ export default async function AutomationsPage({ params }: Props) {
 
   return (
     <PageTransition>
-      <main>
+      <div>
         <header className="mb-10 max-w-3xl">
           <p className="text-[11px] font-medium tracking-[0.18em] text-accent uppercase">
             {shell("accelerators")}
@@ -47,7 +47,7 @@ export default async function AutomationsPage({ params }: Props) {
         <div className="max-w-4xl">
           <AutomationsView storeName={store.name} canManage={session!.role === "owner"} />
         </div>
-      </main>
+      </div>
     </PageTransition>
   );
 }

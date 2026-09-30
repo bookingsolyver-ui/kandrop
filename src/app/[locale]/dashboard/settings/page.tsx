@@ -64,7 +64,7 @@ export default async function SettingsPage({ params, searchParams }: Props) {
 
   return (
     <PageTransition>
-      <main>
+      <div>
         <header className="mb-8 max-w-2xl">
           <p className="text-[11px] font-medium tracking-[0.18em] text-ink-muted uppercase">
             {t("eyebrow")}
@@ -121,7 +121,7 @@ export default async function SettingsPage({ params, searchParams }: Props) {
             ),
           }}
         />
-      </main>
+      </div>
     </PageTransition>
   );
 }

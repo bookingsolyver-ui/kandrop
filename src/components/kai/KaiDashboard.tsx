@@ -170,7 +170,7 @@ export function KaiDashboard() {
   const money = (minor: number) => f.money(minor);
 
   return (
-    <main className="min-h-full space-y-6">
+    <div className="min-h-full space-y-6">
       <KaiBanner />
 
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
@@ -423,7 +423,7 @@ export function KaiDashboard() {
           })}
         </div>
       </div>
-    </main>
+    </div>
   );
 }
 

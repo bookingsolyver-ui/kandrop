@@ -73,12 +73,14 @@ export function KaiSidebar({
   const { logout, pending } = useLogout();
 
   return (
-    <div className="group peer hidden shrink-0 text-[var(--ink-900)] lg:block" data-state={collapsed ? "collapsed" : "expanded"}>
-      <div
-        className={`relative shrink-0 bg-transparent transition-[width] duration-200 ease-linear ${
-          collapsed ? "w-[var(--sidebar-width-icon)]" : "w-[var(--sidebar-width)]"
-        }`}
-      />
+    // The wrapper holds the sidebar's width in the flex row (the panel itself is `fixed`), so it
+    // can neither shrink nor grow.
+    <div
+      className={`group peer hidden shrink-0 text-[var(--ink-900)] transition-[width] duration-200 ease-linear lg:block ${
+        collapsed ? "w-[var(--sidebar-width-icon)]" : "w-[var(--sidebar-width)]"
+      }`}
+      data-state={collapsed ? "collapsed" : "expanded"}
+    >
       <aside
         aria-label={t("navLabel")}
         className={`fixed inset-y-0 left-0 z-20 flex h-screen border-r border-[var(--ink-200)] bg-[var(--ink-0)] p-2 transition-[width] duration-200 ease-linear ${

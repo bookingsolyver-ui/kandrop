@@ -9,7 +9,7 @@ import { Link } from "@/i18n/navigation";
 export default async function DashboardNotFound() {
   const t = await getTranslations("Shell.notFound");
   return (
-    <main className="max-w-xl py-6">
+    <div className="max-w-xl py-6">
       <p className="text-[11px] font-medium tracking-[0.18em] text-ink-muted uppercase">404</p>
       <h1 className="mt-3 font-serif text-[2.25rem] leading-[1.05] font-normal tracking-[-0.02em] sm:text-[2.75rem]">
         {t("title")}
@@ -21,6 +21,6 @@ export default async function DashboardNotFound() {
       >
         {t("back")}
       </Link>
-    </main>
+    </div>
   );
 }

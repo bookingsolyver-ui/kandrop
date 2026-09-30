@@ -42,10 +42,7 @@ export function AppShell({
 
   return (
     <PlanProvider>
-      <div
-        className="workspace kai-shell flex h-screen w-full overflow-hidden"
-        style={{ background: "var(--ink-0)" }}
-      >
+      <div className="workspace kai-shell flex h-screen w-full overflow-hidden bg-[var(--ink-50)]">
         <a
           href="#content"
           className="sr-only z-50 rounded-md bg-surface px-4 py-2 text-sm font-medium focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
@@ -56,7 +53,8 @@ export function AppShell({
         <KaiSidebar user={user} collapsed={collapsed} onToggle={toggle} />
         <MobileDrawer dialogRef={drawer} storeName={storeName} />
 
-        <div className="relative flex w-full flex-1 flex-col bg-[var(--ink-100)] lg:m-2 lg:ml-0 lg:overflow-hidden lg:rounded-xl lg:shadow-sm">
+        {/* Everything to the right of the sidebar: it may shrink (`min-w-0`) and never scrolls by itself. */}
+        <div className="relative flex min-w-0 flex-1 flex-col overflow-hidden bg-[var(--ink-100)] lg:m-2 lg:ml-0 lg:rounded-xl lg:shadow-sm">
           {needsVerification && (
             <div
               role="status"
@@ -75,15 +73,14 @@ export function AppShell({
             firstName={user.name.split(/\s+/)[0] ?? user.name}
             onMenu={() => drawer.current?.showModal()}
           />
-          <main className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
-            <div
-              id="content"
-              tabIndex={-1}
-              className="workspace min-h-full p-4 outline-none sm:p-8"
-              style={{ background: "transparent" }}
-            >
-              {children}
-            </div>
+          {/* The pages scroll here, independently of the sidebar and the header. */}
+          <main
+            id="content"
+            tabIndex={-1}
+            className="workspace min-h-0 flex-1 overflow-x-hidden overflow-y-auto p-4 outline-none sm:p-8"
+            style={{ background: "transparent" }}
+          >
+            {children}
           </main>
         </div>
       </div>

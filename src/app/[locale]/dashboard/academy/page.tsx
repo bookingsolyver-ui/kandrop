@@ -32,7 +32,7 @@ export default async function AcademyPage({ params }: Props) {
 
   return (
     <PageTransition>
-      <main>
+      <div>
         <header className="mb-10 max-w-3xl">
           <p className="text-[11px] font-medium tracking-[0.18em] text-accent uppercase">
             {shell("other")}
@@ -43,7 +43,7 @@ export default async function AcademyPage({ params }: Props) {
           <p className="mt-4 text-lg leading-relaxed text-ink-2">{t("subtitle")}</p>
         </header>
         <AcademyView />
-      </main>
+      </div>
     </PageTransition>
   );
 }

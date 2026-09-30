@@ -31,14 +31,14 @@ export default async function AffiliatesPage({ params }: Props) {
 
   return (
     <PageTransition>
-      <main className="space-y-6">
+      <div className="space-y-6">
         <AffiliateHero />
         {session!.role === "owner" ? (
           <AffiliatesView />
         ) : (
           <ListMessage title={t("forbidden.title")} body={t("forbidden.body")} />
         )}
-      </main>
+      </div>
     </PageTransition>
   );
 }

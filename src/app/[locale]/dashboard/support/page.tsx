@@ -55,7 +55,7 @@ export default async function SupportPage({ params }: Props) {
 
   return (
     <PageTransition>
-      <main className="space-y-8">
+      <div className="space-y-8">
         <header className="max-w-3xl">
           <p className="text-[11px] font-medium tracking-[0.18em] text-accent uppercase">
             {shell("other")}
@@ -96,7 +96,7 @@ export default async function SupportPage({ params }: Props) {
           <p className="mt-1 mb-6 text-sm text-ink-muted">{t("ticket.intro")}</p>
           <TicketForm />
         </section>
-      </main>
+      </div>
     </PageTransition>
   );
 }

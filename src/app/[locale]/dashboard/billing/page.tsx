@@ -30,7 +30,7 @@ export default async function BillingPage({ params }: Props) {
 
   return (
     <PageTransition>
-      <main>
+      <div>
         <header className="mb-10 max-w-3xl">
           <p className="text-[11px] font-medium tracking-[0.18em] text-accent uppercase">
             {t("eyebrow")}
@@ -45,7 +45,7 @@ export default async function BillingPage({ params }: Props) {
         ) : (
           <ListMessage title={t("forbidden.title")} body={t("forbidden.body")} />
         )}
-      </main>
+      </div>
     </PageTransition>
   );
 }
