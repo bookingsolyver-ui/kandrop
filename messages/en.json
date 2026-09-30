@@ -1672,5 +1672,89 @@
       "message_required": "Write your message.",
       "message_too_short": "Please describe what you need (at least 10 characters)."
     }
+  },
+  "Kai": {
+    "groups": {
+      "operation": "Operations",
+      "growth": "Growth"
+    },
+    "verify": "Complete your store verification to unlock payouts and sales.",
+    "header": {
+      "welcome": "Welcome back",
+      "revenue": "Revenue",
+      "refresh": "Refresh",
+      "alerts": "Alerts",
+      "orders": "Orders"
+    },
+    "banner": {
+      "show": "Show banner {n} of {total}",
+      "academy": {
+        "eyebrow": "Kandrop Academy",
+        "title": "Learn to sell more with the step-by-step course",
+        "cta": "Start now"
+      },
+      "affiliates": {
+        "eyebrow": "Affiliates",
+        "title": "Invite merchants and earn a commission every month",
+        "cta": "See my link"
+      },
+      "whatsapp": {
+        "eyebrow": "Automations",
+        "title": "Recover sales with automatic WhatsApp messages",
+        "cta": "Set up"
+      }
+    },
+    "title": "Sales details",
+    "subtitle": "Follow your sales performance in real time.",
+    "updatedAt": "Updated at {time}",
+    "periodLabel": "Period",
+    "periods": {
+      "yesterday": "Yesterday",
+      "today": "Today",
+      "month": "This month",
+      "last30": "Last 30 days",
+      "lastMonth": "Last month"
+    },
+    "balance": "Total balance",
+    "sold": "Sold",
+    "chartLabel": "Sales per day",
+    "orderStatus": {
+      "title": "Order status",
+      "caption": "orders in the period",
+      "preparing": "Preparing",
+      "shipped": "Shipped",
+      "delivered": "Delivered",
+      "returned": "Returned"
+    },
+    "vs": {
+      "yesterday": "vs. yesterday",
+      "dayBefore": "vs. the day before",
+      "previous": "vs. previous period"
+    },
+    "cards": {
+      "sales": "Sales",
+      "billed": "Total billed",
+      "net": "Merchant net",
+      "avgTicket": "Average order",
+      "pending": "Pending orders",
+      "abandoned": "Abandoned carts"
+    },
+    "refunds": {
+      "title": "Refunds",
+      "total": "Total refunded"
+    },
+    "chargebacks": {
+      "title": "Chargebacks",
+      "total": "Total disputed"
+    },
+    "badge": {
+      "attention": "Attention",
+      "healthy": "Healthy"
+    },
+    "methods": {
+      "title": "Payment methods",
+      "conversion": "{rate}% conversion",
+      "sales": "sales"
+    }
   }
 }

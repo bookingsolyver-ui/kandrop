@@ -170,6 +170,21 @@ export function snapshot(): DashboardSummary {
         revenue: p.revenue,
         marginRate: p.marginRate,
       })),
+    // SAMPLE numbers for the lower cards (there is no per-day order log in the simulator).
+    extras: {
+      orders: 184,
+      avgTicket: Math.round(gross / 184),
+      abandonedCarts: 37,
+      refunded: 184_500 * KZ,
+      chargebacks: 0,
+      orderStatus: { preparing: 12, shipped: 31, delivered: 126, returned: 15 },
+      paymentMethods: [
+        { method: "multicaixa_express", conversion: 62.4, sales: 96 },
+        { method: "unitel_money", conversion: 48.1, sales: 41 },
+        { method: "card", conversion: 35.7, sales: 33 },
+        { method: "bank_transfer", conversion: 28.3, sales: 14 },
+      ],
+    },
     updatedAt: new Date().toISOString(),
     demo: true,
   };

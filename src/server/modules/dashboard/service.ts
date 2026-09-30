@@ -15,6 +15,17 @@ function emptySummary(): DashboardSummary {
     availableBalance: { value: zero, releasing: zero },
     revenueSeries: [],
     topProducts: [],
+    extras: {
+      orders: 0,
+      avgTicket: 0,
+      abandonedCarts: 0,
+      refunded: 0,
+      chargebacks: 0,
+      orderStatus: { preparing: 0, shipped: 0, delivered: 0, returned: 0 },
+      paymentMethods: (["multicaixa_express", "unitel_money", "card", "bank_transfer"] as const).map(
+        (method) => ({ method, conversion: 0, sales: 0 })
+      ),
+    },
     updatedAt: new Date().toISOString(),
     demo: false,
   };

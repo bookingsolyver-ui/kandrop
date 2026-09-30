@@ -27,6 +27,32 @@ export const topProductSchema = z.object({
   marginRate: z.number().min(0).max(1),
 });
 
+/** The numbers behind the lower cards of the dashboard, for the whole period. */
+export const dashboardExtrasSchema = z.object({
+  /** Orders placed in the period. */
+  orders: z.number().int().nonnegative(),
+  /** Average order value, minor units. */
+  avgTicket: z.number().int().nonnegative(),
+  abandonedCarts: z.number().int().nonnegative(),
+  /** Refunded / disputed amounts, minor units. */
+  refunded: z.number().int().nonnegative(),
+  chargebacks: z.number().int().nonnegative(),
+  orderStatus: z.object({
+    preparing: z.number().int().nonnegative(),
+    shipped: z.number().int().nonnegative(),
+    delivered: z.number().int().nonnegative(),
+    returned: z.number().int().nonnegative(),
+  }),
+  paymentMethods: z.array(
+    z.object({
+      method: z.enum(["multicaixa_express", "unitel_money", "card", "bank_transfer"]),
+      /** Percent of started payments that were paid, 0..100. */
+      conversion: z.number().min(0).max(100),
+      sales: z.number().int().nonnegative(),
+    })
+  ),
+});
+
 export const dashboardSummarySchema = z.object({
   /** Window used by the KPIs and the chart. */
   periodDays: z.number().int().positive(),
@@ -53,6 +79,7 @@ export const dashboardSummarySchema = z.object({
   }),
   revenueSeries: z.array(revenuePointSchema),
   topProducts: z.array(topProductSchema),
+  extras: dashboardExtrasSchema,
   updatedAt: z.iso.datetime(),
   /** The numbers are sample data (demo mode), not the store's own. */
   demo: z.boolean(),

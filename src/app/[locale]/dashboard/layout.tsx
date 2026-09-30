@@ -40,6 +40,7 @@ export default async function DashboardLayout({
         user={{ name: me.fullName, email: me.email }}
         storeName={store.name}
         initialCollapsed={jar.get(SIDEBAR_COOKIE)?.value === "collapsed"}
+        needsVerification={store.status === "pending_verification"}
       >
         {children}
       </AppShell>

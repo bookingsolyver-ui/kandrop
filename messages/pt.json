@@ -1672,5 +1672,89 @@
       "message_required": "Escreva a sua mensagem.",
       "message_too_short": "Descreva melhor o que precisa (pelo menos 10 caracteres)."
     }
+  },
+  "Kai": {
+    "groups": {
+      "operation": "Operação",
+      "growth": "Crescimento"
+    },
+    "verify": "Complete a verificação da sua loja para liberar levantamentos e vendas.",
+    "header": {
+      "welcome": "Bem-vindo de volta",
+      "revenue": "Faturamento",
+      "refresh": "Atualizar",
+      "alerts": "Avisos",
+      "orders": "Encomendas"
+    },
+    "banner": {
+      "show": "Mostrar banner {n} de {total}",
+      "academy": {
+        "eyebrow": "Academia Kandrop",
+        "title": "Aprenda a vender mais com o curso passo a passo",
+        "cta": "Começar agora"
+      },
+      "affiliates": {
+        "eyebrow": "Afiliados",
+        "title": "Convide lojistas e ganhe comissão todos os meses",
+        "cta": "Ver o meu link"
+      },
+      "whatsapp": {
+        "eyebrow": "Automações",
+        "title": "Recupere vendas com mensagens automáticas no WhatsApp",
+        "cta": "Configurar"
+      }
+    },
+    "title": "Detalhes das vendas",
+    "subtitle": "Acompanhe o desempenho das suas vendas em tempo real.",
+    "updatedAt": "Atualizado às {time}",
+    "periodLabel": "Período",
+    "periods": {
+      "yesterday": "Ontem",
+      "today": "Hoje",
+      "month": "Mês atual",
+      "last30": "Últimos 30 dias",
+      "lastMonth": "Último mês"
+    },
+    "balance": "Saldo total",
+    "sold": "Vendido",
+    "chartLabel": "Vendas por dia",
+    "orderStatus": {
+      "title": "Estado das encomendas",
+      "caption": "encomendas no período",
+      "preparing": "Em preparação",
+      "shipped": "Enviada",
+      "delivered": "Entregue",
+      "returned": "Devolvida"
+    },
+    "vs": {
+      "yesterday": "vs. ontem",
+      "dayBefore": "vs. anteontem",
+      "previous": "vs. período anterior"
+    },
+    "cards": {
+      "sales": "Vendas",
+      "billed": "Total faturado",
+      "net": "Líquido do lojista",
+      "avgTicket": "Ticket médio",
+      "pending": "Encomendas pendentes",
+      "abandoned": "Carrinhos abandonados"
+    },
+    "refunds": {
+      "title": "Reembolsos",
+      "total": "Total reembolsado"
+    },
+    "chargebacks": {
+      "title": "Contestações",
+      "total": "Total contestado"
+    },
+    "badge": {
+      "attention": "Atenção",
+      "healthy": "Saudável"
+    },
+    "methods": {
+      "title": "Métodos de pagamento",
+      "conversion": "{rate}% de conversão",
+      "sales": "vendas"
+    }
   }
 }

@@ -1672,5 +1672,89 @@
       "message_required": "Écrivez votre message.",
       "message_too_short": "Décrivez mieux votre besoin (au moins 10 caractères)."
     }
+  },
+  "Kai": {
+    "groups": {
+      "operation": "Opérations",
+      "growth": "Croissance"
+    },
+    "verify": "Terminez la vérification de votre boutique pour débloquer les retraits et les ventes.",
+    "header": {
+      "welcome": "Bon retour",
+      "revenue": "Chiffre d’affaires",
+      "refresh": "Actualiser",
+      "alerts": "Alertes",
+      "orders": "Commandes"
+    },
+    "banner": {
+      "show": "Afficher la bannière {n} sur {total}",
+      "academy": {
+        "eyebrow": "Académie Kandrop",
+        "title": "Apprenez à vendre plus avec le cours pas à pas",
+        "cta": "Commencer"
+      },
+      "affiliates": {
+        "eyebrow": "Affiliés",
+        "title": "Invitez des commerçants et gagnez une commission chaque mois",
+        "cta": "Voir mon lien"
+      },
+      "whatsapp": {
+        "eyebrow": "Automatisations",
+        "title": "Récupérez des ventes avec des messages WhatsApp automatiques",
+        "cta": "Configurer"
+      }
+    },
+    "title": "Détails des ventes",
+    "subtitle": "Suivez la performance de vos ventes en temps réel.",
+    "updatedAt": "Mis à jour à {time}",
+    "periodLabel": "Période",
+    "periods": {
+      "yesterday": "Hier",
+      "today": "Aujourd’hui",
+      "month": "Mois en cours",
+      "last30": "30 derniers jours",
+      "lastMonth": "Mois dernier"
+    },
+    "balance": "Solde total",
+    "sold": "Vendu",
+    "chartLabel": "Ventes par jour",
+    "orderStatus": {
+      "title": "Statut des commandes",
+      "caption": "commandes sur la période",
+      "preparing": "En préparation",
+      "shipped": "Expédiée",
+      "delivered": "Livrée",
+      "returned": "Retournée"
+    },
+    "vs": {
+      "yesterday": "vs. hier",
+      "dayBefore": "vs. avant-hier",
+      "previous": "vs. période précédente"
+    },
+    "cards": {
+      "sales": "Ventes",
+      "billed": "Total facturé",
+      "net": "Net du commerçant",
+      "avgTicket": "Panier moyen",
+      "pending": "Commandes en attente",
+      "abandoned": "Paniers abandonnés"
+    },
+    "refunds": {
+      "title": "Remboursements",
+      "total": "Total remboursé"
+    },
+    "chargebacks": {
+      "title": "Litiges",
+      "total": "Total contesté"
+    },
+    "badge": {
+      "attention": "Attention",
+      "healthy": "Sain"
+    },
+    "methods": {
+      "title": "Moyens de paiement",
+      "conversion": "{rate} % de conversion",
+      "sales": "ventes"
+    }
   }
 }
