@@ -248,24 +248,25 @@ export function KaiDashboard() {
               </h3>
             </div>
             <div className="flex flex-1 flex-col items-center gap-4 sm:flex-row sm:gap-6">
-              <div className="relative shrink-0" style={{ width: 180, height: 140 }}>
-                <KaiGauge
-                  segments={statusRows.map((r) => ({
-                    key: r.key,
-                    color: r.color,
-                    value: view?.status[r.key] ?? 0,
-                  }))}
-                />
-                <div
-                  className="absolute inset-0 flex flex-col items-center justify-center"
-                  style={{ paddingTop: 14 }}
-                >
-                  <span className="mono-num text-[36px] leading-none font-extrabold tracking-[-0.03em] text-[var(--ink-900)]">
-                    {view?.statusTotal ?? 0}
-                  </span>
-                  <span className="mt-1 text-[12px] text-[var(--ink-600)]">
-                    {t("orderStatus.caption")}
-                  </span>
+              {/* The gauge is a 180 px square whose lower part (the gap of the arc) is empty, so the
+                  box is cropped to 156 px; the text is centred on the square, i.e. on the hole. */}
+              <div className="relative h-[156px] w-[180px] shrink-0">
+                <div className="absolute top-0 left-0 size-[180px]">
+                  <KaiGauge
+                    segments={statusRows.map((r) => ({
+                      key: r.key,
+                      color: r.color,
+                      value: view?.status[r.key] ?? 0,
+                    }))}
+                  />
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className="mono-num text-[34px] leading-none font-extrabold tracking-[-0.03em] text-[var(--ink-900)]">
+                      {view?.statusTotal ?? 0}
+                    </span>
+                    <span className="mt-1.5 max-w-[92px] text-center text-[10px] leading-tight text-[var(--ink-600)]">
+                      {t("orderStatus.caption")}
+                    </span>
+                  </div>
                 </div>
               </div>
               <div className="flex w-full flex-1 flex-col gap-2 sm:w-auto">
