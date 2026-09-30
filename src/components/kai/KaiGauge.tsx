@@ -13,9 +13,11 @@ export function KaiGauge({
   return (
     <svg
       aria-hidden
+      width="180"
+      height="180"
       viewBox="0 0 180 180"
       style={{ transform: "rotate(135deg)" }}
-      className="h-full w-full"
+      className="absolute top-0 left-0 max-w-none"
     >
       <circle
         cx="90"

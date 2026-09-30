@@ -34,8 +34,8 @@ function NavLink({ item, collapsed }: { item: NavItem; collapsed: boolean }) {
       href={item.href}
       prefetch
       aria-current={current ? "page" : undefined}
-      title={collapsed ? label : undefined}
-      className={`flex items-center gap-3 rounded-[var(--r-md)] px-3 py-2.5 transition-all duration-150 ${
+      title={label}
+      className={`flex min-w-0 items-center gap-3 rounded-[var(--r-md)] px-3 py-2.5 transition-all duration-150 ${
         collapsed ? "justify-center" : ""
       } ${
         current
@@ -44,11 +44,11 @@ function NavLink({ item, collapsed }: { item: NavItem; collapsed: boolean }) {
       }`}
     >
       <Icon size={18} />
-      <span className={collapsed ? "sr-only" : "flex-1 text-sm leading-tight font-medium"}>
+      <span className={collapsed ? "sr-only" : "min-w-0 flex-1 truncate text-sm leading-tight font-medium"}>
         {label}
       </span>
       {item.soon && !collapsed && (
-        <span className="rounded-[var(--r-pill)] bg-[var(--ink-100)] px-2 py-0.5 text-[10px] font-semibold text-[var(--ink-600)]">
+        <span className="ml-auto shrink-0 rounded-[var(--r-pill)] bg-[var(--ink-100)] px-2 py-0.5 text-[10px] leading-4 font-semibold whitespace-nowrap text-[var(--ink-600)]">
           {t("soon")}
         </span>
       )}
@@ -72,16 +72,16 @@ export function KaiSidebar({
   const { logout, pending } = useLogout();
 
   return (
-    <div className="group peer hidden text-[var(--ink-900)] lg:block" data-state={collapsed ? "collapsed" : "expanded"}>
+    <div className="group peer hidden shrink-0 text-[var(--ink-900)] lg:block" data-state={collapsed ? "collapsed" : "expanded"}>
       <div
-        className={`relative bg-transparent transition-[width] duration-200 ease-linear ${
-          collapsed ? "w-[6.5rem]" : "w-64"
+        className={`relative shrink-0 bg-transparent transition-[width] duration-200 ease-linear ${
+          collapsed ? "w-[var(--sidebar-width-icon)]" : "w-[var(--sidebar-width)]"
         }`}
       />
       <aside
         aria-label={t("navLabel")}
-        className={`fixed inset-y-0 left-0 z-10 flex h-screen border-r border-[var(--ink-200)] bg-[var(--ink-0)] p-2 transition-[width] duration-200 ease-linear ${
-          collapsed ? "w-[6.5rem]" : "w-64"
+        className={`fixed inset-y-0 left-0 z-20 flex h-screen border-r border-[var(--ink-200)] bg-[var(--ink-0)] p-2 transition-[width] duration-200 ease-linear ${
+          collapsed ? "w-[var(--sidebar-width-icon)]" : "w-[var(--sidebar-width)]"
         }`}
       >
         <div className="flex h-full w-full flex-col overflow-visible">

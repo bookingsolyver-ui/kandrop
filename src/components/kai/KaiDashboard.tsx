@@ -61,17 +61,17 @@ function StatCard({
 }) {
   const negative = delta < 0;
   return (
-    <div className="relative overflow-hidden rounded-[var(--r-lg)] border border-[var(--ink-200)] bg-[var(--ink-0)] p-[22px] shadow-[var(--sh-xs)] transition-all hover:-translate-y-px hover:shadow-[var(--sh-md)]">
-      <div className="mb-[14px] flex items-center gap-2.5 text-[14px] font-medium text-[var(--ink-600)]">
-        <span className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-[var(--kai-orange-50)] text-[var(--kai-orange-600)]">
+    <div className="relative min-w-0 overflow-hidden rounded-[var(--r-lg)] border border-[var(--ink-200)] bg-[var(--ink-0)] p-[22px] shadow-[var(--sh-xs)] transition-all hover:-translate-y-px hover:shadow-[var(--sh-md)]">
+      <div className="mb-[14px] flex min-w-0 items-center gap-2.5 text-[14px] font-medium text-[var(--ink-600)]">
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-[var(--kai-orange-50)] text-[var(--kai-orange-600)]">
           {icon}
         </span>
-        <span>{title}</span>
+        <span className="min-w-0 truncate">{title}</span>
       </div>
-      <div className="mono-num mb-[6px] text-[30px] leading-none font-extrabold tracking-[-0.03em] text-[var(--ink-900)]">
+      <div className="mono-num mb-[6px] min-w-0 text-[24px] leading-tight font-extrabold tracking-[-0.03em] break-words text-[var(--ink-900)]">
         {value}
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         <span
           className={`inline-flex items-center gap-1 rounded-[var(--r-pill)] px-2.5 py-1 text-[12px] font-semibold ${
             negative
@@ -298,7 +298,7 @@ export function KaiDashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-6">
         <StatCard
           icon={<CartIcon size={16} />}
           title={t("cards.sales")}

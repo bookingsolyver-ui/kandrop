@@ -365,6 +365,12 @@ h2 {
   --sh-sm: 0 2px 6px rgba(26, 24, 20, 0.08);
   --sh-md: 0 8px 24px rgba(26, 24, 20, 0.1);
   --sh-orange: 0 6px 16px rgba(255, 107, 26, 0.35);
+  --sidebar-width: 16rem;
+  --sidebar-width-icon: 6.5rem;
+  /* shadcn-style aliases used by the reference markup */
+  --background: var(--ink-100);
+  --sidebar: var(--ink-0);
+  --sidebar-foreground: var(--ink-900);
 }
 
 .kai-shell {
