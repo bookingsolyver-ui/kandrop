@@ -41,7 +41,19 @@ export async function generateMetadata({
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
   const t = await getTranslations({ locale, namespace: "Metadata" });
-  return { title: t("title"), description: t("description") };
+  return {
+    title: t("title"),
+    description: t("description"),
+    // The K mark (src/app/favicon.ico, icon.png, apple-icon.png). `?v=2` makes browsers that cached
+    // the old tab icon fetch the new one.
+    icons: {
+      icon: [
+        { url: "/favicon.ico?v=2", sizes: "any" },
+        { url: "/icon.png?v=2", type: "image/png", sizes: "512x512" },
+      ],
+      apple: [{ url: "/apple-icon.png?v=2", sizes: "180x180", type: "image/png" }],
+    },
+  };
 }
 
 export default async function LocaleLayout({
