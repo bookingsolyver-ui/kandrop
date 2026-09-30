@@ -7,6 +7,7 @@ import { HeroVisual } from "@/components/marketing/HeroVisual";
 import { ArrowIcon } from "@/components/marketing/icons";
 import { Pillars } from "@/components/marketing/Pillars";
 import { Pricing } from "@/components/marketing/Pricing";
+import { BrandLink } from "@/components/ui/BrandButton";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 
@@ -44,10 +45,10 @@ export default async function LandingPage({ params }: Props) {
         <div className="mx-auto grid max-w-7xl gap-16 px-4 pt-14 pb-20 sm:px-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:gap-12 lg:px-8 lg:pt-24 lg:pb-32">
           <div>
             <p
-              className="enter inline-flex items-center gap-2.5 rounded-full border border-line px-4 py-1.5 text-[13px] text-ink-2"
+              className="enter inline-flex items-center gap-2.5 rounded-full border border-[var(--ink-200)] bg-white px-4 py-1.5 text-[13px] font-medium text-[var(--ink-600)]"
               style={{ "--i": 0 } as React.CSSProperties}
             >
-              <span aria-hidden className="size-1.5 rounded-full bg-accent" />
+              <span aria-hidden className="size-1.5 rounded-full bg-[var(--kai-orange)]" />
               {t("eyebrow")}
             </p>
 
@@ -60,11 +61,11 @@ export default async function LandingPage({ params }: Props) {
                 nowrap: (chunks) => <span className="whitespace-nowrap">{chunks}</span>,
               })}{" "}
               <span className="sm:block">{t("title2")}</span>{" "}
-              <span className="text-accent sm:block">{t("title3")}</span>
+              <span className="text-[var(--kai-orange)] sm:block">{t("title3")}</span>
             </h1>
 
             <p
-              className="enter mt-7 max-w-xl text-lg leading-relaxed text-ink-2 sm:text-xl"
+              className="enter mt-7 max-w-xl text-lg leading-relaxed text-[var(--ink-600)] sm:text-xl"
               style={{ "--i": 2 } as React.CSSProperties}
             >
               {t("subtitle")}
@@ -74,16 +75,13 @@ export default async function LandingPage({ params }: Props) {
               className="enter mt-10 flex flex-col gap-3 sm:flex-row"
               style={{ "--i": 3 } as React.CSSProperties}
             >
-              <Link
-                href="/register"
-                className="inline-flex h-14 items-center justify-center gap-3 rounded-md bg-accent px-8 text-base font-semibold text-on-action transition-opacity hover:opacity-90"
-              >
+              <BrandLink href="/register" size="lg">
                 {t("primary")}
                 <ArrowIcon />
-              </Link>
+              </BrandLink>
               <Link
                 href="/#planos"
-                className="inline-flex h-14 items-center justify-center rounded-md border border-field px-8 text-base font-medium text-ink hover:bg-ink/5"
+                className="inline-flex h-14 items-center justify-center rounded-xl border border-[var(--ink-200)] bg-white px-8 text-base font-semibold text-[var(--ink-900)] transition-colors hover:border-[var(--ink-300)]"
               >
                 {t("secondary")}
               </Link>

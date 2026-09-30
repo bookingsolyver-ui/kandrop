@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useState } from "react";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
+import { BRAND_BUTTON_CLASS, BRAND_GRADIENT, BrandShimmer } from "@/components/ui/BrandButton";
 import { AlertCircleIcon, TrendingUpIcon } from "@/components/kai/icons";
 import { Link, useRouter } from "@/i18n/navigation";
 import { PASSWORD_MAX, PASSWORD_MIN, firstErrorPerField, loginSchema } from "@/shared/auth/schemas";
@@ -235,10 +236,10 @@ export function LoginScreen() {
                       type="submit"
                       disabled={form.pending}
                       aria-busy={form.pending}
-                      className="group relative inline-flex h-12 w-full items-center justify-center gap-2 overflow-hidden rounded-xl px-4 py-2 text-sm font-semibold tracking-wide whitespace-nowrap text-white shadow-[0_6px_18px_-6px_rgba(255,90,0,0.6)] transition-all outline-none hover:shadow-[0_10px_24px_-6px_rgba(255,90,0,0.7)] focus-visible:ring-[3px] focus-visible:ring-primary/40 disabled:cursor-progress disabled:opacity-60 disabled:shadow-none"
-                      style={{ background: "linear-gradient(135deg, #ff7e2e 0%, #ff5a00 50%, #d94c00 100%)" }}
+                      className={`${BRAND_BUTTON_CLASS} h-12 w-full text-sm`}
+                      style={{ background: BRAND_GRADIENT }}
                     >
-                      <span aria-hidden className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+                      <BrandShimmer />
                       <span className="relative inline-flex items-center justify-center gap-2">
                         {form.pending ? auth("login.submitting") : auth("login.submit")}
                         {!form.pending && <ArrowRightIcon />}

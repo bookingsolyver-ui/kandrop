@@ -275,7 +275,24 @@ h2 {
  * animations off (or unsupported) the page is simply complete.
  */
 .marketing {
-  --glow: color-mix(in oklab, var(--accent) 22%, transparent);
+  /* Same type and colours as the dashboard and the sign-in page. */
+  font-family: var(--font-jakarta), var(--font-sans);
+  --ink: var(--ink-900);
+  --ink-2: var(--ink-600);
+  --glow: color-mix(in oklab, var(--kai-orange) 16%, transparent);
+}
+/* The landing page's headings were serif; they now use the brand sans, heavier. */
+.marketing .font-serif {
+  font-family: var(--font-jakarta), var(--font-sans);
+}
+.marketing h1.font-serif,
+.marketing h2.font-serif {
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+.marketing h3.font-serif {
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 .marketing section[id] {
   scroll-margin-top: 5rem; /* the sticky navbar */

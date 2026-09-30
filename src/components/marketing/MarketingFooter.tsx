@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 
 export async function MarketingFooter() {
@@ -9,7 +10,7 @@ export async function MarketingFooter() {
     <footer className="border-t border-line">
       <div className="mx-auto flex max-w-7xl flex-col gap-10 px-4 py-14 sm:px-6 md:flex-row md:justify-between lg:px-8">
         <div className="max-w-xs">
-          <p className="font-serif text-2xl font-semibold tracking-tight">Kandrop</p>
+          <Image src="/logo-kandrop-full.png" alt="Kandrop" width={1024} height={206} className="h-8 w-auto object-contain" />
           <p className="mt-3 text-sm leading-relaxed text-ink-muted">{t("tagline")}</p>
         </div>
         <nav aria-label={t("label")} className="grid grid-cols-2 gap-x-16 gap-y-2 sm:gap-x-24">

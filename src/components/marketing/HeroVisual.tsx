@@ -34,13 +34,13 @@ export async function HeroVisual() {
           aria-hidden
           className="pointer-events-none absolute -inset-10 -z-10 bg-[radial-gradient(closest-side,var(--glow),transparent)]"
         />
-        <div className="rounded-2xl border border-line bg-surface p-5 sm:p-7">
+        <div className="rounded-2xl border border-[var(--ink-200)] bg-white p-5 shadow-[var(--sh-md)] sm:p-7">
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-[10px] font-medium tracking-[0.16em] text-ink-muted uppercase">
                 {t("mockup.balance")}
               </p>
-              <p className="mt-2 font-serif text-[2.5rem] leading-none tracking-[-0.02em] tabular-nums sm:text-[3rem]">
+              <p className="mono-num mt-2 text-[2rem] leading-none font-extrabold tracking-[-0.03em] sm:text-[2.5rem]">
                 {kz(1_284_500)}
               </p>
             </div>
@@ -54,15 +54,15 @@ export async function HeroVisual() {
           >
             <defs>
               <linearGradient id="hero-area" x1="0" x2="0" y1="0" y2="1">
-                <stop offset="0" stopColor="var(--accent)" stopOpacity="0.28" />
-                <stop offset="1" stopColor="var(--accent)" stopOpacity="0" />
+                <stop offset="0" stopColor="var(--kai-orange)" stopOpacity="0.28" />
+                <stop offset="1" stopColor="var(--kai-orange)" stopOpacity="0" />
               </linearGradient>
             </defs>
             <path d={AREA} fill="url(#hero-area)" />
             <path
               d={LINE}
               fill="none"
-              stroke="var(--accent)"
+              stroke="var(--kai-orange)"
               strokeWidth="2"
               strokeLinejoin="round"
               strokeLinecap="round"
@@ -71,7 +71,7 @@ export async function HeroVisual() {
           </svg>
           <p className="mt-2 text-[13px] text-ink-muted">{t("mockup.period")}</p>
 
-          <ul className="mt-5 divide-y divide-line border-t border-line text-sm">
+          <ul className="mt-5 divide-y divide-[var(--ink-200)] border-t border-[var(--ink-200)] text-sm">
             {[
               ["Smartwatch Série X", 32_000, "shipped"],
               ["Auriculares sem fios Pro", 37_000, "processing"],

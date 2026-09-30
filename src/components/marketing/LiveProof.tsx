@@ -56,10 +56,10 @@ export function LiveProof() {
           <div key={k} className={`float ${spot}`} style={{ "--i": k } as React.CSSProperties}>
             <div
               key={`${k}-${tick}`}
-              className="proof-in flex items-center gap-3 rounded-xl border border-line bg-surface px-4 py-3 shadow-[0_18px_40px_-18px_rgba(0,0,0,0.75)] lg:min-w-[15.5rem]"
+              className="proof-in flex items-center gap-3 rounded-2xl border border-[var(--ink-200)] bg-white px-4 py-3 shadow-[0_18px_40px_-18px_rgba(0,0,0,0.35)] lg:min-w-[15.5rem]"
               style={{ "--i": k } as React.CSSProperties}
             >
-              <span className="grid size-9 shrink-0 place-items-center rounded-full bg-accent/10 text-accent">
+              <span className="grid size-9 shrink-0 place-items-center rounded-[10px] bg-[var(--kai-orange-50)] text-[var(--kai-orange-600)]">
                 <Icon size={18} />
               </span>
               <span className="min-w-0">

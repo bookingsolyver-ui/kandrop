@@ -1,8 +1,10 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
+import { BrandLink } from "@/components/ui/BrandButton";
 import { CloseIcon, MenuIcon } from "@/components/shell/icons";
 import { Link, usePathname } from "@/i18n/navigation";
 
@@ -13,8 +15,19 @@ const LINKS = [
   { key: "about", href: "/sobre" },
 ] as const;
 
-const cta =
-  "inline-flex h-10 items-center justify-center rounded-md bg-accent px-5 text-sm font-semibold text-on-action transition-opacity hover:opacity-90";
+const LOCALE_PILL =
+  "h-10 cursor-pointer rounded-full border border-[var(--ink-200)] bg-white px-3 text-[13px] font-medium text-[var(--ink-700)] transition-all hover:border-[var(--ink-300)] hover:text-[var(--ink-900)]";
+
+const LOGO = (
+  <Image
+    src="/logo-kandrop-full.png"
+    alt=""
+    width={1024}
+    height={206}
+    priority
+    className="h-8 w-auto object-contain"
+  />
+);
 
 /**
  * Top navigation: wordmark, four links, "Sign in" and the highlighted "Get started". On phones
@@ -36,25 +49,23 @@ export function MarketingNav() {
   const isCurrent = (href: string) => (href === "/" ? pathname === "/" : pathname === href);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-page">
-      <div className="mx-auto flex h-16 max-w-7xl items-center gap-8 px-4 sm:px-6 lg:px-8">
-        <Link
-          href="/"
-          aria-label="Kandrop"
-          className="font-serif text-2xl font-semibold tracking-tight text-ink"
-        >
-          Kandrop
+    <header className="sticky top-0 z-40 border-b border-[var(--ink-200)] bg-white/90 backdrop-blur-md">
+      <div className="mx-auto flex h-16 max-w-7xl items-center gap-10 px-4 sm:px-6 lg:px-8">
+        <Link href="/" aria-label="Kandrop" className="inline-flex shrink-0 items-center rounded-md">
+          {LOGO}
         </Link>
 
         <nav aria-label={t("label")} className="hidden md:block">
-          <ul className="flex items-center gap-1">
+          <ul className="flex items-center gap-2">
             {LINKS.map(({ key, href }) => (
               <li key={key}>
                 <Link
                   href={href}
                   aria-current={isCurrent(href) ? "page" : undefined}
-                  className={`inline-flex min-h-10 items-center rounded-md px-3 text-sm transition-colors ${
-                    isCurrent(href) ? "text-ink" : "text-ink-2 hover:text-ink"
+                  className={`inline-flex min-h-10 items-center rounded-full px-4 text-sm font-medium transition-colors ${
+                    isCurrent(href)
+                      ? "bg-[var(--ink-100)] text-[var(--ink-900)]"
+                      : "text-[var(--ink-600)] hover:bg-[var(--ink-100)] hover:text-[var(--ink-900)]"
                   }`}
                 >
                   {t(key)}
@@ -64,25 +75,22 @@ export function MarketingNav() {
           </ul>
         </nav>
 
-        <div className="ml-auto flex items-center gap-2 sm:gap-3">
+        <div className="ml-auto flex items-center gap-3">
           <div className="hidden md:block">
-            <LocaleSwitcher />
+            <LocaleSwitcher className={LOCALE_PILL} />
           </div>
-          <Link
-            href="/login"
-            className="hidden min-h-10 items-center rounded-md px-3 text-sm text-ink-2 hover:text-ink sm:inline-flex"
-          >
+          <BrandLink href="/login" size="sm" className="hidden sm:inline-flex">
             {t("login")}
-          </Link>
-          <Link href="/register" className={cta}>
+          </BrandLink>
+          <BrandLink href="/register" size="sm">
             {t("start")}
-          </Link>
+          </BrandLink>
           <button
             type="button"
             onClick={() => sheet.current?.showModal()}
             aria-label={t("open")}
             aria-haspopup="dialog"
-            className="grid size-11 place-items-center rounded-md text-ink-2 hover:text-ink md:hidden"
+            className="grid size-11 place-items-center rounded-full border border-[var(--ink-200)] bg-white text-[var(--ink-700)] hover:text-[var(--ink-900)] md:hidden"
           >
             <MenuIcon />
           </button>
@@ -96,7 +104,7 @@ export function MarketingNav() {
         className="fixed inset-x-0 top-0 m-0 max-h-dvh w-full max-w-none overflow-y-auto border-b border-line bg-page p-0 text-ink backdrop:bg-black/60 md:hidden"
       >
         <div className="flex h-16 items-center justify-between px-4 sm:px-6">
-          <span className="font-serif text-2xl font-semibold tracking-tight">Kandrop</span>
+          <span className="inline-flex items-center">{LOGO}</span>
           <button
             type="button"
             onClick={close}
@@ -122,18 +130,14 @@ export function MarketingNav() {
             ))}
           </ul>
           <div className="mt-5 flex flex-col gap-3">
-            <Link href="/register" onClick={close} className={`${cta} h-12 text-base`}>
+            <BrandLink href="/register" onClick={close} size="md" className="text-base">
               {t("start")}
-            </Link>
-            <Link
-              href="/login"
-              onClick={close}
-              className="inline-flex h-12 items-center justify-center rounded-md border border-field text-base font-medium hover:bg-ink/5"
-            >
+            </BrandLink>
+            <BrandLink href="/login" onClick={close} size="md" className="text-base">
               {t("login")}
-            </Link>
+            </BrandLink>
             <div className="pt-1">
-              <LocaleSwitcher />
+              <LocaleSwitcher className={LOCALE_PILL} />
             </div>
           </div>
         </nav>

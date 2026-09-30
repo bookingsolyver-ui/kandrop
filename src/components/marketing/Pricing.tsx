@@ -1,4 +1,5 @@
 import { getFormatter, getTranslations } from "next-intl/server";
+import { BrandLink } from "@/components/ui/BrandButton";
 import { Link } from "@/i18n/navigation";
 import { CheckIcon } from "./icons";
 import { TIERS } from "./tiers";
@@ -59,22 +60,24 @@ export async function Pricing() {
                 <p className="relative mt-3 text-ink-2">{t(`plans.${tier.key}.tagline`)}</p>
 
                 <p className="relative mt-8 flex items-baseline gap-2">
-                  <span className="font-serif text-[3rem] leading-none tracking-[-0.02em] tabular-nums">
+                  <span className="font-serif text-[3rem] leading-none font-extrabold tracking-[-0.03em] tabular-nums">
                     {tier.price === 0 ? t("free") : price(tier.price)}
                   </span>
                   {tier.price > 0 && <span className="text-ink-muted">{t("period")}</span>}
                 </p>
 
-                <Link
-                  href="/register"
-                  className={`relative mt-8 inline-flex h-12 items-center justify-center rounded-md px-6 text-[0.9375rem] font-semibold transition-opacity hover:opacity-90 ${
-                    tier.featured
-                      ? "bg-accent text-on-action"
-                      : "border border-field text-ink hover:bg-ink/5"
-                  }`}
-                >
-                  {t("cta", { plan: name })}
-                </Link>
+                {tier.featured ? (
+                  <BrandLink href="/register" size="md" className="mt-8 w-full">
+                    {t("cta", { plan: name })}
+                  </BrandLink>
+                ) : (
+                  <Link
+                    href="/register"
+                    className="relative mt-8 inline-flex h-12 w-full items-center justify-center rounded-xl border border-[var(--ink-200)] bg-white px-6 text-sm font-semibold text-[var(--ink-900)] transition-colors hover:border-[var(--ink-300)]"
+                  >
+                    {t("cta", { plan: name })}
+                  </Link>
+                )}
 
                 <ul className="relative mt-8 space-y-3.5 border-t border-line pt-8 text-[0.9375rem]">
                   {tier.features.map((feature) => (
