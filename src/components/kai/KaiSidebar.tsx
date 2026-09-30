@@ -91,22 +91,19 @@ export function KaiSidebar({
               <Link
                 href="/dashboard"
                 aria-label="Kandrop"
-                className="inline-flex items-center gap-2.5 rounded-md font-serif text-[26px] leading-none font-semibold tracking-tight text-[var(--ink-900)] outline-none transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-[var(--kai-orange)]/40"
+                className="inline-flex items-center rounded-md outline-none transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-[var(--kai-orange)]/40"
               >
                 {collapsed ? (
                   <Image src="/brand/k-mark.png" alt="" width={40} height={40} priority className="size-10" />
                 ) : (
-                  <>
-                    <Image
-                      src="/brand/k-app.png"
-                      alt=""
-                      width={36}
-                      height={36}
-                      priority
-                      className="size-9 shrink-0 rounded-[10px]"
-                    />
-                    Kandrop
-                  </>
+                  <Image
+                    src="/logo-kandrop-full.png"
+                    alt=""
+                    width={1024}
+                    height={206}
+                    priority
+                    className="h-8 w-auto object-contain"
+                  />
                 )}
               </Link>
             </div>

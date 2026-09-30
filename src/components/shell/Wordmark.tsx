@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 
-/** The K mark and the name; the collapsed rail keeps just the mark. */
+/** The full logo (mark + name); the collapsed rail keeps just the mark. */
 export function Wordmark({
   compact = false,
   onNavigate,
@@ -14,17 +14,20 @@ export function Wordmark({
       href="/dashboard"
       onClick={onNavigate}
       aria-label="Kandrop"
-      className="inline-flex min-h-11 items-center gap-2.5 rounded font-serif text-2xl font-semibold tracking-tight text-ink"
+      className="inline-flex min-h-11 items-center rounded"
     >
-      <Image
-        src="/brand/k-app.png"
-        alt=""
-        width={32}
-        height={32}
-        priority
-        className="size-8 shrink-0 rounded-lg"
-      />
-      {!compact && "Kandrop"}
+      {compact ? (
+        <Image src="/brand/k-mark.png" alt="" width={32} height={32} className="size-8" />
+      ) : (
+        <Image
+          src="/logo-kandrop-full.png"
+          alt=""
+          width={1024}
+          height={206}
+          priority
+          className="h-7 w-auto object-contain"
+        />
+      )}
     </Link>
   );
 }
