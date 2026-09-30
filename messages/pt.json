@@ -1684,7 +1684,12 @@
       "revenue": "Faturamento",
       "refresh": "Atualizar",
       "alerts": "Avisos",
-      "orders": "Encomendas"
+      "orders": "Encomendas",
+      "notifications": {
+        "title": "Avisos de produto",
+        "emptyTitle": "Nenhum aviso",
+        "emptyBody": "Avisamos aqui quando um produto esgota ou é desativado."
+      }
     },
     "banner": {
       "show": "Mostrar banner {n} de {total}",

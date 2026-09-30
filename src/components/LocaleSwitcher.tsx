@@ -5,7 +5,8 @@ import { useParams } from "next/navigation";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { routing, type Locale } from "@/i18n/routing";
 
-export function LocaleSwitcher() {
+/** `className` restyles the `<select>` (the header uses a round pill). */
+export function LocaleSwitcher({ className }: { className?: string }) {
   const t = useTranslations();
   const locale = useLocale();
   const router = useRouter();
@@ -22,7 +23,7 @@ export function LocaleSwitcher() {
             locale: e.target.value as Locale,
           })
         }
-        className="rounded-md border border-line bg-surface px-2 py-1"
+        className={className ?? "rounded-md border border-line bg-surface px-2 py-1"}
       >
         {routing.locales.map((l) => (
           <option key={l} value={l}>

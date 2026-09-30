@@ -1684,7 +1684,12 @@
       "revenue": "Revenue",
       "refresh": "Refresh",
       "alerts": "Alerts",
-      "orders": "Orders"
+      "orders": "Orders",
+      "notifications": {
+        "title": "Product alerts",
+        "emptyTitle": "No alerts",
+        "emptyBody": "We let you know here when a product sells out or is deactivated."
+      }
     },
     "banner": {
       "show": "Show banner {n} of {total}",

@@ -7,7 +7,8 @@ import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { useDashboardLive } from "@/components/dashboard/useDashboardLive";
 import { useFormatters } from "@/components/dashboard/useFormatters";
 import { Link } from "@/i18n/navigation";
-import { BellIcon, CartIcon, MenuBarsIcon, RefreshIcon, TrendingUpIcon } from "./icons";
+import { CartIcon, MenuBarsIcon, RefreshIcon, TrendingUpIcon } from "./icons";
+import { NotificationsPopover } from "./NotificationsPopover";
 
 const KZ = 100;
 /** Revenue goals (Kz) the progress bar aims at: the first one not reached yet. */
@@ -34,7 +35,7 @@ export function KaiHeader({ firstName, onMenu }: { firstName: string; onMenu: ()
   }
 
   const round =
-    "relative flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-[var(--ink-200)] bg-[var(--ink-0)] text-[var(--ink-700)] transition-all hover:border-[var(--ink-300)] hover:text-[var(--ink-900)]";
+    "relative flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full border border-[var(--ink-200)] bg-[var(--ink-0)] text-[var(--ink-700)] transition-all hover:border-[var(--ink-300)] hover:text-[var(--ink-900)]";
 
   return (
     <header
@@ -97,7 +98,7 @@ export function KaiHeader({ firstName, onMenu }: { firstName: string; onMenu: ()
 
       <div className="ml-auto flex items-center gap-2 lg:ml-3">
         <div className="hidden sm:block">
-          <LocaleSwitcher />
+          <LocaleSwitcher className="h-9 cursor-pointer rounded-full border border-[var(--ink-200)] bg-[var(--ink-0)] px-3 text-[13px] font-medium text-[var(--ink-700)] transition-all hover:border-[var(--ink-300)] hover:text-[var(--ink-900)]" />
         </div>
         <button
           type="button"
@@ -108,9 +109,7 @@ export function KaiHeader({ firstName, onMenu }: { firstName: string; onMenu: ()
         >
           <RefreshIcon size={16} className={spinning ? "animate-spin" : ""} />
         </button>
-        <Link href="/dashboard/support" title={t("alerts")} aria-label={t("alerts")} className={round}>
-          <BellIcon size={16} />
-        </Link>
+        <NotificationsPopover className={round} />
         <Link href="/dashboard/orders" title={t("orders")} aria-label={t("orders")} className={round}>
           <CartIcon size={16} />
         </Link>
