@@ -3,59 +3,15 @@
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useLogout } from "@/components/auth/useLogout";
-import { Link, usePathname } from "@/i18n/navigation";
-import { ALL_NAV_ITEMS, isCurrent, type NavItem, type NavKey } from "@/components/shell/nav";
+import { Link } from "@/i18n/navigation";
+import { KaiNav } from "./KaiNav";
 import { ChevronLeftIcon, ChevronRightIcon, GearIcon, LogOutIcon } from "./icons";
-
-const GROUPS: Array<{ key: "operation" | "growth"; items: NavKey[] }> = [
-  { key: "operation", items: ["overview", "products", "catalog", "orders", "logistics", "customers"] },
-  {
-    key: "growth",
-    items: ["wallet", "whatsapp", "affiliates", "landingPages", "academy", "plans", "support"],
-  },
-];
-
-const byKey = new Map(ALL_NAV_ITEMS.map((item) => [item.key, item]));
 
 const initials = (name: string) => {
   const parts = name.split(/\s+/).filter(Boolean);
   const letters = parts.length > 1 ? [parts[0]![0], parts[parts.length - 1]![0]] : [parts[0]?.[0]];
   return letters.join("").toUpperCase() || "?";
 };
-
-function NavLink({ item, collapsed }: { item: NavItem; collapsed: boolean }) {
-  const t = useTranslations("Shell");
-  const pathname = usePathname();
-  const current = isCurrent(item, pathname);
-  const Icon = item.icon;
-  const label = t(`nav.${item.key}`);
-
-  return (
-    <Link
-      href={item.href}
-      prefetch
-      aria-current={current ? "page" : undefined}
-      title={label}
-      className={`flex min-w-0 items-center gap-3 rounded-[var(--r-md)] px-3 py-2.5 transition-all duration-150 ${
-        collapsed ? "justify-center" : ""
-      } ${
-        current
-          ? "bg-[var(--kai-orange)] text-white shadow-[var(--sh-orange)]"
-          : "text-[var(--ink-700)] hover:bg-[var(--ink-100)] hover:text-[var(--ink-900)]"
-      }`}
-    >
-      <Icon size={18} />
-      <span className={collapsed ? "sr-only" : "min-w-0 flex-1 truncate text-sm leading-tight font-medium"}>
-        {label}
-      </span>
-      {item.soon && !collapsed && (
-        <span className="ml-auto shrink-0 rounded-[var(--r-pill)] bg-[var(--ink-100)] px-2 py-0.5 text-[10px] leading-4 font-semibold whitespace-nowrap text-[var(--ink-600)]">
-          {t("soon")}
-        </span>
-      )}
-    </Link>
-  );
-}
 
 /** Desktop sidebar of the merchant area (the phone drawer is `MobileDrawer`). */
 export function KaiSidebar({
@@ -68,7 +24,6 @@ export function KaiSidebar({
   onToggle: () => void;
 }) {
   const t = useTranslations("Shell");
-  const kai = useTranslations("Kai");
   const auth = useTranslations("Auth");
   const { logout, pending } = useLogout();
 
@@ -116,29 +71,7 @@ export function KaiSidebar({
             aria-label={t("navLabel")}
             className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto px-2 py-1"
           >
-            {GROUPS.map((group, index) => (
-              <div key={group.key}>
-                {!collapsed && (
-                  <p
-                    className={`px-3 pb-1.5 text-[10.5px] font-bold tracking-[0.08em] text-[var(--ink-500)] uppercase ${
-                      index === 0 ? "pt-3" : "pt-4"
-                    }`}
-                  >
-                    {kai(`groups.${group.key}`)}
-                  </p>
-                )}
-                <ul className="flex flex-col gap-0.5">
-                  {group.items.map((key) => {
-                    const item = byKey.get(key);
-                    return item ? (
-                      <li key={key}>
-                        <NavLink item={item} collapsed={collapsed} />
-                      </li>
-                    ) : null;
-                  })}
-                </ul>
-              </div>
-            ))}
+            <KaiNav collapsed={collapsed} />
           </nav>
 
           <div className="flex flex-col gap-2 px-2 pt-2 pb-4">

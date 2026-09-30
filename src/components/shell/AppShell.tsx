@@ -51,7 +51,7 @@ export function AppShell({
         </a>
 
         <KaiSidebar user={user} collapsed={collapsed} onToggle={toggle} />
-        <MobileDrawer dialogRef={drawer} storeName={storeName} />
+        <MobileDrawer dialogRef={drawer} storeName={storeName} user={user} />
 
         {/* Everything to the right of the sidebar: it may shrink (`min-w-0`) and never scrolls by itself. */}
         <div className="relative flex min-w-0 flex-1 flex-col overflow-hidden bg-[var(--ink-100)] lg:m-2 lg:ml-0 lg:rounded-xl lg:shadow-sm">
