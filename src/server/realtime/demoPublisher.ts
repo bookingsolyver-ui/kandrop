@@ -30,9 +30,15 @@ export function ensureDemoPublisher(storeId: string) {
   // A timer left by a previous hot-reload would keep publishing with stale code.
   if (g.__kandropDemo) clearInterval(g.__kandropDemo.timer);
 
-  const timer = setInterval(() => {
+  const timer = setInterval(async () => {
     const summary = tick();
-    for (const id of stores) eventBus.publish(id, "dashboard.summary", withPayouts(summary, id));
+    for (const id of stores) {
+      try {
+        eventBus.publish(id, "dashboard.summary", await withPayouts(summary, id));
+      } catch (error) {
+        console.error("[demo] could not build the dashboard summary", error); // keep ticking
+      }
+    }
   }, TICK_MS);
   timer.unref?.();
   g.__kandropDemo = { owner: OWNER, timer };

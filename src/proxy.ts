@@ -18,7 +18,7 @@ export default async function proxy(request: NextRequest) {
   const match = DASHBOARD.exec(request.nextUrl.pathname);
   if (match) {
     const session = await resolveSession(request.cookies.get(SESSION_COOKIE)?.value);
-    const destination = !session ? "login" : hasAccess(session) ? null : "checkout";
+    const destination = !session ? "login" : (await hasAccess(session)) ? null : "checkout";
     if (destination) {
       const url = request.nextUrl.clone();
       url.pathname = `/${match[1]}/${destination}`;

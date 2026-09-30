@@ -20,7 +20,7 @@ const schema = z.object({
     (v) => (v === "" ? undefined : v),
     z.string().min(32).optional()
   ),
-  // Supabase (optional: nothing uses it yet, see src/lib/supabase). The two NEXT_PUBLIC_ values are
+  // Supabase (the database; see src/lib/supabase and supabase/migrations). The two NEXT_PUBLIC_ values are
   // public by design; the service-role key bypasses Row Level Security and must stay server-only.
   NEXT_PUBLIC_SUPABASE_URL: z.preprocess((v) => (v === "" ? undefined : v), z.url().optional()),
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.preprocess(

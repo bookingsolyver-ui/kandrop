@@ -60,32 +60,36 @@ export function toPublic(p: PaymentRecord): PublicPayment {
   };
 }
 
-function markPaid(p: PaymentRecord) {
+async function markPaid(p: PaymentRecord) {
   p.status = "success";
   p.paidAt = Date.now();
-  const session = checkoutRepository.get(p.sessionId);
+  await paymentRepository.save(p); // the payment is paid before anything that follows from it
+  const session = await checkoutRepository.get(p.sessionId);
   if (session) {
-    session.paid = true;
+    if (!session.paid) await checkoutRepository.save({ ...session, paid: true });
     // Every confirmed payment gets its receipt, whichever method or channel confirmed it.
-    issueReceipt(p, session);
+    await issueReceipt(p, session);
     // A store paying for its Kandrop plan: switch the plan on (no-op for ordinary sales).
-    activateSubscription(session, p.paidAt);
+    await activateSubscription(session, p.paidAt);
   }
 }
 
 /** Lazily applies what is due: a polled provider's answer, or the timeout of a webhook one. */
-function settle(p: PaymentRecord): PaymentRecord {
+async function settle(p: PaymentRecord): Promise<PaymentRecord> {
   if (p.status === "pending" && p.providerRef && Date.now() > p.createdAt + PROVIDER_TIMEOUT_MS) {
     // The provider never called back. Fail visibly rather than leave the payer waiting forever.
     p.status = "failed";
     p.failureCode = "timeout";
+    await paymentRepository.save(p);
   } else if (p.status === "pending" && p.settle && Date.now() >= p.settle.at) {
-    if (p.settle.status === "success") markPaid(p);
+    const answer = p.settle;
+    p.settle = undefined;
+    if (answer.status === "success") await markPaid(p);
     else {
       p.status = "failed";
-      p.failureCode = p.settle.failureCode;
+      p.failureCode = answer.failureCode;
+      await paymentRepository.save(p);
     }
-    p.settle = undefined;
   }
   return p;
 }
@@ -94,15 +98,15 @@ export async function createPayment(input: PaymentRequestInput, clientKey: strin
   assertSandbox();
   const req = paymentRequestSchema.parse(input); // never log `input`: it may contain card data
 
-  const session = checkoutRepository.get(req.sessionId);
+  const session = await checkoutRepository.get(req.sessionId);
   if (!session) throw new ApiError("not_found");
   const state = statusOf(session);
   if (state === "paid") throw new ApiError("checkout_paid");
   if (state === "expired") throw new ApiError("checkout_expired");
 
   // Idempotency: a double-click or retry while one is pending returns that same payment.
-  const latest = paymentRepository.bySession(session.id)[0];
-  if (latest && settle(latest).status === "pending") return toPublic(latest);
+  const latest = (await paymentRepository.bySession(session.id))[0];
+  if (latest && (await settle(latest)).status === "pending") return toPublic(latest);
   if (latest?.status === "success") throw new ApiError("checkout_paid");
 
   const key = `pay:${clientKey}:${session.id}`;
@@ -127,7 +131,7 @@ export async function createPayment(input: PaymentRequestInput, clientKey: strin
   } else {
     const sim = simulate(req);
     if (sim.kind === "immediate") {
-      if (sim.verdict.status === "success") markPaid(payment);
+      if (sim.verdict.status === "success") await markPaid(payment);
       else {
         payment.status = "failed";
         payment.failureCode = sim.verdict.failureCode;
@@ -141,7 +145,7 @@ export async function createPayment(input: PaymentRequestInput, clientKey: strin
     }
   }
 
-  paymentRepository.save(payment);
+  await paymentRepository.save(payment);
   if (payment.status === "success") attempts.reset(key);
   return toPublic(payment);
 }
@@ -152,11 +156,11 @@ export type ProviderOutcome = "applied" | "ignored" | "unknown";
  * Applies a provider event that has already passed signature verification. Idempotent: a
  * replayed, duplicate or late event never changes a payment that is no longer pending.
  */
-export function applyProviderEvent(event: MulticaixaEvent): ProviderOutcome {
-  const payment = paymentRepository.byProviderRef(event.transactionId);
+export async function applyProviderEvent(event: MulticaixaEvent): Promise<ProviderOutcome> {
+  const payment = await paymentRepository.byProviderRef(event.transactionId);
   if (!payment) return "unknown";
 
-  if (settle(payment).status !== "pending") {
+  if ((await settle(payment)).status !== "pending") {
     // E.g. the payer cancelled or it timed out, then approved in the app anyway: money may have
     // moved without an order. Needs reconciliation with the provider (refund) once it is real.
     console.warn("[payments] provider event for a payment that is no longer pending", {
@@ -171,27 +175,29 @@ export function applyProviderEvent(event: MulticaixaEvent): ProviderOutcome {
     return "ignored";
   }
 
-  if (event.event === "payment.succeeded") markPaid(payment);
+  if (event.event === "payment.succeeded") await markPaid(payment);
   else {
     payment.status = "failed";
     payment.failureCode = event.reason ?? "declined_by_customer";
+    await paymentRepository.save(payment);
   }
   return "applied";
 }
 
-export function getPayment(id: string): PublicPayment | null {
-  const payment = paymentRepository.get(id);
-  return payment ? toPublic(settle(payment)) : null;
+export async function getPayment(id: string): Promise<PublicPayment | null> {
+  const payment = await paymentRepository.get(id);
+  return payment ? toPublic(await settle(payment)) : null;
 }
 
 /** The payer abandons a pending confirmation (e.g. to choose another method). */
-export function cancelPayment(id: string): PublicPayment | null {
-  const payment = paymentRepository.get(id);
+export async function cancelPayment(id: string): Promise<PublicPayment | null> {
+  const payment = await paymentRepository.get(id);
   if (!payment) return null;
-  if (settle(payment).status === "pending") {
+  if ((await settle(payment)).status === "pending") {
     payment.status = "cancelled";
     payment.failureCode = "cancelled";
     payment.settle = undefined;
+    await paymentRepository.save(payment);
   }
   return toPublic(payment);
 }
@@ -206,9 +212,9 @@ const SANDBOX_TRANSFER_CONFIRM_MS = 20_000;
  * check after a short delay. Only for a store paying for its Kandrop plan: a shopper's purchase from a
  * merchant is paid to the merchant, not to Kandrop's account.
  */
-export function createBankTransfer(input: unknown, clientKey: string) {
+export async function createBankTransfer(input: unknown, clientKey: string) {
   const { sessionId } = transferRequestSchema.parse(input);
-  const session = checkoutRepository.get(sessionId);
+  const session = await checkoutRepository.get(sessionId);
   if (!session || !session.subscription) throw new ApiError("not_found");
   const state = statusOf(session);
   if (state === "paid") throw new ApiError("checkout_paid");
@@ -217,8 +223,8 @@ export function createBankTransfer(input: unknown, clientKey: string) {
   if (!info) throw new ApiError("payments_unavailable");
 
   // Idempotency: asking again while a payment is pending returns that same one.
-  const latest = paymentRepository.bySession(session.id)[0];
-  if (latest && settle(latest).status === "pending") return toPublic(latest);
+  const latest = (await paymentRepository.bySession(session.id))[0];
+  if (latest && (await settle(latest)).status === "pending") return toPublic(latest);
   if (latest?.status === "success") throw new ApiError("checkout_paid");
 
   const key = `transfer:${clientKey}:${session.id}`;
@@ -240,7 +246,7 @@ export function createBankTransfer(input: unknown, clientKey: string) {
       ? { at: Date.now() + SANDBOX_TRANSFER_CONFIRM_MS, status: "success" }
       : undefined,
   };
-  return toPublic(paymentRepository.save(payment));
+  return toPublic(await paymentRepository.save(payment));
 }
 
 /**
@@ -248,9 +254,9 @@ export function createBankTransfer(input: unknown, clientKey: string) {
  * the payment succeeds, the receipt is issued and the plan is switched on, exactly like any other
  * confirmed payment. Idempotent; `null` when there is no such transfer.
  */
-export function confirmBankTransfer(transferReference: string): PublicPayment | null {
-  const payment = paymentRepository.byReference(transferReference);
+export async function confirmBankTransfer(transferReference: string): Promise<PublicPayment | null> {
+  const payment = await paymentRepository.byReference(transferReference);
   if (!payment || payment.method !== "bank_transfer") return null;
-  if (settle(payment).status === "pending") markPaid(payment);
+  if ((await settle(payment)).status === "pending") await markPaid(payment);
   return toPublic(payment);
 }

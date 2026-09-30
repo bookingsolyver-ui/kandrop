@@ -33,7 +33,7 @@ export const POST = handle(async (req, ctx: Ctx) => {
     throw new ApiError("unauthenticated");
   }
 
-  const payment = confirmBankTransfer((await ctx.params).reference);
+  const payment = await confirmBankTransfer((await ctx.params).reference);
   if (!payment) throw new ApiError("not_found");
   return json(payment, { headers: { "Cache-Control": "no-store" } });
 });

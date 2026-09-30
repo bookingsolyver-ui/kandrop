@@ -11,6 +11,6 @@ import { readSession, type Session } from "./session";
 export async function requirePaidSession(locale: Locale): Promise<Session> {
   const session = await readSession();
   if (!session) return redirect({ href: "/login", locale });
-  if (!hasAccess(session)) return redirect({ href: "/checkout", locale });
+  if (!(await hasAccess(session))) return redirect({ href: "/checkout", locale });
   return session;
 }

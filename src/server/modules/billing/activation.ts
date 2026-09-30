@@ -15,18 +15,24 @@ const DAY = 86_400_000;
  *
  * Kept free of imports from `payments`, which imports this: no cycle.
  */
-export function activateSubscription(session: CheckoutSession, paidAt: number): void {
+export async function activateSubscription(session: CheckoutSession, paidAt: number): Promise<void> {
   const target = session.subscription;
   if (!target) return;
-  const charge = billingRepository.chargeBySession(session.id);
+  const charge = await billingRepository.chargeBySession(session.id);
   if (!charge || charge.activated) return;
+  // Claim the charge first (atomic): whoever flips it is the only one that extends the period.
+  if (!(await billingRepository.markActivated(session.id))) return;
 
-  const current = billingRepository.subscription(target.storeId);
-  const renewing = current?.plan === target.plan && current.periodEnd > paidAt;
-  billingRepository.saveSubscription({
-    storeId: target.storeId,
-    plan: target.plan,
-    periodEnd: (renewing ? current.periodEnd : paidAt) + PERIOD_DAYS * DAY,
-  });
-  charge.activated = true;
+  try {
+    const current = await billingRepository.subscription(target.storeId);
+    const renewing = current?.plan === target.plan && current.periodEnd > paidAt;
+    await billingRepository.saveSubscription({
+      storeId: target.storeId,
+      plan: target.plan,
+      periodEnd: (renewing ? current.periodEnd : paidAt) + PERIOD_DAYS * DAY,
+    });
+  } catch (error) {
+    await billingRepository.releaseActivation(session.id); // so a retry can still switch it on
+    throw error;
+  }
 }

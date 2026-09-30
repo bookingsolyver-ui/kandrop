@@ -9,9 +9,9 @@ import type { Session } from "./types";
  * The one exception is the development bypass user (`AUTH_DEV_BYPASS`, refused in production):
  * it has no stored account to pay for.
  */
-export const hasAccess = (session: Session): boolean =>
-  session.userId === "usr_demo" || hasActiveSubscription(session.storeId);
+export const hasAccess = async (session: Session): Promise<boolean> =>
+  session.userId === "usr_demo" || (await hasActiveSubscription(session.storeId));
 
 /** What the sign-in and sign-up responses tell the browser, so it goes to the right page at once. */
-export const subscriptionStateOf = (session: Session): "active" | "pending" =>
-  hasAccess(session) ? "active" : "pending";
+export const subscriptionStateOf = async (session: Session): Promise<"active" | "pending"> =>
+  (await hasAccess(session)) ? "active" : "pending";

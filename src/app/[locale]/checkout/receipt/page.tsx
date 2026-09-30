@@ -21,7 +21,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   if (!hasLocale(routing.locales, locale)) notFound();
   const { payment } = await searchParams;
   const t = await getTranslations({ locale, namespace: "Receipt" });
-  const receipt = payment ? getReceipt(payment) : null;
+  const receipt = payment ? await getReceipt(payment) : null;
   // The title becomes the suggested file name when the buyer chooses "Save as PDF".
   return {
     title: `${t("title")}${receipt ? ` ${receipt.number}` : ""} — Kandrop`,
@@ -41,10 +41,10 @@ export default async function ReceiptPage({ params, searchParams }: Props) {
   setRequestLocale(locale);
 
   const { payment: id } = await searchParams;
-  const receipt = id ? getReceipt(id) : null;
+  const receipt = id ? await getReceipt(id) : null;
   if (!receipt) {
     // Known but not paid (yet): there is no receipt to show, so go back to the payment.
-    const payment = id ? getPayment(id) : null;
+    const payment = id ? await getPayment(id) : null;
     if (payment) {
       redirect({ href: { pathname: "/checkout", query: { session: payment.sessionId } }, locale });
     }

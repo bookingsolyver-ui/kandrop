@@ -12,6 +12,6 @@ export const dynamic = "force-dynamic";
  */
 export const POST = handle(async (req) => {
   assertSameOrigin(req);
-  const payment = createBankTransfer(await readJson(req, 1_000), clientIp(req));
+  const payment = await createBankTransfer(await readJson(req, 1_000), clientIp(req));
   return json(payment, { status: 202, headers: { "Cache-Control": "no-store" } });
 });

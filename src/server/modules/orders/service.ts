@@ -38,7 +38,7 @@ export function toPublic(o: OrderRecord): PublicOrder {
 
 export async function listOrders(auth: Session, rawQuery: ListOrdersQuery): Promise<OrderPage> {
   const query = listOrdersQuerySchema.parse(rawQuery);
-  const all = orderRepository.all(auth.storeId);
+  const all = await orderRepository.all(auth.storeId);
 
   // "#1042" and "1042" both find order 1042.
   const terms = query.q ? fold(query.q).replace(/#/g, "").split(/\s+/).filter(Boolean) : [];
@@ -82,7 +82,7 @@ export async function listOrders(auth: Session, rawQuery: ListOrdersQuery): Prom
 }
 
 export async function getOrder(auth: Session, id: string): Promise<PublicOrder> {
-  const order = orderRepository.get(auth.storeId, id);
+  const order = await orderRepository.get(auth.storeId, id);
   if (!order) throw notFound();
   return toPublic(order);
 }
@@ -93,7 +93,7 @@ export async function updateOrderStatus(
   id: string,
   input: unknown
 ): Promise<PublicOrder> {
-  const order = orderRepository.get(auth.storeId, id);
+  const order = await orderRepository.get(auth.storeId, id);
   if (!order) throw notFound();
 
   const { status, trackingCode } = updateOrderStatusSchema.parse(input);
@@ -107,7 +107,7 @@ export async function updateOrderStatus(
     history: [...order.history, { status, at: now }],
     updatedAt: now,
   };
-  return toPublic(orderRepository.save(next));
+  return toPublic(await orderRepository.save(next));
 }
 
 /**
@@ -116,13 +116,13 @@ export async function updateOrderStatus(
  * that had already shipped (the merchant-facing flow does not allow cancelling once shipped).
  * Idempotent: an order already in the target status is left alone.
  */
-export function transitionOrder(
+export async function transitionOrder(
   storeId: string,
   id: string,
   status: OrderStatus,
   options: { trackingCode?: string; force?: boolean } = {}
-): PublicOrder {
-  const order = orderRepository.get(storeId, id);
+): Promise<PublicOrder> {
+  const order = await orderRepository.get(storeId, id);
   if (!order) throw notFound();
   if (order.status === status) return toPublic(order);
   if (!options.force && !canTransition(order.status, status)) {
@@ -130,7 +130,7 @@ export function transitionOrder(
   }
   const now = Date.now();
   return toPublic(
-    orderRepository.save({
+    await orderRepository.save({
       ...order,
       status,
       trackingCode: status === "shipped" ? options.trackingCode : order.trackingCode,

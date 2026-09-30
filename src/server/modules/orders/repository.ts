@@ -4,19 +4,7 @@ import { DEMO_PRODUCTS, KZ } from "@/server/modules/products/repository";
 import type { PaymentMethod } from "@/shared/checkout/schemas";
 import type { OrderStatus } from "@/shared/orders/schemas";
 import type { OrderAddress, OrderRecord } from "./schema";
-
-/**
- * STUB — in-memory, per process, lost on restart. Replace with `orders` / `order_items` /
- * `order_status_history` tables (index on `store_id, created_at`); the functions below are the
- * whole contract. Every call takes the `storeId` so tenant scoping cannot be forgotten.
- *
- * Orders are created by the checkout in a real deployment (a successful payment opens one).
- * Until that hookup exists, stores get a consistent demo set — see `seed`.
- */
-const g = globalThis as unknown as {
-  __kandropOrders?: { stores: Map<string, Map<string, OrderRecord>>; seeded: Set<string> };
-};
-const db = (g.__kandropOrders ??= { stores: new Map(), seeded: new Set() });
+import { db, must, rows } from "@/server/db/client";
 
 const HOUR = 60 * 60 * 1000;
 
@@ -35,7 +23,6 @@ const CUSTOMERS: Array<[string, string, string | undefined]> = [
   ["Rui Sebastião", "931 447 262", undefined],
 ];
 
-/** [street, city, province, landmark, delivery fee in Kz, delivery zone (bairro / município)] */
 const ADDRESSES: Array<[string, string, string, string | undefined, number, string]> = [
   [
     "Rua Comandante Gika, n.º 42, Maianga",
@@ -92,14 +79,11 @@ const ADDRESSES: Array<[string, string, string, string | undefined, number, stri
 
 const METHODS: PaymentMethod[] = ["multicaixa_express", "unitel_money", "card"];
 
-/** Fixed pseudo-random sequence, so every restart produces the same, testable orders. */
 function lcg(seed: number) {
   let state = seed;
   return () => (state = (state * 1_664_525 + 1_013_904_223) % 4_294_967_296) / 4_294_967_296;
 }
 
-/** Newest first: recent orders are waiting for the merchant, older ones are done. */
-/** The cancelled order (of three) that was a failed delivery: shipped, then returned. */
 const RETURNED_INDEX = 9;
 
 function statusForIndex(i: number): OrderStatus {
@@ -112,11 +96,12 @@ function statusForIndex(i: number): OrderStatus {
 
 const REFERENCE_ALPHABET = "23456789ABCDEFGHJKMNPQRSTVWXYZ";
 
-function seed(storeId: string, rows: Map<string, OrderRecord>) {
+function generateSeedOrders(storeId: string) {
   const rand = lcg(2026);
   const pick = (n: number) => Math.floor(rand() * n);
   const now = Date.now();
   const COUNT = 34;
+  const rows: OrderRecord[] = [];
 
   for (let i = 0; i < COUNT; i++) {
     const [name, phone, email] = CUSTOMERS[(i * 5) % CUSTOMERS.length]!;
@@ -124,7 +109,6 @@ function seed(storeId: string, rows: Map<string, OrderRecord>) {
       ADDRESSES[(i * 3 + pick(2)) % ADDRESSES.length]!;
     const address: OrderAddress = { street, city, province, reference, zone };
 
-    // 1–3 distinct catalogue items (real names and sale prices from the demo catalogue).
     const lineCount = 1 + pick(3);
     const first = pick(DEMO_PRODUCTS.length);
     const items = Array.from({ length: lineCount }, (_, k) => {
@@ -132,20 +116,18 @@ function seed(storeId: string, rows: Map<string, OrderRecord>) {
       return { name: title, quantity: 1 + (rand() < 0.25 ? 1 : 0), unitAmount: sale * KZ };
     });
     const subtotal = items.reduce((sum, item) => sum + item.unitAmount * item.quantity, 0);
-    const shippingAmount = subtotal >= 60_000 * KZ ? 0 : fee * KZ; // free shipping above 60 000 Kz
+    const shippingAmount = subtotal >= 60_000 * KZ ? 0 : fee * KZ;
 
     const status = statusForIndex(i);
-    /** One cancelled order is a delivery that came back: it shipped, then was cancelled. */
     const returned = i === RETURNED_INDEX;
     const createdAt = now - (2 + i * 19 + pick(9)) * HOUR;
     const step = (hours: number) => Math.min(now, createdAt + hours * HOUR);
 
-    // The path this order took, ending at its current status.
     const path: Array<[OrderStatus, number]> = [["pending", 0]];
     if (status !== "pending") {
       if (returned) {
         path.push(["processing", 3 + pick(6)]);
-        path.push(["shipped", 0], ["cancelled", 0]); // real times set just below
+        path.push(["shipped", 0], ["cancelled", 0]);
       } else if (status === "cancelled") path.push(["cancelled", 5 + pick(20)]);
       else {
         path.push(["processing", 3 + pick(6)]);
@@ -154,22 +136,20 @@ function seed(storeId: string, rows: Map<string, OrderRecord>) {
       }
     }
     const history = path.map(([s, hours]) => ({ status: s, at: step(hours) }));
-    // What is on the road is recent (so its delivery is genuinely under way); a returned parcel
-    // shipped a few hours ago and came back an hour or two later.
     const last = history[history.length - 1]!;
     if (status === "shipped") last.at = now - (10 + pick(35)) * 60_000;
     if (returned) {
       history[history.length - 2]!.at = now - 5 * HOUR;
       last.at = now - 3 * HOUR;
     }
-    // A delivery takes hours, not days: delivered 1.5–3 h after it shipped.
     if (status === "delivered") {
       last.at = Math.min(now, history[history.length - 2]!.at + (90 + pick(90)) * 60_000);
     }
 
     const id = `ord_${randomBytes(9).toString("base64url")}`;
     const shipped = status === "shipped" || status === "delivered" || returned;
-    rows.set(id, {
+    
+    rows.push({
       id,
       storeId,
       number: 1001 + (COUNT - 1 - i),
@@ -191,25 +171,88 @@ function seed(storeId: string, rows: Map<string, OrderRecord>) {
       updatedAt: history[history.length - 1]!.at,
     });
   }
-}
-
-function rowsOf(storeId: string): Map<string, OrderRecord> {
-  let rows = db.stores.get(storeId);
-  if (!rows) db.stores.set(storeId, (rows = new Map()));
-  // Same rule as the dashboard's demo data: the sandbox store, or any store when demo mode is on.
-  const demo = storeId === "sto_demo" || getEnv().KANDROP_DEMO_EVENTS;
-  if (demo && !db.seeded.has(storeId)) {
-    db.seeded.add(storeId);
-    seed(storeId, rows);
-  }
   return rows;
 }
 
+function mapRowToOrder(row: Record<string, unknown>): OrderRecord {
+  return {
+    id: String(row.id),
+    storeId: String(row.store_id),
+    number: Number(row.number),
+    status: row.status as OrderStatus,
+    customer: row.customer as OrderRecord["customer"],
+    address: row.address as OrderAddress,
+    items: (row.items as OrderRecord["items"]) ?? [],
+    shippingAmount: Number(row.shipping_amount),
+    total: Number(row.total),
+    currency: "AOA",
+    payment: row.payment as OrderRecord["payment"],
+    trackingCode: row.tracking_code ? String(row.tracking_code) : undefined,
+    history: (row.history as OrderRecord["history"]) ?? [],
+    createdAt: Number(row.created_at),
+    updatedAt: Number(row.updated_at),
+  };
+}
+
+const toRow = (o: OrderRecord) => ({
+  id: o.id,
+  store_id: o.storeId,
+  number: o.number,
+  status: o.status,
+  customer: o.customer,
+  address: o.address,
+  items: o.items,
+  shipping_amount: o.shippingAmount,
+  total: o.total,
+  currency: o.currency,
+  payment: o.payment,
+  tracking_code: o.trackingCode ?? null,
+  history: o.history,
+  created_at: o.createdAt,
+  updated_at: o.updatedAt,
+});
+
+/** Sandbox stores (or any store when demo mode is on) start with a consistent demo set. */
+async function seedIfDemo(storeId: string) {
+  if (!(storeId === "sto_demo" || getEnv().KANDROP_DEMO_EVENTS)) return;
+  const { count, error } = await db()
+    .from("orders")
+    .select("id", { count: "exact", head: true })
+    .eq("store_id", storeId);
+  if (error || count !== 0) return;
+  // `ignoreDuplicates`: two first requests racing must not fail (unique on store_id, number).
+  must(
+    "orders.seed",
+    await db()
+      .from("orders")
+      .upsert(generateSeedOrders(storeId).map(toRow), {
+        onConflict: "store_id,number",
+        ignoreDuplicates: true,
+      })
+  );
+}
+
+/** Every call takes the `storeId` so tenant scoping cannot be forgotten by a caller. */
 export const orderRepository = {
-  all: (storeId: string) => [...rowsOf(storeId).values()],
-  get: (storeId: string, id: string) => rowsOf(storeId).get(id) ?? null,
-  save(order: OrderRecord) {
-    rowsOf(order.storeId).set(order.id, order);
+  async all(storeId: string): Promise<OrderRecord[]> {
+    await seedIfDemo(storeId);
+    const data = rows(
+      "orders.all",
+      await db().from("orders").select("*").eq("store_id", storeId)
+    );
+    return data.map(mapRowToOrder);
+  },
+
+  async get(storeId: string, id: string): Promise<OrderRecord | null> {
+    const data = must(
+      "orders.get",
+      await db().from("orders").select("*").eq("store_id", storeId).eq("id", id).maybeSingle()
+    );
+    return data ? mapRowToOrder(data) : null;
+  },
+
+  async save(order: OrderRecord): Promise<OrderRecord> {
+    must("orders.save", await db().from("orders").upsert(toRow(order)));
     return order;
   },
 };

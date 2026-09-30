@@ -12,15 +12,18 @@ const iso = (ms: number) => new Date(ms).toISOString();
  * through (`markPaid`), so a card, Multicaixa Express and Unitel Money all get one automatically.
  * Idempotent: a payment has exactly one receipt, and asking again returns that same document.
  */
-export function issueReceipt(payment: PaymentRecord, session: CheckoutSession): Receipt {
-  const existing = receiptRepository.byPayment(payment.id);
+export async function issueReceipt(
+  payment: PaymentRecord,
+  session: CheckoutSession
+): Promise<Receipt> {
+  const existing = await receiptRepository.byPayment(payment.id);
   if (existing) return existing;
 
   const issuedAt = Date.now();
   const year = new Date(issuedAt).getUTCFullYear();
-  const sequence = receiptRepository.nextSequence(year);
+  const sequence = await receiptRepository.nextSequence(year);
 
-  return receiptRepository.save({
+  return await receiptRepository.save({
     number: `KD-${year}-${String(sequence).padStart(6, "0")}`,
     paymentId: payment.id,
     kind: session.subscription ? "subscription" : "sale",
@@ -53,12 +56,12 @@ export function toPublic(r: Receipt): PublicReceipt {
  * The receipt of a paid payment; `null` if the payment is unknown or not paid. A paid payment
  * that somehow has no receipt yet (e.g. confirmed before receipts existed) gets it issued now.
  */
-export function getReceipt(paymentId: string): PublicReceipt | null {
-  const existing = receiptRepository.byPayment(paymentId);
+export async function getReceipt(paymentId: string): Promise<PublicReceipt | null> {
+  const existing = await receiptRepository.byPayment(paymentId);
   if (existing) return toPublic(existing);
 
-  const payment = paymentRepository.get(paymentId);
+  const payment = await paymentRepository.get(paymentId);
   if (!payment || payment.status !== "success") return null;
-  const session = checkoutRepository.get(payment.sessionId);
-  return session ? toPublic(issueReceipt(payment, session)) : null;
+  const session = await checkoutRepository.get(payment.sessionId);
+  return session ? toPublic(await issueReceipt(payment, session)) : null;
 }

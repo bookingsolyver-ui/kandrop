@@ -59,18 +59,18 @@ export default async function CheckoutPage({ params, searchParams }: Props) {
   if (!session && demo === undefined) {
     const current = await readSession();
     if (!current) redirect({ href: "/register", locale });
-    if (hasAccess(current!)) redirect({ href: "/dashboard", locale });
+    if (await hasAccess(current!)) redirect({ href: "/dashboard", locale });
     const me = await getMe(current!);
     return <SubscribeFlow email={me.email} sandbox={sandbox} />;
   }
 
   if (!session) {
     if (!sandbox) notFound();
-    const demoCheckout = createDemoCheckout();
+    const demoCheckout = await createDemoCheckout();
     redirect({ href: { pathname: "/checkout", query: { session: demoCheckout.id } }, locale });
   }
 
-  const checkout = session ? getPublicCheckout(session) : null;
+  const checkout = session ? await getPublicCheckout(session) : null;
   if (!checkout) {
     return (
       <main className="mx-auto flex min-h-screen max-w-lg flex-col justify-center px-4">

@@ -18,5 +18,5 @@ export const POST = handle(async (req) => {
   await setSessionCookie(token, expiresAt);
 
   // A new account has paid nothing: `subscription` is "pending" and the form sends it to /checkout.
-  return json({ user: toMe(user), subscription: subscriptionStateOf(session) }, { status: 201 });
+  return json({ user: toMe(user), subscription: await subscriptionStateOf(session) }, { status: 201 });
 });

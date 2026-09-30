@@ -27,11 +27,13 @@ function requireOwner(auth: Session) {
   if (auth.role !== "owner") throw new ApiError("forbidden");
 }
 
-/** Lazily applies the simulated scan once its delay has passed. */
-function settle(state: AutomationState): AutomationState {
+/** The store's state, with the simulated scan applied (and saved) once its delay has passed. */
+async function load(storeId: string): Promise<AutomationState> {
+  const state = await automationRepository.get(storeId);
   const c = state.connection;
   if (c.status === "pending" && c.connectAt !== undefined && Date.now() >= c.connectAt) {
     state.connection = { status: "connected", phone: c.phone, connectedAt: c.connectAt };
+    await automationRepository.save(storeId, state);
   }
   return state;
 }
@@ -61,7 +63,7 @@ function toPublic(state: AutomationState): PublicAutomations {
 }
 
 export async function getAutomations(auth: Session): Promise<PublicAutomations> {
-  return toPublic(settle(automationRepository.get(auth.storeId)));
+  return toPublic(await load(auth.storeId));
 }
 
 /** Starts pairing the merchant's WhatsApp number. Simulated: a code appears, then it "connects". */
@@ -71,7 +73,7 @@ export async function connectWhatsApp(
 ): Promise<PublicAutomations> {
   requireOwner(auth);
   const { phone } = connectSchema.parse(input);
-  const state = settle(automationRepository.get(auth.storeId));
+  const state = await load(auth.storeId);
   if (state.connection.status === "connected") throw new ApiError("whatsapp_already_connected");
 
   state.connection = {
@@ -80,16 +82,18 @@ export async function connectWhatsApp(
     pairingCode: newPairingCode(),
     connectAt: Date.now() + randomInt(SCAN_MIN_MS, SCAN_MAX_MS + 1),
   };
+  await automationRepository.save(auth.storeId, state);
   return toPublic(state);
 }
 
 /** Cancels a pairing in progress, or disconnects. Disconnecting also turns every flow off. */
 export async function disconnectWhatsApp(auth: Session): Promise<PublicAutomations> {
   requireOwner(auth);
-  const state = settle(automationRepository.get(auth.storeId));
+  const state = await load(auth.storeId);
   state.connection = { status: "disconnected" };
   // Nothing can be sent without a connection, so nothing may stay switched on.
   for (const key of FLOW_KEYS) state.flows[key].enabled = false;
+  await automationRepository.save(auth.storeId, state);
   return toPublic(state);
 }
 
@@ -101,7 +105,7 @@ export async function updateFlow(
   requireOwner(auth);
   if (!FLOW_KEYS.includes(key)) throw new ApiError("not_found");
   const patch = updateFlowSchema.parse(input);
-  const state = settle(automationRepository.get(auth.storeId));
+  const state = await load(auth.storeId);
   const flow = state.flows[key];
 
   if (patch.template !== undefined) {
@@ -121,5 +125,6 @@ export async function updateFlow(
   }
   if (patch.enabled !== undefined) flow.enabled = patch.enabled;
   flow.updatedAt = Date.now();
+  await automationRepository.save(auth.storeId, state);
   return publicFlow(key, state);
 }

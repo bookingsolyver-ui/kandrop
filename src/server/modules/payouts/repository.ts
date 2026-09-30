@@ -1,30 +1,19 @@
 import { randomBytes } from "node:crypto";
 import { getEnv } from "@/server/config/env";
+import { db, must, rows } from "@/server/db/client";
 import type { PayoutRecord } from "./schema";
-
-/**
- * STUB — in-memory, per process, lost on restart. Replace with a `payouts` table (index on
- * `store_id, created_at`) and a real yearly sequence for `reference`. Every call takes the
- * `storeId`, so tenant scoping cannot be forgotten by a caller.
- */
-const g = globalThis as unknown as {
-  __kandropPayouts?: {
-    stores: Map<string, Map<string, PayoutRecord>>;
-    seeded: Set<string>;
-    counters: Map<number, number>;
-  };
-};
-const db = (g.__kandropPayouts ??= { stores: new Map(), seeded: new Set(), counters: new Map() });
 
 const KZ = 100;
 const DAY = 24 * 60 * 60 * 1000;
 
 export const newPayoutId = () => `pot_${randomBytes(9).toString("base64url")}`;
 
-export function nextReference(now = Date.now()): string {
+/** `LV-2026-000001`: a per-year sequence, atomic in the database. */
+export async function nextReference(now = Date.now()): Promise<string> {
   const year = new Date(now).getUTCFullYear();
-  const next = (db.counters.get(year) ?? 0) + 1;
-  db.counters.set(year, next);
+  const next = Number(
+    must("payouts.sequence", await db().rpc("next_sequence", { seq_name: `payout:${year}` }))
+  );
   return `LV-${year}-${String(next).padStart(6, "0")}`;
 }
 
@@ -39,16 +28,52 @@ const DEMO_HISTORY: Array<[number, number]> = [
   [70, 500_000],
 ];
 
-function seed(storeId: string, rows: Map<string, PayoutRecord>) {
+const toRow = (p: PayoutRecord) => ({
+  id: p.id,
+  store_id: p.storeId,
+  reference: p.reference,
+  amount: p.amount,
+  currency: p.currency,
+  status: p.status,
+  bank: p.bank,
+  created_at: p.createdAt,
+  complete_at: p.completeAt,
+  completed_at: p.completedAt ?? null,
+  historical: p.historical ?? false,
+});
+
+const fromRow = (row: Record<string, unknown>): PayoutRecord => ({
+  id: String(row.id),
+  storeId: String(row.store_id),
+  reference: String(row.reference),
+  amount: Number(row.amount),
+  currency: "AOA",
+  status: row.status as PayoutRecord["status"],
+  bank: row.bank as PayoutRecord["bank"],
+  createdAt: Number(row.created_at),
+  completeAt: Number(row.complete_at),
+  completedAt: row.completed_at === null ? undefined : Number(row.completed_at),
+  historical: row.historical ? true : undefined,
+});
+
+/** Sandbox stores (or any store when demo mode is on) start with a month-by-month history. */
+async function seedIfDemo(storeId: string) {
+  if (!(storeId === "sto_demo" || getEnv().KANDROP_DEMO_EVENTS)) return;
+  const { count, error } = await db()
+    .from("payouts")
+    .select("id", { count: "exact", head: true })
+    .eq("store_id", storeId);
+  if (error || count !== 0) return;
+
   const now = Date.now();
+  const rows: PayoutRecord[] = [];
   // Oldest first, so the sequential references read in chronological order.
-  [...DEMO_HISTORY].reverse().forEach(([daysAgo, kz]) => {
+  for (const [daysAgo, kz] of [...DEMO_HISTORY].reverse()) {
     const createdAt = now - daysAgo * DAY;
-    const id = newPayoutId();
-    rows.set(id, {
-      id,
+    rows.push({
+      id: newPayoutId(),
       storeId,
-      reference: nextReference(createdAt),
+      reference: await nextReference(createdAt),
       amount: kz * KZ,
       currency: "AOA",
       status: "completed",
@@ -58,25 +83,19 @@ function seed(storeId: string, rows: Map<string, PayoutRecord>) {
       completedAt: createdAt + 20_000,
       historical: true,
     });
-  });
-}
-
-function rowsOf(storeId: string): Map<string, PayoutRecord> {
-  let rows = db.stores.get(storeId);
-  if (!rows) db.stores.set(storeId, (rows = new Map()));
-  // Same rule as the orders' demo data: the sandbox store, or any store when demo mode is on.
-  const demo = storeId === "sto_demo" || getEnv().KANDROP_DEMO_EVENTS;
-  if (demo && !db.seeded.has(storeId)) {
-    db.seeded.add(storeId);
-    seed(storeId, rows);
   }
-  return rows;
+  must("payouts.seed", await db().from("payouts").insert(rows.map(toRow)));
 }
 
 export const payoutRepository = {
-  all: (storeId: string) => [...rowsOf(storeId).values()],
-  save(payout: PayoutRecord) {
-    rowsOf(payout.storeId).set(payout.id, payout);
+  async all(storeId: string): Promise<PayoutRecord[]> {
+    await seedIfDemo(storeId);
+    const list = rows("payouts.all", await db().from("payouts").select("*").eq("store_id", storeId));
+    return list.map(fromRow);
+  },
+
+  async save(payout: PayoutRecord): Promise<PayoutRecord> {
+    must("payouts.save", await db().from("payouts").upsert(toRow(payout)));
     return payout;
   },
 };

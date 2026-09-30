@@ -1,20 +1,7 @@
 import { randomBytes } from "node:crypto";
 import type { ProductCategory, ProductStatus } from "@/shared/products/schemas";
-import type { ProductRecord } from "./schema";
-
-/**
- * STUB — in-memory, per process, lost on restart. Replace with a `products` table (index on
- * `store_id`) and an object store for images; the functions below are the whole contract.
- * Every call takes the `storeId` so tenant scoping cannot be forgotten by a caller.
- */
-const g = globalThis as unknown as {
-  __kandropProducts?: { stores: Map<string, Map<string, ProductRecord>>; seeded: Set<string> };
-};
-const db = (g.__kandropProducts ??= { stores: new Map(), seeded: new Set() });
-/** slug → where the product lives. The public page has no session, so it looks up by slug. */
-const slugs = ((
-  g as { __kandropSlugs?: Map<string, { storeId: string; id: string }> }
-).__kandropSlugs ??= new Map<string, { storeId: string; id: string }>());
+import { db, isUniqueViolation, must, rows } from "@/server/db/client";
+import type { LoadedImage, ProductRecord } from "./schema";
 
 export const KZ = 100;
 const DAY = 24 * 60 * 60 * 1000;
@@ -33,15 +20,8 @@ export function slugify(title: string): string {
   return base || "produto";
 }
 
-/** A slug nobody has. Merchants' products get a random tail so two "Smartwatch" never clash. */
-function uniqueSlug(title: string, plain: boolean): string {
-  const base = slugify(title);
-  if (plain && !slugs.has(base)) return base;
-  for (;;) {
-    const candidate = `${base}-${randomBytes(3).toString("hex")}`;
-    if (!slugs.has(candidate)) return candidate;
-  }
-}
+/** A candidate slug for a merchant's product: a random tail so two "Smartwatch" never clash. */
+const randomSlug = (title: string) => `${slugify(title)}-${randomBytes(3).toString("hex")}`;
 
 export const newImageId = () => `img_${randomBytes(9).toString("base64url")}`;
 
@@ -73,17 +53,64 @@ const DEMO_OFFERS: Array<[number | null, number | null, number | null]> = [
   [40, null, null],
 ];
 
-function seed(storeId: string, rows: Map<string, ProductRecord>) {
+const toRow = (p: ProductRecord) => ({
+  id: p.id,
+  store_id: p.storeId,
+  title: p.title,
+  description: p.description,
+  category: p.category,
+  status: p.status,
+  cost_price: p.costPrice,
+  sale_price: p.salePrice,
+  images: p.images.map((image) => ({ id: image.id, mime: image.mime })),
+  slug: p.slug,
+  stock: p.stock,
+  compare_at_price: p.compareAtPrice,
+  offer_ends_at: p.offerEndsAt,
+  views: p.views,
+  created_at: p.createdAt,
+  updated_at: p.updatedAt,
+});
+
+function fromRow(row: Record<string, unknown>): ProductRecord {
+  return {
+    id: String(row.id),
+    storeId: String(row.store_id),
+    title: String(row.title),
+    description: String(row.description ?? ""),
+    category: row.category as ProductCategory,
+    status: row.status as ProductStatus,
+    costPrice: Number(row.cost_price),
+    salePrice: Number(row.sale_price),
+    images: (row.images as ProductRecord["images"]) ?? [],
+    slug: String(row.slug),
+    stock: row.stock === null ? null : Number(row.stock),
+    compareAtPrice: row.compare_at_price === null ? null : Number(row.compare_at_price),
+    offerEndsAt: row.offer_ends_at === null ? null : Number(row.offer_ends_at),
+    views: Number(row.views ?? 0),
+    createdAt: Number(row.created_at),
+    updatedAt: Number(row.updated_at),
+  };
+}
+
+const DEMO_STORE = "sto_demo";
+const DEMO_SLUGS = new Set(DEMO_PRODUCTS.map(([title]) => slugify(title)));
+
+/** The sandbox catalogue: created the first time the sandbox store is looked at. */
+async function seedDemo() {
+  const { count, error } = await db()
+    .from("products")
+    .select("id", { count: "exact", head: true })
+    .eq("store_id", DEMO_STORE);
+  if (error || count !== 0) return;
+
   const now = Date.now();
-  DEMO_PRODUCTS.forEach(([title, category, status, cost, sale], i) => {
+  const rows = DEMO_PRODUCTS.map(([title, category, status, cost, sale], i) => {
     const at = now - i * 3 * DAY;
-    const id = newProductId();
     const [stock, regular, minutes] = DEMO_OFFERS[i] ?? [null, null, null];
-    const slug = uniqueSlug(title, true);
-    slugs.set(slug, { storeId, id });
-    rows.set(id, {
-      id,
-      storeId,
+    return toRow({
+      id: newProductId(),
+      storeId: DEMO_STORE,
       title,
       description: "",
       category,
@@ -91,7 +118,7 @@ function seed(storeId: string, rows: Map<string, ProductRecord>) {
       costPrice: cost * KZ,
       salePrice: sale * KZ,
       images: [],
-      slug,
+      slug: slugify(title),
       stock,
       compareAtPrice: regular === null ? null : regular * KZ,
       offerEndsAt: minutes === null ? null : now + minutes * 60_000 - 1_000,
@@ -100,36 +127,111 @@ function seed(storeId: string, rows: Map<string, ProductRecord>) {
       updatedAt: at,
     });
   });
+  must(
+    "products.seed",
+    await db().from("products").upsert(rows, { onConflict: "slug", ignoreDuplicates: true })
+  );
 }
 
-function rowsOf(storeId: string): Map<string, ProductRecord> {
-  let rows = db.stores.get(storeId);
-  if (!rows) db.stores.set(storeId, (rows = new Map()));
-  if (storeId === "sto_demo" && !db.seeded.has(storeId)) {
-    db.seeded.add(storeId);
-    seed(storeId, rows);
-  }
-  return rows;
-}
-
+/** Every call takes the `storeId` so tenant scoping cannot be forgotten by a caller. */
 export const productRepository = {
-  all: (storeId: string) => [...rowsOf(storeId).values()],
-  get: (storeId: string, id: string) => rowsOf(storeId).get(id) ?? null,
-  save(product: ProductRecord) {
-    rowsOf(product.storeId).set(product.id, product);
-    if (!product.slug) product.slug = uniqueSlug(product.title, false);
-    slugs.set(product.slug, { storeId: product.storeId, id: product.id });
+  async all(storeId: string): Promise<ProductRecord[]> {
+    if (storeId === DEMO_STORE) await seedDemo();
+    const data = rows(
+      "products.all",
+      await db().from("products").select("*").eq("store_id", storeId)
+    );
+    return data.map(fromRow);
+  },
+
+  async get(storeId: string, id: string): Promise<ProductRecord | null> {
+    if (storeId === DEMO_STORE) await seedDemo();
+    const data = must(
+      "products.get",
+      await db().from("products").select("*").eq("store_id", storeId).eq("id", id).maybeSingle()
+    );
+    return data ? fromRow(data) : null;
+  },
+
+  /**
+   * Creates or updates a product. A product without a slug gets one (a random tail keeps two
+   * "Smartwatch" apart; a clash is retried). Images that carry bytes are stored; images no longer
+   * listed are removed.
+   */
+  async save(product: ProductRecord): Promise<ProductRecord> {
+    const assign = !product.slug;
+    for (let attempt = 0; ; attempt++) {
+      if (assign) product.slug = randomSlug(product.title);
+      const { error } = await db().from("products").upsert(toRow(product));
+      if (!error) break;
+      if (!(assign && isUniqueViolation(error) && attempt < 5)) {
+        must("products.save", { data: null, error });
+      }
+    }
+
+    const fresh = product.images.filter((image) => image.data);
+    if (fresh.length > 0) {
+      must(
+        "product_images.save",
+        await db()
+          .from("product_images")
+          .upsert(
+            fresh.map((image) => ({
+              id: image.id,
+              product_id: product.id,
+              store_id: product.storeId,
+              mime: image.mime,
+              data: image.data!.toString("base64"),
+            }))
+          )
+      );
+    }
+    const keep = product.images.map((image) => image.id);
+    const stale = db().from("product_images").delete().eq("product_id", product.id);
+    must(
+      "product_images.prune",
+      await (keep.length > 0 ? stale.not("id", "in", `(${keep.join(",")})`) : stale)
+    );
     return product;
   },
-  delete(storeId: string, id: string) {
-    const product = rowsOf(storeId).get(id);
-    if (product) slugs.delete(product.slug);
-    return rowsOf(storeId).delete(id);
+
+  async delete(storeId: string, id: string): Promise<boolean> {
+    const data = rows(
+      "products.delete",
+      await db().from("products").delete().eq("store_id", storeId).eq("id", id).select("id")
+    );
+    return data.length > 0; // its images go with it (on delete cascade)
   },
+
   /** For the public page: any store's product by its slug (`null` when there is none). */
-  bySlug(slug: string): ProductRecord | null {
-    rowsOf("sto_demo"); // the sandbox catalogue is seeded lazily
-    const at = slugs.get(slug);
-    return (at && rowsOf(at.storeId).get(at.id)) || null;
+  async bySlug(slug: string): Promise<ProductRecord | null> {
+    const find = async () =>
+      must("products.bySlug", await db().from("products").select("*").eq("slug", slug).maybeSingle());
+    let row = await find();
+    if (!row && DEMO_SLUGS.has(slug)) {
+      await seedDemo();
+      row = await find();
+    }
+    return row ? fromRow(row) : null;
+  },
+
+  /** One image with its bytes, of a product of this store. */
+  async image(storeId: string, productId: string, imageId: string): Promise<LoadedImage | null> {
+    const row = must(
+      "product_images.get",
+      await db()
+        .from("product_images")
+        .select("id, mime, data")
+        .eq("store_id", storeId)
+        .eq("product_id", productId)
+        .eq("id", imageId)
+        .maybeSingle()
+    );
+    return row ? { id: row.id, mime: row.mime, data: Buffer.from(row.data, "base64") } : null;
+  },
+
+  /** Counts a page view of an active product (atomic, in the database). */
+  async recordView(slug: string): Promise<void> {
+    must("products.view", await db().rpc("increment_product_views", { product_slug: slug }));
   },
 };

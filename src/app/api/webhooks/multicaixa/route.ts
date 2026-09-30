@@ -37,6 +37,6 @@ export const POST = handle(async (req) => {
   } catch {
     throw new ApiError("validation_failed");
   }
-  const outcome = applyProviderEvent(multicaixaEventSchema.parse(payload));
+  const outcome = await applyProviderEvent(multicaixaEventSchema.parse(payload));
   return json({ received: true, outcome });
 });

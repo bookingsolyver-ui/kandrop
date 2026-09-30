@@ -18,6 +18,10 @@ export const POST = handle(async (req, ctx: Ctx) => {
   const key = `view:${clientIp(req)}`;
   limiter.assertAllowed(key);
   limiter.recordFailure(key); // counts requests here, not failures
-  if (!BOTS.test(req.headers.get("user-agent") ?? "")) recordView((await ctx.params).slug);
+  if (!BOTS.test(req.headers.get("user-agent") ?? "")) {
+    await recordView((await ctx.params).slug).catch((error) => {
+      console.error("[view] could not count the view", error); // analytics, not a feature
+    });
+  }
   return new Response(null, { status: 204 });
 });

@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { ApiError } from "@/server/http/errors";
+import { db, must } from "@/server/db/client";
 
 export interface UserRecord {
   id: string;
@@ -19,36 +20,53 @@ export type NewUser = Pick<
   "email" | "passwordHash" | "fullName" | "storeName" | "locale"
 >;
 
-/**
- * STUB — in-memory, per process, lost on restart. This interface is the seam: implement it
- * on top of the real database (unique index on `email`) and nothing else changes.
- */
 export interface UserRepository {
   findByEmail(email: string): Promise<UserRecord | null>;
   findById(id: string): Promise<UserRecord | null>;
-  /** The store's owner (its name is the store's public name). */
   findOwnerByStore(storeId: string): Promise<UserRecord | null>;
-  /** Must throw `ApiError("email_taken")` on a duplicate e-mail. */
   create(user: NewUser): Promise<UserRecord>;
 }
 
-const g = globalThis as unknown as { __kandropUsers?: Map<string, UserRecord> };
-const users = (g.__kandropUsers ??= new Map<string, UserRecord>());
+function mapRowToUser(row: Record<string, unknown>): UserRecord {
+  return {
+    id: String(row.id ?? ""),
+    email: String(row.email ?? ""),
+    passwordHash: String(row.password_hash ?? ""),
+    fullName: String(row.full_name ?? ""),
+    storeId: String(row.store_id ?? ""),
+    storeName: String(row.store_name ?? ""),
+    role: (row.role === "staff" ? "staff" : "owner"),
+    locale: (["pt", "en", "fr"].includes(String(row.locale)) ? (row.locale as "pt" | "en" | "fr") : "pt"),
+    createdAt: String(row.created_at ?? ""),
+  };
+}
 
 export const userRepository: UserRepository = {
   async findByEmail(email) {
-    return [...users.values()].find((u) => u.email === email) ?? null;
+    const data = must(
+      "users.find",
+      await db().from("users").select("*").eq("email", email).maybeSingle()
+    );
+    return data ? mapRowToUser(data) : null;
   },
+
   async findById(id) {
-    return users.get(id) ?? null;
+    const data = must(
+      "users.find",
+      await db().from("users").select("*").eq("id", id).maybeSingle()
+    );
+    return data ? mapRowToUser(data) : null;
   },
+
   async findOwnerByStore(storeId) {
-    return [...users.values()].find((u) => u.storeId === storeId && u.role === "owner") ?? null;
+    const data = must(
+      "users.find",
+      await db().from("users").select("*").eq("store_id", storeId).eq("role", "owner").maybeSingle()
+    );
+    return data ? mapRowToUser(data) : null;
   },
+
   async create(input) {
-    if ([...users.values()].some((u) => u.email === input.email)) {
-      throw new ApiError("email_taken");
-    }
     const user: UserRecord = {
       ...input,
       id: `usr_${randomUUID()}`,
@@ -56,7 +74,27 @@ export const userRepository: UserRepository = {
       role: "owner",
       createdAt: new Date().toISOString(),
     };
-    users.set(user.id, user);
+
+    const { error } = await db().from("users").insert({
+      id: user.id,
+      email: user.email,
+      password_hash: user.passwordHash,
+      full_name: user.fullName,
+      store_id: user.storeId,
+      store_name: user.storeName,
+      role: user.role,
+      locale: user.locale,
+      created_at: user.createdAt,
+    });
+
+    if (error) {
+      if (error.code === "23505") {
+        throw new ApiError("email_taken");
+      }
+      console.error("[userRepository] create error:", error);
+      throw new Error(`Failed to create user: ${error.message}`);
+    }
+
     return user;
   },
 };

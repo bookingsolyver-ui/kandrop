@@ -36,7 +36,7 @@ export async function getAffiliates(
   if (auth.role !== "owner") throw new ApiError("forbidden");
   const query = listReferralsQuerySchema.parse(rawQuery);
   const owner = await userRepository.findById(auth.userId);
-  const record = affiliateRepository.ensure(auth.storeId, owner?.fullName ?? "");
+  const record = await affiliateRepository.ensure(auth.storeId, owner?.fullName ?? "");
   const now = Date.now();
 
   const all = [...record.referrals].sort((a, b) => b.registeredAt - a.registeredAt);

@@ -12,7 +12,14 @@ import {
 import { planOf } from "@/server/modules/billing/plan";
 import { PLANS } from "@/server/modules/plan/limits";
 import { newImageId, newProductId, productRepository } from "./repository";
-import type { ImageMime, ProductPage, ProductRecord, PublicProduct, StoredImage } from "./schema";
+import type {
+  ImageMime,
+  LoadedImage,
+  ProductPage,
+  ProductRecord,
+  PublicProduct,
+  StoredImage,
+} from "./schema";
 
 /** Cheap, consistent "not found" for a missing product *or* one that belongs to another store. */
 const notFound = () => new ApiError("not_found");
@@ -30,7 +37,7 @@ function matchesSignature(mime: ImageMime, b: Buffer): boolean {
   );
 }
 
-function decodeImage(dataUrl: string): StoredImage {
+function decodeImage(dataUrl: string): LoadedImage {
   const match = /^data:(image\/(?:jpeg|png|webp));base64,(.+)$/.exec(dataUrl);
   if (!match) throw badImages();
   const mime = match[1] as ImageMime;
@@ -88,7 +95,7 @@ export async function listProducts(
   rawQuery: ListProductsQuery
 ): Promise<ProductPage> {
   const query = listProductsQuerySchema.parse(rawQuery);
-  const all = productRepository.all(auth.storeId);
+  const all = await productRepository.all(auth.storeId);
 
   const terms = query.q ? fold(query.q).split(/\s+/).filter(Boolean) : [];
   const matching = all.filter((p) => {
@@ -124,7 +131,7 @@ export async function listProducts(
 }
 
 export async function getProduct(auth: Session, id: string): Promise<PublicProduct> {
-  const product = productRepository.get(auth.storeId, id);
+  const product = await productRepository.get(auth.storeId, id);
   if (!product) throw notFound();
   return toPublic(product);
 }
@@ -140,10 +147,10 @@ function assertOffer(p: ProductRecord, deadlineChanged: boolean) {
 export async function createProduct(auth: Session, input: unknown): Promise<PublicProduct> {
   const data = createProductSchema.parse(input);
   // The plan's product limit is real: the sidebar's plan card shows it, so it must hold.
-  const plan = planOf(auth.storeId);
+  const plan = await planOf(auth.storeId);
   if (!plan) throw new ApiError("payment_required");
   const limit = PLANS[plan].products;
-  if (limit !== null && productRepository.all(auth.storeId).length >= limit) {
+  if (limit !== null && (await productRepository.all(auth.storeId)).length >= limit) {
     throw new ApiError("plan_limit_reached");
   }
   const now = Date.now();
@@ -152,13 +159,13 @@ export async function createProduct(auth: Session, input: unknown): Promise<Publ
     id: newProductId(),
     storeId: auth.storeId,
     images: resolveImages([], data.images),
-    slug: "", // assigned by the repository, which knows every slug in use
+    slug: "", // assigned by the repository, which knows which slugs are taken
     views: 0,
     createdAt: now,
     updatedAt: now,
   };
   assertOffer(product, true);
-  return toPublic(productRepository.save(product));
+  return toPublic(await productRepository.save(product));
 }
 
 export async function updateProduct(
@@ -166,7 +173,7 @@ export async function updateProduct(
   id: string,
   input: unknown
 ): Promise<PublicProduct> {
-  const current = productRepository.get(auth.storeId, id);
+  const current = await productRepository.get(auth.storeId, id);
   if (!current) throw notFound();
 
   const { images, ...rest } = updateProductSchema.parse(input);
@@ -177,17 +184,15 @@ export async function updateProduct(
     updatedAt: Math.max(Date.now(), current.updatedAt + 1),
   };
   assertOffer(next, next.offerEndsAt !== current.offerEndsAt);
-  return toPublic(productRepository.save(next));
+  return toPublic(await productRepository.save(next));
 }
 
 export async function deleteProduct(auth: Session, id: string): Promise<void> {
-  if (!productRepository.delete(auth.storeId, id)) throw notFound();
+  if (!(await productRepository.delete(auth.storeId, id))) throw notFound();
 }
 
 export async function getProductImage(auth: Session, productId: string, imageId: string) {
-  const image = productRepository
-    .get(auth.storeId, productId)
-    ?.images.find((candidate) => candidate.id === imageId);
+  const image = await productRepository.image(auth.storeId, productId, imageId);
   if (!image) throw notFound();
   return image;
 }

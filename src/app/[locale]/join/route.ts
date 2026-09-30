@@ -17,7 +17,12 @@ type Ctx = { params: Promise<{ locale: string }> };
 export async function GET(req: Request, ctx: Ctx) {
   const { locale } = await ctx.params;
   const ref = refCodeSchema.safeParse(new URL(req.url).searchParams.get("ref") ?? "");
-  if (ref.success) affiliateRepository.recordClick(ref.data);
+  if (ref.success) {
+    // Counting is analytics: a database hiccup must not stop the visitor from signing up.
+    await affiliateRepository.recordClick(ref.data).catch((error) => {
+      console.error("[join] could not count the click", error);
+    });
+  }
   const target = hasLocale(routing.locales, locale) ? locale : routing.defaultLocale;
   return NextResponse.redirect(new URL(`/${target}/register`, req.url));
 }

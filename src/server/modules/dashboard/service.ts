@@ -23,8 +23,11 @@ function emptySummary(): DashboardSummary {
  * The simulator keeps one balance for every demo store, so each store's own withdrawals are
  * taken off it here. Used by the snapshot and by the live feed, so both always agree.
  */
-export function withPayouts(summary: DashboardSummary, storeId: string): DashboardSummary {
-  const reserved = reservedAmount(storeId);
+export async function withPayouts(
+  summary: DashboardSummary,
+  storeId: string
+): Promise<DashboardSummary> {
+  const reserved = await reservedAmount(storeId);
   if (reserved === 0) return summary;
   const { value } = summary.availableBalance;
   return {
@@ -45,5 +48,5 @@ export async function getDashboardSummary(storeId: string): Promise<DashboardSum
   const env = getEnv();
   const summary =
     env.KANDROP_DEMO_EVENTS && env.NODE_ENV !== "production" ? snapshot() : emptySummary();
-  return withPayouts(summary, storeId);
+  return await withPayouts(summary, storeId);
 }

@@ -8,8 +8,8 @@ import { offerOf, stockState } from "@/shared/products/schemas";
 import type { StorefrontProduct } from "./schema";
 
 /** A product is public only while it is active: drafts and archived ones are "not found". */
-function publicProduct(slug: string): ProductRecord {
-  const product = productRepository.bySlug(slug);
+async function publicProduct(slug: string): Promise<ProductRecord> {
+  const product = await productRepository.bySlug(slug);
   if (!product || product.status !== "active") throw new ApiError("not_found");
   return product;
 }
@@ -20,7 +20,7 @@ async function storeNameOf(storeId: string): Promise<string> {
 }
 
 export async function getStorefrontProduct(slug: string): Promise<StorefrontProduct> {
-  const p = publicProduct(slug);
+  const p = await publicProduct(slug);
   const now = Date.now();
   const offer = offerOf(p, now);
   const state = stockState(p.stock);
@@ -48,9 +48,8 @@ export async function getStorefrontProduct(slug: string): Promise<StorefrontProd
 }
 
 /** Counts one page view (the "Views" column of the merchant's product table). */
-export function recordView(slug: string): void {
-  const p = productRepository.bySlug(slug);
-  if (p && p.status === "active") p.views += 1;
+export async function recordView(slug: string): Promise<void> {
+  await productRepository.recordView(slug); // only counts active products
 }
 
 /**
@@ -58,9 +57,9 @@ export function recordView(slug: string): void {
  * the server, never from the browser), or `out_of_stock`. Stock is checked, not reserved.
  */
 export async function createStorefrontCheckout(slug: string): Promise<string> {
-  const p = publicProduct(slug);
+  const p = await publicProduct(slug);
   if (stockState(p.stock) === "out") throw new ApiError("out_of_stock");
-  const session = buildCheckout({
+  const session = await buildCheckout({
     storeId: p.storeId,
     storeName: await storeNameOf(p.storeId),
     storeNif: null,
@@ -71,8 +70,9 @@ export async function createStorefrontCheckout(slug: string): Promise<string> {
   return session.id;
 }
 
-export function getStorefrontImage(slug: string, imageId: string) {
-  const image = publicProduct(slug).images.find((candidate) => candidate.id === imageId);
+export async function getStorefrontImage(slug: string, imageId: string) {
+  const product = await publicProduct(slug);
+  const image = await productRepository.image(product.storeId, product.id, imageId);
   if (!image) throw new ApiError("not_found");
   return image;
 }

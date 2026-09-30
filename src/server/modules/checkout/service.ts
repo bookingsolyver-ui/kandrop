@@ -11,10 +11,10 @@ const SESSION_TTL_MS = 30 * 60 * 1000;
 const KZ = 100;
 
 /** Every checkout session is made here, so the expiry and the total are computed in one place. */
-export function buildCheckout(
+export async function buildCheckout(
   base: Pick<CheckoutSession, "storeId" | "storeName" | "storeNif" | "items" | "shippingAmount"> &
     Partial<Pick<CheckoutSession, "subscription">>
-) {
+): Promise<CheckoutSession> {
   const subtotal = base.items.reduce((sum, i) => sum + i.unitAmount * i.quantity, 0);
   const now = Date.now();
   const session: CheckoutSession = {
@@ -26,14 +26,16 @@ export function buildCheckout(
     createdAt: now,
     expiresAt: now + SESSION_TTL_MS,
   };
-  return checkoutRepository.save(session);
+  const saved = await checkoutRepository.save(session);
+  await checkoutRepository.purgeExpired().catch(() => {}); // housekeeping: never fails a checkout
+  return saved;
 }
 
 /** Merchant-side: turn a cart into a payable checkout session. */
 export async function createCheckout(auth: Session, input: CreateCheckoutInput) {
   const data = createCheckoutSchema.parse(input);
   const owner = await userRepository.findById(auth.userId);
-  return buildCheckout({
+  return await buildCheckout({
     storeId: auth.storeId,
     storeName: owner?.storeName ?? "Loja Demo",
     storeNif: null, // the store settings do not collect a NIF yet (see `getStore`)
@@ -43,9 +45,9 @@ export async function createCheckout(auth: Session, input: CreateCheckoutInput) 
 }
 
 /** Sandbox only: a ready-made cart so `/checkout` can be opened and tried straight away. */
-export function createDemoCheckout() {
+export async function createDemoCheckout() {
   if (getEnv().PAYMENTS_MODE !== "sandbox") throw new ApiError("not_found");
-  return buildCheckout({
+  return await buildCheckout({
     storeId: "sto_demo",
     storeName: "Loja Demo",
     storeNif: null,
@@ -76,7 +78,7 @@ export function toPublic(session: CheckoutSession): PublicCheckout {
   };
 }
 
-export function getPublicCheckout(id: string): PublicCheckout | null {
-  const session = checkoutRepository.get(id);
+export async function getPublicCheckout(id: string): Promise<PublicCheckout | null> {
+  const session = await checkoutRepository.get(id);
   return session ? toPublic(session) : null;
 }

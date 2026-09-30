@@ -36,7 +36,7 @@ export default async function CheckoutSuccessPage({ params, searchParams }: Prop
   setRequestLocale(locale);
 
   const { payment: id } = await searchParams;
-  const payment = id ? getPayment(id) : null;
+  const payment = id ? await getPayment(id) : null;
   if (!payment) notFound();
 
   // Not paid (yet, or at all): this page would be a lie, so send the buyer back to the payment.
@@ -44,7 +44,7 @@ export default async function CheckoutSuccessPage({ params, searchParams }: Prop
     redirect({ href: { pathname: "/checkout", query: { session: payment.sessionId } }, locale });
   }
 
-  const checkout = getPublicCheckout(payment.sessionId);
+  const checkout = await getPublicCheckout(payment.sessionId);
   if (!checkout) notFound();
 
   return (

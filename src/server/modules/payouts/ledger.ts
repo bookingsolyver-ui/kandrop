@@ -7,9 +7,8 @@ import { payoutRepository } from "./repository";
  *
  * Pending and completed payouts both count: the money left the balance when it was requested.
  */
-export function reservedAmount(storeId: string): number {
-  return payoutRepository
-    .all(storeId)
+export async function reservedAmount(storeId: string): Promise<number> {
+  return (await payoutRepository.all(storeId))
     .filter((payout) => !payout.historical)
     .reduce((sum, payout) => sum + payout.amount, 0);
 }

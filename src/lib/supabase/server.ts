@@ -6,8 +6,8 @@ import { getEnv } from "@/server/config/env";
 /**
  * Supabase clients for the SERVER (route handlers, server components, repositories).
  *
- * NOT USED YET: no module reads or writes through Supabase; every repository is still an in-memory
- * stub. These are the ready-made entry points for replacing them (one table per repository).
+ * Every repository reads and writes through `createAdminClient()` (via `@/server/db/client`); the
+ * schema is in `supabase/migrations`.
  */
 
 function config() {

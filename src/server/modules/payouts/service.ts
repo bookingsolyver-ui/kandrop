@@ -20,10 +20,11 @@ const SETTLE_MIN_MS = 15_000;
 const SETTLE_MAX_MS = 25_000;
 
 /** Lazily applies the bank's confirmation once its (simulated) delay has passed. */
-function settle(p: PayoutRecord): PayoutRecord {
+async function settle(p: PayoutRecord): Promise<PayoutRecord> {
   if (p.status === "pending" && Date.now() >= p.completeAt) {
     p.status = "completed";
     p.completedAt = p.completeAt;
+    await payoutRepository.save(p);
   }
   return p;
 }
@@ -46,7 +47,7 @@ const availableFor = async (storeId: string) =>
 
 export async function listPayouts(auth: Session, rawQuery: ListPayoutsQuery): Promise<PayoutPage> {
   const query = listPayoutsQuerySchema.parse(rawQuery);
-  const all = payoutRepository.all(auth.storeId).map(settle);
+  const all = await Promise.all((await payoutRepository.all(auth.storeId)).map(settle));
   all.sort((a, b) => b.createdAt - a.createdAt || b.reference.localeCompare(a.reference));
 
   const start = (query.page - 1) * query.pageSize;
@@ -71,25 +72,21 @@ export async function requestPayout(auth: Session, input: unknown): Promise<Publ
   if (auth.role !== "owner") throw new ApiError("forbidden");
   const { amount } = createPayoutSchema.parse(input);
 
-  const bank = bankRepository.get(auth.storeId);
+  const bank = await bankRepository.get(auth.storeId);
   if (!bank) throw new ApiError("no_bank_account");
 
   // One at a time: also what makes a double click harmless.
-  if (
-    payoutRepository
-      .all(auth.storeId)
-      .map(settle)
-      .some((p) => p.status === "pending")
-  ) {
+  const settled = await Promise.all((await payoutRepository.all(auth.storeId)).map(settle));
+  if (settled.some((p) => p.status === "pending")) {
     throw new ApiError("payout_pending");
   }
   if (amount > (await availableFor(auth.storeId))) throw new ApiError("insufficient_balance");
 
   const now = Date.now();
-  const payout = payoutRepository.save({
+  const payout = await payoutRepository.save({
     id: newPayoutId(),
     storeId: auth.storeId,
-    reference: nextReference(now),
+    reference: await nextReference(now),
     amount,
     currency: "AOA",
     status: "pending",

@@ -2,11 +2,15 @@ import type { Margin, ProductCategory, ProductStatus } from "@/shared/products/s
 
 export type ImageMime = "image/jpeg" | "image/png" | "image/webp";
 
+/** An image of a product. `data` is only present for a new upload, or when loaded on purpose. */
 export interface StoredImage {
   id: string;
   mime: ImageMime;
-  data: Buffer;
+  data?: Buffer;
 }
+
+/** An image with its bytes. */
+export type LoadedImage = StoredImage & { data: Buffer };
 
 /** Internal record. Always scoped to a store: a merchant can never reach another store's rows. */
 export interface ProductRecord {

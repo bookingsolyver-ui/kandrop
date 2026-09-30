@@ -34,7 +34,7 @@ export const POST = handle(async (req) => {
     const { token, expiresAt } = await signSession(session);
     await setSessionCookie(token, expiresAt);
     // `pending` = nothing paid yet: the browser goes to /checkout instead of the dashboard.
-    return json({ user: toMe(user), subscription: subscriptionStateOf(session) });
+    return json({ user: toMe(user), subscription: await subscriptionStateOf(session) });
   } catch (err) {
     // Only credential failures count; malformed input is rejected before it costs anything.
     if (err instanceof ApiError && err.code === "invalid_credentials") {

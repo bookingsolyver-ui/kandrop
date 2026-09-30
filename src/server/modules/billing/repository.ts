@@ -1,34 +1,95 @@
+import { db, must, rows } from "@/server/db/client";
 import type { ChargeRecord, SubscriptionRecord } from "./schema";
 
-/**
- * STUB — in-memory, per process, lost on restart. Replace with `subscriptions` (one row per
- * store) and `charges` (index on `store_id, created_at`, unique on `session_id`) tables. Every
- * call takes the `storeId`.
- */
-const g = globalThis as unknown as {
-  __kandropBilling?: {
-    subscriptions: Map<string, SubscriptionRecord>;
-    charges: Map<string, ChargeRecord[]>;
-  };
-};
-const db = (g.__kandropBilling ??= { subscriptions: new Map(), charges: new Map() });
+const chargeFromRow = (row: Record<string, unknown>): ChargeRecord => ({
+  sessionId: String(row.session_id),
+  storeId: String(row.store_id),
+  plan: row.plan as ChargeRecord["plan"],
+  amount: Number(row.amount),
+  createdAt: Number(row.created_at),
+  activated: Boolean(row.activated),
+});
 
 export const billingRepository = {
-  subscription: (storeId: string) => db.subscriptions.get(storeId) ?? null,
-  saveSubscription(subscription: SubscriptionRecord) {
-    db.subscriptions.set(subscription.storeId, subscription);
+  async subscription(storeId: string): Promise<SubscriptionRecord | null> {
+    const row = must(
+      "subscriptions.get",
+      await db().from("subscriptions").select("*").eq("store_id", storeId).maybeSingle()
+    );
+    return row
+      ? { storeId, plan: row.plan as SubscriptionRecord["plan"], periodEnd: Number(row.period_end) }
+      : null;
+  },
+
+  async saveSubscription(subscription: SubscriptionRecord): Promise<SubscriptionRecord> {
+    must(
+      "subscriptions.save",
+      await db().from("subscriptions").upsert({
+        store_id: subscription.storeId,
+        plan: subscription.plan,
+        period_end: subscription.periodEnd,
+      })
+    );
     return subscription;
   },
-  charges: (storeId: string) => db.charges.get(storeId) ?? [],
-  addCharge(charge: ChargeRecord) {
-    db.charges.set(charge.storeId, [...(db.charges.get(charge.storeId) ?? []), charge]);
+
+  async charges(storeId: string): Promise<ChargeRecord[]> {
+    const list = rows(
+      "charges.list",
+      await db()
+        .from("charges")
+        .select("*")
+        .eq("store_id", storeId)
+        .order("created_at", { ascending: true })
+    );
+    return list.map(chargeFromRow);
+  },
+
+  async addCharge(charge: ChargeRecord): Promise<ChargeRecord> {
+    must(
+      "charges.add",
+      await db().from("charges").insert({
+        session_id: charge.sessionId,
+        store_id: charge.storeId,
+        plan: charge.plan,
+        amount: charge.amount,
+        created_at: charge.createdAt,
+        activated: charge.activated,
+      })
+    );
     return charge;
   },
-  chargeBySession(sessionId: string): ChargeRecord | null {
-    for (const list of db.charges.values() as IterableIterator<ChargeRecord[]>) {
-      const found = list.find((c) => c.sessionId === sessionId);
-      if (found) return found;
-    }
-    return null;
+
+  async chargeBySession(sessionId: string): Promise<ChargeRecord | null> {
+    const row = must(
+      "charges.bySession",
+      await db().from("charges").select("*").eq("session_id", sessionId).maybeSingle()
+    );
+    return row ? chargeFromRow(row) : null;
+  },
+
+  /** Undoes `markActivated` when switching the plan on failed, so a retry can do it. */
+  async releaseActivation(sessionId: string): Promise<void> {
+    must(
+      "charges.release",
+      await db().from("charges").update({ activated: false }).eq("session_id", sessionId)
+    );
+  },
+
+  /**
+   * Marks a charge as having switched its plan on. Returns `true` only for the caller that flipped
+   * it (a conditional update), so a payment activates a plan exactly once even under concurrency.
+   */
+  async markActivated(sessionId: string): Promise<boolean> {
+    const flipped = rows(
+      "charges.activate",
+      await db()
+        .from("charges")
+        .update({ activated: true })
+        .eq("session_id", sessionId)
+        .eq("activated", false)
+        .select("session_id")
+    );
+    return flipped.length > 0;
   },
 };

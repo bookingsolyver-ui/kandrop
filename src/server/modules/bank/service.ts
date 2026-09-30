@@ -19,7 +19,7 @@ export const toPublic = (a: BankAccountRecord): PublicBankAccount => ({
 });
 
 export async function getBankAccount(auth: Session): Promise<PublicBankAccount | null> {
-  const account = bankRepository.get(auth.storeId);
+  const account = await bankRepository.get(auth.storeId);
   return account ? toPublic(account) : null;
 }
 
@@ -47,7 +47,7 @@ export async function saveBankAccount(auth: Session, input: unknown): Promise<Pu
   await confirmPassword(auth, data.password);
 
   return toPublic(
-    bankRepository.save({
+    await bankRepository.save({
       storeId: auth.storeId,
       holderName: data.holderName,
       iban: data.iban,

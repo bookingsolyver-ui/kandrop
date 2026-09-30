@@ -46,7 +46,7 @@ export async function requireSession(
 ): Promise<Session> {
   const session = await resolveSession(tokenFromRequest(req));
   if (!session) throw new ApiError("unauthenticated");
-  if (!opts.allowUnpaid && !hasAccess(session)) throw new ApiError("payment_required");
+  if (!opts.allowUnpaid && !(await hasAccess(session))) throw new ApiError("payment_required");
   return session;
 }
 

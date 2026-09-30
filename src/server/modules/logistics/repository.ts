@@ -2,16 +2,8 @@ import { randomBytes } from "node:crypto";
 import { getEnv } from "@/server/config/env";
 import { orderRepository } from "@/server/modules/orders/repository";
 import { COURIERS, couriersFor } from "./couriers";
+import { db, must, rows } from "@/server/db/client";
 import type { DeliveryRecord } from "./schema";
-
-/**
- * STUB — in-memory, per process, lost on restart. Replace with a `deliveries` table (unique
- * index on `order_id`, index on `store_id, created_at`). Every call takes the `storeId`.
- */
-const g = globalThis as unknown as {
-  __kandropDeliveries?: { stores: Map<string, Map<string, DeliveryRecord>>; seeded: Set<string> };
-};
-const db = (g.__kandropDeliveries ??= { stores: new Map(), seeded: new Set() });
 
 export const newDeliveryId = () => `dlv_${randomBytes(9).toString("base64url")}`;
 
@@ -22,9 +14,53 @@ export const newDeliveryId = () => `dlv_${randomBytes(9).toString("base64url")}`
 export const outcomeFor = (orderNumber: number) =>
   orderNumber % 7 === 0 ? "returned" : "delivered";
 
+const toRow = (d: DeliveryRecord) => ({
+  id: d.id,
+  store_id: d.storeId,
+  order_id: d.orderId,
+  order_number: d.orderNumber,
+  code: d.code,
+  zone: d.zone,
+  street: d.street,
+  reference: d.reference ?? null,
+  customer_name: d.customerName,
+  courier_id: d.courierId,
+  created_at: d.createdAt,
+  duration_ms: d.durationMs,
+  outcome: d.outcome,
+  return_reason: d.returnReason ?? null,
+  order_synced: d.orderSynced,
+});
+
+const fromRow = (row: Record<string, unknown>): DeliveryRecord => ({
+  id: String(row.id),
+  storeId: String(row.store_id),
+  orderId: String(row.order_id),
+  orderNumber: Number(row.order_number),
+  code: String(row.code),
+  zone: String(row.zone),
+  street: String(row.street),
+  reference: row.reference === null ? undefined : String(row.reference),
+  customerName: String(row.customer_name),
+  courierId: String(row.courier_id),
+  createdAt: Number(row.created_at),
+  durationMs: Number(row.duration_ms),
+  outcome: row.outcome as DeliveryRecord["outcome"],
+  returnReason: (row.return_reason as DeliveryRecord["returnReason"]) ?? undefined,
+  orderSynced: Boolean(row.order_synced),
+});
+
 /** The demo orders that shipped already have their deliveries, consistent with their history. */
-function seed(storeId: string, rows: Map<string, DeliveryRecord>) {
-  for (const order of orderRepository.all(storeId)) {
+async function seedIfDemo(storeId: string) {
+  if (!(storeId === "sto_demo" || getEnv().KANDROP_DEMO_EVENTS)) return;
+  const { count, error } = await db()
+    .from("deliveries")
+    .select("id", { count: "exact", head: true })
+    .eq("store_id", storeId);
+  if (error || count !== 0) return;
+
+  const rows: DeliveryRecord[] = [];
+  for (const order of await orderRepository.all(storeId)) {
     const shippedAt = order.history.find((h) => h.status === "shipped")?.at;
     if (shippedAt === undefined || !order.trackingCode) continue;
 
@@ -43,9 +79,8 @@ function seed(storeId: string, rows: Map<string, DeliveryRecord>) {
       finishedAt !== undefined ? finishedAt - shippedAt : (70 + (order.number % 61)) * 60_000;
     const returned = order.status === "shipped" ? outcomeFor(order.number) : outcome;
 
-    const id = newDeliveryId();
-    rows.set(id, {
-      id,
+    rows.push({
+      id: newDeliveryId(),
       storeId,
       orderId: order.id,
       orderNumber: order.number,
@@ -62,25 +97,41 @@ function seed(storeId: string, rows: Map<string, DeliveryRecord>) {
       orderSynced: order.status !== "shipped",
     });
   }
-}
-
-function rowsOf(storeId: string): Map<string, DeliveryRecord> {
-  let rows = db.stores.get(storeId);
-  if (!rows) db.stores.set(storeId, (rows = new Map()));
-  const demo = storeId === "sto_demo" || getEnv().KANDROP_DEMO_EVENTS;
-  if (demo && !db.seeded.has(storeId)) {
-    db.seeded.add(storeId);
-    seed(storeId, rows);
-  }
-  return rows;
+  if (rows.length === 0) return;
+  must(
+    "deliveries.seed",
+    await db()
+      .from("deliveries")
+      .upsert(rows.map(toRow), { onConflict: "order_id", ignoreDuplicates: true })
+  );
 }
 
 export const deliveryRepository = {
-  all: (storeId: string) => [...rowsOf(storeId).values()],
-  byOrder: (storeId: string, orderId: string) =>
-    [...rowsOf(storeId).values()].find((d) => d.orderId === orderId) ?? null,
-  save(delivery: DeliveryRecord) {
-    rowsOf(delivery.storeId).set(delivery.id, delivery);
+  async all(storeId: string): Promise<DeliveryRecord[]> {
+    await seedIfDemo(storeId);
+    const list = rows(
+      "deliveries.all",
+      await db().from("deliveries").select("*").eq("store_id", storeId)
+    );
+    return list.map(fromRow);
+  },
+
+  async byOrder(storeId: string, orderId: string): Promise<DeliveryRecord | null> {
+    await seedIfDemo(storeId);
+    const row = must(
+      "deliveries.byOrder",
+      await db()
+        .from("deliveries")
+        .select("*")
+        .eq("store_id", storeId)
+        .eq("order_id", orderId)
+        .maybeSingle()
+    );
+    return row ? fromRow(row) : null;
+  },
+
+  async save(delivery: DeliveryRecord): Promise<DeliveryRecord> {
+    must("deliveries.save", await db().from("deliveries").upsert(toRow(delivery)));
     return delivery;
   },
 };

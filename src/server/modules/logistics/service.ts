@@ -79,17 +79,18 @@ function toPublic(d: DeliveryRecord, now: number): PublicDelivery {
  * (there is no scheduler), once per delivery. If the merchant already moved the order by hand,
  * the transition is a no-op or refused and the delivery is simply marked synced.
  */
-function syncOrders(storeId: string, now: number) {
-  for (const d of deliveryRepository.all(storeId)) {
+async function syncOrders(storeId: string, now: number) {
+  for (const d of await deliveryRepository.all(storeId)) {
     if (d.orderSynced || now < d.createdAt + d.durationMs) continue;
     try {
-      transitionOrder(storeId, d.orderId, d.outcome === "delivered" ? "delivered" : "cancelled", {
+      await transitionOrder(storeId, d.orderId, d.outcome === "delivered" ? "delivered" : "cancelled", {
         force: d.outcome === "returned",
       });
     } catch {
       /* the order was changed by hand in the meantime: nothing more to do */
     }
     d.orderSynced = true;
+    await deliveryRepository.save(d);
   }
 }
 
@@ -99,10 +100,9 @@ export async function listDeliveries(
 ): Promise<DeliveryPage> {
   const query = listDeliveriesQuerySchema.parse(rawQuery);
   const now = Date.now();
-  syncOrders(auth.storeId, now);
+  await syncOrders(auth.storeId, now);
 
-  const all = deliveryRepository
-    .all(auth.storeId)
+  const all = (await deliveryRepository.all(auth.storeId))
     .map((d) => toPublic(d, now))
     .sort(
       (a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt) || b.orderNumber - a.orderNumber
@@ -128,8 +128,8 @@ export async function listDeliveries(
 /** One delivery of this store. Another store's id is "not found", never "forbidden". */
 export async function getDelivery(auth: Session, id: string): Promise<PublicDelivery> {
   const now = Date.now();
-  syncOrders(auth.storeId, now);
-  const delivery = deliveryRepository.all(auth.storeId).find((d) => d.id === id);
+  await syncOrders(auth.storeId, now);
+  const delivery = (await deliveryRepository.all(auth.storeId)).find((d) => d.id === id);
   if (!delivery) throw new ApiError("not_found");
   return toPublic(delivery, now);
 }
@@ -142,17 +142,16 @@ export async function getDelivery(auth: Session, id: string): Promise<PublicDeli
 export async function dispatchOrder(auth: Session, input: DispatchInput): Promise<PublicDelivery> {
   if (auth.role !== "owner") throw new ApiError("forbidden");
   const { orderId } = dispatchSchema.parse(input);
-  const order = orderRepository.get(auth.storeId, orderId);
+  const order = await orderRepository.get(auth.storeId, orderId);
   if (!order) throw new ApiError("not_found");
   if (order.status !== "processing") throw new ApiError("order_not_dispatchable");
-  if (deliveryRepository.byOrder(auth.storeId, orderId)) throw new ApiError("delivery_exists");
+  if (await deliveryRepository.byOrder(auth.storeId, orderId)) throw new ApiError("delivery_exists");
 
   const now = Date.now();
   const zone = order.address.zone ?? order.address.city;
+  const deliveries = await deliveryRepository.all(auth.storeId);
   const load = (courierId: string) =>
-    deliveryRepository
-      .all(auth.storeId)
-      .filter((d) => d.courierId === courierId && now < d.createdAt + d.durationMs).length;
+    deliveries.filter((d) => d.courierId === courierId && now < d.createdAt + d.durationMs).length;
   const courier = couriersFor(zone)
     .map((c) => ({ c, load: load(c.id) }))
     .filter(({ load }) => load < COURIER_CAPACITY)
@@ -160,10 +159,10 @@ export async function dispatchOrder(auth: Session, input: DispatchInput): Promis
   if (!courier) throw new ApiError("no_courier_available");
 
   const code = `KD${4_000_000 + randomInt(0, 999_999)}AO`;
-  transitionOrder(auth.storeId, order.id, "shipped", { trackingCode: code });
+  await transitionOrder(auth.storeId, order.id, "shipped", { trackingCode: code });
 
   const outcome = outcomeFor(order.number);
-  const delivery = deliveryRepository.save({
+  const delivery = await deliveryRepository.save({
     id: newDeliveryId(),
     storeId: auth.storeId,
     orderId: order.id,

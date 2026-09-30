@@ -4,8 +4,7 @@ import { COURSE, LESSONS, LESSON_ID, lessonStates } from "@/shared/academy/cours
 import { academyRepository } from "./repository";
 import type { AcademyOverview } from "./schema";
 
-function overview(auth: Session): AcademyOverview {
-  const progress = academyRepository.get(auth.userId, auth.storeId);
+function overview(progress: Awaited<ReturnType<typeof academyRepository.get>>): AcademyOverview {
   const states = lessonStates(progress.done);
   const completed = LESSONS.filter((l) => states.get(l.id) === "completed").length;
   const current = LESSONS.find((l) => states.get(l.id) === "available") ?? LESSONS.at(-1)!;
@@ -28,7 +27,7 @@ function overview(auth: Session): AcademyOverview {
 }
 
 export async function getAcademy(auth: Session): Promise<AcademyOverview> {
-  return overview(auth);
+  return overview(await academyRepository.get(auth.userId, auth.storeId));
 }
 
 /**
@@ -38,8 +37,9 @@ export async function getAcademy(auth: Session): Promise<AcademyOverview> {
 export async function completeLesson(auth: Session, id: string): Promise<AcademyOverview> {
   const lesson = LESSON_ID.test(id) ? LESSONS.find((l) => l.id === id) : undefined;
   if (!lesson) throw new ApiError("not_found");
-  const progress = academyRepository.get(auth.userId, auth.storeId);
+  const progress = await academyRepository.get(auth.userId, auth.storeId);
   if (lessonStates(progress.done).get(lesson.id) === "locked") throw new ApiError("lesson_locked");
+  if (!progress.done.has(lesson.id)) await academyRepository.complete(auth.userId, lesson.id);
   progress.done.add(lesson.id);
-  return overview(auth);
+  return overview(progress);
 }

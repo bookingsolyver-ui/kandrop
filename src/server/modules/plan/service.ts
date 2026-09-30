@@ -17,7 +17,7 @@ export interface PlanUsage {
 
 /** What the store has used of its plan. Only numbers that really exist are reported. */
 export async function getPlan(auth: Session): Promise<PlanUsage> {
-  const plan = planOf(auth.storeId);
+  const plan = await planOf(auth.storeId);
   if (!plan) throw new ApiError("payment_required");
   const limits = PLANS[plan];
   return {
@@ -25,7 +25,7 @@ export async function getPlan(auth: Session): Promise<PlanUsage> {
     usage: {
       // Landing pages are not built yet, so the honest count is zero.
       landingPages: { used: 0, limit: limits.landingPages },
-      products: { used: productRepository.all(auth.storeId).length, limit: limits.products },
+      products: { used: (await productRepository.all(auth.storeId)).length, limit: limits.products },
     },
   };
 }

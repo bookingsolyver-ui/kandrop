@@ -1,17 +1,8 @@
 import { randomBytes } from "node:crypto";
 import { getEnv } from "@/server/config/env";
 import type { PaymentState, ReferralPlan } from "@/shared/affiliates/schemas";
+import { db, isUniqueViolation, must, rows } from "@/server/db/client";
 import type { AffiliateRecord, ReferralRecord } from "./schema";
-
-/**
- * STUB — in-memory, per process, lost on restart. Replace with `affiliate_profiles` (unique
- * index on `code`, one per store), `affiliate_clicks` and `referrals` (unique on the referred
- * store) tables. Every call takes the `storeId`.
- */
-const g = globalThis as unknown as {
-  __kandropAffiliates?: { byStore: Map<string, AffiliateRecord>; byCode: Map<string, string> };
-};
-const db = (g.__kandropAffiliates ??= { byStore: new Map(), byCode: new Map() });
 
 const DAY = 86_400_000;
 
@@ -49,13 +40,9 @@ export function slugOf(fullName: string): string {
   return slug.length >= 2 ? slug : "loja";
 }
 
-function uniqueCode(base: string): string {
-  if (!db.byCode.has(base)) return base;
-  for (let n = 2; n < 100; n++) {
-    if (!db.byCode.has(`${base}${n}`)) return `${base}${n}`;
-  }
-  return `${base}${randomBytes(3).toString("hex")}`;
-}
+/** The n-th candidate for a code: `filipe`, `filipe2`, `filipe3`… then a random tail. */
+const candidate = (base: string, n: number) =>
+  n === 0 ? base : n < 100 ? `${base}${n + 1}` : `${base}${randomBytes(3).toString("hex")}`;
 
 function examples(now: number): ReferralRecord[] {
   return EXAMPLES.map(([email, days, plan, payment, paidMonths], i) => ({
@@ -68,31 +55,86 @@ function examples(now: number): ReferralRecord[] {
   }));
 }
 
+const referralFromRow = (row: Record<string, unknown>): ReferralRecord => ({
+  id: String(row.id),
+  email: String(row.email),
+  registeredAt: Number(row.registered_at),
+  plan: row.plan as ReferralPlan,
+  payment: row.payment as PaymentState,
+  paidMonths: Number(row.paid_months),
+});
+
+async function load(storeId: string): Promise<AffiliateRecord | null> {
+  const profile = must(
+    "affiliate_profiles.get",
+    await db().from("affiliate_profiles").select("*").eq("store_id", storeId).maybeSingle()
+  );
+  if (!profile) return null;
+  const referrals = rows(
+    "referrals.list",
+    await db().from("referrals").select("*").eq("store_id", storeId)
+  );
+  return {
+    storeId,
+    code: String(profile.code),
+    clicks: Number(profile.clicks),
+    example: Boolean(profile.example),
+    referrals: referrals.map(referralFromRow),
+  };
+}
+
 export const affiliateRepository = {
   /** The store's affiliate profile, created on first use (its code comes from `fullName`). */
-  ensure(storeId: string, fullName: string): AffiliateRecord {
-    let record = db.byStore.get(storeId);
-    if (!record) {
-      const example = isDemo(storeId);
-      record = {
-        storeId,
-        code: uniqueCode(slugOf(fullName)),
-        clicks: example ? EXAMPLE_CLICKS : 0,
-        example,
-        referrals: example ? examples(Date.now()) : [],
-      };
-      db.byStore.set(storeId, record);
-      db.byCode.set(record.code, storeId);
+  async ensure(storeId: string, fullName: string): Promise<AffiliateRecord> {
+    const existing = await load(storeId);
+    if (existing) return existing;
+
+    const example = isDemo(storeId);
+    const base = slugOf(fullName);
+    for (let n = 0; n < 110; n++) {
+      const { error } = await db()
+        .from("affiliate_profiles")
+        .insert({
+          store_id: storeId,
+          code: candidate(base, n),
+          clicks: example ? EXAMPLE_CLICKS : 0,
+          example,
+        });
+      if (!error) {
+        if (example) {
+          must(
+            "referrals.seed",
+            await db()
+              .from("referrals")
+              .insert(
+                examples(Date.now()).map((r) => ({
+                  id: `ref_${randomBytes(8).toString("hex")}`,
+                  store_id: storeId,
+                  email: r.email,
+                  registered_at: r.registeredAt,
+                  plan: r.plan,
+                  payment: r.payment,
+                  paid_months: r.paidMonths,
+                }))
+              )
+          );
+        }
+        break;
+      }
+      // The store's row appeared meanwhile (a concurrent first visit): use it. Otherwise the code
+      // was taken by someone else: try the next one.
+      if (!isUniqueViolation(error)) must("affiliate_profiles.create", { data: null, error });
+      if (await load(storeId)) break;
     }
+    const record = await load(storeId);
+    if (!record) throw new Error("Database error: affiliate_profiles.create");
     return record;
   },
 
   /** Counts a visit to `/join?ref=code`. Unknown codes count for nobody. */
-  recordClick(code: string): boolean {
-    const storeId = db.byCode.get(code);
-    const record = storeId && db.byStore.get(storeId);
-    if (!record) return false;
-    record.clicks += 1;
-    return true;
+  async recordClick(code: string): Promise<boolean> {
+    return Boolean(
+      must("affiliates.click", await db().rpc("record_affiliate_click", { affiliate_code: code }))
+    );
   },
 };

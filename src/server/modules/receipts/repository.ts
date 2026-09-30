@@ -1,25 +1,33 @@
+import { db, must } from "@/server/db/client";
 import type { Receipt } from "./schema";
 
-/**
- * STUB — in-memory, per process. Replace with a `receipts` table: unique index on `payment_id`
- * (one receipt per payment) and a real sequence per year for `number`. Numbers restart with the
- * process here, so they are only unique within one run.
- */
-const g = globalThis as unknown as {
-  __kandropReceipts?: { byPayment: Map<string, Receipt>; counters: Map<number, number> };
-};
-const db = (g.__kandropReceipts ??= { byPayment: new Map(), counters: new Map() });
-
 export const receiptRepository = {
-  byPayment: (paymentId: string) => db.byPayment.get(paymentId) ?? null,
-  save(receipt: Receipt) {
-    db.byPayment.set(receipt.paymentId, receipt);
-    return receipt;
+  async byPayment(paymentId: string): Promise<Receipt | null> {
+    const row = must(
+      "receipts.byPayment",
+      await db().from("receipts").select("receipt").eq("payment_id", paymentId).maybeSingle()
+    );
+    return row ? (row.receipt as Receipt) : null;
   },
-  /** Next sequence value for `year` (1, 2, 3…). */
-  nextSequence(year: number) {
-    const next = (db.counters.get(year) ?? 0) + 1;
-    db.counters.set(year, next);
-    return next;
+
+  /** One receipt per payment (unique on `payment_id`): a concurrent duplicate keeps the first. */
+  async save(receipt: Receipt): Promise<Receipt> {
+    must(
+      "receipts.save",
+      await db()
+        .from("receipts")
+        .upsert(
+          { payment_id: receipt.paymentId, number: receipt.number, receipt },
+          { onConflict: "payment_id", ignoreDuplicates: true }
+        )
+    );
+    return (await this.byPayment(receipt.paymentId)) ?? receipt;
+  },
+
+  /** Next sequence value for `year` (1, 2, 3…), atomic in the database. */
+  async nextSequence(year: number): Promise<number> {
+    return Number(
+      must("receipts.sequence", await db().rpc("next_sequence", { seq_name: `receipt:${year}` }))
+    );
   },
 };
