@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { Badge, PageHeader, Pager, card, dateOnly, usePager } from "@/components/admin/ui";
 import { useFormatters } from "@/components/dashboard/useFormatters";
 import { ToastProvider, useToast } from "@/components/ui/Toast";
+import { useAudit } from "./useAudit";
 import { useSubmissions } from "@/lib/supplier/store";
 import { SUPPLIERS, supplierById, type SubmissionStatus } from "@/shared/supplier/mock";
 
@@ -15,6 +16,7 @@ function Body() {
   const f = useFormatters();
   const locale = useLocale();
   const toast = useToast();
+  const audit = useAudit();
   const { items, decide } = useSubmissions();
   const [tab, setTab] = useState<"approve" | "suppliers">("approve");
   const [filter, setFilter] = useState<SubmissionStatus>("in_review");
@@ -24,7 +26,9 @@ function Body() {
   const waiting = items.filter((s) => s.status === "in_review").length;
 
   const act = (id: string, status: "approved" | "rejected") => {
+    const before = items.find((s) => s.id === id)?.status;
     decide(id, status);
+    audit(status === "approved" ? "supplier_product.approve" : "supplier_product.reject", id, { status: before }, { status });
     toast({ message: t(status === "approved" ? "toast.approved" : "toast.rejected") });
   };
 

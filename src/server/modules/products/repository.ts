@@ -239,6 +239,21 @@ export const productRepository = {
   },
 
   /** Counts a page view of an active product (atomic, in the database). */
+  /**
+   * Takes `qty` units in ONE atomic statement (`reserve_stock`, see the security migration), so two
+   * simultaneous sales of the last unit cannot both win. Returns the remaining stock, or `null` when
+   * there is not enough. Unlimited stock (`stock` null) always succeeds. Call it right where a sale
+   * becomes real, and `releaseStock` if that sale is undone.
+   */
+  async reserveStock(productId: string, qty: number): Promise<number | null> {
+    const remaining = must("reserve stock", await db().rpc("reserve_stock", { p_product_id: productId, p_qty: qty }));
+    return remaining === null ? null : Number(remaining);
+  },
+
+  async releaseStock(productId: string, qty: number): Promise<void> {
+    must("release stock", await db().rpc("release_stock", { p_product_id: productId, p_qty: qty }));
+  },
+
   async recordView(slug: string): Promise<void> {
     must("products.view", await db().rpc("increment_product_views", { product_slug: slug }));
   },

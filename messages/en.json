@@ -2075,7 +2075,8 @@
       "reconciliation": "Reconciliation",
       "courierClose": "Courier closing",
       "adjustments": "Adjustments and refunds",
-      "suppliers": "Suppliers"
+      "suppliers": "Suppliers",
+      "auditLogs": "Audit logs"
     },
     "table": {
       "showing": "Showing {from}–{to} of {total}",
@@ -2548,6 +2549,20 @@
       "body": "Area exclusive to the Kandrop team.",
       "back": "Back to Dashboard",
       "switch": "Sign in with another account"
+    },
+    "audit": {
+      "title": "Audit logs",
+      "subtitle": "Who did what in the admin panel.",
+      "missing": "The audit_logs table does not exist in the database yet. Run the migration 20261001000000_security_phase2.sql in Supabase.",
+      "empty": "No actions recorded yet.",
+      "cols": {
+        "when": "When",
+        "who": "Who",
+        "action": "Action",
+        "target": "Target",
+        "before": "Before",
+        "after": "After"
+      }
     }
   },
   "Supplier": {

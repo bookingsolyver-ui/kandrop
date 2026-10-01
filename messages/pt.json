@@ -2075,7 +2075,8 @@
       "reconciliation": "Conciliação",
       "courierClose": "Fecho de estafetas",
       "adjustments": "Ajustes e estornos",
-      "suppliers": "Fornecedores"
+      "suppliers": "Fornecedores",
+      "auditLogs": "Registos de auditoria"
     },
     "table": {
       "showing": "A mostrar {from}–{to} de {total}",
@@ -2548,6 +2549,20 @@
       "body": "Área exclusiva da equipa Kandrop.",
       "back": "Voltar ao Dashboard",
       "switch": "Fazer Login com outra conta"
+    },
+    "audit": {
+      "title": "Registos de auditoria",
+      "subtitle": "Quem fez o quê no painel de administração.",
+      "missing": "A tabela audit_logs ainda não existe na base de dados. Execute a migração 20261001000000_security_phase2.sql no Supabase.",
+      "empty": "Ainda sem ações registadas.",
+      "cols": {
+        "when": "Quando",
+        "who": "Quem",
+        "action": "Ação",
+        "target": "Alvo",
+        "before": "Antes",
+        "after": "Depois"
+      }
     }
   },
   "Supplier": {

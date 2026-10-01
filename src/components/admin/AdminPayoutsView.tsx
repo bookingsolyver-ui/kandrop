@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { useFormatters } from "@/components/dashboard/useFormatters";
 import { ClockIcon, WalletIcon } from "@/components/kai/icons";
 import { useToast } from "@/components/ui/Toast";
+import { useAudit } from "./useAudit";
 import { PAYOUT_QUEUE, type PayoutQueueItem } from "@/shared/admin/mock";
 import { Badge, Pager, PageHeader, StatCard, card, dateOnly, usePager } from "./ui";
 
@@ -28,6 +29,7 @@ export function AdminPayoutsView() {
   const f = useFormatters();
   const locale = useLocale();
   const toast = useToast();
+  const audit = useAudit();
   const [decided, setDecided] = useState<Record<string, "approved" | "rejected">>({});
 
   const rows = useMemo(() => PAYOUT_QUEUE.map((p) => ({ ...p, status: (decided[p.id] ?? p.status) as Status })), [decided]);
@@ -37,11 +39,14 @@ export function AdminPayoutsView() {
   const sum = (list: typeof rows) => list.reduce((s, r) => s + r.amount, 0);
 
   const decide = (id: string, status: "approved" | "rejected") => {
+    const before = rows.find((r) => r.id === id)?.status;
     setDecided((d) => ({ ...d, [id]: status }));
+    audit(status === "approved" ? "payout.approve" : "payout.reject", id, { status: before }, { status });
     toast({ message: t(status === "approved" ? "toast.approved" : "toast.rejected") });
   };
   const approveAll = () => {
     setDecided((d) => ({ ...d, ...Object.fromEntries(pending.map((r) => [r.id, "approved" as const])) }));
+    audit("payout.approve_batch", `${pending.length} payouts`, { status: "pending" }, { status: "approved", ids: pending.map((r) => r.id) });
     toast({ message: t("toast.batch", { count: pending.length }) });
   };
   const exportCsv = () => {

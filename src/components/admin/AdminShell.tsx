@@ -9,7 +9,7 @@ import { CloseIcon } from "@/components/shell/icons";
 import { ToastProvider } from "@/components/ui/Toast";
 import { Link, usePathname } from "@/i18n/navigation";
 
-type NavLabel = "merchants" | "orders" | "finance" | "cashFlow" | "reconciliation" | "courierClose" | "adjustments" | "payouts" | "showcase" | "catalog" | "inventory" | "suppliers";
+type NavLabel = "merchants" | "orders" | "finance" | "cashFlow" | "reconciliation" | "courierClose" | "adjustments" | "payouts" | "showcase" | "catalog" | "inventory" | "suppliers" | "auditLogs";
 type Leaf = { key: NavLabel; href: string };
 type Item =
   | { type: "link"; key: NavLabel; href: string; icon: ReactNode }
@@ -21,6 +21,12 @@ const UsersIcon = () => (
     <circle cx="9" cy="7" r="4" />
     <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
     <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+  </svg>
+);
+
+const ShieldIcon = () => (
+  <svg aria-hidden width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
   </svg>
 );
 
@@ -40,6 +46,7 @@ const NAV: Item[] = [
     ],
   },
   { type: "link", key: "suppliers", href: "/admin/fornecedores", icon: <UsersIcon /> },
+  { type: "link", key: "auditLogs", href: "/admin/seguranca/logs", icon: <ShieldIcon /> },
   {
     type: "group",
     key: "showcase",

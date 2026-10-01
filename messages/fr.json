@@ -2075,7 +2075,8 @@
       "reconciliation": "Rapprochement",
       "courierClose": "Clôture des livreurs",
       "adjustments": "Ajustements et remboursements",
-      "suppliers": "Fournisseurs"
+      "suppliers": "Fournisseurs",
+      "auditLogs": "Journal d’audit"
     },
     "table": {
       "showing": "Affichage de {from}–{to} sur {total}",
@@ -2548,6 +2549,20 @@
       "body": "Zone réservée à l’équipe Kandrop.",
       "back": "Retour au tableau de bord",
       "switch": "Se connecter avec un autre compte"
+    },
+    "audit": {
+      "title": "Journal d’audit",
+      "subtitle": "Qui a fait quoi dans le panneau d’administration.",
+      "missing": "La table audit_logs n’existe pas encore dans la base de données. Exécutez la migration 20261001000000_security_phase2.sql dans Supabase.",
+      "empty": "Aucune action enregistrée pour l’instant.",
+      "cols": {
+        "when": "Quand",
+        "who": "Qui",
+        "action": "Action",
+        "target": "Cible",
+        "before": "Avant",
+        "after": "Après"
+      }
     }
   },
   "Supplier": {
