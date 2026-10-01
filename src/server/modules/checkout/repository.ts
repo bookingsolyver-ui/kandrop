@@ -1,11 +1,12 @@
 import { db, must } from "@/server/db/client";
+import { decryptNullable, encryptNullable } from "@/server/crypto/field";
 import type { CheckoutItem, CheckoutSession } from "./schema";
 
 const toRow = (s: CheckoutSession) => ({
   id: s.id,
   store_id: s.storeId,
   store_name: s.storeName,
-  store_nif: s.storeNif,
+  store_nif: encryptNullable(s.storeNif, `checkout_sessions.store_nif:${s.id}`),
   currency: s.currency,
   items: s.items,
   shipping_amount: s.shippingAmount,
@@ -21,7 +22,7 @@ function fromRow(row: Record<string, unknown>): CheckoutSession {
     id: String(row.id),
     storeId: String(row.store_id),
     storeName: String(row.store_name),
-    storeNif: row.store_nif === null ? null : String(row.store_nif),
+    storeNif: decryptNullable(row.store_nif === null ? null : String(row.store_nif), `checkout_sessions.store_nif:${String(row.id)}`),
     currency: "AOA",
     items: row.items as CheckoutItem[],
     shippingAmount: Number(row.shipping_amount),

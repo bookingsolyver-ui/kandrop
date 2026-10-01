@@ -20,6 +20,10 @@ const mono = JetBrains_Mono({
   display: "swap",
 });
 
+// Every page is rendered per request: the Content-Security-Policy carries a fresh nonce (see src/proxy.ts),
+// and a prerendered page would have no nonce on its scripts.
+export const dynamic = "force-dynamic";
+
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }

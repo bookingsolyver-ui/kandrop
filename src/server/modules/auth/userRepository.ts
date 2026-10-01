@@ -13,6 +13,9 @@ export interface UserRecord {
   role: "owner" | "staff";
   locale: "pt" | "en" | "fr";
   createdAt: string;
+  /** Sessions issued before this instant (epoch ms) are dead: password change, "sign out everywhere", ban. */
+  sessionsValidAfter: number;
+  banned: boolean;
 }
 
 export type NewUser = Pick<
@@ -25,6 +28,10 @@ export interface UserRepository {
   findById(id: string): Promise<UserRecord | null>;
   findOwnerByStore(storeId: string): Promise<UserRecord | null>;
   create(user: NewUser): Promise<UserRecord>;
+  /** Kill switch: every session issued up to now stops working, on every device. */
+  revokeSessions(id: string): Promise<void>;
+  /** Bans (and so signs out everywhere) or reinstates an account. */
+  setBanned(id: string, banned: boolean): Promise<void>;
 }
 
 function mapRowToUser(row: Record<string, unknown>): UserRecord {
@@ -38,6 +45,9 @@ function mapRowToUser(row: Record<string, unknown>): UserRecord {
     role: (row.role === "staff" ? "staff" : "owner"),
     locale: (["pt", "en", "fr"].includes(String(row.locale)) ? (row.locale as "pt" | "en" | "fr") : "pt"),
     createdAt: String(row.created_at ?? ""),
+    // Missing until the security migration runs: then nobody is revoked or banned.
+    sessionsValidAfter: Number(row.sessions_valid_after ?? 0),
+    banned: row.banned === true,
   };
 }
 
@@ -73,6 +83,8 @@ export const userRepository: UserRepository = {
       storeId: `sto_${randomUUID()}`,
       role: "owner",
       createdAt: new Date().toISOString(),
+      sessionsValidAfter: 0,
+      banned: false,
     };
 
     const { error } = await db().from("users").insert({
@@ -96,5 +108,16 @@ export const userRepository: UserRepository = {
     }
 
     return user;
+  },
+
+  async revokeSessions(id) {
+    must("users.revokeSessions", await db().from("users").update({ sessions_valid_after: Date.now() }).eq("id", id));
+  },
+
+  async setBanned(id, banned) {
+    must(
+      "users.setBanned",
+      await db().from("users").update({ banned, sessions_valid_after: Date.now() }).eq("id", id)
+    );
   },
 };

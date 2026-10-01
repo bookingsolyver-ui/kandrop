@@ -1,5 +1,5 @@
 import createMiddleware from "next-intl/middleware";
-import { NextResponse, type NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { routing } from "./i18n/routing";
 import { hasAccess } from "./server/auth/access";
 import { resolveSession, SESSION_COOKIE } from "./server/auth/session";
@@ -13,12 +13,48 @@ import { resolveSession, SESSION_COOKIE } from "./server/auth/session";
 //  2. The first door of `/<locale>/admin/**`: no session → the login (and back to /admin afterwards).
 //     WHO may stay (the e-mail in `ADMIN_EMAILS`) is decided by the admin layout, the pages and
 //     `requireAdmin`, which show the "restricted access" screen to anyone else.
-//  3. Locale negotiation (next-intl), for pages only — /api, assets and internals are excluded.
+//  3. THE CONTENT-SECURITY-POLICY: a fresh nonce per request; only scripts that carry it (and what
+//     they load) run, so an injected inline script is inert. Next puts the nonce on its own scripts
+//     when it sees it in the request's CSP, which is why every page is rendered per request
+//     (`dynamic = "force-dynamic"` in the locale layout).
+//  4. Locale negotiation (next-intl), for pages only — /api, assets and internals are excluded.
 const intl = createMiddleware(routing);
 const DASHBOARD = new RegExp(`^/(${routing.locales.join("|")})/dashboard(/|$)`);
 const ADMIN = new RegExp(`^/(${routing.locales.join("|")})/admin(/|$)`);
 
-export default async function proxy(request: NextRequest) {
+const isDev = process.env.NODE_ENV === "development";
+
+/** Everything the app loads comes from itself: fonts are self-hosted (next/font), images are ours, blob: or data:. */
+function contentSecurityPolicy(nonce: string) {
+  return [
+    "default-src 'self'",
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${isDev ? " 'unsafe-eval'" : ""}`,
+    // Inline style ATTRIBUTES (gradients, sizes set from data) cannot carry a nonce; scripts are what matter for XSS.
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' blob: data:",
+    "font-src 'self'",
+    `connect-src 'self'${isDev ? " ws: wss:" : ""}`,
+    "media-src 'self'",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "frame-ancestors 'none'",
+  ].join("; ");
+}
+
+export default async function proxy(original: NextRequest) {
+  const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
+  const csp = contentSecurityPolicy(nonce);
+  const headers = new Headers(original.headers);
+  headers.set("x-nonce", nonce);
+  headers.set("Content-Security-Policy", csp);
+  const request = new NextRequest(original, { headers });
+  const response = await route(request);
+  response.headers.set("Content-Security-Policy", csp);
+  return response;
+}
+
+async function route(request: NextRequest) {
   const match = DASHBOARD.exec(request.nextUrl.pathname);
   if (match) {
     const session = await resolveSession(request.cookies.get(SESSION_COOKIE)?.value);

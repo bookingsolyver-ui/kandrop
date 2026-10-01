@@ -47,6 +47,9 @@ const schema = z.object({
   // Bearer token for `POST /api/admin/transfers/:reference/confirm` (a person at Kandrop confirming
   // a transfer arrived). Unset = that endpoint does not exist.
   ADMIN_API_TOKEN: z.preprocess((v) => (v === "" ? undefined : v), z.string().min(32).optional()),
+  // AES-256 key (32 random bytes, base64: `openssl rand -base64 32`) for IBANs and tax numbers at rest.
+  // Unset = stored unencrypted, with a warning (see `crypto/field.ts`).
+  DATA_ENCRYPTION_KEY: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
   // `sandbox` simulates every payment. `live` needs a real provider integration (none yet).
   PAYMENTS_MODE: z.enum(["sandbox", "live"]).default("sandbox"),
 });

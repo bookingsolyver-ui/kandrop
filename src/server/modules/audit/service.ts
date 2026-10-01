@@ -10,6 +10,9 @@ export const AUDIT_ACTIONS = [
   "payout.approve",
   "payout.reject",
   "payout.approve_batch",
+  "user.revoke_sessions",
+  "user.ban",
+  "user.unban",
 ] as const;
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];
 

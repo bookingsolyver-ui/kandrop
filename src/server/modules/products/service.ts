@@ -1,4 +1,5 @@
 import type { Session } from "@/server/auth/types";
+import { sniffImage } from "@/server/security/imageSniff";
 import { ApiError } from "@/server/http/errors";
 import {
   computeMargin,
@@ -28,22 +29,13 @@ const badImages = () =>
 
 // ── Images ────────────────────────────────────────────────────────────────────────────────
 
-/** The declared type is not trusted: the file's own signature must agree with it. */
-function matchesSignature(mime: ImageMime, b: Buffer): boolean {
-  if (mime === "image/jpeg") return b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff;
-  if (mime === "image/png") return b.subarray(0, 4).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47]));
-  return (
-    b.subarray(0, 4).toString("ascii") === "RIFF" && b.subarray(8, 12).toString("ascii") === "WEBP"
-  );
-}
-
 function decodeImage(dataUrl: string): LoadedImage {
   const match = /^data:(image\/(?:jpeg|png|webp));base64,(.+)$/.exec(dataUrl);
   if (!match) throw badImages();
-  const mime = match[1] as ImageMime;
   const data = Buffer.from(match[2]!, "base64");
-  if (data.length === 0 || !matchesSignature(mime, data)) throw badImages();
-  return { id: newImageId(), mime, data };
+  // The declared type is not trusted: the bytes must be a well-formed image of exactly that type.
+  if (sniffImage(data) !== match[1]) throw badImages();
+  return { id: newImageId(), mime: match[1] as ImageMime, data };
 }
 
 /** Rebuilds the image list in the order sent: kept images by id, new ones decoded. */

@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { getEnv } from "../config/env";
 import { ApiError } from "../http/errors";
 import { hasAccess } from "./access";
+import { userRepository } from "@/server/modules/auth/userRepository";
 import { verifySession } from "./jwt";
 import type { Session } from "./types";
 
@@ -22,11 +23,23 @@ function tokenFromRequest(req: Request): string | undefined {
   return cookie?.slice(SESSION_COOKIE.length + 1);
 }
 
+/**
+ * A signed token is not enough: the account must still exist, not be banned, and the token must have
+ * been issued after the last "kill switch" (password change, sign out everywhere, ban).
+ */
+async function isStillValid(session: Session): Promise<boolean> {
+  const user = await userRepository.findById(session.userId);
+  if (!user || user.banned) return false;
+  // `iat` has one-second resolution: a token issued in the same second as the revocation is not
+  // told apart from an older one, so allow a second of slack (the new session after a password change).
+  return (session.issuedAt ?? 0) * 1000 + 999 >= user.sessionsValidAfter;
+}
+
 /** A valid token wins; otherwise the development bypass (never in production) may apply. */
 export async function resolveSession(token: string | undefined): Promise<Session | null> {
   if (token) {
     const session = await verifySession(token);
-    if (session) return session;
+    if (session && (await isStillValid(session))) return session;
   }
   const env = getEnv();
   if (env.AUTH_DEV_BYPASS && env.NODE_ENV !== "production") {
