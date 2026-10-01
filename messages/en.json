@@ -917,34 +917,54 @@
       "eyebrow": "Pricing",
       "title": "A plan for every stage of your business",
       "subtitle": "Start small and grow when sales ask for it.",
-      "free": "Free",
-      "period": "/month",
-      "recommended": "Recommended",
+      "period": "/ 1 month",
+      "recommended": "Best seller",
       "soon": "Soon",
       "cta": "Start with {plan}",
-      "note": "Amounts in Angolan Kwanza (AOA), per month.",
+      "note": "Prices in Kwanzas (AOA), for 1 month. Elite: price on request.",
       "plans": {
         "starter": {
           "name": "Starter",
-          "tagline": "To validate your first product."
+          "tagline": "To start selling without buying stock."
         },
         "pro": {
           "name": "Pro",
-          "tagline": "For sellers who mean business and want to grow without limits."
+          "tagline": "For those who sell seriously and want to grow."
+        },
+        "elite": {
+          "name": "Elite",
+          "tagline": "For bigger brands and operations."
         }
       },
       "features": {
-        "products": "Up to {count} products",
-        "productsUnlimited": "Unlimited products",
-        "landingPages": "Up to {count} landing pages",
-        "landingPagesUnlimited": "Unlimited landing pages",
-        "multicaixa": "Multicaixa Express, Unitel Money and card payments",
-        "payouts": "Payouts to your bank account",
-        "catalog": "Premium B2B catalogue",
-        "whatsapp": "WhatsApp automations",
-        "logistics": "Logistics and couriers",
-        "logisticsPriority": "Logistics priority"
-      }
+        "s1": "Access to the KanDrop catalogue",
+        "s2": "Sell without buying stock",
+        "s3": "Up to {count} landing pages per month",
+        "s4": "24h delivery in Luanda",
+        "s5": "Pay on delivery and Multicaixa Express",
+        "s6": "Ready-made sales scripts",
+        "s7": "Starter dropshipping training",
+        "s8": "WhatsApp support",
+        "s9": "Tracking of orders and sales",
+        "p0": "Everything in Starter, plus:",
+        "p1": "Up to {count} landing pages per month",
+        "p2": "Request new products for the catalogue and sell with no stock",
+        "p3": "Access to the best-selling products",
+        "p4": "Help setting up and running your store",
+        "p5": "Full dropshipping training",
+        "p6": "Get your earnings with priority",
+        "p7": "Priority support",
+        "e0": "Everything in Pro, plus:",
+        "e1": "Your own account manager",
+        "e2": "Several stores or brands",
+        "e3": "Detailed reports",
+        "e4": "API integration",
+        "e5": "Reduced commission",
+        "e6": "Support during the launch"
+      },
+      "onRequest": "On request",
+      "contact": "Talk to the team",
+      "contactText": "Hello! I would like to know more about Kandrop's Elite plan."
     },
     "final": {
       "title": "Start selling without stock today.",

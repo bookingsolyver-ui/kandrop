@@ -917,34 +917,54 @@
       "eyebrow": "Planos",
       "title": "Um plano para cada fase do seu negócio",
       "subtitle": "Comece pequeno e cresça quando as vendas o pedirem.",
-      "free": "Grátis",
-      "period": "/mês",
-      "recommended": "Recomendado",
+      "period": "/ 1 mês",
+      "recommended": "Mais vendido",
       "soon": "Em breve",
       "cta": "Começar com {plan}",
-      "note": "Valores em Kwanzas (AOA), por mês.",
+      "note": "Valores em Kwanzas (AOA), por 1 mês. Elite: preço sob consulta.",
       "plans": {
         "starter": {
           "name": "Starter",
-          "tagline": "Para validar o seu primeiro produto."
+          "tagline": "Para começar a vender sem comprar stock."
         },
         "pro": {
           "name": "Pro",
-          "tagline": "Para quem vende a sério e quer crescer sem limites."
+          "tagline": "Para quem vende a sério e quer crescer."
+        },
+        "elite": {
+          "name": "Elite",
+          "tagline": "Para marcas e operações maiores."
         }
       },
       "features": {
-        "products": "Até {count} produtos",
-        "productsUnlimited": "Produtos ilimitados",
-        "landingPages": "Até {count} landing pages",
-        "landingPagesUnlimited": "Landing pages ilimitadas",
-        "multicaixa": "Pagamentos Multicaixa Express, Unitel Money e cartão",
-        "payouts": "Levantamentos para a sua conta bancária",
-        "catalog": "Catálogo Premium B2B",
-        "whatsapp": "Automações WhatsApp",
-        "logistics": "Logística e estafetas",
-        "logisticsPriority": "Prioridade logística"
-      }
+        "s1": "Acesso ao catálogo KanDrop",
+        "s2": "Vende sem comprar stock",
+        "s3": "Até {count} landing pages por mês",
+        "s4": "Entrega em 24h em Luanda",
+        "s5": "Pagamento na entrega e Multicaixa Express",
+        "s6": "Scripts de venda prontos",
+        "s7": "Formação inicial de dropshipping",
+        "s8": "Suporte por WhatsApp",
+        "s9": "Acompanhamento dos pedidos e das vendas",
+        "p0": "Tudo do Starter, mais:",
+        "p1": "Até {count} landing pages por mês",
+        "p2": "Pedes produtos novos para o catálogo e vendes sem stock",
+        "p3": "Acesso aos produtos mais vendidos",
+        "p4": "Ajuda a montar e gerir a tua loja",
+        "p5": "Formação completa de dropshipping",
+        "p6": "Recebes os teus ganhos com prioridade",
+        "p7": "Suporte prioritário",
+        "e0": "Tudo do Pro, mais:",
+        "e1": "Gestor de conta próprio",
+        "e2": "Várias lojas ou marcas",
+        "e3": "Relatórios detalhados",
+        "e4": "Integração por API",
+        "e5": "Comissão reduzida",
+        "e6": "Acompanhamento no arranque"
+      },
+      "onRequest": "Sob consulta",
+      "contact": "Falar com a equipa",
+      "contactText": "Olá! Quero saber mais sobre o plano Elite da Kandrop."
     },
     "final": {
       "title": "Comece a vender sem stock hoje.",

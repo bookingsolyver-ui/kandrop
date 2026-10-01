@@ -484,8 +484,8 @@ pinned "Buy now" button that goes straight to the existing checkout. Mobile-firs
 The merchant's own subscription to Kandrop (SaaS billing): current plan and usage, the plan cards, a payment dialog and the invoice
 history. Owner only (it is the account's money). The plan card in the sidebar links here.
 
-- **One source for plans**: `modules/plan/limits.ts` holds keys, limits (`null` = unlimited) and prices: **Starter 14.999 Kz**
-  (50 products, 5 landing pages) and **Pro 34.999 Kz** (unlimited). There is **no free plan**. The landing page's tiers, the
+- **One source for plans**: `modules/plan/limits.ts` holds keys, limits (`null` = unlimited) and prices: **Starter 4.999 Kz**
+  (50 products, 3 landing pages) and **Pro 11.999 Kz** (unlimited). There is **no free plan**. The landing page's tiers, the
   affiliates' commissions, the payment-gate page and this page all read it. The tax treatment (IVA) is still undecided.
 - **Which plan a store is on** is never stored as a flag: `billing/plan.ts#planOf` reads the paid period (`periodEnd`) against
   the clock and returns `null` when there is none: that `null` is what the **payment gate** keys on (next section). Only the

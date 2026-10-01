@@ -76,12 +76,7 @@ function PlanCard({ plan, onChoose }: { plan: PublicPlan; onChoose: (plan: PaidP
           <li key={feature.key} className="flex items-start gap-3">
             <Check />
             <span className="text-ink-2">
-              {features(`features.${feature.key}`, { count: feature.count ?? 0 })}
-              {feature.soon && (
-                <span className="ml-2 rounded-full border border-line px-2 py-px text-[10px] font-medium tracking-wide whitespace-nowrap text-ink-muted uppercase">
-                  {t("soon")}
-                </span>
-              )}
+              <span className={feature.lead ? "font-semibold text-ink" : undefined}>{features(`features.${feature.key}`, { count: feature.count ?? 0 })}</span>
             </span>
           </li>
         ))}

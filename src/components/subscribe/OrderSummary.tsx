@@ -67,12 +67,7 @@ export function OrderSummary({ plan, onChange }: { plan: PlanKey; onChange?: () 
           <li key={feature.key} className="flex items-start gap-3">
             <Tick />
             <span className="text-ink-2">
-              {features(`features.${feature.key}`, { count: feature.count ?? 0 })}
-              {feature.soon && (
-                <span className="ml-2 rounded-full border border-line px-2 py-px text-[10px] font-medium tracking-wide whitespace-nowrap text-ink-muted uppercase">
-                  {t("plan.soon")}
-                </span>
-              )}
+              <span className={feature.lead ? "font-semibold text-ink" : undefined}>{features(`features.${feature.key}`, { count: feature.count ?? 0 })}</span>
             </span>
           </li>
         ))}
