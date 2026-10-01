@@ -13,7 +13,15 @@ const LINKS = [
   { key: "plans", href: "/#planos" },
   { key: "affiliates", href: "/afiliados" },
   { key: "about", href: "/sobre" },
+  { key: "suppliers", href: "/fornecedor/registo" },
 ] as const;
+
+/** The supplier entry point: a darker label and a small "B2B" tag, so it reads apart from the plain links. */
+const B2B = (
+  <span aria-hidden className="ml-2 rounded-md bg-[var(--ink-900)] px-1.5 py-0.5 text-[10px] leading-none font-bold tracking-wide text-white">
+    B2B
+  </span>
+);
 
 const LOCALE_PILL =
   "h-10 cursor-pointer rounded-full border border-[var(--ink-200)] bg-white px-3 text-[13px] font-medium text-[var(--ink-700)] transition-all hover:border-[var(--ink-300)] hover:text-[var(--ink-900)]";
@@ -30,7 +38,7 @@ const LOGO = (
 );
 
 /**
- * Top navigation: wordmark, four links, "Sign in" and the highlighted "Get started". On phones
+ * Top navigation: wordmark, five links, "Sign in" and the highlighted "Get started". On phones
  * the links and the language selector move into a sheet (native `<dialog>`: focus trap, Esc).
  */
 export function MarketingNav() {
@@ -65,10 +73,13 @@ export function MarketingNav() {
                   className={`inline-flex min-h-10 items-center rounded-full px-4 text-sm font-medium transition-colors ${
                     isCurrent(href)
                       ? "bg-[var(--ink-100)] text-[var(--ink-900)]"
-                      : "text-[var(--ink-600)] hover:bg-[var(--ink-100)] hover:text-[var(--ink-900)]"
+                      : key === "suppliers"
+                        ? "font-semibold text-[var(--ink-900)] hover:bg-[var(--ink-100)]"
+                        : "text-[var(--ink-600)] hover:bg-[var(--ink-100)] hover:text-[var(--ink-900)]"
                   }`}
                 >
                   {t(key)}
+                  {key === "suppliers" && B2B}
                 </Link>
               </li>
             ))}
@@ -128,6 +139,7 @@ export function MarketingNav() {
                   className="flex min-h-14 items-center font-serif text-xl"
                 >
                   {t(key)}
+                  {key === "suppliers" && B2B}
                 </Link>
               </li>
             ))}
