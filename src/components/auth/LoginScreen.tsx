@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { TrendingUpIcon } from "@/components/kai/icons";
-import { BRAND_BUTTON_CLASS, BRAND_GRADIENT, BrandShimmer } from "@/components/ui/BrandButton";
+import { BRAND_BUTTON_CLASS } from "@/components/ui/BrandButton";
 import { Link, useRouter } from "@/i18n/navigation";
 import { firstErrorPerField, loginSchema } from "@/shared/auth/schemas";
 import { AuthField, LockIcon, MailIcon } from "./AuthFields";
@@ -170,9 +170,7 @@ export function LoginScreen() {
               disabled={form.pending}
               aria-busy={form.pending}
               className={`${BRAND_BUTTON_CLASS} h-12 w-full text-sm`}
-              style={{ background: BRAND_GRADIENT }}
             >
-              <BrandShimmer />
               <span className="relative inline-flex items-center justify-center gap-2">
                 {form.pending ? auth("login.submitting") : auth("login.submit")}
                 {!form.pending && <ArrowRightIcon />}

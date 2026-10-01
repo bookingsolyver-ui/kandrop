@@ -88,7 +88,7 @@ export function MobileDrawer({
           <div className="flex items-center gap-2.5 rounded-[var(--r-md)] border border-[var(--ink-200)] bg-[var(--ink-50)] p-3">
             <div
               aria-hidden
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--kai-orange)] text-[13px] font-bold text-white"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-orange text-[13px] font-bold text-brand-black"
             >
               {initials(user.name)}
             </div>

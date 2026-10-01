@@ -83,7 +83,7 @@ export function KaiSidebar({
             >
               <div
                 aria-hidden
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--kai-orange)] text-[13px] font-bold text-white"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-orange text-[13px] font-bold text-brand-black"
               >
                 {initials(user.name)}
               </div>
@@ -124,7 +124,7 @@ export function KaiSidebar({
           onClick={onToggle}
           aria-label={collapsed ? t("expand") : t("collapse")}
           aria-expanded={!collapsed}
-          className="absolute top-1/2 -right-3.5 z-50 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-[var(--kai-orange)] text-white shadow-md transition-colors duration-150 hover:bg-[var(--kai-orange-600)]"
+          className="absolute top-1/2 -right-3.5 z-50 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-brand-orange text-brand-black shadow-md transition-colors duration-150 hover:bg-[#ff6b1a]"
         >
           {collapsed ? <ChevronRightIcon size={16} /> : <ChevronLeftIcon size={16} />}
         </button>

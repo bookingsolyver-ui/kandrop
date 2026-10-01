@@ -8,49 +8,51 @@
  */
 :root {
   color-scheme: light;
-  --page: #f6f5f1;
+  --page: #f9f9f9; /* brand-gray */
   --surface: #ffffff;
-  --ink: #0d1b2e;
-  --ink-2: #445063;
-  --ink-muted: #5d697a;
-  --line: #e6e3da;
-  --axis: #c9c5b8;
-  --field: #7d8593; /* input borders: >= 3:1 on white (WCAG 1.4.11), unlike the decorative hairline */
-  --brand: #0b2a4a;
-  --select: #0b2a4a; /* selected-state ring/dot: must stay visible on the surface in both modes */
-  --on-brand: #f6f5f1;
-  --on-brand-muted: #b9c6d8;
-  --action: #0b2a4a; /* the single primary action per screen (e.g. Pay); must stand out from the surface */
-  --on-action: #f6f5f1;
-  --series-1: #1d4f91;
-  --series-2: #b3801f;
-  --up: #006300;
+  --ink: #000000; /* brand-black */
+  --ink-2: #666666; /* black at 60% */
+  --ink-muted: #767676; /* 4.5:1 on white */
+  --line: #e6e6e6; /* black at 10% on white */
+  --axis: #cccccc;
+  --field: #858585; /* input borders: >= 3:1 on white (WCAG 1.4.11) */
+  --brand: #000000;
+  --select: #ff5a00;
+  --on-brand: #ffffff;
+  --on-brand-muted: #a6a6a6;
+  --action: #ff5a00; /* the primary action: brand orange, black label */
+  --on-action: #000000;
+  --series-1: #000000;
+  --series-2: #ff5a00;
+  --up: #15803d;
   --down: #b42323;
-  --accent: var(--select);
-  --focus: var(--series-1);
+  --accent: #d94c00; /* orange as TEXT on white: 4.6:1 */
+  --focus: #ff5a00;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
-    --page: #0a121f;
-    --surface: #0f1a2b;
-    --ink: #eef1f5;
-    --ink-2: #b4bdca;
-    --ink-muted: #8794a6;
-    --line: #1f2c40;
-    --axis: #34455f;
-    --field: #62738c;
-    --brand: #16355c;
-    --select: #7aa9e6;
-    --on-brand: #f2f5f9;
-    --on-brand-muted: #a9b8cd;
-    --action: #7aa9e6; /* dark navy would vanish on the dark surface, so the action steps up to the light accent */
-    --on-action: #0a121f;
-    --series-1: #4a87d8;
-    --series-2: #b8821b;
+    --page: #000000;
+    --surface: #121212; /* the waitlist's dark card */
+    --ink: #ffffff;
+    --ink-2: #b3b3b3; /* white at 70% */
+    --ink-muted: #8f8f8f;
+    --line: #262626;
+    --axis: #404040;
+    --field: #6b6b6b;
+    --brand: #1a0f08;
+    --select: #ff5a00;
+    --on-brand: #ffffff;
+    --on-brand-muted: #a6a6a6;
+    --action: #ff5a00;
+    --on-action: #000000;
+    --series-1: #ffa366;
+    --series-2: #ff5a00;
     --up: #34b26a;
     --down: #ef6b6b;
+    --accent: #ff5a00;
+    --focus: #ff5a00;
   }
 }
 
@@ -98,9 +100,9 @@
 .workspace,
 .marketing {
   color-scheme: light;
-  --page: #f1f1f0;
+  --page: #f9f9f9;
   --surface: #ffffff;
-  --ink: #0d0d0d;
+  --ink: #000000;
   --ink-2: #3a3a3a;
   --ink-muted: #5f5f5f;
   --line: #e6e6e6;
@@ -128,7 +130,7 @@ body:has(.workspace),
 html:has(.marketing),
 body:has(.marketing) {
   color-scheme: light;
-  background: #f1f1f0;
+  background: #f9f9f9;
 }
 
 @theme inline {
@@ -151,6 +153,12 @@ body:has(.marketing) {
   --color-series-2: var(--series-2);
   --color-up: var(--up);
   --color-down: var(--down);
+  /* The waitlist's palette, same names and values */
+  --color-brand-orange: #ff5a00;
+  --color-brand-orange-light: #ffa366;
+  --color-brand-black: #000000;
+  --color-brand-gray: #f9f9f9;
+  --color-brand-white: #ffffff;
   /* shadcn-style names used by the sign-in page */
   --color-primary: var(--kai-orange);
   --color-border: var(--ink-200);
@@ -352,17 +360,17 @@ h2 {
 :root {
   /* Kandrop palette (KANDROP_VISUAL/Paleta de cor.png): white, black, light greys, two oranges. */
   --ink-0: #ffffff;
-  --ink-50: #f8f8f7;
+  --ink-50: #f9f9f9; /* brand-gray */
   --ink-100: #f1f1f0;
   --ink-200: #e6e6e6;
   --ink-300: #cfcfce;
   --ink-500: #767676;
-  --ink-600: #5a5a5a;
+  --ink-600: #666666; /* black at 60% */
   --ink-700: #3a3a3a;
   --ink-900: #000000;
-  --kai-orange: #ff5a00; /* the brand orange */
+  --kai-orange: #ff5a00; /* brand-orange */
   --kai-orange-50: #fff0e6;
-  --kai-orange-300: #ff7e2e; /* the light end of the brand gradient */
+  --kai-orange-300: #ffa366; /* brand-orange-light */
   --kai-orange-600: #d94c00; /* orange as TEXT on white: 4.6:1 */
   --kai-success: #15803d;
   --kai-success-bg: #dcfce7;
@@ -429,4 +437,33 @@ h3.font-serif {
   .animate-banner-glow {
     animation: none;
   }
+}
+
+/*
+ * The platform's older primary buttons are written as `bg-action text-on-action rounded-md`. They
+ * take the waitlist's button shape and glow here, so there is one primary button everywhere without
+ * rewriting each of them (new code uses `BRAND_BUTTON_CLASS` / `BrandLink`).
+ */
+:is(button, a).bg-action {
+  border-radius: 9999px;
+  font-weight: 700;
+  box-shadow: 0 4px 20px rgba(255, 90, 0, 0.3);
+  transition: all 0.5s cubic-bezier(0, 0, 0.2, 1);
+}
+:is(button, a).bg-action:hover:not(:disabled) {
+  background-color: #ff6b1a;
+  box-shadow: 0 6px 24px rgba(255, 90, 0, 0.45);
+  opacity: 1;
+}
+:is(button, a).bg-action:active:not(:disabled) {
+  background-color: #e05200;
+}
+:is(button, a).bg-action:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px #ffffff,
+    0 0 0 4px #ff5a00;
+}
+:is(button, a).bg-action:disabled {
+  box-shadow: none;
 }

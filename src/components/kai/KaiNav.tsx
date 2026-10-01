@@ -40,7 +40,7 @@ function NavLink({
         collapsed ? "justify-center" : ""
       } ${
         current
-          ? "bg-[var(--kai-orange)] text-white shadow-[var(--sh-orange)]"
+          ? "bg-brand-orange font-bold text-brand-black shadow-[0_4px_20px_rgba(255,90,0,0.3)]"
           : "text-[var(--ink-700)] hover:bg-[var(--ink-100)] hover:text-[var(--ink-900)]"
       }`}
     >

@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { BRAND_BUTTON_CLASS } from "@/components/ui/BrandButton";
 import { useDashboardLive } from "./useDashboardLive";
 
 /** Shown while the store has no data of its own: loads sample data (owner only, on purpose). */
@@ -36,7 +37,7 @@ export function DemoDataCard() {
         onClick={loadDemo}
         disabled={loading}
         aria-busy={loading}
-        className="mt-4 min-h-11 rounded-[var(--r-pill)] bg-[var(--kai-orange)] px-5 text-sm font-semibold text-white shadow-[var(--sh-orange)] hover:opacity-90 disabled:opacity-60"
+        className={`${BRAND_BUTTON_CLASS} mt-4 h-11 px-5 text-sm`}
       >
         {loading ? t("demo.loading") : t("demo.action")}
       </button>
