@@ -9,6 +9,8 @@ export const storeSchema = z.object({
   /** Where the store operates (saved in `settings.profile`), or `null` until the owner fills it in. */
   province: z.string().nullable(),
   municipality: z.string().nullable(),
+  /** The merchant's own Meta Pixel id (saved in `settings.meta_pixel_id`), or `null`. */
+  metaPixelId: z.string().nullable(),
   currency: z.literal("AOA"),
   status: z.enum(["pending_verification", "active", "suspended"]),
 });

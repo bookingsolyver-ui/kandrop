@@ -1,6 +1,7 @@
 import { getEnv } from "@/server/config/env";
 import { ApiError } from "@/server/http/errors";
 import { userRepository } from "@/server/modules/auth/userRepository";
+import { storeRepository } from "@/server/modules/store/repository";
 import { productRepository } from "@/server/modules/products/repository";
 import type { ProductRecord } from "@/server/modules/products/schema";
 import { placeOrder, supplierStockFor } from "@/server/modules/fulfilment/service";
@@ -31,6 +32,7 @@ export async function getStorefrontProduct(slug: string): Promise<StorefrontProd
     title: p.title,
     description: p.description,
     storeName: await storeNameOf(p.storeId),
+    metaPixelId: await storeRepository.metaPixelOf(p.storeId),
     currency: "AOA",
     images: p.images.map((image) => ({
       id: image.id,

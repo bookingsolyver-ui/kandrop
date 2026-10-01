@@ -675,7 +675,8 @@
       "label": "Secções das configurações",
       "profile": "Perfil",
       "store": "Preferências da loja",
-      "bank": "Dados bancários"
+      "bank": "Dados bancários",
+      "integrations": "Integrações"
     },
     "bank": {
       "title": "Dados bancários",
@@ -724,6 +725,21 @@
       "validation": {
         "province_invalid": "Escolha a província ou cidade.",
         "municipality_invalid": "Indique o município."
+      }
+    },
+    "integrations": {
+      "title": "Meta Pixel",
+      "subtitle": "Ligue o seu Pixel do Facebook/Instagram às suas páginas de venda para medir e otimizar os seus anúncios.",
+      "label": "ID do Meta Pixel",
+      "hint": "Só números (cole o ID do Gestor de Eventos da Meta). Dispara nas suas páginas de produto, no checkout e na confirmação da encomenda. Deixe em branco para remover.",
+      "save": "Guardar Pixel",
+      "saving": "A guardar…",
+      "saved": "Pixel guardado.",
+      "removed": "Pixel removido.",
+      "failed": "Não foi possível guardar. Tente novamente.",
+      "ownerOnly": "Só o proprietário da loja pode alterar o Pixel.",
+      "validation": {
+        "pixel_invalid": "O ID do Pixel tem entre 6 e 20 dígitos, só números."
       }
     }
   },

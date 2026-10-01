@@ -675,7 +675,8 @@
       "label": "Sections des paramètres",
       "profile": "Profil",
       "store": "Préférences de la boutique",
-      "bank": "Coordonnées bancaires"
+      "bank": "Coordonnées bancaires",
+      "integrations": "Intégrations"
     },
     "bank": {
       "title": "Coordonnées bancaires",
@@ -724,6 +725,21 @@
       "validation": {
         "province_invalid": "Choisissez la province ou la ville.",
         "municipality_invalid": "Indiquez la municipalité."
+      }
+    },
+    "integrations": {
+      "title": "Meta Pixel",
+      "subtitle": "Connectez votre Pixel Facebook/Instagram à vos pages de vente pour mesurer et optimiser vos publicités.",
+      "label": "ID du Meta Pixel",
+      "hint": "Chiffres uniquement (collez l’ID du Gestionnaire d’événements Meta). Il se déclenche sur vos pages produit, le paiement et la confirmation de commande. Laissez vide pour le retirer.",
+      "save": "Enregistrer le Pixel",
+      "saving": "Enregistrement…",
+      "saved": "Pixel enregistré.",
+      "removed": "Pixel retiré.",
+      "failed": "Enregistrement impossible. Réessayez.",
+      "ownerOnly": "Seul le propriétaire de la boutique peut modifier le Pixel.",
+      "validation": {
+        "pixel_invalid": "L’ID du Pixel comporte 6 à 20 chiffres, uniquement des nombres."
       }
     }
   },

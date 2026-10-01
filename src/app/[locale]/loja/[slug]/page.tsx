@@ -3,6 +3,7 @@ import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { cache } from "react";
+import { StorePixel } from "@/components/analytics/StorePixel";
 import { StorefrontView } from "@/components/storefront/StorefrontView";
 import { routing } from "@/i18n/routing";
 import { ApiError } from "@/server/http/errors";
@@ -42,5 +43,11 @@ export default async function StorefrontPage({ params }: Props) {
   const { locale, slug } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
-  return <StorefrontView product={await load(slug)} whatsapp={orderPaymentInfo().whatsapp ?? null} />;
+  const product = await load(slug);
+  return (
+    <>
+      <StorePixel id={product.metaPixelId} />
+      <StorefrontView product={product} whatsapp={orderPaymentInfo().whatsapp ?? null} />
+    </>
+  );
 }

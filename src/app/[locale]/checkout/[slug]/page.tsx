@@ -4,6 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import { redirect } from "@/i18n/navigation";
+import { StorePixel } from "@/components/analytics/StorePixel";
 import { CheckoutView } from "@/components/storefront/CheckoutView";
 import { routing } from "@/i18n/routing";
 import { ApiError } from "@/server/http/errors";
@@ -42,5 +43,11 @@ export default async function QuickCheckoutPage({ params, searchParams }: Props)
   const invalid = (await searchParams).error === "details";
   // The four delivery days are worked out on the server (Luanda time), so the page and the check agree.
   const { days, today } = checkoutDays();
-  return <CheckoutView product={product} invalid={invalid} days={days} today={today} />;
+  return (
+    <>
+      {/* Before the form, so the merchant pixel is registered when InitiateCheckout fires. */}
+      <StorePixel id={product.metaPixelId} />
+      <CheckoutView product={product} invalid={invalid} days={days} today={today} />
+    </>
+  );
 }

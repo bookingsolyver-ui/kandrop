@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
+import { StorePixel } from "@/components/analytics/StorePixel";
 import { OrderPlacedView } from "@/components/storefront/OrderPlacedView";
 import { routing } from "@/i18n/routing";
 import { getShopperOrder } from "@/server/modules/fulfilment/service";
@@ -27,5 +28,10 @@ export default async function OrderPlacedPage({ params }: Props) {
   if (!order) notFound();
   // Kandrop's REAL details only, each shown only when set and valid (no sandbox example ever reaches a shopper).
   const pay = orderPaymentInfo();
-  return <OrderPlacedView order={order} pay={pay} orderId={id} trackPurchase={order.justPlaced} />;
+  return (
+    <>
+      <StorePixel id={order.metaPixelId} />
+      <OrderPlacedView order={order} pay={pay} orderId={id} trackPurchase={order.justPlaced} />
+    </>
+  );
 }

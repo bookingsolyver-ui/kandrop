@@ -675,7 +675,8 @@
       "label": "Settings sections",
       "profile": "Profile",
       "store": "Store preferences",
-      "bank": "Bank details"
+      "bank": "Bank details",
+      "integrations": "Integrations"
     },
     "bank": {
       "title": "Bank details",
@@ -724,6 +725,21 @@
       "validation": {
         "province_invalid": "Choose the province or city.",
         "municipality_invalid": "Enter the municipality."
+      }
+    },
+    "integrations": {
+      "title": "Meta Pixel",
+      "subtitle": "Connect your Facebook/Instagram Pixel to your sales pages to measure and optimise your ads.",
+      "label": "Meta Pixel ID",
+      "hint": "Digits only (paste the ID from Meta Events Manager). It fires on your product pages, checkout and order confirmation. Leave empty to remove it.",
+      "save": "Save Pixel",
+      "saving": "Saving…",
+      "saved": "Pixel saved.",
+      "removed": "Pixel removed.",
+      "failed": "Could not save. Please try again.",
+      "ownerOnly": "Only the store owner can change the Pixel.",
+      "validation": {
+        "pixel_invalid": "The Pixel ID has 6 to 20 digits, numbers only."
       }
     }
   },

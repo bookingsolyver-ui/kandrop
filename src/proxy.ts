@@ -1,6 +1,7 @@
 import createMiddleware from "next-intl/middleware";
 import { NextRequest, NextResponse } from "next/server";
 import { routing } from "./i18n/routing";
+import { isPrivatePath } from "./lib/meta-pixel";
 import { hasAccess } from "./server/auth/access";
 import { resolveSession, SESSION_COOKIE } from "./server/auth/session";
 
@@ -27,9 +28,10 @@ const ADMIN = new RegExp(`^/(${routing.locales.join("|")})/admin(/|$)`);
 const isDev = process.env.NODE_ENV === "development";
 
 /** Everything the app loads comes from itself: fonts are self-hosted (next/font), images are ours, blob: or data:. */
-function contentSecurityPolicy(nonce: string) {
-  // The Meta Pixel (only when configured) loads its script through our nonce'd snippet and sends events to facebook.com.
-  const pixel = /^\d{6,20}$/.test(process.env.NEXT_PUBLIC_META_PIXEL_ID?.trim() ?? "");
+function contentSecurityPolicy(nonce: string, pathname: string) {
+  // The Meta Pixel (the platform's or a merchant's, so not tied to an env var) loads through our nonce'd snippet and sends
+  // events to facebook.com. Only PUBLIC routes may talk to Meta: the panels keep the strict policy.
+  const pixel = !isPrivatePath(pathname);
   return [
     "default-src 'self'",
     `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${isDev ? " 'unsafe-eval'" : ""}`,
@@ -48,7 +50,7 @@ function contentSecurityPolicy(nonce: string) {
 
 export default async function proxy(original: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
-  const csp = contentSecurityPolicy(nonce);
+  const csp = contentSecurityPolicy(nonce, original.nextUrl.pathname);
   const headers = new Headers(original.headers);
   headers.set("x-nonce", nonce);
   // The path of THIS request (set here, so a client cannot choose it): lets server components, like the ad pixel, skip private routes.

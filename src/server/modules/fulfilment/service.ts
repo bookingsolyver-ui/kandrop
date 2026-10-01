@@ -478,6 +478,8 @@ export interface ShopperOrder {
   paymentStatus: OrderPaymentStatus;
   paymentProvider: OrderPaymentProvider;
   customerName: string;
+  /** The store's own Meta Pixel id, or `null`. */
+  metaPixelId: string | null;
   /** The product's public slug (or its id): what the ad pixel reports as `content_ids`. */
   productKey: string | null;
   justPlaced: boolean;
@@ -492,7 +494,7 @@ export async function getShopperOrder(id: string): Promise<ShopperOrder | null> 
   if (!/^ord_[A-Za-z0-9_-]{10,40}$/.test(id)) return null;
   const o = must("shopper.order", await db().from("orders").select("store_id,number,total,items,customer,address,payment,payment_status,payment_provider,created_at").eq("id", id).maybeSingle());
   if (!o) return null;
-  const store = must("shopper.store", await db().from("stores").select("name").eq("id", o.store_id).maybeSingle());
+  const store = must("shopper.store", await db().from("stores").select("name,settings").eq("id", o.store_id).maybeSingle());
   const item = ((o.items as Array<{ name: string; quantity: number; productId?: string }>) ?? [])[0];
   const product = item?.productId ? must("shopper.product", await db().from("products").select("slug").eq("id", item.productId).eq("store_id", o.store_id).maybeSingle()) : null;
   return {
@@ -505,6 +507,7 @@ export async function getShopperOrder(id: string): Promise<ShopperOrder | null> 
     paymentStatus: normalizePaymentStatus(o.payment_status),
     paymentProvider: normalizePaymentProvider(o.payment_provider),
     customerName: String((o.customer as { name?: string } | null)?.name ?? ""),
+    metaPixelId: (() => { const v = ((store?.settings ?? {}) as { meta_pixel_id?: unknown }).meta_pixel_id; return typeof v === "string" && /^\d{6,20}$/.test(v) ? v : null; })(),
     productKey: product?.slug ? String(product.slug) : (item?.productId ?? null),
     // Just placed (within 30 minutes): only then is the order reported to the ad pixel, never when the link is reopened later.
     justPlaced: Date.now() - Number(o.created_at) < 30 * 60_000,
