@@ -4,6 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { TrendingUpIcon } from "@/components/kai/icons";
 import { BRAND_BUTTON_CLASS } from "@/components/ui/BrandButton";
 import { Link, useRouter } from "@/i18n/navigation";
+import { event } from "@/lib/meta-pixel";
 import { firstErrorPerField, registerSchema } from "@/shared/auth/schemas";
 import { AuthField, LockIcon, MailIcon, StoreIcon, UserIcon } from "./AuthFields";
 import { AuthSplit, CheckCircleIcon, TrustStrip } from "./AuthSplit";
@@ -37,6 +38,8 @@ export function RegisterScreen() {
     submit: (values) => postAuth("/api/auth/register", { ...values, locale }),
     // A new account has paid nothing: straight to the payment step, never to the dashboard.
     onSuccess: () => {
+      // The account now exists (the server created it): one standard Meta conversion for the sign-up.
+      event("CompleteRegistration", { content_name: "Merchant Sign Up", status: true });
       router.replace("/checkout");
       router.refresh();
     },
