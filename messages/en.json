@@ -1280,7 +1280,7 @@
       "body": "This product is no longer available, or the address is wrong."
     },
     "meta": {
-      "fallback": "Buy online, pay by bank transfer and get delivery handled by Kandrop."
+      "fallback": "Buy online, receive it in Luanda or Bengo and pay only the courier."
     },
     "header": {
       "store": "{store} store"
@@ -1398,6 +1398,50 @@
         "title": "Sold by",
         "body": "Store {store}. Payments and deliveries handled by Kandrop.",
         "whatsapp": "Chat on WhatsApp"
+      }
+    },
+    "page": {
+      "cta": "Buy Now - Pay on Delivery",
+      "ctaShort": "Buy Now",
+      "ctaNote": "Nothing to pay now. You choose the delivery day in the next step.",
+      "lastUnits": "Last units in stock",
+      "rating": "4.8/5 (50+ happy customers)",
+      "ratingLabel": "5 star rating",
+      "trust": {
+        "delivery": "24h delivery in Luanda and Bengo",
+        "courier": "Pay only the courier",
+        "secure": "100% Secure Payment"
+      },
+      "details": "Product Details",
+      "moreInfo": "More information",
+      "specs": {
+        "title": "Technical Specifications",
+        "body": "This product's features, materials and measurements are in the description above. If you need more details before buying, talk to the store."
+      },
+      "warranty": {
+        "title": "Warranty and Delivery",
+        "delivery": "We deliver in Luanda and Bengo, Monday to Saturday (no Sunday deliveries), on the day you choose at checkout.",
+        "payment": "You pay nothing before you receive it: payment is made directly to the courier when the product reaches your address.",
+        "returns": "You have 4 days from delivery to ask for an exchange if the product arrives defective or different from what was advertised. Contact us on WhatsApp within that period."
+      },
+      "how": {
+        "title": "How to buy",
+        "s1": {
+          "title": "Place the order",
+          "body": "Enter your name, e-mail, phone and delivery address."
+        },
+        "s2": {
+          "title": "Choose the day",
+          "body": "Pick one of the available delivery days."
+        },
+        "s3": {
+          "title": "Receive it at home",
+          "body": "Kandrop prepares it and delivers to your address."
+        },
+        "s4": {
+          "title": "Pay the courier",
+          "body": "You only pay when the product is in your hands."
+        }
       }
     }
   },

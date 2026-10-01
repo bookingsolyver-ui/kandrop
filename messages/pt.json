@@ -1280,7 +1280,7 @@
       "body": "Este produto já não está disponível ou o endereço está incorreto."
     },
     "meta": {
-      "fallback": "Compre online com pagamento por transferência e entrega gerida pela Kandrop."
+      "fallback": "Compre online, receba em Luanda ou no Bengo e pague apenas ao entregador."
     },
     "header": {
       "store": "Loja {store}"
@@ -1398,6 +1398,50 @@
         "title": "Vendido por",
         "body": "Loja {store}. Pagamentos e entregas tratados pela Kandrop.",
         "whatsapp": "Falar no WhatsApp"
+      }
+    },
+    "page": {
+      "cta": "Comprar Agora - Pagar na Entrega",
+      "ctaShort": "Comprar Agora",
+      "ctaNote": "Sem pagar nada agora. Escolhe o dia de entrega no passo seguinte.",
+      "lastUnits": "Últimas unidades em stock",
+      "rating": "4.8/5 (Mais de 50 clientes satisfeitos)",
+      "ratingLabel": "Avaliação de 5 estrelas",
+      "trust": {
+        "delivery": "Entrega em 24h em Luanda e Bengo",
+        "courier": "Pague apenas ao entregador",
+        "secure": "Pagamento 100% Seguro"
+      },
+      "details": "Detalhes do Produto",
+      "moreInfo": "Mais informação",
+      "specs": {
+        "title": "Especificações Técnicas",
+        "body": "As características, materiais e medidas deste produto estão na descrição acima. Se precisar de mais detalhes antes de comprar, fale com a loja."
+      },
+      "warranty": {
+        "title": "Garantia e Entregas",
+        "delivery": "Entregamos em Luanda e no Bengo, de segunda a sábado (não entregamos aos domingos), no dia que escolher ao finalizar a compra.",
+        "payment": "Não paga nada antes de receber: o pagamento é feito diretamente ao entregador, quando o produto chega ao seu endereço.",
+        "returns": "Tem 4 dias, a contar da entrega, para pedir a troca se o produto chegar com defeito ou diferente do anunciado. Contacte-nos por WhatsApp nesse prazo."
+      },
+      "how": {
+        "title": "Como comprar",
+        "s1": {
+          "title": "Finalize a encomenda",
+          "body": "Indique o seu nome, e-mail, telefone e a morada de entrega."
+        },
+        "s2": {
+          "title": "Escolha o dia",
+          "body": "Selecione um dos dias de entrega disponíveis."
+        },
+        "s3": {
+          "title": "Receba em casa",
+          "body": "A Kandrop prepara e entrega no seu endereço."
+        },
+        "s4": {
+          "title": "Pague ao entregador",
+          "body": "Só paga quando o produto chega às suas mãos."
+        }
       }
     }
   },

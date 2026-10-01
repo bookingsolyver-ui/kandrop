@@ -1280,7 +1280,7 @@
       "body": "Ce produit n’est plus disponible, ou l’adresse est incorrecte."
     },
     "meta": {
-      "fallback": "Achetez en ligne, payez par virement et laissez Kandrop gérer la livraison."
+      "fallback": "Achetez en ligne, recevez à Luanda ou au Bengo et payez uniquement le livreur."
     },
     "header": {
       "store": "Boutique {store}"
@@ -1398,6 +1398,50 @@
         "title": "Vendu par",
         "body": "Boutique {store}. Paiements et livraisons gérés par Kandrop.",
         "whatsapp": "Écrire sur WhatsApp"
+      }
+    },
+    "page": {
+      "cta": "Acheter Maintenant - Payer à la Livraison",
+      "ctaShort": "Acheter",
+      "ctaNote": "Rien à payer maintenant. Vous choisissez le jour de livraison à l’étape suivante.",
+      "lastUnits": "Dernières unités en stock",
+      "rating": "4,8/5 (Plus de 50 clients satisfaits)",
+      "ratingLabel": "Note de 5 étoiles",
+      "trust": {
+        "delivery": "Livraison en 24 h à Luanda et au Bengo",
+        "courier": "Payez uniquement le livreur",
+        "secure": "Paiement 100 % Sécurisé"
+      },
+      "details": "Détails du Produit",
+      "moreInfo": "Plus d’informations",
+      "specs": {
+        "title": "Spécifications Techniques",
+        "body": "Les caractéristiques, matériaux et dimensions de ce produit figurent dans la description ci-dessus. Pour plus de détails avant d’acheter, contactez la boutique."
+      },
+      "warranty": {
+        "title": "Garantie et Livraison",
+        "delivery": "Nous livrons à Luanda et au Bengo, du lundi au samedi (pas de livraison le dimanche), le jour choisi lors de la commande.",
+        "payment": "Vous ne payez rien avant de recevoir : le paiement se fait directement au livreur, à l’arrivée du produit à votre adresse.",
+        "returns": "Vous avez 4 jours à compter de la livraison pour demander un échange si le produit arrive défectueux ou différent de l’annonce. Contactez-nous sur WhatsApp dans ce délai."
+      },
+      "how": {
+        "title": "Comment acheter",
+        "s1": {
+          "title": "Passez la commande",
+          "body": "Indiquez votre nom, e-mail, téléphone et adresse de livraison."
+        },
+        "s2": {
+          "title": "Choisissez le jour",
+          "body": "Sélectionnez l’un des jours de livraison disponibles."
+        },
+        "s3": {
+          "title": "Recevez chez vous",
+          "body": "Kandrop prépare et livre à votre adresse."
+        },
+        "s4": {
+          "title": "Payez le livreur",
+          "body": "Vous ne payez que lorsque le produit est entre vos mains."
+        }
       }
     }
   },
