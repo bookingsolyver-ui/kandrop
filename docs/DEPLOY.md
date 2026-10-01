@@ -72,7 +72,7 @@ Node ≥ 20.9. Health check: `GET /api/health` → `{"status":"ok"}`.
   CSRF origin check trust them. Exposed directly to the internet, both can be spoofed.
 - Do not buffer or compress `/api/dashboard/stream` (server-sent events); the app already sends
   `Cache-Control: no-cache, no-transform` and `X-Accel-Buffering: no`.
-- The app sets `X-Content-Type-Options`, `X-Frame-Options: DENY`, `Referrer-Policy` and
+- The app sets `X-Content-Type-Options`, `X-Frame-Options: DENY`, `Strict-Transport-Security`, `Referrer-Policy` and
   `Permissions-Policy` itself. A Content-Security-Policy is not set (Next's inline scripts need a
   nonce-based policy): add one at the proxy or in a follow-up.
 - Rate limiting is in memory, per process (`server/http/rateLimit.ts`): fine for one instance.

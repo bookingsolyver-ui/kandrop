@@ -16,11 +16,15 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        // Safe on every response. (HSTS and a CSP belong to the host / proxy: see docs/DEPLOY.md.)
+        // Safe on every response. (A CSP belongs to the host / proxy: see docs/DEPLOY.md.)
         // The referrer policy matters: checkout URLs carry the session id in the query string.
         source: "/(.*)",
         headers: [
+          { key: "X-DNS-Prefetch-Control", value: "on" },
+          // Force HTTPS for two years, on every subdomain. Browsers ignore it over plain http (local dev).
+          { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
           { key: "X-Content-Type-Options", value: "nosniff" },
+          // DENY (stricter than SAMEORIGIN): nothing of ours is meant to be framed, not even by ourselves.
           { key: "X-Frame-Options", value: "DENY" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
