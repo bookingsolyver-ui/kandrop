@@ -86,7 +86,7 @@
     "invalid_transition": "This status change is no longer possible. Refresh the page.",
     "no_bank_account": "Add your bank details before requesting a payout.",
     "insufficient_balance": "The amount exceeds the available balance.",
-    "payout_pending": "A payout is already in progress. Wait until it completes.",
+    "payout_pending": "You already have a request in progress. You can ask for another once Kandrop pays or rejects it.",
     "plan_limit_reached": "You have reached your plan's product limit. Upgrade to add more.",
     "whatsapp_not_connected": "Connect WhatsApp before turning this flow on.",
     "whatsapp_already_connected": "WhatsApp is already connected. Disconnect it first to use another number.",

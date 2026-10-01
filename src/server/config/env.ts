@@ -57,10 +57,10 @@ const schema = z.object({
   DATA_ENCRYPTION_KEY: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
   // The public address links are built on (`https://www.kandrop.com`): used for the promotion links the merchant
   // copies. Unset = the address the merchant is browsing on.
-  PUBLIC_SITE_URL: z.preprocess((v) => (typeof v === "string" && v.trim() === "" ? undefined : v), z.url().optional()),
+  PUBLIC_SITE_URL: z.preprocess((v) => (typeof v === "string" && v.trim() === "" ? undefined : v), z.url().optional().catch(undefined)),
   // Kandrop's commission, in basis points of the merchant's gross margin (sale price − the supplier's cost):
   // 1000 = 10%. A BUSINESS decision: set it deliberately; the default is only a placeholder.
-  COMMISSION_BPS: z.preprocess((v) => (v === "" ? undefined : v), z.coerce.number().int().min(0).max(10_000).default(1000)),
+  COMMISSION_BPS: z.preprocess((v) => (v === "" ? undefined : v), z.coerce.number().int().min(0).max(10_000).default(1000).catch(1000)),
   // `sandbox` simulates every payment. `live` needs a real provider integration (none yet).
   PAYMENTS_MODE: z.enum(["sandbox", "live"]).default("sandbox"),
 });

@@ -68,7 +68,7 @@ export async function requestPayout(auth: Session, input: unknown): Promise<Publ
   if (amount > (await availableFor(auth.storeId))) throw new ApiError("insufficient_balance");
 
   const now = Date.now();
-  const payout = await payoutRepository.save({
+  const payout = await payoutRepository.create({
     id: newPayoutId(),
     storeId: auth.storeId,
     reference: await nextReference(now),

@@ -86,7 +86,7 @@
     "invalid_transition": "Ce changement de statut n’est plus possible. Actualisez la page.",
     "no_bank_account": "Ajoutez vos coordonnées bancaires avant de demander un retrait.",
     "insufficient_balance": "Le montant dépasse le solde disponible.",
-    "payout_pending": "Un retrait est déjà en cours. Attendez qu’il soit terminé.",
+    "payout_pending": "Vous avez déjà une demande en cours. Vous pourrez en faire une autre quand Kandrop l’aura payée ou refusée.",
     "plan_limit_reached": "Vous avez atteint la limite de produits de votre offre. Passez à l’offre supérieure pour en ajouter.",
     "whatsapp_not_connected": "Connectez WhatsApp avant d’activer ce flux.",
     "whatsapp_already_connected": "WhatsApp est déjà connecté. Déconnectez-le d’abord pour utiliser un autre numéro.",

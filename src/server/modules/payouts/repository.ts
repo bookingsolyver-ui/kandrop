@@ -1,6 +1,7 @@
 import { randomBytes } from "node:crypto";
 import { isDemoStore } from "@/server/modules/store/demo";
-import { db, must, rows } from "@/server/db/client";
+import { db, isUniqueViolation, must, rows } from "@/server/db/client";
+import { ApiError } from "@/server/http/errors";
 import type { PayoutRecord } from "./schema";
 
 const KZ = 100;
@@ -92,6 +93,17 @@ export const payoutRepository = {
     await seedIfDemo(storeId);
     const list = rows("payouts.all", await db().from("payouts").select("*").eq("store_id", storeId));
     return list.map(fromRow);
+  },
+
+  /**
+   * A NEW payout request. The database allows one `pending` payout per store (partial unique index), so a second
+   * simultaneous request is refused here with `payout_pending`, whatever the checks before it saw.
+   */
+  async create(payout: PayoutRecord): Promise<PayoutRecord> {
+    const { error } = await db().from("payouts").insert(toRow(payout));
+    if (isUniqueViolation(error)) throw new ApiError("payout_pending");
+    must("payouts.create", { data: null, error });
+    return payout;
   },
 
   async save(payout: PayoutRecord): Promise<PayoutRecord> {
