@@ -709,6 +709,22 @@
         "password_required": "Indiquez votre mot de passe.",
         "password_incorrect": "Mot de passe incorrect."
       }
+    },
+    "location": {
+      "title": "Localisation de la boutique",
+      "subtitle": "Où votre boutique opère. Elle est enregistrée dans le profil et l’équipe Kandrop peut la voir.",
+      "province": "Province / Ville",
+      "choose": "Choisir…",
+      "municipality": "Municipalité",
+      "save": "Enregistrer la localisation",
+      "saving": "Enregistrement…",
+      "saved": "Localisation enregistrée.",
+      "failed": "Enregistrement impossible. Réessayez.",
+      "ownerOnly": "Seul le propriétaire de la boutique peut modifier la localisation.",
+      "validation": {
+        "province_invalid": "Choisissez la province ou la ville.",
+        "municipality_invalid": "Indiquez la municipalité."
+      }
     }
   },
   "Receipt": {
@@ -769,7 +785,7 @@
       "created": "Retrait demandé. Référence {reference}.",
       "blocked": {
         "noBank": "Ajoutez vos coordonnées bancaires pour retirer votre solde.",
-        "pending": "Un retrait est déjà en cours. Vous pourrez en demander un autre une fois terminé.",
+        "pending": "Vous avez déjà un retrait en attente. Vous pourrez en demander un autre quand Kandrop l’aura payé ou refusé.",
         "low": "Votre solde n’a pas encore atteint le minimum de {amount} par retrait."
       }
     },
@@ -782,12 +798,11 @@
       "min": "Minimum : {amount}",
       "submit": "Confirmer le retrait",
       "submitting": "Demande en cours…",
-      "cancel": "Annuler",
-      "sandbox": "Environnement de test : le virement est simulé et aucun argent réel n’est déplacé."
+      "cancel": "Annuler"
     },
     "history": {
       "title": "Historique des retraits",
-      "subtitle": "Du plus récent au plus ancien.",
+      "subtitle": "Du plus récent au plus ancien. Kandrop paie chaque demande par virement.",
       "caption": "Historique des retraits",
       "date": "Date",
       "reference": "Référence",
@@ -797,7 +812,8 @@
     },
     "status": {
       "pending": "En attente",
-      "completed": "Terminé"
+      "completed": "Payé",
+      "rejected": "Refusé"
     },
     "empty": {
       "title": "Vous n’avez encore effectué aucun retrait",
@@ -811,6 +827,15 @@
       "amount_required": "Indiquez le montant, en kwanzas entiers.",
       "amount_too_low": "Le montant minimum par retrait est de {min}.",
       "amount_too_high": "Le montant dépasse le solde disponible."
+    },
+    "credits": {
+      "title": "Entrées du portefeuille",
+      "subtitle": "Votre marge nette sur chaque commande livrée dont le paiement est vérifié.",
+      "order": "Commande",
+      "empty": {
+        "title": "Aucune entrée pour l’instant",
+        "body": "Le solde augmente quand une commande est livrée et son paiement vérifié."
+      }
     }
   },
   "Marketing": {
@@ -2482,7 +2507,11 @@
         "all": "Tous"
       },
       "markPaid": "Marquer comme payé",
-      "empty": "Aucun retrait dans cet état."
+      "empty": "Aucun retrait dans cet état.",
+      "merchants": {
+        "title": "Retraits des marchands",
+        "empty": "Aucun retrait de marchand pour l’instant."
+      }
     },
     "catalog": {
       "title": "Catalogue",

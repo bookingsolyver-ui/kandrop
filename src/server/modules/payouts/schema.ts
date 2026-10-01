@@ -13,7 +13,7 @@ export interface PayoutRecord {
   /** Where it went, frozen at request time: changing the bank details later never rewrites history. */
   bank: { holderName: string; ibanMasked: string };
   createdAt: number;
-  /** When the (simulated) bank will confirm the transfer. */
+  /** Unused since the simulated bank was removed (kept: the column is not null). */
   completeAt: number;
   completedAt?: number;
   /**

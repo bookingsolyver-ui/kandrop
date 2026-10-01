@@ -10,7 +10,7 @@ const DAY = 86_400_000;
  * A small calendar for the delivery day: Sundays (and every day outside tomorrow..30 days) are disabled and cannot be
  * picked. The chosen day travels as a hidden `YYYY-MM-DD` field of the checkout form; the server checks the same rules.
  */
-export function DeliveryDatePicker({ id, name, value, onChange, onBlur, invalid: _invalid, className }: { id: string; name: string; value: string; onChange: (iso: string) => void; onBlur?: () => void; invalid: boolean; className: string }) {
+export function DeliveryDatePicker({ id, name, value, onChange, onBlur, className }: { id: string; name: string; value: string; onChange: (iso: string) => void; onBlur?: () => void; className: string }) {
   const t = useTranslations("QuickCheckout.fields");
   const locale = useLocale();
   const panel = useId();

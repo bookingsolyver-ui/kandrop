@@ -20,7 +20,7 @@ export function MerchantsView({ merchants }: { merchants: MerchantRow[] }) {
 
   const rows = useMemo(() => {
     const q = fold(query.trim());
-    return merchants.filter((m) => (filter === "all" || m.status === filter) && (!q || fold(`${m.store} ${m.owner} ${m.email}`).includes(q)));
+    return merchants.filter((m) => (filter === "all" || m.status === filter) && (!q || fold(`${m.store} ${m.owner} ${m.email} ${m.province ?? ""} ${m.municipality ?? ""}`).includes(q)));
   }, [merchants, query, filter]);
   const pager = usePager(rows, 10);
 
@@ -48,10 +48,11 @@ export function MerchantsView({ merchants }: { merchants: MerchantRow[] }) {
           <p className="px-6 py-16 text-center text-sm text-[var(--ink-600)]">{t("empty")}</p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[52rem] border-collapse text-sm">
+            <table className="w-full min-w-[60rem] border-collapse text-sm">
               <thead className="border-b border-gray-100 bg-[var(--ink-50)]">
                 <tr className="text-left text-[11px] font-bold tracking-[0.06em] text-[var(--ink-500)] uppercase">
                   <th className="px-4 py-3">{t("cols.store")}</th>
+                  <th className="px-4 py-3">{t("cols.city")}</th>
                   <th className="px-4 py-3">{t("cols.plan")}</th>
                   <th className="px-4 py-3">{t("cols.status")}</th>
                   <th className="px-4 py-3 text-right">{t("cols.balance")}</th>
@@ -67,6 +68,7 @@ export function MerchantsView({ merchants }: { merchants: MerchantRow[] }) {
                       <Link href={`/admin/lojistas/${m.id}`} className="block font-semibold text-[var(--ink-900)] hover:text-[var(--kai-orange-600)]">{m.store}</Link>
                       <span className="text-[12px] text-[var(--ink-500)]">{m.owner} · {m.email}</span>
                     </td>
+                    <td className="px-4 py-3 text-[var(--ink-600)]">{[m.municipality, m.province].filter(Boolean).join(", ") || "—"}</td>
                     <td className="px-4 py-3"><Badge tone={m.plan === "pro" ? "brand" : "neutral"}>{t(`plan.${m.plan}`)}</Badge></td>
                     <td className="px-4 py-3"><Badge tone={STATUS_TONE[m.status]}>{t(`status.${m.status}`)}</Badge></td>
                     <td className="mono-num px-4 py-3 text-right font-bold text-[var(--ink-900)]">{f.money(m.balance)}</td>

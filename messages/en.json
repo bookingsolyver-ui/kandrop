@@ -709,6 +709,22 @@
         "password_required": "Enter your password.",
         "password_incorrect": "Incorrect password."
       }
+    },
+    "location": {
+      "title": "Store location",
+      "subtitle": "Where your store operates. It is saved in the profile and the Kandrop team can see it.",
+      "province": "Province / City",
+      "choose": "Choose…",
+      "municipality": "Municipality",
+      "save": "Save location",
+      "saving": "Saving…",
+      "saved": "Location saved.",
+      "failed": "Could not save. Please try again.",
+      "ownerOnly": "Only the store owner can change the location.",
+      "validation": {
+        "province_invalid": "Choose the province or city.",
+        "municipality_invalid": "Enter the municipality."
+      }
     }
   },
   "Receipt": {
@@ -769,7 +785,7 @@
       "created": "Payout requested. Reference {reference}.",
       "blocked": {
         "noBank": "Add your bank details to withdraw your balance.",
-        "pending": "You already have a payout in progress. You can request another once it completes.",
+        "pending": "You already have a pending withdrawal. You can ask for another once Kandrop pays or rejects it.",
         "low": "Your balance has not yet reached the {amount} minimum per payout."
       }
     },
@@ -782,12 +798,11 @@
       "min": "Minimum: {amount}",
       "submit": "Confirm payout",
       "submitting": "Requesting…",
-      "cancel": "Cancel",
-      "sandbox": "Test environment: the transfer is simulated and no real money moves."
+      "cancel": "Cancel"
     },
     "history": {
       "title": "Payout history",
-      "subtitle": "Newest first.",
+      "subtitle": "Newest first. Kandrop pays each request by bank transfer.",
       "caption": "Payout history",
       "date": "Date",
       "reference": "Reference",
@@ -797,7 +812,8 @@
     },
     "status": {
       "pending": "Pending",
-      "completed": "Completed"
+      "completed": "Paid",
+      "rejected": "Rejected"
     },
     "empty": {
       "title": "You have not made any payouts yet",
@@ -811,6 +827,15 @@
       "amount_required": "Enter the amount, in whole Kwanzas.",
       "amount_too_low": "The minimum amount per payout is {min}.",
       "amount_too_high": "The amount exceeds the available balance."
+    },
+    "credits": {
+      "title": "Wallet credits",
+      "subtitle": "Your net margin on every delivered order with a verified payment.",
+      "order": "Order",
+      "empty": {
+        "title": "No credits yet",
+        "body": "The balance grows when an order is delivered and its payment is verified."
+      }
     }
   },
   "Marketing": {
@@ -2482,7 +2507,11 @@
         "all": "All"
       },
       "markPaid": "Mark as paid",
-      "empty": "No withdrawals in this status."
+      "empty": "No withdrawals in this status.",
+      "merchants": {
+        "title": "Merchant payouts",
+        "empty": "No merchant payouts yet."
+      }
     },
     "catalog": {
       "title": "Catalogue",

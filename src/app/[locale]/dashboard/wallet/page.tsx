@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { PayoutsView } from "@/components/payouts/PayoutsView";
 import { routing } from "@/i18n/routing";
 import { requirePaidSession } from "@/server/auth/pageGate";
+import { walletCredits } from "@/server/modules/payouts/admin";
 import { PageTransition } from "@/components/shell/PageTransition";
 
 // Depends on the session: never prerender.
@@ -26,6 +27,7 @@ export default async function PayoutsPage({ params }: Props) {
 
   const session = await requirePaidSession(locale);
   const t = await getTranslations("Payouts");
+  const credits = await walletCredits(session!.storeId).catch(() => []);
 
   return (
     <PageTransition>
@@ -39,7 +41,7 @@ export default async function PayoutsPage({ params }: Props) {
           </h1>
           <p className="mt-3 text-base text-ink-2">{t("subtitle")}</p>
         </header>
-        <PayoutsView canManage={session!.role === "owner"} />
+        <PayoutsView canManage={session!.role === "owner"} credits={credits} />
       </div>
     </PageTransition>
   );

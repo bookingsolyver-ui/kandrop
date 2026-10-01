@@ -22,7 +22,7 @@ export function MerchantDetailView({ merchant: m }: { merchant: MerchantDetail }
   return (
     <div>
       <Link href="/admin/lojistas" className="mb-4 inline-flex text-[13px] font-semibold text-[var(--ink-600)] hover:text-[var(--ink-900)]">← {t("back")}</Link>
-      <PageHeader title={m.store} subtitle={`${m.owner} · ${m.email}`} actions={<Badge tone={STATUS_TONE[m.status]}>{status(`status.${m.status}`)}</Badge>} />
+      <PageHeader title={m.store} subtitle={[m.owner, m.email, [m.municipality, m.province].filter(Boolean).join(", ")].filter(Boolean).join(" · ")} actions={<Badge tone={STATUS_TONE[m.status]}>{status(`status.${m.status}`)}</Badge>} />
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-4">
         <StatCard label={t("kpi.balance")} value={f.money(m.balance)} note={t("kpi.held", { amount: f.money(m.held) })} icon={<WalletIcon size={18} />} />

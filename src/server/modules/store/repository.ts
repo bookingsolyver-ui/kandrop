@@ -7,11 +7,13 @@ import type { Store } from "./schema";
  * number and the verification status live in `settings`, which has room for them.
  */
 const fromRow = (row: Record<string, unknown>): Store => {
-  const settings = (row.settings ?? {}) as { nif?: string | null; status?: Store["status"] };
+  const settings = (row.settings ?? {}) as { nif?: string | null; status?: Store["status"]; profile?: { province?: string; municipality?: string } };
   return {
     id: String(row.id),
     name: String(row.name),
     nif: tryDecryptNullable(settings.nif ?? null, `stores.nif:${String(row.id)}`),
+    province: settings.profile?.province ?? null,
+    municipality: settings.profile?.municipality ?? null,
     currency: "AOA",
     status: settings.status ?? "pending_verification",
   };
@@ -21,6 +23,14 @@ export const storeRepository = {
   async get(id: string): Promise<Store | null> {
     const row = must("stores.get", await db().from("stores").select("*").eq("id", id).maybeSingle());
     return row ? fromRow(row) : null;
+  },
+
+  /** Saves where the store operates, merged into `settings.profile` (the rest of the settings is kept). */
+  async saveProfile(id: string, profile: { province: string; municipality: string }): Promise<void> {
+    const row = must("stores.settings", await db().from("stores").select("settings").eq("id", id).maybeSingle());
+    if (!row) throw new Error("store not found");
+    const settings = { ...((row.settings as object | null) ?? {}), profile };
+    must("stores.saveProfile", await db().from("stores").update({ settings }).eq("id", id));
   },
 
   /** Switches the sample data on for the store (kept in `settings.demo`). */
@@ -45,7 +55,7 @@ export const storeRepository = {
         )
     );
     return (
-      (await this.get(id)) ?? { id, name, nif: null, currency: "AOA", status: "pending_verification" }
+      (await this.get(id)) ?? { id, name, nif: null, province: null, municipality: null, currency: "AOA", status: "pending_verification" }
     );
   },
 };

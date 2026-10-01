@@ -172,7 +172,7 @@ export function CheckoutView({ product: p, invalid }: { product: StorefrontProdu
               <div>
                 <label htmlFor="f-deliveryDate" className={LABEL}>{t("fields.deliveryDate")}</label>
                 <div className="mt-1.5">
-                  <DeliveryDatePicker id="f-deliveryDate" name="deliveryDate" value={values.deliveryDate} onChange={(iso) => { setValues((v) => ({ ...v, deliveryDate: iso })); setTouched((s) => ({ ...s, deliveryDate: true })); }} onBlur={blur("deliveryDate")} invalid={!!show("deliveryDate")} className={`h-12 w-full rounded-xl border bg-surface px-3.5 text-[0.9375rem] text-ink outline-none transition-all focus-visible:border-action focus-visible:ring-4 focus-visible:ring-action/20 ${border("deliveryDate")}`} />
+                  <DeliveryDatePicker id="f-deliveryDate" name="deliveryDate" value={values.deliveryDate} onChange={(iso) => { setValues((v) => ({ ...v, deliveryDate: iso })); setTouched((s) => ({ ...s, deliveryDate: true })); }} onBlur={blur("deliveryDate")} className={`h-12 w-full rounded-xl border bg-surface px-3.5 text-[0.9375rem] text-ink outline-none transition-all focus-visible:border-action focus-visible:ring-4 focus-visible:ring-action/20 ${border("deliveryDate")}`} />
                 </div>
                 {err("deliveryDate")}
               </div>

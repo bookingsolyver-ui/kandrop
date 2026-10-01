@@ -4,6 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 import { Panel } from "@/components/dashboard/Panel";
+import { StoreLocationForm } from "@/components/settings/StoreLocationForm";
 import { BankAccountForm } from "@/components/settings/BankAccountForm";
 import { SettingsTabs } from "@/components/settings/SettingsTabs";
 import { isSettingsTab } from "@/components/settings/tabs";
@@ -89,7 +90,11 @@ export default async function SettingsPage({ params, searchParams }: Props) {
                     ]}
                   />
                 </Panel>
-                <p className="mt-4 text-sm text-ink-muted">{t("readOnly")}</p>
+                <div className="mt-6">
+                  <Panel title={t("location.title")} subtitle={t("location.subtitle")}>
+                    <StoreLocationForm initial={{ province: store.province, municipality: store.municipality }} canEdit={session!.role === "owner"} />
+                  </Panel>
+                </div>
               </div>
             ),
             store: (

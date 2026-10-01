@@ -1,4 +1,3 @@
-import { randomInt } from "node:crypto";
 import type { Session } from "@/server/auth/types";
 import { ApiError } from "@/server/http/errors";
 import { bankRepository } from "@/server/modules/bank/repository";
@@ -14,20 +13,6 @@ import {
 } from "@/shared/payouts/schemas";
 import { newPayoutId, nextReference, payoutRepository } from "./repository";
 import type { PayoutPage, PayoutRecord, PublicPayout } from "./schema";
-
-/** SANDBOX: how long the simulated bank takes to confirm. A real transfer takes days. */
-const SETTLE_MIN_MS = 15_000;
-const SETTLE_MAX_MS = 25_000;
-
-/** Lazily applies the bank's confirmation once its (simulated) delay has passed. */
-async function settle(p: PayoutRecord): Promise<PayoutRecord> {
-  if (p.status === "pending" && Date.now() >= p.completeAt) {
-    p.status = "completed";
-    p.completedAt = p.completeAt;
-    await payoutRepository.save(p);
-  }
-  return p;
-}
 
 export function toPublic(p: PayoutRecord): PublicPayout {
   return {
@@ -47,7 +32,7 @@ const availableFor = async (storeId: string) =>
 
 export async function listPayouts(auth: Session, rawQuery: ListPayoutsQuery): Promise<PayoutPage> {
   const query = listPayoutsQuerySchema.parse(rawQuery);
-  const all = await Promise.all((await payoutRepository.all(auth.storeId)).map(settle));
+  const all = await payoutRepository.all(auth.storeId);
   all.sort((a, b) => b.createdAt - a.createdAt || b.reference.localeCompare(a.reference));
 
   const start = (query.page - 1) * query.pageSize;
@@ -66,7 +51,7 @@ export async function listPayouts(auth: Session, rawQuery: ListPayoutsQuery): Pr
 /**
  * Requests a transfer of `amount` (minor units) to the store's bank account. The amount leaves
  * the available balance at once (it cannot be withdrawn twice) and the payout is `pending` until
- * the simulated bank confirms it. Owner only.
+ * a Kandrop administrator pays it (or rejects it, which gives the money back). Owner only.
  */
 export async function requestPayout(auth: Session, input: unknown): Promise<PublicPayout> {
   if (auth.role !== "owner") throw new ApiError("forbidden");
@@ -76,8 +61,8 @@ export async function requestPayout(auth: Session, input: unknown): Promise<Publ
   if (!bank) throw new ApiError("no_bank_account");
 
   // One at a time: also what makes a double click harmless.
-  const settled = await Promise.all((await payoutRepository.all(auth.storeId)).map(settle));
-  if (settled.some((p) => p.status === "pending")) {
+  const existing = await payoutRepository.all(auth.storeId);
+  if (existing.some((p) => p.status === "pending")) {
     throw new ApiError("payout_pending");
   }
   if (amount > (await availableFor(auth.storeId))) throw new ApiError("insufficient_balance");
@@ -92,7 +77,8 @@ export async function requestPayout(auth: Session, input: unknown): Promise<Publ
     status: "pending",
     bank: { holderName: bank.holderName, ibanMasked: maskIban(bank.iban) },
     createdAt: now,
-    completeAt: now + randomInt(SETTLE_MIN_MS, SETTLE_MAX_MS + 1),
+    // No simulated bank any more: it stays pending until an administrator pays or rejects it.
+    completeAt: now,
   });
 
   // Every open dashboard sees the new balance immediately, not on the next tick.

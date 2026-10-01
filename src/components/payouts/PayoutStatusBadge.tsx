@@ -16,13 +16,15 @@ export function PayoutStatusBadge({ status }: { status: PayoutStatus }) {
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
-        className={`shrink-0 ${status === "completed" ? "text-up" : "text-series-2"}`}
+        className={`shrink-0 ${status === "completed" ? "text-up" : status === "rejected" ? "text-down" : "text-series-2"}`}
       >
         {status === "pending" ? (
           <>
             <circle cx="6" cy="6" r="4.25" />
             <path d="M6 3.5V6l1.75 1" />
           </>
+        ) : status === "rejected" ? (
+          <path d="M3 3l6 6M9 3 3 9" />
         ) : (
           <path d="M2 6.5 4.75 9 10 3" />
         )}

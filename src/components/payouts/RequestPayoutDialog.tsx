@@ -176,8 +176,6 @@ function PayoutForm({
         </button>
       </div>
 
-      <p className="mt-2 text-[13px] leading-snug text-ink-muted">{t("sandbox")}</p>
-
       <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
         <button
           type="button"

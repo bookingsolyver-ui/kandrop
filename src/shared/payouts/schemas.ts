@@ -3,7 +3,8 @@ import { z } from "zod";
 /** Messages are stable CODES; the UI translates `Payouts.validation.<code>`. */
 export type PayoutValidationCode = "amount_required" | "amount_too_low" | "amount_too_high";
 
-export const PAYOUT_STATUSES = ["pending", "completed"] as const;
+/** `pending` until a Kandrop administrator makes the transfer and marks it `completed` (paid) or `rejected` (the money goes back to the balance). */
+export const PAYOUT_STATUSES = ["pending", "completed", "rejected"] as const;
 export type PayoutStatus = (typeof PAYOUT_STATUSES)[number];
 
 const KZ = 100;

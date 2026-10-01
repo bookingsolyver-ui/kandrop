@@ -9,16 +9,17 @@ import { Pagination } from "@/components/data/Pagination";
 import { TH } from "@/components/data/SortableTh";
 import { useOrderFormat } from "@/components/orders/useOrderFormat";
 import { Link, useRouter } from "@/i18n/navigation";
+import type { WalletCredit } from "@/server/modules/payouts/admin";
 import type { PayoutPage } from "@/server/modules/payouts/schema";
 import { PayoutStatusBadge } from "./PayoutStatusBadge";
 import { listPayouts, type ApiResult } from "./payoutsApi";
 import { RequestPayoutDialog } from "./RequestPayoutDialog";
 
 const PAGE_SIZE = 10;
-/** While a payout is pending, look again this often so its badge turns to "Completed" on its own. */
-const WATCH_MS = 4000;
+/** While a payout is pending, look again this often so its badge changes on its own once Kandrop pays or rejects it. */
+const WATCH_MS = 20_000;
 
-export function PayoutsView({ canManage }: { canManage: boolean }) {
+export function PayoutsView({ canManage, credits }: { canManage: boolean; credits: WalletCredit[] }) {
   const t = useTranslations("Payouts");
   const errors = useTranslations("Errors");
   const f = useFormatters();
@@ -247,6 +248,36 @@ export function PayoutsView({ canManage }: { canManage: boolean }) {
             total={data.total}
             onPage={setPage}
           />
+        )}
+      </section>
+
+      <section className="rounded-lg border border-line bg-surface px-4 py-2 sm:px-6 sm:py-3">
+        <header className="border-b border-line py-4">
+          <h2 className="font-serif text-[1.375rem] leading-tight font-medium tracking-tight">{t("credits.title")}</h2>
+          <p className="mt-1 text-sm text-ink-muted">{t("credits.subtitle")}</p>
+        </header>
+        {credits.length === 0 ? (
+          <ListMessage title={t("credits.empty.title")} body={t("credits.empty.body")} />
+        ) : (
+          <table className="w-full text-sm">
+            <caption className="sr-only">{t("credits.title")}</caption>
+            <thead>
+              <tr className="border-b border-line text-left">
+                <th scope="col" className={`${TH} py-3`}>{t("history.date")}</th>
+                <th scope="col" className={`${TH} py-3 pl-4`}>{t("credits.order")}</th>
+                <th scope="col" className={`${TH} py-3 pl-4 text-right`}>{t("history.amount")}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {credits.map((c) => (
+                <tr key={`${c.orderNumber}-${c.at}`} className="border-b border-line last:border-0">
+                  <td className="py-3.5 whitespace-nowrap tabular-nums">{fmt.short(new Date(c.at).toISOString())}</td>
+                  <td className="py-3.5 pl-4"><span className="tabular-nums">#{c.orderNumber}</span> <span className="text-ink-2">{c.product}</span></td>
+                  <td className="py-3.5 pl-4 text-right font-medium whitespace-nowrap text-up tabular-nums">+{f.money(c.amount)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         )}
       </section>
 

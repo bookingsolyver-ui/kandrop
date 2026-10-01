@@ -8,6 +8,9 @@ export interface MerchantRow {
   store: string;
   owner: string;
   email: string;
+  /** Where the store operates (its profile), or `null` until the owner fills it in. */
+  province: string | null;
+  municipality: string | null;
   plan: "starter" | "pro";
   /** `suspended`: banned by the team; `pending_verification`: no active paid period yet. */
   status: MerchantStatus;

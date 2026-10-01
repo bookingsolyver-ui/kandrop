@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { AdminPayoutsView } from "@/components/admin/AdminPayoutsView";
 import { routing } from "@/i18n/routing";
 import { requireAdmin } from "@/server/auth/admin";
+import { listAllMerchantPayouts } from "@/server/modules/payouts/admin";
 import { listAllWithdrawals } from "@/server/modules/supplier/withdrawals";
 
 type Props = { params: Promise<{ locale: string }> };
@@ -21,5 +22,5 @@ export default async function Page({ params }: Props) {
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
   await requireAdmin(locale);
-  return <AdminPayoutsView rows={await listAllWithdrawals().catch(() => [])} />;
+  return <AdminPayoutsView rows={await listAllWithdrawals().catch(() => [])} merchantRows={await listAllMerchantPayouts().catch(() => [])} />;
 }

@@ -6,12 +6,13 @@ import { useFormatters } from "@/components/dashboard/useFormatters";
 import { ClockIcon, WalletIcon } from "@/components/kai/icons";
 import { ToastProvider, useToast } from "@/components/ui/Toast";
 import { useRouter } from "@/i18n/navigation";
+import type { AdminMerchantPayout } from "@/server/modules/payouts/admin";
 import type { AdminWithdrawal, WithdrawalStatus } from "@/server/modules/supplier/withdrawals";
 import { Badge, Pager, PageHeader, StatCard, card, dateOnly, usePager } from "./ui";
 
 const TONE = { paid: "success", requested: "warn", rejected: "danger" } as const;
 
-function Body({ rows }: { rows: AdminWithdrawal[] }) {
+function Body({ rows, merchantRows }: { rows: AdminWithdrawal[]; merchantRows: AdminMerchantPayout[] }) {
   const t = useTranslations("Admin.payouts");
   const f = useFormatters();
   const locale = useLocale();
@@ -23,12 +24,13 @@ function Body({ rows }: { rows: AdminWithdrawal[] }) {
   const shown = rows.filter((r) => filter === "all" || r.status === filter);
   const pager = usePager(shown, 20);
   const pending = rows.filter((r) => r.status === "requested");
+  const merchantPending = merchantRows.filter((r) => r.status === "pending");
   const sum = (list: AdminWithdrawal[]) => list.reduce((n, r) => n + r.amount, 0);
 
-  const decide = async (id: string, status: "paid" | "rejected") => {
+  const decide = async (id: string, status: "paid" | "rejected", kind: "withdrawals" | "payouts" = "withdrawals") => {
     setBusy(id);
     try {
-      const res = await fetch(`/api/admin/withdrawals/${id}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status }) });
+      const res = await fetch(`/api/admin/${kind}/${id}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status }) });
       if (res.ok) {
         toast({ message: t(status === "paid" ? "toast.paid" : "toast.rejected") });
         router.refresh();
@@ -48,7 +50,7 @@ function Body({ rows }: { rows: AdminWithdrawal[] }) {
     link.click();
     link.remove();
     URL.revokeObjectURL(url);
-    toast({ message: t("toast.exported", { count: pending.length }) });
+    toast({ message: t("toast.exported", { count: pending.length + merchantPending.length }) });
   };
 
   return (
@@ -66,9 +68,9 @@ function Body({ rows }: { rows: AdminWithdrawal[] }) {
           <h2 id="batch-title" className="text-[17px] font-bold tracking-tight">{t("batch.title")}</h2>
           <p className="mt-1 max-w-2xl text-[13px] text-[var(--ink-600)]">{t("batch.body")}</p>
         </div>
-        <button type="button" onClick={() => void exportCsv()} disabled={pending.length === 0}
+        <button type="button" onClick={() => void exportCsv()} disabled={pending.length + merchantPending.length === 0}
           className="inline-flex h-11 items-center rounded-full border border-[var(--ink-200)] bg-white px-5 text-sm font-semibold text-[var(--ink-900)] hover:border-[var(--ink-300)] disabled:opacity-50">
-          {t("batch.export", { count: pending.length })}
+          {t("batch.export", { count: pending.length + merchantPending.length })}
         </button>
       </section>
 
@@ -118,15 +120,47 @@ function Body({ rows }: { rows: AdminWithdrawal[] }) {
         )}
         <Pager pager={pager} />
       </div>
+
+      <section className={`${card} mt-6 overflow-hidden`} aria-labelledby="merchant-payouts">
+        <h2 id="merchant-payouts" className="border-b border-[var(--ink-200)] px-5 py-4 text-[17px] font-bold tracking-tight">{t("merchants.title")}</h2>
+        {merchantRows.length === 0 ? <p className="px-6 py-12 text-center text-sm text-[var(--ink-600)]">{t("merchants.empty")}</p> : (
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[52rem] border-collapse text-sm">
+              <tbody>
+                {merchantRows.map((p) => {
+                  const state = p.status === "completed" ? "paid" : p.status === "rejected" ? "rejected" : "requested";
+                  return (
+                    <tr key={p.id} className="border-b border-gray-100 last:border-b-0 hover:bg-[var(--ink-50)]">
+                      <td className="px-4 py-3 whitespace-nowrap text-[var(--ink-600)]">{dateOnly(p.createdAt, locale)}</td>
+                      <td className="px-4 py-3"><p className="font-semibold text-[var(--ink-900)]">{p.storeName}</p><p className="mono-num text-[12px] text-[var(--ink-500)]">{p.reference}</p></td>
+                      <td className="px-4 py-3 text-[var(--ink-600)]">{p.holderName}<span className="mono-num block text-[12px] text-[var(--ink-500)]">{p.ibanMasked}</span></td>
+                      <td className="mono-num px-4 py-3 text-right font-bold">{f.money(p.amount)}</td>
+                      <td className="px-4 py-3"><Badge tone={TONE[state]}>{t(`status.${state}`)}</Badge></td>
+                      <td className="px-4 py-3 text-right">
+                        {p.status === "pending" && (
+                          <div className="flex justify-end gap-1.5">
+                            <button type="button" disabled={busy === p.id} onClick={() => void decide(p.id, "paid", "payouts")} className="h-9 rounded-full bg-brand-orange px-3.5 text-[12px] font-bold whitespace-nowrap text-brand-black disabled:opacity-50">{t("markPaid")}</button>
+                            <button type="button" disabled={busy === p.id} onClick={() => void decide(p.id, "rejected", "payouts")} className="h-9 rounded-full border border-[var(--ink-200)] bg-white px-3.5 text-[12px] font-semibold disabled:opacity-50">{t("reject")}</button>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
     </div>
   );
 }
 
-/** Suppliers' withdrawals: mark them paid once the transfer was made (or reject them), and export the bank file. */
-export function AdminPayoutsView({ rows }: { rows: AdminWithdrawal[] }) {
+/** Suppliers' withdrawals and merchants' payouts: mark them paid once the transfer was made (or reject them), and export the bank file. */
+export function AdminPayoutsView({ rows, merchantRows }: { rows: AdminWithdrawal[]; merchantRows: AdminMerchantPayout[] }) {
   return (
     <ToastProvider>
-      <Body rows={rows} />
+      <Body rows={rows} merchantRows={merchantRows} />
     </ToastProvider>
   );
 }

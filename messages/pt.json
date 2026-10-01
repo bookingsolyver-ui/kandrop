@@ -709,6 +709,22 @@
         "password_required": "Indique a sua palavra-passe.",
         "password_incorrect": "Palavra-passe incorreta."
       }
+    },
+    "location": {
+      "title": "Localização da loja",
+      "subtitle": "Onde a sua loja opera. Fica guardado no perfil e a equipa Kandrop vê-o.",
+      "province": "Província / Cidade",
+      "choose": "Escolher…",
+      "municipality": "Município",
+      "save": "Guardar localização",
+      "saving": "A guardar…",
+      "saved": "Localização guardada.",
+      "failed": "Não foi possível guardar. Tente novamente.",
+      "ownerOnly": "Só o proprietário da loja pode alterar a localização.",
+      "validation": {
+        "province_invalid": "Escolha a província ou cidade.",
+        "municipality_invalid": "Indique o município."
+      }
     }
   },
   "Receipt": {
@@ -769,7 +785,7 @@
       "created": "Levantamento solicitado. Referência {reference}.",
       "blocked": {
         "noBank": "Adicione os dados bancários para poder levantar o seu saldo.",
-        "pending": "Já tem um levantamento em curso. Poderá pedir outro quando for concluído.",
+        "pending": "Já tem um levantamento pendente. Poderá pedir outro quando a Kandrop o pagar ou recusar.",
         "low": "O saldo ainda não atingiu o mínimo de {amount} por levantamento."
       }
     },
@@ -782,12 +798,11 @@
       "min": "Mínimo: {amount}",
       "submit": "Confirmar levantamento",
       "submitting": "A pedir…",
-      "cancel": "Cancelar",
-      "sandbox": "Ambiente de teste: a transferência é simulada e nenhum valor real é movimentado."
+      "cancel": "Cancelar"
     },
     "history": {
       "title": "Histórico de levantamentos",
-      "subtitle": "Do mais recente para o mais antigo.",
+      "subtitle": "Do mais recente para o mais antigo. A Kandrop paga cada pedido por transferência.",
       "caption": "Histórico de levantamentos",
       "date": "Data",
       "reference": "Referência",
@@ -797,7 +812,8 @@
     },
     "status": {
       "pending": "Pendente",
-      "completed": "Concluído"
+      "completed": "Pago",
+      "rejected": "Recusado"
     },
     "empty": {
       "title": "Ainda não fez levantamentos",
@@ -811,6 +827,15 @@
       "amount_required": "Indique o montante, em Kwanzas inteiros.",
       "amount_too_low": "O montante mínimo por levantamento é {min}.",
       "amount_too_high": "O montante excede o saldo disponível."
+    },
+    "credits": {
+      "title": "Entradas na carteira",
+      "subtitle": "A sua margem líquida de cada encomenda entregue com pagamento verificado.",
+      "order": "Encomenda",
+      "empty": {
+        "title": "Ainda sem entradas",
+        "body": "O saldo cresce quando uma encomenda é entregue e o pagamento fica verificado."
+      }
     }
   },
   "Marketing": {
@@ -2482,7 +2507,11 @@
         "all": "Todos"
       },
       "markPaid": "Marcar como pago",
-      "empty": "Sem levantamentos neste estado."
+      "empty": "Sem levantamentos neste estado.",
+      "merchants": {
+        "title": "Levantamentos de lojistas",
+        "empty": "Ainda sem levantamentos de lojistas."
+      }
     },
     "catalog": {
       "title": "Catálogo",

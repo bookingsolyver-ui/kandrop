@@ -32,12 +32,14 @@ async function allLines(): Promise<LineLite[]> {
 const verified = (o: { status: string; paymentStatus: string }) => o.status !== "cancelled" && o.paymentStatus === "paid_verified";
 
 async function loadMerchants(now: number): Promise<{ rows: MerchantRow[]; orders: OrderLite[]; lines: LineLite[] }> {
-  const [users, subs, orders, lines] = await Promise.all([
+  const [users, subs, orders, lines, storeRows] = await Promise.all([
     db().from("users").select("id,email,full_name,store_id,store_name,created_at,banned").eq("role", "owner").limit(LIMIT),
     db().from("subscriptions").select("store_id,plan,period_end").limit(LIMIT),
     allOrders(),
     allLines(),
+    db().from("stores").select("id,settings").limit(LIMIT),
   ]);
+  const profileOf = new Map((must("admin.stores", storeRows) ?? []).map((s) => [String(s.id), ((s.settings ?? {}) as { profile?: { province?: string; municipality?: string } }).profile ?? {}]));
   const subOf = new Map((must("admin.subs", subs) ?? []).map((s) => [String(s.store_id), s]));
   const rows = (must("admin.users", users) ?? []).map((u): MerchantRow => {
     const storeId = String(u.store_id);
@@ -50,6 +52,8 @@ async function loadMerchants(now: number): Promise<{ rows: MerchantRow[]; orders
       store: String(u.store_name),
       owner: String(u.full_name),
       email: String(u.email),
+      province: profileOf.get(storeId)?.province ?? null,
+      municipality: profileOf.get(storeId)?.municipality ?? null,
       plan: String(sub?.plan ?? "").trim() === "pro" ? "pro" : "starter",
       status: u.banned ? "suspended" : active ? "active" : "pending_verification",
       joinedAt: new Date(String(u.created_at)).getTime(),
