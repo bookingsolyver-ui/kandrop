@@ -3213,7 +3213,7 @@
       "name_invalid": "Indique o nome completo.",
       "email_invalid": "Indique um e-mail válido.",
       "phone_invalid": "Telefone angolano com 9 dígitos (começa por 9).",
-      "province_invalid": "Escolha a cidade.",
+      "province_invalid": "Só entregamos em Luanda e no Bengo. Escolha uma destas cidades.",
       "city_invalid": "Indique o município.",
       "street_invalid": "Indique a rua ou o bairro.",
       "reference_invalid": "No máximo 160 caracteres.",

@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { PROVINCES } from "@/shared/supplier/schemas";
 import { isDeliverableDay, isSunday, parseIsoDay } from "./deliveryDate";
 
 /**
@@ -18,13 +17,16 @@ export const nextLogisticsStatus = (s: LogisticsStatus): LogisticsStatus | null 
 };
 export const canAdvanceLogistics = (from: LogisticsStatus, to: LogisticsStatus) => nextLogisticsStatus(from) === to;
 
+/** First phase of the operation: Kandrop delivers ONLY in these two places (the "Cidade" of the checkout). */
+export const DELIVERY_CITIES = ["Luanda", "Bengo"] as const;
+
 /** What the buyer types on the product page. Messages are codes: `Storefront.buy.validation.<code>`. */
 const digits = (s: string) => s.replace(/[\s.-]/g, "");
 export const buyerSchema = z.object({
   name: z.string().trim().min(3, "name_invalid").max(80, "name_invalid"),
   email: z.string().trim().toLowerCase().max(120, "email_invalid").email("email_invalid"),
   phone: z.string().transform(digits).pipe(z.string().regex(/^9\d{8}$/, "phone_invalid")),
-  province: z.enum(PROVINCES, "province_invalid"),
+  province: z.enum(DELIVERY_CITIES, "province_invalid"),
   city: z.string().trim().min(2, "city_invalid").max(80, "city_invalid"),
   street: z.string().trim().min(3, "street_invalid").max(160, "street_invalid"),
   reference: z.string().trim().max(160, "reference_invalid").optional().transform((v) => v || undefined),

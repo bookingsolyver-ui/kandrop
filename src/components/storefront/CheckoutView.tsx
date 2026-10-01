@@ -5,8 +5,7 @@ import { useMemo, useState } from "react";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { Link } from "@/i18n/navigation";
 import type { StorefrontProduct } from "@/server/modules/storefront/schema";
-import { buyerSchema } from "@/shared/fulfilment/schemas";
-import { PROVINCES } from "@/shared/supplier/schemas";
+import { DELIVERY_CITIES, buyerSchema } from "@/shared/fulfilment/schemas";
 import { ArrowLeftIcon, BanknoteIcon, LockIcon, ShieldIcon, TruckIcon } from "./icons";
 import { useMoney } from "./useMoney";
 
@@ -154,7 +153,7 @@ export function CheckoutView({ product: p, invalid, days, today }: { product: St
                   <label htmlFor="f-province" className={LABEL}>{t("fields.province")}</label>
                   <select id="f-province" name="province" value={values.province} onChange={set("province")} onBlur={blur("province")} aria-invalid={!!show("province")} className={`${INPUT} ${border("province")}`}>
                     <option value="" disabled>{t("fields.choose")}</option>
-                    {PROVINCES.map((x) => <option key={x} value={x}>{x}</option>)}
+                    {DELIVERY_CITIES.map((x) => <option key={x} value={x}>{x}</option>)}
                   </select>
                   {err("province")}
                 </div>
