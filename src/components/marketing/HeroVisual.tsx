@@ -1,4 +1,5 @@
-import { getFormatter, getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
+import { formatKwz } from "@/lib/money";
 import { LiveProof } from "./LiveProof";
 
 /** Static sparkline of the (illustrative) mockup: 14 days of revenue, rising. */
@@ -18,14 +19,8 @@ const AREA = `${LINE} L${W} ${H} L0 ${H} Z`;
  */
 export async function HeroVisual() {
   const t = await getTranslations("Marketing.hero");
-  const format = await getFormatter();
-  const kz = (n: number) =>
-    format.number(n, {
-      style: "currency",
-      currency: "AOA",
-      currencyDisplay: "narrowSymbol",
-      maximumFractionDigits: 0,
-    });
+  const locale = await getLocale();
+  const kz = (n: number) => formatKwz(n * 100, locale); // `n` is whole Kwanzas
 
   return (
     <div className="mx-auto w-full max-w-[34rem]">

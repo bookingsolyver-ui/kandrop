@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { getFormatter, getTranslations, setRequestLocale } from "next-intl/server";
+import { formatKwz } from "@/lib/money";
 import { notFound } from "next/navigation";
 import { ContactCards } from "@/components/support/ContactCards";
 import { FaqAccordion, type FaqItem } from "@/components/support/FaqAccordion";
@@ -39,12 +40,7 @@ export default async function SupportPage({ params }: Props) {
 
   // The figures in the answers are the product's real ones, formatted for the reader.
   const values = {
-    min: format.number(MIN_PAYOUT / 100, {
-      style: "currency",
-      currency: "AOA",
-      currencyDisplay: "narrowSymbol",
-      maximumFractionDigits: 0,
-    }),
+    min: formatKwz(MIN_PAYOUT, locale),
     rate: format.number(COMMISSION_BPS / 10_000, { style: "percent" }),
   };
   const faq: FaqItem[] = (["q1", "q2", "q3", "q4", "q5"] as const).map((id) => ({

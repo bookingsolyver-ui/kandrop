@@ -1,18 +1,8 @@
 "use client";
 
-import { useLocale } from "next-intl";
-import { formatLocales, type Locale } from "@/i18n/routing";
+import { KWZ } from "@/lib/money";
 
-/** `Kz`, taken from `Intl` for the current locale rather than typed by hand. */
+/** The unit shown after an amount in the product form's price fields: `kwz`. */
 export function useCurrencySymbol(): string {
-  const locale = useLocale() as Locale;
-  return (
-    new Intl.NumberFormat(formatLocales[locale], {
-      style: "currency",
-      currency: "AOA",
-      currencyDisplay: "narrowSymbol",
-    })
-      .formatToParts(0)
-      .find((part) => part.type === "currency")?.value ?? "AOA"
-  );
+  return KWZ;
 }

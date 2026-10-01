@@ -1,4 +1,5 @@
-import { getFormatter, getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
+import { formatKwz } from "@/lib/money";
 import { BrandLink } from "@/components/ui/BrandButton";
 import { Link } from "@/i18n/navigation";
 import { CheckIcon } from "./icons";
@@ -7,14 +8,8 @@ import { TIERS } from "./tiers";
 /** Three tiers, priced in Kwanzas. Prices are placeholders: see the warning in `tiers.ts`. */
 export async function Pricing() {
   const t = await getTranslations("Marketing.pricing");
-  const format = await getFormatter();
-  const price = (kz: number) =>
-    format.number(kz, {
-      style: "currency",
-      currency: "AOA",
-      currencyDisplay: "narrowSymbol",
-      maximumFractionDigits: 0,
-    });
+  const locale = await getLocale();
+  const price = (kz: number) => formatKwz(kz * 100, locale); // `kz` is whole Kwanzas
 
   return (
     <section id="planos" aria-labelledby="pricing-title" className="border-t border-line">

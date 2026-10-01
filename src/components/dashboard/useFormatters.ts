@@ -1,19 +1,16 @@
 "use client";
 
-import { useFormatter } from "next-intl";
+import { useFormatter, useLocale } from "next-intl";
+import { formatKwz } from "@/lib/money";
 
 /** Locale-aware formatting for dashboard values. All money arrives as integer minor units. */
 export function useFormatters() {
   const format = useFormatter();
+  const locale = useLocale();
 
   return {
-    money: (minor: number) =>
-      format.number(minor / 100, {
-        style: "currency",
-        currency: "AOA",
-        currencyDisplay: "narrowSymbol",
-        maximumFractionDigits: 0,
-      }),
+    /** `22.500 kwz` */
+    money: (minor: number) => formatKwz(minor, locale),
     compact: (minor: number) =>
       format.number(minor / 100, {
         notation: "compact",

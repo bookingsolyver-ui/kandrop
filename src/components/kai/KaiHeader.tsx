@@ -7,6 +7,7 @@ import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { useDashboardLive } from "@/components/dashboard/useDashboardLive";
 import { useFormatters } from "@/components/dashboard/useFormatters";
 import { Link } from "@/i18n/navigation";
+import { formatKwzMillions } from "@/lib/money";
 import { CartIcon, MenuBarsIcon, RefreshIcon, TrendingUpIcon } from "./icons";
 import { NotificationsPopover } from "./NotificationsPopover";
 
@@ -14,7 +15,7 @@ const KZ = 100;
 /** Revenue goals (Kz) the progress bar aims at: the first one not reached yet. */
 const GOALS = [1_000_000, 5_000_000, 10_000_000, 50_000_000, 100_000_000];
 
-const goalLabel = (kz: number) => `${kz / 1_000_000} M Kz`;
+const goalLabel = (kz: number) => formatKwzMillions(kz / 1_000_000);
 
 /** Top bar: greeting, revenue goal, and the quick actions. */
 export function KaiHeader({ firstName, onMenu }: { firstName: string; onMenu: () => void }) {

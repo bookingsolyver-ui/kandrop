@@ -1,13 +1,8 @@
-import { useFormatter } from "next-intl";
+import { useLocale } from "next-intl";
+import { formatKwz } from "@/lib/money";
 
-/** Money for server-rendered storefront pieces: always Intl, never hand-built (minor units in). */
+/** Money for the storefront pieces (minor units in): `22.500 kwz`. */
 export function useMoney() {
-  const format = useFormatter();
-  return (minor: number) =>
-    format.number(minor / 100, {
-      style: "currency",
-      currency: "AOA",
-      currencyDisplay: "narrowSymbol",
-      maximumFractionDigits: 0,
-    });
+  const locale = useLocale();
+  return (minor: number) => formatKwz(minor, locale);
 }
