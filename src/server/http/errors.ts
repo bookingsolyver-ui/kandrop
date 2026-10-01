@@ -24,6 +24,8 @@ export type ApiErrorCode =
   | "plan_not_upgradable"
   | "lesson_locked"
   | "payment_required"
+  /** The order's payment has not been verified by Kandrop yet: it cannot be delivered. */
+  | "payment_unverified"
   | "payments_unavailable"
   | "validation_failed"
   | "payload_too_large"
@@ -52,6 +54,7 @@ const STATUS: Record<ApiErrorCode, number> = {
   plan_not_upgradable: 409,
   lesson_locked: 409,
   payment_required: 402,
+  payment_unverified: 409,
   payments_unavailable: 503,
   validation_failed: 422,
   payload_too_large: 413,

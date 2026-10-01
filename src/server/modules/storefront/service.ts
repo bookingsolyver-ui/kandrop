@@ -1,10 +1,10 @@
 import { getEnv } from "@/server/config/env";
 import { ApiError } from "@/server/http/errors";
 import { userRepository } from "@/server/modules/auth/userRepository";
-import { buildCheckout } from "@/server/modules/checkout/service";
 import { productRepository } from "@/server/modules/products/repository";
 import type { ProductRecord } from "@/server/modules/products/schema";
-import { supplierStockFor } from "@/server/modules/fulfilment/service";
+import { placeOrder, supplierStockFor } from "@/server/modules/fulfilment/service";
+import { DEFAULT_ORDER_PAYMENT_PROVIDER } from "@/shared/payments/orderPayment";
 import { buyerSchema } from "@/shared/fulfilment/schemas";
 import { offerOf, stockState } from "@/shared/products/schemas";
 import type { StorefrontProduct } from "./schema";
@@ -55,10 +55,11 @@ export async function recordView(slug: string): Promise<void> {
 }
 
 /**
- * "Buy now": a checkout session for one unit at the price that applies *this second* (taken on
- * the server, never from the browser), or `out_of_stock`. Stock is checked, not reserved.
+ * "Buy now": the order is PLACED at the price of that very second (taken on the server, never from the browser),
+ * UNPAID. The shopper pays Kandrop by transfer or cash and sends the slip to Kandrop's WhatsApp; a person verifies
+ * it. Returns the order id (the unguessable link to the order page). `out_of_stock` when nothing is left.
  */
-export async function createStorefrontCheckout(slug: string, rawBuyer: unknown): Promise<string> {
+export async function placeStorefrontOrder(slug: string, rawBuyer: unknown): Promise<string> {
   // Who buys and where it goes: validated here, on the server, whatever the browser did.
   const buyer = buyerSchema.parse(rawBuyer);
   const p = await publicProduct(slug);
@@ -66,17 +67,18 @@ export async function createStorefrontCheckout(slug: string, rawBuyer: unknown):
   // A product imported from a supplier is limited by what the supplier has.
   const supplierStock = await supplierStockFor(p.storeId, p.id);
   if (supplierStock !== null && supplierStock < 1) throw new ApiError("out_of_stock");
-  const session = await buildCheckout({
-    productId: p.id,
-    buyer: { customer: { name: buyer.name, phone: buyer.phone }, address: { street: buyer.street, city: buyer.city, province: buyer.province, reference: buyer.reference } },
+  const { order } = await placeOrder({
     storeId: p.storeId,
     storeName: await storeNameOf(p.storeId),
-    storeNif: null,
+    productId: p.id,
     // The store has no shipping rates yet, so none is added (see docs/ARCHITECTURE.md).
     shippingAmount: 0,
-    items: [{ name: p.title, quantity: 1, unitAmount: offerOf(p, Date.now()).price }],
+    item: { name: p.title, quantity: 1, unitAmount: offerOf(p, Date.now()).price },
+    buyer: { customer: { name: buyer.name, phone: buyer.phone }, address: { street: buyer.street, city: buyer.city, province: buyer.province, reference: buyer.reference } },
+    provider: DEFAULT_ORDER_PAYMENT_PROVIDER,
+    method: "bank_transfer",
   });
-  return session.id;
+  return order.id;
 }
 
 export async function getStorefrontImage(slug: string, imageId: string) {

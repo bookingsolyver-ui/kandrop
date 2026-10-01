@@ -9,7 +9,7 @@ export async function supplierOrderRows(supplierId: string): Promise<SupplierOrd
   });
   return rows.map((o) => ({
     id: o.id, orderNumber: o.orderNumber, productTitle: o.productTitle, quantity: o.quantity,
-    costTotal: o.costTotal, status: o.status, createdAt: o.createdAt, invoiceNumber: o.invoice?.number ?? null,
+    costTotal: o.costTotal, status: o.status, paymentStatus: o.paymentStatus, createdAt: o.createdAt, invoiceNumber: o.invoice?.number ?? null,
   }));
 }
 

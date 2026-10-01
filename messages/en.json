@@ -96,7 +96,8 @@
     "out_of_stock": "This product is sold out. Please try again later.",
     "plan_not_upgradable": "You already have a higher plan active. You can only renew your plan or move up to a bigger one.",
     "lesson_locked": "Finish the earlier lessons to unlock this one.",
-    "payment_required": "An active subscription is required to continue. Choose a plan and complete the payment."
+    "payment_required": "An active subscription is required to continue. Choose a plan and complete the payment.",
+    "payment_unverified": "This order's payment has not been confirmed by Kandrop yet: it cannot be marked as delivered."
   },
   "Auth": {
     "login": {
@@ -529,7 +530,13 @@
       "payment": {
         "method": "Method",
         "reference": "Reference",
-        "paidAt": "Paid on"
+        "paidAt": "Paid on",
+        "status": "Status",
+        "states": {
+          "pending_payment": "Awaiting payment",
+          "proof_submitted": "Slip received",
+          "paid_verified": "Paid and confirmed by Kandrop"
+        }
       },
       "tracking": {
         "label": "Tracking code",
@@ -2619,7 +2626,7 @@
     "logistics": {
       "title": "Orders and logistics",
       "subtitle": "Every supplier-product order, from the warehouse to the final customer.",
-      "search": "Search by order, store, supplier, product or customer",
+      "search": "Search by order, reference, store, supplier, product or customer",
       "empty": "No orders yet.",
       "qty": "{count, plural, one {# unit} other {# units}}",
       "details": "Details",
@@ -2642,7 +2649,11 @@
         "commission": "Kandrop commission",
         "commissionNote": "Sum of the listed orders",
         "dueSuppliers": "Due to suppliers",
-        "dueSuppliersNote": "Cost price of the orders"
+        "dueSuppliersNote": "Cost price of the orders",
+        "toVerify": "Slips to verify",
+        "toVerifyNote": "Slip received, to confirm",
+        "awaiting": "Awaiting payment",
+        "awaitingNote": "No slip yet"
       },
       "cols": {
         "order": "Order",
@@ -2652,7 +2663,10 @@
         "sale": "Sale",
         "commission": "Commission",
         "status": "Status",
-        "actions": "Actions"
+        "actions": "Actions",
+        "total": "Total",
+        "payment": "Payment",
+        "logistics": "Logistics"
       },
       "detail": {
         "deliverTo": "Deliver to",
@@ -2665,12 +2679,36 @@
         "party": {
           "merchant": "merchant",
           "supplier": "supplier"
-        }
+        },
+        "noSupplier": "The merchant's own product (no supplier).",
+        "paymentTitle": "Payment",
+        "slipRef": "Slip reference",
+        "proofAt": "Slip registered on {when}",
+        "verifiedAt": "Confirmed on {when} by {who}",
+        "slipRefPlaceholder": "Slip reference (optional)",
+        "notePlaceholder": "Note (optional)",
+        "automatic": "This payment is confirmed automatically by the provider."
       },
       "toast": {
         "updated": "Status updated: {status}.",
-        "failed": "Could not update the status."
-      }
+        "failed": "Could not update the status.",
+        "proof": "Slip registered.",
+        "verified": "Payment confirmed.",
+        "unverified": "The payment has not been confirmed yet: the order cannot be delivered."
+      },
+      "payment": {
+        "pending_payment": "Awaiting payment",
+        "proof_submitted": "Slip received",
+        "paid_verified": "Payment confirmed"
+      },
+      "provider": {
+        "manual_whatsapp_transfer": "Cash/Transfer (Manual verification via WhatsApp)",
+        "multicaixa_express_api": "Multicaixa Express (automatic verification)"
+      },
+      "confirmPayment": "Confirm Payment",
+      "confirmPaymentLong": "Confirm Payment / Validate WhatsApp Slip",
+      "registerProof": "Register slip received",
+      "blocked": "It can only be delivered once the payment is confirmed."
     }
   },
   "Supplier": {
@@ -2896,7 +2934,8 @@
         "status": {
           "available": "Available",
           "pending": "Pending"
-        }
+        },
+        "awaitingPayment": "Delivered; awaiting payment confirmation"
       },
       "history": {
         "title": "Withdrawals",
@@ -2967,5 +3006,33 @@
         "delivered": "Delivered"
       }
     }
+  },
+  "OrderPlaced": {
+    "title": "Order #{number}",
+    "placed": "Order placed",
+    "greeting": "Thank you, {name}. Only the payment is missing for your order to move on.",
+    "product": "Product",
+    "total": "Total to pay",
+    "reference": "Reference",
+    "status": {
+      "label": "Payment",
+      "pending_payment": "Awaiting payment",
+      "proof_submitted": "Slip received: being verified",
+      "paid_verified": "Payment confirmed"
+    },
+    "how": {
+      "title": "How to pay",
+      "step1": "Pay {total} to Kandrop by bank transfer.",
+      "step2": "Use the reference {reference} on the transfer.",
+      "step3": "Send the slip (proof of payment) to Kandrop's WhatsApp. We confirm the payment and the order goes out for delivery."
+    },
+    "bank": {
+      "bank": "Bank",
+      "holder": "Account holder",
+      "pending": "Kandrop will contact you on the phone number you gave with the payment details."
+    },
+    "whatsapp": "Send the slip on WhatsApp",
+    "whatsappText": "Hello! Here is the proof of payment for order #{number} (reference {reference}), amount {total}.",
+    "note": "The order is only delivered after Kandrop confirms the payment."
   }
 }

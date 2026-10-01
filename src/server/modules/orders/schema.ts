@@ -1,5 +1,6 @@
 import type { PaymentMethod } from "@/shared/checkout/schemas";
 import type { OrderStatus } from "@/shared/orders/schemas";
+import type { OrderPaymentProvider, OrderPaymentStatus, PaymentEvidence } from "@/shared/payments/orderPayment";
 
 /**
  * Personal data (customer name, phone, address) and merchant content (product names).
@@ -44,6 +45,10 @@ export interface OrderRecord {
   total: number;
   currency: "AOA";
   payment: { method: PaymentMethod; reference: string; paidAt: number };
+  /** Where the money is: see `shared/payments/orderPayment.ts`. */
+  paymentStatus: OrderPaymentStatus;
+  paymentProvider: OrderPaymentProvider;
+  paymentEvidence?: PaymentEvidence & { proofAt?: number; verifiedAt?: number; verifiedBy?: string };
   trackingCode?: string;
   /** Every status the order has been in, oldest first. */
   history: Array<{ status: OrderStatus; at: number }>;
@@ -63,6 +68,8 @@ export interface PublicOrder {
   total: number;
   currency: "AOA";
   payment: { method: PaymentMethod; reference: string; paidAt: string };
+  paymentStatus: OrderPaymentStatus;
+  paymentProvider: OrderPaymentProvider;
   trackingCode?: string;
   history: Array<{ status: OrderStatus; at: string }>;
   createdAt: string;

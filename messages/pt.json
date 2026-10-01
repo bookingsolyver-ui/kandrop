@@ -96,7 +96,8 @@
     "out_of_stock": "Este produto esgotou. Volte a tentar mais tarde.",
     "plan_not_upgradable": "Já tem um plano superior ativo. Só pode renovar o seu plano ou subir para um maior.",
     "lesson_locked": "Conclua as aulas anteriores para desbloquear esta.",
-    "payment_required": "É necessária uma subscrição ativa para continuar. Escolha um plano e conclua o pagamento."
+    "payment_required": "É necessária uma subscrição ativa para continuar. Escolha um plano e conclua o pagamento.",
+    "payment_unverified": "O pagamento desta encomenda ainda não foi confirmado pela Kandrop: não pode ser dada como entregue."
   },
   "Auth": {
     "login": {
@@ -529,7 +530,13 @@
       "payment": {
         "method": "Método",
         "reference": "Referência",
-        "paidAt": "Pago em"
+        "paidAt": "Pago em",
+        "status": "Estado",
+        "states": {
+          "pending_payment": "A aguardar pagamento",
+          "proof_submitted": "Comprovativo recebido",
+          "paid_verified": "Pago e confirmado pela Kandrop"
+        }
       },
       "tracking": {
         "label": "Código de seguimento",
@@ -2619,7 +2626,7 @@
     "logistics": {
       "title": "Encomendas e logística",
       "subtitle": "Todas as encomendas de produtos de fornecedores, do armazém ao cliente final.",
-      "search": "Pesquisar por encomenda, loja, fornecedor, produto ou cliente",
+      "search": "Pesquisar por encomenda, referência, loja, fornecedor, produto ou cliente",
       "empty": "Ainda não há encomendas.",
       "qty": "{count, plural, one {# unidade} other {# unidades}}",
       "details": "Detalhes",
@@ -2642,7 +2649,11 @@
         "commission": "Comissão Kandrop",
         "commissionNote": "Soma das encomendas listadas",
         "dueSuppliers": "Devido a fornecedores",
-        "dueSuppliersNote": "Preço de custo das encomendas"
+        "dueSuppliersNote": "Preço de custo das encomendas",
+        "toVerify": "Comprovativos a validar",
+        "toVerifyNote": "Talão recebido, falta confirmar",
+        "awaiting": "A aguardar pagamento",
+        "awaitingNote": "Ainda sem talão"
       },
       "cols": {
         "order": "Encomenda",
@@ -2652,7 +2663,10 @@
         "sale": "Venda",
         "commission": "Comissão",
         "status": "Estado",
-        "actions": "Ações"
+        "actions": "Ações",
+        "total": "Total",
+        "payment": "Pagamento",
+        "logistics": "Logística"
       },
       "detail": {
         "deliverTo": "Entregar a",
@@ -2665,12 +2679,36 @@
         "party": {
           "merchant": "lojista",
           "supplier": "fornecedor"
-        }
+        },
+        "noSupplier": "Produto do próprio lojista (sem fornecedor).",
+        "paymentTitle": "Pagamento",
+        "slipRef": "Referência do talão",
+        "proofAt": "Comprovativo registado em {when}",
+        "verifiedAt": "Confirmado em {when} por {who}",
+        "slipRefPlaceholder": "Referência do talão (opcional)",
+        "notePlaceholder": "Nota (opcional)",
+        "automatic": "Este pagamento é confirmado automaticamente pelo prestador."
       },
       "toast": {
         "updated": "Estado atualizado: {status}.",
-        "failed": "Não foi possível atualizar o estado."
-      }
+        "failed": "Não foi possível atualizar o estado.",
+        "proof": "Comprovativo registado.",
+        "verified": "Pagamento confirmado.",
+        "unverified": "O pagamento ainda não foi confirmado: a encomenda não pode ser entregue."
+      },
+      "payment": {
+        "pending_payment": "A aguardar pagamento",
+        "proof_submitted": "Comprovativo recebido",
+        "paid_verified": "Pagamento confirmado"
+      },
+      "provider": {
+        "manual_whatsapp_transfer": "Dinheiro/Transferência (Validação Manual via WhatsApp)",
+        "multicaixa_express_api": "Multicaixa Express (verificação automática)"
+      },
+      "confirmPayment": "Confirmar Pagamento",
+      "confirmPaymentLong": "Confirmar Pagamento / Validar Comprovativo WhatsApp",
+      "registerProof": "Registar comprovativo recebido",
+      "blocked": "Só pode ser entregue depois de o pagamento ser confirmado."
     }
   },
   "Supplier": {
@@ -2896,7 +2934,8 @@
         "status": {
           "available": "Disponível",
           "pending": "Pendente"
-        }
+        },
+        "awaitingPayment": "Entregue; a aguardar a confirmação do pagamento"
       },
       "history": {
         "title": "Levantamentos",
@@ -2967,5 +3006,33 @@
         "delivered": "Entregue"
       }
     }
+  },
+  "OrderPlaced": {
+    "title": "Encomenda #{number}",
+    "placed": "Encomenda registada",
+    "greeting": "Obrigado, {name}. Falta só o pagamento para a sua encomenda seguir.",
+    "product": "Produto",
+    "total": "Total a pagar",
+    "reference": "Referência",
+    "status": {
+      "label": "Pagamento",
+      "pending_payment": "A aguardar pagamento",
+      "proof_submitted": "Comprovativo recebido: a verificar",
+      "paid_verified": "Pagamento confirmado"
+    },
+    "how": {
+      "title": "Como pagar",
+      "step1": "Pague {total} por transferência bancária à Kandrop.",
+      "step2": "Indique a referência {reference} na transferência.",
+      "step3": "Envie o talão (comprovativo) para o WhatsApp da Kandrop. Confirmamos o pagamento e a encomenda segue para entrega."
+    },
+    "bank": {
+      "bank": "Banco",
+      "holder": "Titular",
+      "pending": "A Kandrop vai contactá-lo pelo telemóvel indicado com os dados para o pagamento."
+    },
+    "whatsapp": "Enviar comprovativo no WhatsApp",
+    "whatsappText": "Olá! Segue o comprovativo da encomenda #{number} (referência {reference}), no valor de {total}.",
+    "note": "A encomenda só é entregue depois de a Kandrop confirmar o pagamento."
   }
 }

@@ -1,6 +1,7 @@
 import { randomBytes } from "node:crypto";
 import { DEMO_PRODUCTS, KZ } from "@/server/modules/products/repository";
 import type { PaymentMethod } from "@/shared/checkout/schemas";
+import { normalizePaymentProvider, normalizePaymentStatus } from "@/shared/payments/orderPayment";
 import type { OrderStatus } from "@/shared/orders/schemas";
 import type { OrderAddress, OrderRecord } from "./schema";
 import { isDemoStore } from "@/server/modules/store/demo";
@@ -160,6 +161,8 @@ function generateSeedOrders(storeId: string) {
       shippingAmount,
       total: subtotal + shippingAmount,
       currency: "AOA",
+      paymentStatus: "paid_verified",
+      paymentProvider: "multicaixa_express_api",
       payment: {
         method: METHODS[pick(METHODS.length)]!,
         reference: `KD-${Array.from({ length: 10 }, () => REFERENCE_ALPHABET[pick(REFERENCE_ALPHABET.length)]).join("")}`,
@@ -187,6 +190,9 @@ function mapRowToOrder(row: Record<string, unknown>): OrderRecord {
     total: Number(row.total),
     currency: "AOA",
     payment: row.payment as OrderRecord["payment"],
+    paymentStatus: normalizePaymentStatus(row.payment_status ?? "paid_verified"),
+    paymentProvider: normalizePaymentProvider(row.payment_provider ?? "multicaixa_express_api"),
+    paymentEvidence: (row.payment_evidence as OrderRecord["paymentEvidence"]) ?? undefined,
     trackingCode: row.tracking_code ? String(row.tracking_code) : undefined,
     history: (row.history as OrderRecord["history"]) ?? [],
     createdAt: Number(row.created_at),
@@ -206,6 +212,9 @@ const toRow = (o: OrderRecord) => ({
   total: o.total,
   currency: o.currency,
   payment: o.payment,
+  payment_status: o.paymentStatus,
+  payment_provider: o.paymentProvider,
+  payment_evidence: o.paymentEvidence ?? null,
   tracking_code: o.trackingCode ?? null,
   history: o.history,
   created_at: o.createdAt,

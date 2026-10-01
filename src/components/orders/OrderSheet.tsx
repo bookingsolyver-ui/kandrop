@@ -260,9 +260,15 @@ export function OrderSheet({
                 <dd className="text-right tabular-nums">{order.payment.reference}</dd>
               </div>
               <div className="flex items-baseline justify-between gap-4">
-                <dt className="text-ink-muted">{t("detail.payment.paidAt")}</dt>
-                <dd className="text-right tabular-nums">{fmt.short(order.payment.paidAt)}</dd>
+                <dt className="text-ink-muted">{t("detail.payment.status")}</dt>
+                <dd className="text-right">{t(`detail.payment.states.${order.paymentStatus}`)}</dd>
               </div>
+              {order.paymentStatus === "paid_verified" && (
+                <div className="flex items-baseline justify-between gap-4">
+                  <dt className="text-ink-muted">{t("detail.payment.paidAt")}</dt>
+                  <dd className="text-right tabular-nums">{fmt.short(order.payment.paidAt)}</dd>
+                </div>
+              )}
             </dl>
           </Section>
         </div>

@@ -1,5 +1,6 @@
 import type { Session } from "@/server/auth/types";
 import { ApiError } from "@/server/http/errors";
+import { isPaymentVerified } from "@/shared/payments/orderPayment";
 import {
   ORDER_STATUSES,
   canTransition,
@@ -29,6 +30,8 @@ export function toPublic(o: OrderRecord): PublicOrder {
     total: o.total,
     currency: o.currency,
     payment: { ...o.payment, paidAt: new Date(o.payment.paidAt).toISOString() },
+    paymentStatus: o.paymentStatus,
+    paymentProvider: o.paymentProvider,
     trackingCode: o.trackingCode,
     history: o.history.map((h) => ({ status: h.status, at: new Date(h.at).toISOString() })),
     createdAt: new Date(o.createdAt).toISOString(),
@@ -98,6 +101,8 @@ export async function updateOrderStatus(
 
   const { status, trackingCode } = updateOrderStatusSchema.parse(input);
   if (!canTransition(order.status, status)) throw new ApiError("invalid_transition");
+  // The golden rule: no order is delivered before Kandrop has verified the payment.
+  if (status === "delivered" && !isPaymentVerified(order.paymentStatus)) throw new ApiError("payment_unverified");
 
   const now = Date.now();
   const next: OrderRecord = {
@@ -128,6 +133,7 @@ export async function transitionOrder(
   if (!options.force && !canTransition(order.status, status)) {
     throw new ApiError("invalid_transition");
   }
+  if (status === "delivered" && !isPaymentVerified(order.paymentStatus)) throw new ApiError("payment_unverified");
   const now = Date.now();
   return toPublic(
     await orderRepository.save({

@@ -4,7 +4,7 @@ import { routing } from "@/i18n/routing";
 import { ApiError } from "@/server/http/errors";
 import { attemptLimiter, clientIp } from "@/server/http/rateLimit";
 import { assertSameOrigin, handle } from "@/server/http/respond";
-import { createStorefrontCheckout } from "@/server/modules/storefront/service";
+import { placeStorefrontOrder } from "@/server/modules/storefront/service";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -14,8 +14,8 @@ const limiter = attemptLimiter({ max: 20, windowMs: 60_000 });
 
 /**
  * The "Buy now" button is a plain HTML form (it works before any JavaScript arrives, which
- * matters on slow phones). It creates the checkout session and sends the shopper straight
- * there. If the product just sold out, or the buyer's details are not valid, it goes back to the
+ * matters on slow phones). It places the order and sends the shopper to its page (how to pay,
+ * and where to send the slip). If the product just sold out, or the buyer's details are not valid, it goes back to the
  * page, which then says so.
  */
 export const POST = handle(async (req, ctx: Ctx) => {
@@ -30,10 +30,10 @@ export const POST = handle(async (req, ctx: Ctx) => {
   const field = form.get("locale");
   const locale = typeof field === "string" && hasLocale(routing.locales, field) ? field : "pt";
   try {
-    const session = await createStorefrontCheckout(slug, {
+    const orderId = await placeStorefrontOrder(slug, {
       name: text("name"), phone: text("phone"), province: text("province"), city: text("city"), street: text("street"), reference: text("reference"),
     });
-    return Response.redirect(new URL(`/${locale}/checkout?session=${session}`, req.url), 303);
+    return Response.redirect(new URL(`/${locale}/pedido/${orderId}`, req.url), 303);
   } catch (error) {
     if (error instanceof ApiError && error.code === "out_of_stock") {
       return Response.redirect(new URL(`/${locale}/loja/${slug}`, req.url), 303);

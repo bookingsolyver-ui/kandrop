@@ -71,8 +71,9 @@ export function SupplierFinance({ bank, orders }: { bank: BankView | null; order
     });
   };
 
-  // Every order is worth the supplier's cost price; it becomes AVAILABLE once the parcel is delivered.
-  const sales = useMemo(() => orders.map((o) => ({ ...o, money: o.costTotal, state: o.status === "delivered" ? ("available" as const) : ("pending" as const) })), [orders]);
+  // Every order is worth the supplier's cost price. Kandrop collects the money, so it becomes AVAILABLE only when the
+  // payment is verified AND the parcel is delivered; until then it is pending.
+  const sales = useMemo(() => orders.map((o) => ({ ...o, money: o.costTotal, state: o.status === "delivered" && o.paymentStatus === "paid_verified" ? ("available" as const) : ("pending" as const), awaitingPayment: o.status === "delivered" && o.paymentStatus !== "paid_verified" })), [orders]);
   const sum = (state: "available" | "pending") => sales.filter((s) => s.state === state).reduce((n, s) => n + s.money, 0);
   const requested = withdrawals.reduce((n, w) => n + w.amount, 0);
   const available = Math.max(0, sum("available") - requested);
@@ -163,7 +164,7 @@ export function SupplierFinance({ bank, orders }: { bank: BankView | null; order
                     <td className="px-5 py-4"><span className="line-clamp-1 max-w-xs font-semibold">{s.productTitle}</span><span className="text-[12px] text-[var(--ink-500)]">{t("sales.qty", { count: s.quantity })}</span></td>
                     <td className="mono-num px-5 py-4 text-[var(--ink-600)]">{s.invoiceNumber ?? "—"}</td>
                     <td className="mono-num px-5 py-4 text-right font-bold">{f.money(s.money)}</td>
-                    <td className="px-5 py-4"><Badge tone={s.state === "available" ? "success" : "warn"}>{t(`sales.status.${s.state}`)}</Badge></td>
+                    <td className="px-5 py-4"><Badge tone={s.state === "available" ? "success" : "warn"}>{t(`sales.status.${s.state}`)}</Badge>{s.awaitingPayment && <span className="mt-1 block text-[11px] text-[var(--ink-500)]">{t("sales.awaitingPayment")}</span>}</td>
                   </tr>
                 ))}
               </tbody>
