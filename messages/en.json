@@ -2042,11 +2042,14 @@
       "margin": "Margin",
       "sales": "Sales (month)",
       "status": "Status",
-      "suggested": "Suggested"
+      "suggested": "Suggested",
+      "links": "Links"
     },
     "origin": {
       "nacional": "National supplier",
-      "internacional": "International supplier"
+      "internacional": "International supplier",
+      "supplier": "Supplier",
+      "own": "Own product"
     },
     "stock": {
       "high": "High stock",
@@ -2094,7 +2097,16 @@
       "back": "Back to my products",
       "emptyTitle": "You have no favourites yet",
       "emptyBody": "Tap the heart on a Showcase product to keep it here."
-    }
+    },
+    "links": {
+      "preview": "View the customer's page",
+      "copy": "Copy share link",
+      "copied": "Sharing link copied successfully!",
+      "copyFailed": "Could not copy. Please copy the address manually.",
+      "inactive": "Activate the product to get a public page."
+    },
+    "viewsLine": "{count, plural, one {# visit} other {# visits}}",
+    "saveFailed": "Could not save the change. Please try again."
   },
   "Admin": {
     "console": "Operations console",

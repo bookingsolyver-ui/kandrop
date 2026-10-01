@@ -4,10 +4,13 @@ import { useTranslations } from "next-intl";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { useFormatters } from "@/components/dashboard/useFormatters";
 import { BoxIcon, CartIcon, HeartIcon, SearchIcon } from "@/components/kai/icons";
+import { deleteProduct, updateProduct } from "@/components/products/productsApi";
+import { ProductLinks } from "@/components/products/ProductLinks";
 import { BrandLink } from "@/components/ui/BrandButton";
-import { Link } from "@/i18n/navigation";
-import { useMyProducts } from "@/lib/vitrine/store";
-import { marginOf, type ImportedProduct } from "@/shared/vitrine/imported";
+import { useToast } from "@/components/ui/Toast";
+import { Link, useRouter } from "@/i18n/navigation";
+import type { MyProductRow } from "@/shared/products/myProducts";
+import { marginOf } from "@/shared/vitrine/imported";
 
 type Tab = "all" | "active" | "paused" | "out";
 type SortKey = "product" | "price" | "suggested" | "margin" | "sales" | "status";
@@ -16,7 +19,9 @@ const TABS: Tab[] = ["all", "active", "paused", "out"];
 
 const fold = (s: string) => s.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase();
 /** What the merchant sees as the product's state: "out of stock" wins over active/paused. */
-const stateOf = (p: ImportedProduct): "active" | "paused" | "out" => (p.stock === "out" ? "out" : p.status);
+const stateOf = (p: MyProductRow): "active" | "paused" | "out" => (p.stock === 0 ? "out" : p.status === "active" ? "active" : "paused");
+/** Stock as a level the merchant can read at a glance; `null` = not tracked. */
+const levelOf = (p: MyProductRow): "high" | "low" | "out" | null => (p.stock === null ? null : p.stock === 0 ? "out" : p.stock < 10 ? "low" : "high");
 
 const DOT = { active: "bg-emerald-500", paused: "bg-amber-500", out: "bg-[var(--kai-danger)]" } as const;
 const PILL = {
@@ -25,14 +30,14 @@ const PILL = {
   out: "bg-[var(--kai-danger-bg)] text-[var(--kai-danger)]",
 } as const;
 
-/** The row's "…" menu: edit price, view the landing page, pause/activate, remove. */
+/** The row's "…" menu: edit price, open the product editor, pause/activate, remove. */
 function RowMenu({
   product,
   onEditPrice,
   onToggle,
   onRemove,
 }: {
-  product: ImportedProduct;
+  product: MyProductRow;
   onEditPrice: () => void;
   onToggle: () => void;
   onRemove: () => void;
@@ -87,7 +92,7 @@ function RowMenu({
           <button type="button" role="menuitem" onClick={run(onEditPrice)} className={item}>
             {t("editPrice")}
           </button>
-          <Link href="/dashboard/landing-pages" role="menuitem" onClick={() => setOpen(false)} className={item}>
+          <Link href={`/dashboard/products/${product.id}`} role="menuitem" onClick={() => setOpen(false)} className={item}>
             {t("landing")}
           </Link>
           <button type="button" role="menuitem" onClick={run(onToggle)} className={item}>
@@ -113,7 +118,7 @@ function PriceEditor({
   onSave,
   onCancel,
 }: {
-  product: ImportedProduct;
+  product: MyProductRow;
   onSave: (minor: number) => void;
   onCancel: () => void;
 }) {
@@ -159,11 +164,33 @@ function PriceEditor({
   );
 }
 
-/** "Os meus produtos": the Vitrine products the merchant sells, with cost, price, margin and state. */
-export function MyProductsView() {
+/**
+ * "Os meus produtos": the merchant's real products (Supabase), with cost, price, margin, state and, in the Links
+ * column, the buttons to see and to share the public sales page. Creating, pricing, pausing and removing a product
+ * stay with the merchant; moving an order does not (that is Kandrop's).
+ */
+export function MyProductsView({ products }: { products: MyProductRow[] }) {
   const t = useTranslations("MyProducts");
   const f = useFormatters();
-  const { items, ready, update, remove } = useMyProducts();
+  const router = useRouter();
+  const toast = useToast();
+  const items = products;
+  const ready = true;
+  const [busy, setBusy] = useState<string | null>(null);
+
+  /** Runs one change through the API, then reloads the table from the server. */
+  async function change(id: string, run: () => Promise<{ ok: boolean }>) {
+    setBusy(id);
+    try {
+      const result = await run();
+      if (!result.ok) return toast({ message: t("saveFailed") });
+      router.refresh();
+    } finally {
+      setBusy(null);
+    }
+  }
+  const update = (id: string, patch: { salePrice?: number; status?: "active" | "draft" }) => change(id, () => updateProduct(id, patch));
+  const remove = (id: string) => change(id, () => deleteProduct(id));
   const [tab, setTab] = useState<Tab>("all");
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<{ key: SortKey; dir: "asc" | "desc" }>({ key: "sales", dir: "desc" });
@@ -184,9 +211,9 @@ export function MyProductsView() {
   const rows = useMemo(() => {
     const q = fold(query.trim());
     const list = items.filter(
-      (p) => (tab === "all" || stateOf(p) === tab) && (!q || fold(`${p.title} ${p.sku}`).includes(q))
+      (p) => (tab === "all" || stateOf(p) === tab) && (!q || fold(`${p.title} ${p.slug}`).includes(q))
     );
-    const value = (p: ImportedProduct): number | string => {
+    const value = (p: MyProductRow): number | string => {
       switch (sort.key) {
         case "product": return fold(p.title);
         case "price": return p.salePrice;
@@ -332,7 +359,7 @@ export function MyProductsView() {
           <p className="px-6 py-16 text-center text-sm text-[var(--ink-600)]">{t("empty.none")}</p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[56rem] border-collapse text-sm">
+            <table className="w-full min-w-[62rem] border-collapse text-sm">
               <thead className="border-b border-gray-100 bg-[var(--ink-50)]">
                 <tr>
                   {th("product")}
@@ -341,6 +368,9 @@ export function MyProductsView() {
                   {th("margin", "right")}
                   {th("sales", "right")}
                   {th("status")}
+                  <th scope="col" className="px-4 py-3 text-center text-[11px] font-bold tracking-[0.06em] text-[var(--ink-500)] uppercase">
+                    {t("cols.links")}
+                  </th>
                   <th scope="col" className="w-14 px-4 py-3" />
                 </tr>
               </thead>
@@ -349,16 +379,21 @@ export function MyProductsView() {
                   const margin = marginOf(p);
                   const state = stateOf(p);
                   return (
-                    <tr key={p.id} className="border-b border-gray-100 last:border-b-0 hover:bg-[var(--ink-50)]">
+                    <tr key={p.id} className={`border-b border-gray-100 transition-colors duration-150 last:border-b-0 hover:bg-[var(--ink-50)]/70 ${busy === p.id ? "opacity-60" : ""}`}>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
-                          <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-[var(--ink-50)] to-[var(--ink-200)] text-[var(--ink-300)]">
-                            <BoxIcon size={20} />
-                          </span>
+                          {p.cover ? (
+                            // eslint-disable-next-line @next/next/no-img-element -- the merchant's own, access-checked image route
+                            <img src={p.cover} alt="" loading="lazy" className="size-12 shrink-0 rounded-xl border border-[var(--ink-100)] object-cover" />
+                          ) : (
+                            <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-[var(--ink-50)] to-[var(--ink-200)] text-[var(--ink-300)]">
+                              <BoxIcon size={20} />
+                            </span>
+                          )}
                           <div className="min-w-0">
                             <p className="line-clamp-2 max-w-md text-sm leading-snug font-semibold text-[var(--ink-900)]">{p.title}</p>
                             <p className="mt-0.5 text-[12px] text-[var(--ink-500)]">
-                              {t(`stock.${p.stock}`)} · {t(`origin.${p.kind}`)} · {t("costLine", { price: f.money(p.costPrice) })}
+                              {[levelOf(p) && t(`stock.${levelOf(p)!}`), t(`origin.${p.origin}`), t("costLine", { price: f.money(p.costPrice) })].filter(Boolean).join(" · ")}
                             </p>
                           </div>
                         </div>
@@ -400,11 +435,14 @@ export function MyProductsView() {
                           {t(`status.${state}`)}
                         </span>
                       </td>
+                      <td className="px-4 py-3">
+                        <ProductLinks product={p} />
+                      </td>
                       <td className="px-4 py-3 text-right">
                         <RowMenu
                           product={p}
                           onEditPrice={() => setEditing(p.id)}
-                          onToggle={() => update(p.id, { status: p.status === "active" ? "paused" : "active" })}
+                          onToggle={() => update(p.id, { status: p.status === "active" ? "draft" : "active" })}
                           onRemove={() => remove(p.id)}
                         />
                       </td>
@@ -464,7 +502,6 @@ export function MyProductsView() {
         )}
       </div>
 
-      <p className="mt-4 text-center text-[12px] text-[var(--ink-500)]">{t("sample")}</p>
     </div>
   );
 }

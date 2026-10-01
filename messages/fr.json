@@ -2042,11 +2042,14 @@
       "margin": "Marge",
       "sales": "Ventes (mois)",
       "status": "Statut",
-      "suggested": "Suggéré"
+      "suggested": "Suggéré",
+      "links": "Liens"
     },
     "origin": {
       "nacional": "Fournisseur national",
-      "internacional": "Fournisseur international"
+      "internacional": "Fournisseur international",
+      "supplier": "Fournisseur",
+      "own": "Produit propre"
     },
     "stock": {
       "high": "Stock élevé",
@@ -2094,7 +2097,16 @@
       "back": "Retour à mes produits",
       "emptyTitle": "Vous n’avez pas encore de favoris",
       "emptyBody": "Touchez le cœur d’un produit de la Vitrine pour le garder ici."
-    }
+    },
+    "links": {
+      "preview": "Voir la page du client",
+      "copy": "Copier le lien de partage",
+      "copied": "Lien de partage copié avec succès !",
+      "copyFailed": "Impossible de copier. Copiez l’adresse manuellement.",
+      "inactive": "Activez le produit pour avoir une page publique."
+    },
+    "viewsLine": "{count, plural, one {# visite} other {# visites}}",
+    "saveFailed": "Impossible d’enregistrer la modification. Veuillez réessayer."
   },
   "Admin": {
     "console": "Console d’exploitation",

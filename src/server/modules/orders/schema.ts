@@ -8,6 +8,8 @@ import type { OrderPaymentProvider, OrderPaymentStatus, PaymentEvidence } from "
  */
 export interface OrderItem {
   name: string;
+  /** The store product that was sold (orders placed since the central payment model); older orders have none. */
+  productId?: string;
   quantity: number;
   /** Minor units. */
   unitAmount: number;

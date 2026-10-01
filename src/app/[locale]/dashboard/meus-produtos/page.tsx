@@ -6,6 +6,7 @@ import { PageTransition } from "@/components/shell/PageTransition";
 import { MyProductsView } from "@/components/vitrine/MyProductsView";
 import { routing } from "@/i18n/routing";
 import { requirePaidSession } from "@/server/auth/pageGate";
+import { myProductRows } from "@/server/modules/products/myProducts";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -16,17 +17,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: `${t("title")} — Kandrop` };
 }
 
-/** The products the merchant imported from the Vitrine (read client-side from the demo store). */
+/** The merchant's real products, with the buttons to see and share each public sales page. */
 export default async function MyProductsPage({ params }: Props) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
-  await requirePaidSession(locale);
+  const session = await requirePaidSession(locale);
+  const products = await myProductRows(session.storeId);
 
   return (
     <PageTransition>
       <div className="mx-auto w-full max-w-[1440px]">
-        <MyProductsView />
+        <MyProductsView products={products} />
       </div>
     </PageTransition>
   );

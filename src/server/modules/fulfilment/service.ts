@@ -182,7 +182,7 @@ export async function placeOrder(input: PlaceOrderInput): Promise<{ order: Order
       status: "pending",
       customer: { name: input.buyer.customer.name, phone: input.buyer.customer.phone },
       address: { street: input.buyer.address.street, city: input.buyer.address.city, province: input.buyer.address.province, reference: input.buyer.address.reference },
-      items: [{ name: input.item.name, quantity: input.item.quantity, unitAmount: input.item.unitAmount }],
+      items: [{ name: input.item.name, productId: input.productId, quantity: input.item.quantity, unitAmount: input.item.unitAmount }],
       shippingAmount: input.shippingAmount,
       total: subtotal + input.shippingAmount,
       currency: "AOA",
