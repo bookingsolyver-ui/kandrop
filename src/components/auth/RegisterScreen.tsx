@@ -55,14 +55,6 @@ export function RegisterScreen() {
           {t("mobile.login")} <span className="ml-0.5 text-primary">→</span>
         </Link>
       }
-      topLink={
-        <>
-          {t("loginPrompt")}
-          <Link href="/login" className="ml-1 text-primary underline-offset-4 hover:underline">
-            {t("loginLink")}
-          </Link>
-        </>
-      }
       aside={
         <>
           <div className="inline-flex w-fit items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-xs font-medium tracking-wide text-white/80 backdrop-blur">
