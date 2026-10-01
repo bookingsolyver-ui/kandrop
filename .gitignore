@@ -4,8 +4,13 @@ out
 next-env.d.ts
 *.tsbuildinfo
 .env
+.env.local
+.env.*.local
 .env.*
 !.env.example
+
+# stray output of a test script that was run without its argument
+undefined/
 .DS_Store
 .vercel
 supabase/.temp
