@@ -9,7 +9,7 @@ import { useState } from "react";
  * it confirmed, a full page load to the sign-in page (not a client-side navigation): it drops all
  * client state (live connection, caches) so nothing from the old session can crash the next screen.
  */
-export function useLogout() {
+export function useLogout(after = "") {
   const locale = useLocale();
   const [pending, setPending] = useState(false);
 
@@ -21,7 +21,7 @@ export function useLogout() {
       if (!res.ok) throw new Error(`logout failed: ${res.status}`);
       // Deliberately a full page load (see above), not `router.push`.
       // eslint-disable-next-line @next/next/no-location-assign-relative-destination
-      window.location.href = `/${locale}/login`;
+      window.location.href = `/${locale}/login${after}`;
     } catch (error) {
       console.error("[auth] could not sign out", error);
       setPending(false); // stay put: the session is still there, the button works again

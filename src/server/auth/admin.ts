@@ -1,4 +1,3 @@
-import { notFound } from "next/navigation";
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { getEnv } from "@/server/config/env";
@@ -8,9 +7,9 @@ import { readSession, type Session } from "./session";
 /**
  * Who may use the operator console (`/admin`): the accounts whose e-mail is listed in
  * `ADMIN_EMAILS`. Nobody is an admin by default, and a signed-in person who is not one gets the same
- * 404 as a page that does not exist. In development, the bypass user may enter (never in production).
+ * "restricted access" screen (never a 404; nobody signed in is sent to sign in and back). In development, the bypass user may enter (never in production).
  */
-async function isAdmin(session: Session): Promise<boolean> {
+export async function isAdmin(session: Session): Promise<boolean> {
   const env = getEnv();
   if (env.AUTH_DEV_BYPASS && env.NODE_ENV !== "production" && session.userId === "usr_demo") return true;
   const allowed = (env.ADMIN_EMAILS ?? "")
@@ -28,10 +27,10 @@ async function isAdmin(session: Session): Promise<boolean> {
   return ok;
 }
 
-/** For the pages of `/admin` (Server Components): the admin's session, a redirect to sign in, or a 404. */
+/** For the pages of `/admin` (Server Components): the admin's session, a redirect to sign in (and back), or to the restricted screen. */
 export async function requireAdmin(locale: Locale): Promise<Session> {
   const session = await readSession();
-  if (!session) return redirect({ href: "/login", locale });
-  if (!(await isAdmin(session))) notFound();
+  if (!session) return redirect({ href: { pathname: "/login", query: { next: "/admin" } }, locale });
+  if (!(await isAdmin(session))) return redirect({ href: "/admin/restrito", locale });
   return session;
 }

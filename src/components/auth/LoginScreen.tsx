@@ -23,7 +23,7 @@ function ArrowRightIcon() {
 }
 
 /** Sign-in: the form on the left (white), the promo panel on the right (dark, phones get a hero on top). */
-export function LoginScreen() {
+export function LoginScreen({ next }: { next?: string }) {
   const t = useTranslations("Login");
   const auth = useTranslations("Auth");
   const te = useTranslations("Errors");
@@ -44,7 +44,7 @@ export function LoginScreen() {
     resetFieldOn: { code: "invalid_credentials", field: "password" },
     // Already paid → the dashboard; not paid yet → the payment step.
     onSuccess: ({ subscription }) => {
-      router.replace(subscription === "active" ? "/dashboard" : "/checkout");
+      router.replace(next ?? (subscription === "active" ? "/dashboard" : "/checkout"));
       router.refresh();
     },
   });

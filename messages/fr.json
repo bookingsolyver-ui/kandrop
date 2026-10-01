@@ -2540,6 +2540,12 @@
         "internacional": "International"
       },
       "demoNote": "Fournisseurs et soumissions de démonstration ; les décisions sont enregistrées dans ce navigateur."
+    },
+    "restricted": {
+      "title": "Accès restreint",
+      "body": "Zone réservée à l’équipe Kandrop.",
+      "back": "Retour au tableau de bord",
+      "switch": "Se connecter avec un autre compte"
     }
   },
   "Supplier": {
