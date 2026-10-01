@@ -2148,10 +2148,29 @@
       "copied": "Lien de partage copié avec succès !",
       "copyFailed": "Impossible de copier. Copiez l’adresse manuellement.",
       "inactive": "Activez le produit pour avoir une page publique.",
-      "checkout": "Voir le paiement"
+      "checkout": "Voir le paiement",
+      "promote": "Promouvoir"
     },
     "viewsLine": "{count, plural, one {# visite} other {# visites}}",
-    "saveFailed": "Impossible d’enregistrer la modification. Veuillez réessayer."
+    "saveFailed": "Impossible d’enregistrer la modification. Veuillez réessayer.",
+    "promote": {
+      "title": "Liens de promotion",
+      "subtitle": "Des liens exclusifs générés par Kandrop pour promouvoir et vendre ce produit sans friction.",
+      "close": "Fermer",
+      "copy": "Copier",
+      "copiedShort": "Copié !",
+      "test": "Tester",
+      "copied": "Lien de promotion copié avec succès !",
+      "copyFailed": "Impossible de copier. Sélectionnez le lien et copiez-le manuellement.",
+      "checkout": {
+        "title": "Paiement direct (forte conversion)",
+        "hint": "Le client arrive directement sur le formulaire d’achat. Idéal pour les publicités et WhatsApp."
+      },
+      "landing": {
+        "title": "Page de vente",
+        "hint": "La page du produit, avec photos, description et bouton d’achat."
+      }
+    }
   },
   "Admin": {
     "console": "Console d’exploitation",

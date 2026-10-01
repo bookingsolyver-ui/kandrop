@@ -2148,10 +2148,29 @@
       "copied": "Link de divulgação copiado com sucesso!",
       "copyFailed": "Não foi possível copiar. Copie o endereço manualmente.",
       "inactive": "Ative o produto para ter uma página pública.",
-      "checkout": "Ver Checkout"
+      "checkout": "Ver Checkout",
+      "promote": "Divulgar"
     },
     "viewsLine": "{count, plural, one {# visita} other {# visitas}}",
-    "saveFailed": "Não foi possível guardar a alteração. Tente novamente."
+    "saveFailed": "Não foi possível guardar a alteração. Tente novamente.",
+    "promote": {
+      "title": "Links de Divulgação",
+      "subtitle": "Links exclusivos gerados pela Kandrop para divulgares e venderes este produto sem fricção.",
+      "close": "Fechar",
+      "copy": "Copiar",
+      "copiedShort": "Copiado!",
+      "test": "Testar",
+      "copied": "Link de divulgação copiado com sucesso!",
+      "copyFailed": "Não foi possível copiar. Selecione o link e copie manualmente.",
+      "checkout": {
+        "title": "Checkout Direto (Alta Conversão)",
+        "hint": "O cliente cai direto no formulário de compra. Ideal para anúncios e WhatsApp."
+      },
+      "landing": {
+        "title": "Landing Page",
+        "hint": "A página do produto, com fotos, descrição e o botão de compra."
+      }
+    }
   },
   "Admin": {
     "console": "Consola de operação",

@@ -7,6 +7,7 @@ import { BoxIcon, CartIcon, HeartIcon, SearchIcon } from "@/components/kai/icons
 import { DeleteProductDialog } from "@/components/products/DeleteProductDialog";
 import { updateProduct } from "@/components/products/productsApi";
 import { ProductLinks } from "@/components/products/ProductLinks";
+import { PromoteModal, type PromoteTarget } from "@/components/products/PromoteModal";
 import { BrandLink } from "@/components/ui/BrandButton";
 import { useToast } from "@/components/ui/Toast";
 import { Tooltip } from "@/components/ui/Tooltip";
@@ -117,7 +118,7 @@ function PriceEditor({
  * column, the buttons to see and to share the public sales page. Creating, pricing, pausing and removing a product
  * stay with the merchant; moving an order does not (that is Kandrop's).
  */
-export function MyProductsView({ products }: { products: MyProductRow[] }) {
+export function MyProductsView({ products, siteOrigin }: { products: MyProductRow[]; siteOrigin: string }) {
   const t = useTranslations("MyProducts");
   const f = useFormatters();
   const router = useRouter();
@@ -139,6 +140,7 @@ export function MyProductsView({ products }: { products: MyProductRow[] }) {
   }
   const update = (id: string, patch: { salePrice?: number; status?: "active" | "draft" }) => change(id, () => updateProduct(id, patch));
   const [toDelete, setToDelete] = useState<MyProductRow | null>(null);
+  const [promote, setPromote] = useState<PromoteTarget | null>(null);
   const [tab, setTab] = useState<Tab>("all");
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<{ key: SortKey; dir: "asc" | "desc" }>({ key: "sales", dir: "desc" });
@@ -384,7 +386,7 @@ export function MyProductsView({ products }: { products: MyProductRow[] }) {
                         </span>
                       </td>
                       <td className="px-4 py-3">
-                        <ProductLinks product={p} />
+                        <ProductLinks product={p} onPromote={setPromote} />
                       </td>
                       <td className="px-4 py-3 text-right">
                         <RowActions
@@ -450,6 +452,7 @@ export function MyProductsView({ products }: { products: MyProductRow[] }) {
         )}
       </div>
 
+      <PromoteModal product={promote} siteOrigin={siteOrigin} onClose={() => setPromote(null)} />
       <DeleteProductDialog
         product={toDelete}
         onClose={() => setToDelete(null)}

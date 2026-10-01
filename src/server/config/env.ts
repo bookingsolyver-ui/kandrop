@@ -55,6 +55,9 @@ const schema = z.object({
   // AES-256 key (32 random bytes, base64: `openssl rand -base64 32`) for IBANs and tax numbers at rest.
   // Unset = stored unencrypted, with a warning (see `crypto/field.ts`).
   DATA_ENCRYPTION_KEY: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
+  // The public address links are built on (`https://www.kandrop.com`): used for the promotion links the merchant
+  // copies. Unset = the address the merchant is browsing on.
+  PUBLIC_SITE_URL: z.preprocess((v) => (typeof v === "string" && v.trim() === "" ? undefined : v), z.url().optional()),
   // Kandrop's commission, in basis points of the merchant's gross margin (sale price − the supplier's cost):
   // 1000 = 10%. A BUSINESS decision: set it deliberately; the default is only a placeholder.
   COMMISSION_BPS: z.preprocess((v) => (v === "" ? undefined : v), z.coerce.number().int().min(0).max(10_000).default(1000)),

@@ -33,3 +33,17 @@ export const publicPath = (locale: string, slug: string) => `/${locale}/loja/${e
 
 /** The direct checkout's path (`/<locale>/checkout/<slug>`). */
 export const checkoutPath = (locale: string, slug: string) => `/${locale}/checkout/${encodeURIComponent(slug)}`;
+
+/** The two links a merchant shares for an ACTIVE product, absolute and built on the public address. */
+export interface PromoteLinks {
+  /** The direct checkout (`/<locale>/checkout/<slug>`): the shopper lands on the form, ready to buy. */
+  checkout: string;
+  /** The product's sales page (`/<locale>/loja/<slug>`). */
+  landing: string;
+}
+
+/** `origin` has no trailing slash (`https://www.kandrop.com`). */
+export const promoteLinks = (origin: string, locale: string, slug: string): PromoteLinks => ({
+  checkout: `${origin.replace(/\/+$/, "")}${checkoutPath(locale, slug)}`,
+  landing: `${origin.replace(/\/+$/, "")}${publicPath(locale, slug)}`,
+});
