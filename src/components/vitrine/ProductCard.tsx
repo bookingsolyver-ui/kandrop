@@ -47,6 +47,13 @@ export function ProductCard({
           </div>
         )}
 
+        {selected && (
+          <span className="absolute top-2 left-2 inline-flex items-center gap-1 rounded-full bg-green-700 px-2.5 py-1 text-[10.5px] font-bold tracking-[0.04em] text-white uppercase shadow-sm">
+            <span aria-hidden>✓</span>
+            {t("inStore")}
+          </span>
+        )}
+
         <button
           type="button"
           onClick={onToggleFavorite}
@@ -59,6 +66,7 @@ export function ProductCard({
           <HeartIcon size={18} filled={favorite} />
         </button>
 
+        {/* The green "in your store" badge owns the top-left corner; the origin tag stays at the bottom. */}
         <div className="absolute bottom-2 left-2 flex flex-col items-start gap-1.5">
           <span className="inline-flex items-center gap-1 rounded-full bg-primary px-2.5 py-1 text-[10.5px] font-bold tracking-[0.04em] text-brand-black uppercase shadow-sm">
             {international ? <PlaneIcon size={12} /> : <FlagIcon size={12} />}

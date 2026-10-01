@@ -1962,7 +1962,8 @@
     "toast": {
       "added": "Product added to your products!",
       "view": "View"
-    }
+    },
+    "inStore": "In your showcase"
   },
   "MyProducts": {
     "title": "My products",

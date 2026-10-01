@@ -1962,7 +1962,8 @@
     "toast": {
       "added": "Produit ajouté à vos produits !",
       "view": "Voir"
-    }
+    },
+    "inStore": "Dans votre vitrine"
   },
   "MyProducts": {
     "title": "Mes produits",
