@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { AdminSuppliersView } from "@/components/admin/AdminSuppliersView";
 import { routing } from "@/i18n/routing";
 import { requireAdmin } from "@/server/auth/admin";
+import { supplierProducts } from "@/server/modules/supplier/catalog";
 import { listSuppliers } from "@/server/modules/supplier/service";
 
 type Props = { params: Promise<{ locale: string }> };
@@ -25,5 +26,8 @@ export default async function Page({ params }: Props) {
   const real = (await listSuppliers().catch(() => [])).map((r) => ({
     id: r.id, name: r.companyName, email: r.email, phone: r.phone, address: r.address, status: r.status, createdAt: r.createdAt,
   }));
-  return <AdminSuppliersView real={real} />;
+  const review = (await supplierProducts.listForReview().catch(() => [])).map((p) => ({
+    id: p.id, name: p.name, supplierName: p.supplierName, category: p.category, costPrice: p.costPrice, stock: p.stock, createdAt: p.createdAt,
+  }));
+  return <AdminSuppliersView real={real} review={review} />;
 }

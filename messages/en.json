@@ -2555,6 +2555,13 @@
           "approved": "Approved",
           "rejected": "Rejected"
         }
+      },
+      "catalog": {
+        "reviewTitle": "Supplier products under review",
+        "reviewEmpty": "No products waiting for review.",
+        "productApproved": "Product approved.",
+        "productRejected": "Product rejected.",
+        "supplier": "Supplier"
       }
     },
     "restricted": {
@@ -2659,7 +2666,10 @@
       "weight_invalid": "Enter a valid weight in kg.",
       "price_invalid": "Enter a whole amount in kwz.",
       "stock_invalid": "Enter the stock (0 or more).",
-      "suggested_below_cost": "The suggested price must be higher than the cost price."
+      "suggested_below_cost": "The suggested price must be higher than the cost price.",
+      "image_invalid": "Use a valid JPG, PNG or WebP image, up to 2 MB.",
+      "image_too_large": "The image is larger than 2 MB.",
+      "bank_required": "Enter the bank name."
     },
     "shell": {
       "logout": "Sign out",
@@ -2701,7 +2711,8 @@
         "title": "Stock that needs attention",
         "empty": "All stock is healthy.",
         "out": "Out of stock",
-        "low": "~{weekly} sales/week"
+        "low": "~{weekly} sales/week",
+        "lowShort": "Low stock"
       },
       "cta": "Got a new product?",
       "ctaLink": "Add it under Products"
@@ -2724,7 +2735,8 @@
         "cost": "Cost Price (kwz)",
         "suggested": "Suggested Retail Price (kwz)",
         "stock": "Physical Stock",
-        "status": "Status"
+        "status": "Status",
+        "actions": "Actions"
       },
       "status": {
         "approved": "Approved",
@@ -2733,7 +2745,9 @@
       },
       "demoNote": "Demo data saved in this browser.",
       "toast": {
-        "submitted": "Product sent to the Kandrop team for review."
+        "submitted": "Product sent to the Kandrop team for review.",
+        "updated": "Product updated and sent for review again.",
+        "deleted": "Product removed."
       },
       "modal": {
         "title": "Add product",
@@ -2749,7 +2763,19 @@
         "suggested": "Suggested price (kwz)",
         "reviewNote": "The product only appears on the Showcase once the Kandrop team approves it.",
         "cancel": "Cancel",
-        "submit": "Send for review"
+        "submit": "Send for review",
+        "titleEdit": "Edit product",
+        "save": "Save changes",
+        "saving": "Saving…"
+      },
+      "edit": "Edit",
+      "delete": "Remove",
+      "deleteTitle": "Remove product",
+      "deleteBody": "Remove “{name}” from your catalogue? This cannot be undone.",
+      "errors": {
+        "unauthorized": "Your session no longer allows this action. Please sign in again.",
+        "notFound": "This product no longer exists.",
+        "generic": "Something went wrong. Please try again."
       }
     },
     "finance": {
@@ -2797,6 +2823,27 @@
         "destination": "The amount will be transferred to the bank account of {name}.",
         "cancel": "Cancel",
         "submit": "Request"
+      },
+      "bank": {
+        "title": "Payout details",
+        "none": "You have not said where you want to be paid yet.",
+        "add": "Add bank details",
+        "change": "Change details",
+        "bank": "Bank",
+        "holder": "Holder",
+        "modalTitle": "Bank details",
+        "fields": {
+          "bankName": "Bank name",
+          "holderName": "Account holder",
+          "iban": "IBAN",
+          "password": "Your password"
+        },
+        "securityNote": "The IBAN is encrypted before it is stored and is never shown in full again. Your password confirms it is really you changing where payments go.",
+        "save": "Save",
+        "saving": "Saving…",
+        "saved": "Bank details saved.",
+        "failed": "Could not save. Please try again.",
+        "rateLimited": "Too many attempts. Try again in a few minutes."
       }
     }
   }

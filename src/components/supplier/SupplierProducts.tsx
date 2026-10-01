@@ -1,91 +1,118 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState, useTransition } from "react";
+import { saveProductAction, deleteProductAction, type ActionResult } from "@/app/[locale]/fornecedor/(portal)/actions";
 import { Badge, Modal, Pager, PageHeader, card, fold, usePager } from "@/components/admin/ui";
 import { useFormatters } from "@/components/dashboard/useFormatters";
 import { BoxIcon } from "@/components/kai/icons";
 import { BRAND_BUTTON_CLASS } from "@/components/ui/BrandButton";
 import { useToast } from "@/components/ui/Toast";
-import { useCurrentSupplier, useSubmissions } from "@/lib/supplier/store";
-import { productsOfSupplier, stockOf, type SubmissionStatus } from "@/shared/supplier/mock";
-import { addProductSchema } from "@/shared/supplier/schemas";
+import { useRouter } from "@/i18n/navigation";
+import { productInputSchema } from "@/shared/supplier/schemas";
 import { VITRINE_CATEGORIES } from "@/shared/vitrine/mock";
 
-type Row = { id: string; title: string; sku: string; cost: number; suggested: number; stock: number; status: SubmissionStatus; image?: string };
-const TONE = { approved: "success", in_review: "warn", rejected: "danger" } as const;
-type Field = "title" | "category" | "description" | "weightKg" | "costPrice" | "suggestedPrice" | "stock";
-const EMPTY = { title: "", category: "", description: "", weightKg: "", costPrice: "", suggestedPrice: "", stock: "" };
+/** What the server sends: no image bytes, only whether there is one. */
+export interface ProductRow {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  /** Minor units. */
+  costPrice: number;
+  stock: number;
+  status: "in_review" | "approved" | "rejected";
+  hasImage: boolean;
+  updatedAt: number;
+}
 
-/** The supplier's own products and the form to propose a new one (it goes to review before the Vitrine). */
-export function SupplierProducts() {
+const TONE = { approved: "success", in_review: "warn", rejected: "danger" } as const;
+type Field = "name" | "description" | "category" | "costPrice" | "stock" | "image";
+const EMPTY = { id: "", name: "", description: "", category: "", costPrice: "", stock: "" };
+const MAX_BYTES = 2 * 1024 * 1024;
+
+/** The supplier's catalogue: list, add, edit and remove. The server is the gate; this form only gives early feedback. */
+export function SupplierProducts({ products }: { products: ProductRow[] }) {
   const t = useTranslations("Supplier.products");
   const v = useTranslations("Supplier.validation");
   const cats = useTranslations("Vitrine.cat");
   const f = useFormatters();
   const toast = useToast();
-  const { supplier, seeded } = useCurrentSupplier();
-  const { items: submissions, create } = useSubmissions();
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
   const [query, setQuery] = useState("");
-  const [status, setStatus] = useState<"all" | SubmissionStatus>("all");
+  const [status, setStatus] = useState<"all" | ProductRow["status"]>("all");
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState(EMPTY);
   const [errors, setErrors] = useState<Partial<Record<Field, string>>>({});
-  const [image, setImage] = useState<string | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [toDelete, setToDelete] = useState<ProductRow | null>(null);
+  const file = useRef<HTMLInputElement>(null);
 
-  const rows = useMemo<Row[]>(() => {
-    if (!supplier) return [];
-    const approved: Row[] = seeded
-      ? productsOfSupplier(supplier.id).map((p) => ({ id: p.id, title: p.title, sku: p.sku, cost: p.costPrice, suggested: Math.round((p.costPrice * 2.1) / 10_000) * 10_000, stock: stockOf(p.id), status: "approved" as const }))
-      : [];
-    const submitted: Row[] = submissions.filter((s) => s.supplierId === supplier.id).map((s) => ({ id: s.id, title: s.title, sku: s.sku, cost: s.costPrice, suggested: s.suggestedPrice, stock: s.stock, status: s.status }));
+  const rows = useMemo(() => {
     const q = fold(query.trim());
-    return [...submitted, ...approved].filter((r) => (status === "all" || r.status === status) && (!q || fold(`${r.title} ${r.sku}`).includes(q)));
-  }, [supplier, seeded, submissions, query, status]);
+    return products.filter((p) => (status === "all" || p.status === status) && (!q || fold(`${p.name} ${p.category}`).includes(q)));
+  }, [products, query, status]);
   const pager = usePager(rows, 10);
 
-  const close = () => { setOpen(false); setForm(EMPTY); setErrors({}); setImage(null); };
-  const set = (k: Field) => (e: { target: { value: string } }) => setForm((s) => ({ ...s, [k]: e.target.value }));
+  const close = () => { setOpen(false); setForm(EMPTY); setErrors({}); setPreview(null); setFormError(null); if (file.current) file.current.value = ""; };
+  const edit = (p: ProductRow) => {
+    setForm({ id: p.id, name: p.name, description: p.description, category: p.category, costPrice: String(p.costPrice / 100), stock: String(p.stock) });
+    setPreview(p.hasImage ? `/api/supplier/products/${p.id}/image?v=${p.updatedAt}` : null);
+    setOpen(true);
+  };
+  const set = (k: keyof typeof EMPTY) => (e: { target: { value: string } }) => setForm((s) => ({ ...s, [k]: e.target.value }));
+
+  const translate = (code: string) => v(code as Parameters<typeof v>[0]);
+  const failure = (r: Extract<ActionResult, { ok: false }>) => {
+    if (r.error === "validation") {
+      const next: Partial<Record<Field, string>> = {};
+      for (const [k, code] of Object.entries(r.fields)) next[k as Field] = translate(code);
+      setErrors(next);
+    } else setFormError(t(r.error === "unauthorized" ? "errors.unauthorized" : r.error === "not_found" ? "errors.notFound" : "errors.generic"));
+  };
 
   const submit = () => {
-    if (!supplier) return;
-    const parsed = addProductSchema.safeParse(form);
-    if (!parsed.success) {
-      const next: Partial<Record<Field, string>> = {};
-      for (const i of parsed.error.issues) {
-        const key = i.path[0] as Field;
-        if (!next[key]) next[key] = v(i.message as Parameters<typeof v>[0]);
-      }
-      setErrors(next);
-      return;
-    }
-    const d = parsed.data;
-    if (d.suggestedPrice <= d.costPrice) return setErrors({ suggestedPrice: v("suggested_below_cost") });
-    create({
-      id: `sub_${crypto.randomUUID().slice(0, 8)}`,
-      supplierId: supplier.id,
-      sku: `SUB${Math.floor(3000 + Math.random() * 6999)}`,
-      title: d.title,
-      category: d.category,
-      description: d.description,
-      weightKg: d.weightKg,
-      costPrice: d.costPrice * 100,
-      suggestedPrice: d.suggestedPrice * 100,
-      stock: d.stock,
-      createdAt: Date.now(),
-      status: "in_review",
+    setFormError(null);
+    const parsed = productInputSchema.safeParse({ ...form, id: form.id || undefined });
+    const chosen = file.current?.files?.[0];
+    const next: Partial<Record<Field, string>> = {};
+    if (!parsed.success) for (const i of parsed.error.issues) { const k = i.path[0] as Field; if (!next[k]) next[k] = translate(i.message); }
+    if (chosen && chosen.size > MAX_BYTES) next.image = translate("image_too_large");
+    if (Object.keys(next).length) return setErrors(next);
+    setErrors({});
+
+    const data = new FormData();
+    for (const [k, val] of Object.entries(form)) if (val !== "") data.set(k, val);
+    if (chosen) data.set("image", chosen);
+    startTransition(async () => {
+      const result = await saveProductAction(data);
+      if (!result.ok) return failure(result);
+      toast({ message: t(form.id ? "toast.updated" : "toast.submitted") });
+      close();
+      router.refresh();
     });
-    toast({ message: t("toast.submitted") });
-    close();
+  };
+
+  const confirmDelete = () => {
+    if (!toDelete) return;
+    const id = toDelete.id;
+    startTransition(async () => {
+      const result = await deleteProductAction(id);
+      setToDelete(null);
+      if (!result.ok) return toast({ message: t("errors.generic") });
+      toast({ message: t("toast.deleted") });
+      router.refresh();
+    });
   };
 
   const input = "h-11 w-full rounded-xl border border-border bg-white px-3 text-sm outline-none focus-visible:border-primary/40 focus-visible:ring-2 focus-visible:ring-primary/20";
   const lbl = "text-xs font-semibold tracking-wide text-[var(--ink-700)] uppercase";
-  const fieldBox = (k: Field, label: string, node: React.ReactNode) => (
+  const box = (k: Field, label: string, node: React.ReactNode) => (
     <label className="block"><span className={lbl}>{label}</span>{node}{errors[k] && <span role="alert" className="mt-1 block text-[12px] text-down">{errors[k]}</span>}</label>
   );
 
-  if (!supplier) return null;
   return (
     <div>
       <PageHeader title={t("title")} subtitle={t("subtitle")} actions={<button type="button" onClick={() => setOpen(true)} className={`${BRAND_BUTTON_CLASS} h-11 px-5 text-sm`}>{t("add")}</button>} />
@@ -102,25 +129,35 @@ export function SupplierProducts() {
         </div>
         {rows.length === 0 ? <p className="px-6 py-16 text-center text-sm text-[var(--ink-600)]">{t("empty")}</p> : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[60rem] border-collapse text-sm">
+            <table className="w-full min-w-[56rem] border-collapse text-sm">
               <thead className="border-b border-gray-100 bg-[var(--ink-50)]">
                 <tr className="text-left text-[11px] font-bold tracking-[0.06em] text-[var(--ink-500)] uppercase">
-                  <th className="px-4 py-3">{t("cols.product")}</th><th className="px-4 py-3">{t("cols.sku")}</th>
-                  <th className="px-4 py-3 text-right">{t("cols.cost")}</th><th className="px-4 py-3 text-right">{t("cols.suggested")}</th>
+                  <th className="px-4 py-3">{t("cols.product")}</th>
+                  <th className="px-4 py-3 text-right">{t("cols.cost")}</th>
                   <th className="px-4 py-3 text-right">{t("cols.stock")}</th><th className="px-4 py-3">{t("cols.status")}</th>
+                  <th className="px-4 py-3 text-right">{t("cols.actions")}</th>
                 </tr>
               </thead>
               <tbody>
-                {pager.slice.map((r) => (
-                  <tr key={r.id} className="border-b border-gray-100 last:border-b-0 hover:bg-[var(--ink-50)]">
+                {pager.slice.map((p) => (
+                  <tr key={p.id} className="border-b border-gray-100 last:border-b-0 hover:bg-[var(--ink-50)]">
                     <td className="px-4 py-3"><div className="flex items-center gap-3">
-                      <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-[var(--ink-50)] to-[var(--ink-200)] text-[var(--ink-300)]"><BoxIcon size={20} /></span>
-                      <span className="line-clamp-2 max-w-sm font-semibold text-[var(--ink-900)]">{r.title}</span></div></td>
-                    <td className="mono-num px-4 py-3 text-[var(--ink-600)]">{r.sku}</td>
-                    <td className="mono-num px-4 py-3 text-right font-bold">{f.money(r.cost)}</td>
-                    <td className="mono-num px-4 py-3 text-right text-[var(--ink-600)]">{f.money(r.suggested)}</td>
-                    <td className={`mono-num px-4 py-3 text-right font-extrabold ${r.stock === 0 ? "text-[var(--kai-danger)]" : r.stock < 10 ? "text-[var(--kai-warn)]" : ""}`}>{r.stock}</td>
-                    <td className="px-4 py-3"><Badge tone={TONE[r.status]}>{t(`status.${r.status}`)}</Badge></td>
+                      {p.hasImage ? (
+                        // eslint-disable-next-line @next/next/no-img-element -- a private, per-supplier image route
+                        <img src={`/api/supplier/products/${p.id}/image?v=${p.updatedAt}`} alt="" loading="lazy" className="size-12 shrink-0 rounded-xl object-cover" />
+                      ) : (
+                        <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-[var(--ink-50)] to-[var(--ink-200)] text-[var(--ink-300)]"><BoxIcon size={20} /></span>
+                      )}
+                      <span><span className="line-clamp-2 max-w-sm font-semibold text-[var(--ink-900)]">{p.name}</span><span className="text-[12px] text-[var(--ink-500)]">{VITRINE_CATEGORIES.includes(p.category as never) ? cats(p.category as never) : p.category}</span></span></div></td>
+                    <td className="mono-num px-4 py-3 text-right font-bold">{f.money(p.costPrice)}</td>
+                    <td className={`mono-num px-4 py-3 text-right font-extrabold ${p.stock === 0 ? "text-[var(--kai-danger)]" : p.stock < 10 ? "text-[var(--kai-warn)]" : ""}`}>{p.stock}</td>
+                    <td className="px-4 py-3"><Badge tone={TONE[p.status]}>{t(`status.${p.status}`)}</Badge></td>
+                    <td className="px-4 py-3">
+                      <div className="flex justify-end gap-2">
+                        <button type="button" onClick={() => edit(p)} className="h-9 rounded-full border border-[var(--ink-200)] bg-white px-3.5 text-[13px] font-semibold hover:border-[var(--ink-300)]">{t("edit")}</button>
+                        <button type="button" onClick={() => setToDelete(p)} className="h-9 rounded-full border border-[var(--ink-200)] bg-white px-3.5 text-[13px] font-semibold text-[var(--kai-danger)] hover:border-[var(--kai-danger)]">{t("delete")}</button>
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -129,41 +166,46 @@ export function SupplierProducts() {
         )}
         <Pager pager={pager} />
       </div>
-      <p className="mt-4 text-center text-[12px] text-[var(--ink-500)]">{t("demoNote")}</p>
 
-      <Modal open={open} onClose={close} title={t("modal.title")}>
+      <Modal open={open} onClose={close} title={t(form.id ? "modal.titleEdit" : "modal.title")}>
         <form onSubmit={(e) => { e.preventDefault(); submit(); }} noValidate className="space-y-4">
-          {fieldBox("title", t("modal.name"), <input value={form.title} onChange={set("title")} className={`${input} mt-1.5`} />)}
-          {fieldBox("category", t("modal.category"), (
+          {formError && <div role="alert" className="rounded-xl border border-down px-3.5 py-3 text-[13px] text-down">{formError}</div>}
+          {box("name", t("modal.name"), <input value={form.name} onChange={set("name")} maxLength={140} className={`${input} mt-1.5`} />)}
+          {box("category", t("modal.category"), (
             <select value={form.category} onChange={set("category")} className={`${input} mt-1.5`}>
               <option value="">{t("modal.choose")}</option>
               {VITRINE_CATEGORIES.map((c) => <option key={c} value={c}>{cats(c)}</option>)}
             </select>
           ))}
-          {fieldBox("description", t("modal.description"), <textarea value={form.description} onChange={set("description")} rows={3} className="mt-1.5 w-full rounded-xl border border-border bg-white p-3 text-sm outline-none focus-visible:border-primary/40 focus-visible:ring-2 focus-visible:ring-primary/20" />)}
-          <div>
-            <span className={lbl}>{t("modal.image")}</span>
-            <label className="mt-1.5 flex cursor-pointer items-center gap-3 rounded-xl border border-dashed border-[var(--ink-300)] bg-[var(--ink-50)] p-3 text-sm text-[var(--ink-600)]">
-              {image ? (
-                // eslint-disable-next-line @next/next/no-img-element -- a local blob: preview
-                <img src={image} alt="" className="size-14 rounded-lg object-cover" />
+          {box("description", t("modal.description"), <textarea value={form.description} onChange={set("description")} rows={3} maxLength={1500} className="mt-1.5 w-full rounded-xl border border-border bg-white p-3 text-sm outline-none focus-visible:border-primary/40 focus-visible:ring-2 focus-visible:ring-primary/20" />)}
+          {box("image", t("modal.image"), (
+            <span className="mt-1.5 flex cursor-pointer items-center gap-3 rounded-xl border border-dashed border-[var(--ink-300)] bg-[var(--ink-50)] p-3 text-sm text-[var(--ink-600)]">
+              {preview ? (
+                // eslint-disable-next-line @next/next/no-img-element -- a local blob: or private-route preview
+                <img src={preview} alt="" className="size-14 rounded-lg object-cover" />
               ) : <span className="grid size-14 place-items-center rounded-lg bg-white text-[var(--ink-300)]"><BoxIcon size={22} /></span>}
               <span>{t("modal.imageHelp")}</span>
-              <input type="file" accept="image/*" className="sr-only" onChange={(e) => { const file = e.target.files?.[0]; if (file) setImage(URL.createObjectURL(file)); }} />
-            </label>
-          </div>
+              <input ref={file} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(e) => { const chosen = e.target.files?.[0]; if (chosen) setPreview(URL.createObjectURL(chosen)); }} />
+            </span>
+          ))}
           <div className="grid grid-cols-2 gap-3">
-            {fieldBox("weightKg", t("modal.weight"), <input inputMode="decimal" value={form.weightKg} onChange={set("weightKg")} className={`${input} mono-num mt-1.5`} />)}
-            {fieldBox("stock", t("modal.stock"), <input inputMode="numeric" value={form.stock} onChange={set("stock")} className={`${input} mono-num mt-1.5`} />)}
-            {fieldBox("costPrice", t("modal.cost"), <input inputMode="numeric" value={form.costPrice} onChange={set("costPrice")} className={`${input} mono-num mt-1.5`} />)}
-            {fieldBox("suggestedPrice", t("modal.suggested"), <input inputMode="numeric" value={form.suggestedPrice} onChange={set("suggestedPrice")} className={`${input} mono-num mt-1.5`} />)}
+            {box("costPrice", t("modal.cost"), <input inputMode="numeric" value={form.costPrice} onChange={set("costPrice")} className={`${input} mono-num mt-1.5`} />)}
+            {box("stock", t("modal.stock"), <input inputMode="numeric" value={form.stock} onChange={set("stock")} className={`${input} mono-num mt-1.5`} />)}
           </div>
           <p className="text-[12px] text-[var(--ink-500)]">{t("modal.reviewNote")}</p>
           <div className="flex justify-end gap-2 pt-1">
             <button type="button" onClick={close} className="inline-flex h-10 items-center rounded-full border border-[var(--ink-200)] bg-white px-4 text-sm font-semibold">{t("modal.cancel")}</button>
-            <button type="submit" className={`${BRAND_BUTTON_CLASS} h-10 px-5 text-sm`}>{t("modal.submit")}</button>
+            <button type="submit" disabled={pending} className={`${BRAND_BUTTON_CLASS} h-10 px-5 text-sm`}>{pending ? t("modal.saving") : t(form.id ? "modal.save" : "modal.submit")}</button>
           </div>
         </form>
+      </Modal>
+
+      <Modal open={toDelete !== null} onClose={() => setToDelete(null)} title={t("deleteTitle")}>
+        <p className="text-sm text-[var(--ink-600)]">{t("deleteBody", { name: toDelete?.name ?? "" })}</p>
+        <div className="mt-5 flex justify-end gap-2">
+          <button type="button" onClick={() => setToDelete(null)} className="inline-flex h-10 items-center rounded-full border border-[var(--ink-200)] bg-white px-4 text-sm font-semibold">{t("modal.cancel")}</button>
+          <button type="button" onClick={confirmDelete} disabled={pending} className="inline-flex h-10 items-center rounded-full bg-[var(--kai-danger)] px-5 text-sm font-semibold text-white disabled:opacity-60">{t("delete")}</button>
+        </div>
       </Modal>
     </div>
   );

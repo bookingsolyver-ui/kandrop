@@ -2555,6 +2555,13 @@
           "approved": "Approuvé",
           "rejected": "Refusé"
         }
+      },
+      "catalog": {
+        "reviewTitle": "Produits de fournisseurs en examen",
+        "reviewEmpty": "Aucun produit en attente d’examen.",
+        "productApproved": "Produit approuvé.",
+        "productRejected": "Produit refusé.",
+        "supplier": "Fournisseur"
       }
     },
     "restricted": {
@@ -2659,7 +2666,10 @@
       "weight_invalid": "Indiquez un poids valide en kg.",
       "price_invalid": "Indiquez un montant entier en kwz.",
       "stock_invalid": "Indiquez le stock (0 ou plus).",
-      "suggested_below_cost": "Le prix suggéré doit être supérieur au prix de revient."
+      "suggested_below_cost": "Le prix suggéré doit être supérieur au prix de revient.",
+      "image_invalid": "Utilisez une image JPG, PNG ou WebP valide, de 2 Mo maximum.",
+      "image_too_large": "L’image dépasse 2 Mo.",
+      "bank_required": "Indiquez le nom de la banque."
     },
     "shell": {
       "logout": "Se déconnecter",
@@ -2701,7 +2711,8 @@
         "title": "Stock à surveiller",
         "empty": "Tout le stock est sain.",
         "out": "Épuisé",
-        "low": "~{weekly} ventes/semaine"
+        "low": "~{weekly} ventes/semaine",
+        "lowShort": "Stock bas"
       },
       "cta": "Un nouveau produit ?",
       "ctaLink": "Ajoutez-le dans Produits"
@@ -2724,7 +2735,8 @@
         "cost": "Prix de revient (kwz)",
         "suggested": "Prix de vente suggéré (kwz)",
         "stock": "Stock physique",
-        "status": "Statut"
+        "status": "Statut",
+        "actions": "Actions"
       },
       "status": {
         "approved": "Approuvé",
@@ -2733,7 +2745,9 @@
       },
       "demoNote": "Données de démonstration enregistrées dans ce navigateur.",
       "toast": {
-        "submitted": "Produit envoyé à l’équipe Kandrop pour examen."
+        "submitted": "Produit envoyé à l’équipe Kandrop pour examen.",
+        "updated": "Produit mis à jour et renvoyé pour examen.",
+        "deleted": "Produit supprimé."
       },
       "modal": {
         "title": "Ajouter un produit",
@@ -2749,7 +2763,19 @@
         "suggested": "Prix suggéré (kwz)",
         "reviewNote": "Le produit n’apparaît dans la Vitrine qu’après approbation de l’équipe Kandrop.",
         "cancel": "Annuler",
-        "submit": "Envoyer pour examen"
+        "submit": "Envoyer pour examen",
+        "titleEdit": "Modifier le produit",
+        "save": "Enregistrer",
+        "saving": "Enregistrement…"
+      },
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "deleteTitle": "Supprimer le produit",
+      "deleteBody": "Supprimer « {name} » de votre catalogue ? Cette action est irréversible.",
+      "errors": {
+        "unauthorized": "Votre session ne permet plus cette action. Reconnectez-vous.",
+        "notFound": "Ce produit n’existe plus.",
+        "generic": "Une erreur est survenue. Veuillez réessayer."
       }
     },
     "finance": {
@@ -2797,6 +2823,27 @@
         "destination": "Le montant sera viré sur le compte bancaire de {name}.",
         "cancel": "Annuler",
         "submit": "Demander"
+      },
+      "bank": {
+        "title": "Coordonnées de paiement",
+        "none": "Vous n’avez pas encore indiqué où être payé.",
+        "add": "Ajouter des coordonnées bancaires",
+        "change": "Modifier",
+        "bank": "Banque",
+        "holder": "Titulaire",
+        "modalTitle": "Coordonnées bancaires",
+        "fields": {
+          "bankName": "Nom de la banque",
+          "holderName": "Titulaire du compte",
+          "iban": "IBAN",
+          "password": "Votre mot de passe"
+        },
+        "securityNote": "L’IBAN est chiffré avant d’être enregistré et n’est plus jamais affiché en entier. Votre mot de passe confirme que c’est bien vous qui changez la destination des paiements.",
+        "save": "Enregistrer",
+        "saving": "Enregistrement…",
+        "saved": "Coordonnées bancaires enregistrées.",
+        "failed": "Impossible d’enregistrer. Veuillez réessayer.",
+        "rateLimited": "Trop de tentatives. Réessayez dans quelques minutes."
       }
     }
   }

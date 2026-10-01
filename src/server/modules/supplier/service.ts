@@ -149,3 +149,21 @@ export async function setSupplierStatus(id: string, status: SupplierStatus): Pro
   must("suppliers.setStatus", await db().from("suppliers").update({ status }).eq("id", id));
   return { before: current.status as SupplierStatus };
 }
+
+/**
+ * Re-authentication for a sensitive change (the payout destination): the supplier's own password,
+ * checked against Supabase Auth. Returns `false` for a wrong password (the session is revoked at once).
+ */
+export async function verifySupplierPassword(id: string, password: string): Promise<boolean> {
+  if (password.length === 0 || password.length > 128) return false;
+  const { data } = await db().auth.admin.getUserById(id);
+  const email = data.user?.email;
+  if (!email) return false;
+  const client = createPasswordCheckClient();
+  try {
+    const { error } = await client.auth.signInWithPassword({ email, password });
+    return !error;
+  } finally {
+    await client.auth.signOut().catch(() => undefined);
+  }
+}

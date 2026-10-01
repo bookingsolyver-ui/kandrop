@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { holderSchema, ibanSchema } from "@/shared/bank/schemas";
 
 /** The 18 provinces of Angola, for the warehouse address. */
 export const PROVINCES = [
@@ -29,3 +30,26 @@ export const addProductSchema = z.object({
   suggestedPrice: z.coerce.number().int().positive("price_invalid").max(10_000_000, "price_invalid"),
   stock: z.coerce.number().int().min(0, "stock_invalid").max(1_000_000, "stock_invalid"),
 });
+
+const CATEGORIES = ["beauty", "toys", "fashion", "home", "jewelry", "health", "tech", "pets"] as const;
+
+/** A catalogue product as the supplier submits it. Price in whole kwz; the server stores minor units. */
+export const productInputSchema = z.object({
+  /** Present when editing. */
+  id: z.uuid().optional(),
+  name: z.string().trim().min(5, "title_required").max(140, "title_required"),
+  description: z.string().trim().min(20, "description_short").max(1500, "description_short"),
+  category: z.enum(CATEGORIES, "category_required"),
+  costPrice: z.coerce.number("price_invalid").int("price_invalid").positive("price_invalid").max(10_000_000, "price_invalid"),
+  stock: z.coerce.number("stock_invalid").int("stock_invalid").min(0, "stock_invalid").max(1_000_000, "stock_invalid"),
+});
+export type ProductInput = z.input<typeof productInputSchema>;
+
+/** Where the supplier is paid. The password re-authenticates the change (the classic account-takeover move). */
+export const bankDetailsSchema = z.object({
+  bankName: z.string().trim().min(2, "bank_required").max(80, "bank_required"),
+  holderName: holderSchema,
+  iban: ibanSchema,
+  password: z.string("password_required").min(1, "password_required").max(128),
+});
+export type BankDetailsInput = z.input<typeof bankDetailsSchema>;

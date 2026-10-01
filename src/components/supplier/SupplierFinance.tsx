@@ -1,19 +1,31 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { Badge, Modal, Pager, PageHeader, StatCard, card, dateOnly, usePager } from "@/components/admin/ui";
 import { useFormatters } from "@/components/dashboard/useFormatters";
 import { ClockIcon, WalletIcon } from "@/components/kai/icons";
 import { BRAND_BUTTON_CLASS } from "@/components/ui/BrandButton";
 import { useToast } from "@/components/ui/Toast";
+import { saveBankDetailsAction } from "@/app/[locale]/fornecedor/(portal)/actions";
+import { useRouter } from "@/i18n/navigation";
+import { formatIbanInput } from "@/shared/bank/schemas";
+import { bankDetailsSchema } from "@/shared/supplier/schemas";
 import { useCurrentSupplier, useWithdrawals } from "@/lib/supplier/store";
 import { payoutsOfSupplier, salesOfSupplier } from "@/shared/supplier/mock";
 
 const MIN = 500_000; // 5 000 kwz, in minor units
 
 /** What the supplier earns (the cost price of each product a merchant sells) and the withdrawals. */
-export function SupplierFinance() {
+/** The payout account as the server sends it: the IBAN is already masked, the full number never leaves the server. */
+export interface BankView {
+  bankName: string;
+  holderName: string;
+  ibanMasked: string;
+  updatedAt: number;
+}
+
+export function SupplierFinance({ bank }: { bank: BankView | null }) {
   const t = useTranslations("Supplier.finance");
   const f = useFormatters();
   const locale = useLocale();
@@ -22,6 +34,41 @@ export function SupplierFinance() {
   const { withdrawals, request } = useWithdrawals(supplier?.id ?? null);
   const [open, setOpen] = useState(false);
   const [amount, setAmount] = useState("");
+  const router = useRouter();
+  const bt = useTranslations("Supplier.finance.bank");
+  const bv = useTranslations("Settings.bank.validation");
+  const sv = useTranslations("Supplier.validation");
+  const [bankOpen, setBankOpen] = useState(false);
+  const [bankPending, startBank] = useTransition();
+  const [bankForm, setBankForm] = useState({ bankName: "", holderName: "", iban: "", password: "" });
+  const [bankErrors, setBankErrors] = useState<Record<string, string>>({});
+  const [bankFailure, setBankFailure] = useState<string | null>(null);
+  const bankMessage = (code: string) => (code === "bank_required" ? sv("bank_required") : bv(code as Parameters<typeof bv>[0]));
+  const closeBank = () => { setBankOpen(false); setBankForm({ bankName: "", holderName: "", iban: "", password: "" }); setBankErrors({}); setBankFailure(null); };
+  const submitBank = () => {
+    setBankFailure(null);
+    const parsed = bankDetailsSchema.safeParse(bankForm);
+    if (!parsed.success) {
+      const next: Record<string, string> = {};
+      for (const i of parsed.error.issues) { const k = String(i.path[0]); if (!next[k]) next[k] = bankMessage(i.message); }
+      return setBankErrors(next);
+    }
+    setBankErrors({});
+    startBank(async () => {
+      // The password and the IBAN travel to the server once; the IBAN is encrypted there before it is stored.
+      const result = await saveBankDetailsAction(bankForm);
+      if (result.ok) {
+        toast({ message: bt("saved") });
+        closeBank();
+        router.refresh();
+      } else if (result.error === "validation") {
+        const next: Record<string, string> = {};
+        for (const [k, code] of Object.entries(result.fields)) next[k] = bankMessage(code);
+        setBankErrors(next);
+      } else if (result.error === "password_incorrect") setBankErrors({ password: bv("password_incorrect") });
+      else setBankFailure(bt(result.error === "rate_limited" ? "rateLimited" : "failed"));
+    });
+  };
 
   const sales = useMemo(() => (supplier && seeded ? salesOfSupplier(supplier.id) : []), [supplier, seeded]);
   const paid = useMemo(() => (supplier && seeded ? payoutsOfSupplier(supplier.id) : []), [supplier, seeded]);
@@ -52,6 +99,49 @@ export function SupplierFinance() {
         <StatCard label={t("cards.available")} value={f.money(available)} note={t("cards.availableNote")} icon={<WalletIcon size={18} />} />
         <StatCard label={t("cards.pending")} value={f.money(pending)} note={t("cards.pendingNote")} icon={<ClockIcon size={18} />} tone="warn" />
       </div>
+
+      <section className={`${card} mt-6 p-5`}>
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h2 className="text-[17px] font-bold tracking-tight">{bt("title")}</h2>
+            {bank ? (
+              <dl className="mt-3 space-y-1 text-sm">
+                <div className="flex gap-2"><dt className="w-20 text-[var(--ink-500)]">{bt("bank")}</dt><dd className="font-semibold">{bank.bankName}</dd></div>
+                <div className="flex gap-2"><dt className="w-20 text-[var(--ink-500)]">{bt("holder")}</dt><dd className="font-semibold">{bank.holderName}</dd></div>
+                <div className="flex gap-2"><dt className="w-20 text-[var(--ink-500)]">IBAN</dt><dd className="mono-num font-semibold">{bank.ibanMasked}</dd></div>
+              </dl>
+            ) : <p className="mt-2 text-sm text-[var(--ink-600)]">{bt("none")}</p>}
+          </div>
+          <button type="button" onClick={() => setBankOpen(true)} className="inline-flex h-10 items-center rounded-full border border-[var(--ink-200)] bg-white px-4 text-sm font-semibold hover:border-[var(--ink-300)]">{bt(bank ? "change" : "add")}</button>
+        </div>
+      </section>
+
+      <Modal open={bankOpen} onClose={closeBank} title={bt("modalTitle")}>
+        <form onSubmit={(e) => { e.preventDefault(); submitBank(); }} noValidate autoComplete="off" className="space-y-4">
+          {bankFailure && <div role="alert" className="rounded-xl border border-down px-3.5 py-3 text-[13px] text-down">{bankFailure}</div>}
+          {(["bankName", "holderName", "iban", "password"] as const).map((k) => (
+            <label key={k} className="block">
+              <span className="text-xs font-semibold tracking-wide text-[var(--ink-700)] uppercase">{bt(`fields.${k}`)}</span>
+              <input
+                type={k === "password" ? "password" : "text"}
+                autoComplete={k === "password" ? "current-password" : "off"}
+                inputMode={k === "iban" ? "text" : undefined}
+                placeholder={k === "iban" ? "AO06 0000 0000 0000 0000 0000 0" : undefined}
+                value={bankForm[k]}
+                onChange={(e) => setBankForm((b) => ({ ...b, [k]: k === "iban" ? formatIbanInput(e.target.value) : e.target.value }))}
+                aria-invalid={!!bankErrors[k]}
+                className={`mt-1.5 h-11 w-full rounded-xl border bg-white px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-primary/20 ${k === "iban" ? "mono-num" : ""} ${bankErrors[k] ? "border-down" : "border-border"}`}
+              />
+              {bankErrors[k] && <span role="alert" className="mt-1 block text-[12px] text-down">{bankErrors[k]}</span>}
+            </label>
+          ))}
+          <p className="text-[12px] text-[var(--ink-500)]">{bt("securityNote")}</p>
+          <div className="flex justify-end gap-2">
+            <button type="button" onClick={closeBank} className="inline-flex h-10 items-center rounded-full border border-[var(--ink-200)] bg-white px-4 text-sm font-semibold">{t("modal.cancel")}</button>
+            <button type="submit" disabled={bankPending} className={`${BRAND_BUTTON_CLASS} h-10 px-5 text-sm`}>{bankPending ? bt("saving") : bt("save")}</button>
+          </div>
+        </form>
+      </Modal>
 
       <section className={`${card} mt-6 overflow-hidden`}>
         <h2 className="border-b border-[var(--ink-200)] px-5 py-4 text-[17px] font-bold tracking-tight">{t("sales.title")}</h2>

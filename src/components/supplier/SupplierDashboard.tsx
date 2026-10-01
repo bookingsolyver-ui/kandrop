@@ -6,30 +6,36 @@ import { Badge, PageHeader, StatCard, card } from "@/components/admin/ui";
 import { useFormatters } from "@/components/dashboard/useFormatters";
 import { BoxIcon, ClockIcon, TrendingUpIcon, WalletIcon } from "@/components/kai/icons";
 import { Link } from "@/i18n/navigation";
-import { useCurrentSupplier, useSubmissions } from "@/lib/supplier/store";
-import { productsOfSupplier, salesOfSupplier, stockOf, weeklySalesOf } from "@/shared/supplier/mock";
+import { useCurrentSupplier } from "@/lib/supplier/store";
+import { salesOfSupplier } from "@/shared/supplier/mock";
 import { CRITICAL_STOCK } from "@/shared/admin/mock";
 
 const MONTH = 30 * 86_400_000;
 const NOW = Date.UTC(2026, 9, 1, 12, 0, 0);
 
 /** The supplier's home: four headline numbers, the best sellers and the stock that needs attention. */
-export function SupplierDashboard() {
+/** What the dashboard needs of the real catalogue (from the server). */
+export interface DashboardProduct {
+  id: string;
+  name: string;
+  stock: number;
+  status: "in_review" | "approved" | "rejected";
+}
+
+export function SupplierDashboard({ products: catalogue }: { products: DashboardProduct[] }) {
   const t = useTranslations("Supplier.dashboard");
   const f = useFormatters();
   const { supplier, seeded } = useCurrentSupplier();
-  const { items: submissions } = useSubmissions();
 
   const data = useMemo(() => {
     if (!supplier) return null;
-    const approvedMine = submissions.filter((s) => s.supplierId === supplier.id && s.status === "approved").length;
-    const products = seeded ? productsOfSupplier(supplier.id) : [];
+    // Products come from the database; sales stay sample data (only the seeded demo suppliers have any).
+    const inVitrine = catalogue.filter((p) => p.status === "approved").length;
+    const pending = catalogue.filter((p) => p.status === "in_review").length;
     const sales = seeded ? salesOfSupplier(supplier.id).filter((s) => NOW - s.at <= MONTH) : [];
-    const inVitrine = products.length + approvedMine;
     const sold = sales.reduce((n, s) => n + s.quantity, 0);
     const gross = sales.reduce((n, s) => n + s.amount, 0);
-    const stock = products.map((p) => ({ p, qty: stockOf(p.id), weekly: weeklySalesOf(p.id) }));
-    const critical = stock.filter((s) => s.qty < CRITICAL_STOCK);
+    const critical = catalogue.filter((p) => p.status === "approved" && p.stock < CRITICAL_STOCK);
     const bySold = new Map<string, { title: string; qty: number; amount: number }>();
     for (const s of sales) {
       const row = bySold.get(s.productId) ?? { title: s.product, qty: 0, amount: 0 };
@@ -37,8 +43,8 @@ export function SupplierDashboard() {
       row.amount += s.amount;
       bySold.set(s.productId, row);
     }
-    return { inVitrine, sold, gross, critical, top: [...bySold.values()].sort((a, b) => b.qty - a.qty).slice(0, 5), pending: submissions.filter((s) => s.supplierId === supplier.id && s.status === "in_review").length };
-  }, [supplier, seeded, submissions]);
+    return { inVitrine, sold, gross, critical, top: [...bySold.values()].sort((a, b) => b.qty - a.qty).slice(0, 5), pending };
+  }, [supplier, seeded, catalogue]);
 
   if (!supplier || !data) return null;
 
@@ -86,11 +92,11 @@ export function SupplierDashboard() {
             <div className="overflow-x-auto">
               <table className="w-full min-w-[28rem] border-collapse text-sm">
                 <tbody>
-                  {data.critical.map(({ p, qty, weekly }) => (
+                  {data.critical.map((p) => (
                     <tr key={p.id} className="border-b border-gray-100 last:border-b-0">
-                      <td className="px-5 py-3"><span className="line-clamp-1 max-w-xs font-semibold">{p.title}</span><span className="mono-num text-[12px] text-[var(--ink-500)]">{p.sku}</span></td>
-                      <td className="mono-num px-2 py-3 text-right font-extrabold">{qty}</td>
-                      <td className="px-5 py-3 text-right">{qty === 0 ? <Badge tone="danger" className="animate-pulse font-bold uppercase">{t("stock.out")}</Badge> : <Badge tone="warn">{t("stock.low", { weekly })}</Badge>}</td>
+                      <td className="px-5 py-3"><span className="line-clamp-1 max-w-xs font-semibold">{p.name}</span></td>
+                      <td className="mono-num px-2 py-3 text-right font-extrabold">{p.stock}</td>
+                      <td className="px-5 py-3 text-right">{p.stock === 0 ? <Badge tone="danger" className="animate-pulse font-bold uppercase">{t("stock.out")}</Badge> : <Badge tone="warn">{t("stock.lowShort")}</Badge>}</td>
                     </tr>
                   ))}
                 </tbody>

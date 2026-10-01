@@ -2555,6 +2555,13 @@
           "approved": "Aprovado",
           "rejected": "Recusado"
         }
+      },
+      "catalog": {
+        "reviewTitle": "Produtos de fornecedores em análise",
+        "reviewEmpty": "Nenhum produto à espera de análise.",
+        "productApproved": "Produto aprovado.",
+        "productRejected": "Produto recusado.",
+        "supplier": "Fornecedor"
       }
     },
     "restricted": {
@@ -2659,7 +2666,10 @@
       "weight_invalid": "Indique um peso válido em kg.",
       "price_invalid": "Indique um valor inteiro em kwz.",
       "stock_invalid": "Indique o stock (0 ou mais).",
-      "suggested_below_cost": "O preço sugerido deve ser superior ao preço de custo."
+      "suggested_below_cost": "O preço sugerido deve ser superior ao preço de custo.",
+      "image_invalid": "Use uma imagem JPG, PNG ou WebP válida, até 2 MB.",
+      "image_too_large": "A imagem tem mais de 2 MB.",
+      "bank_required": "Indique o nome do banco."
     },
     "shell": {
       "logout": "Terminar sessão",
@@ -2701,7 +2711,8 @@
         "title": "Stock a precisar de atenção",
         "empty": "Todo o stock está saudável.",
         "out": "Esgotado",
-        "low": "~{weekly} vendas/semana"
+        "low": "~{weekly} vendas/semana",
+        "lowShort": "Stock baixo"
       },
       "cta": "Tem um produto novo?",
       "ctaLink": "Adicione-o em Produtos"
@@ -2724,7 +2735,8 @@
         "cost": "Preço de Custo (kwz)",
         "suggested": "Preço de Venda Sugerido (kwz)",
         "stock": "Stock Físico",
-        "status": "Status"
+        "status": "Status",
+        "actions": "Ações"
       },
       "status": {
         "approved": "Aprovado",
@@ -2733,7 +2745,9 @@
       },
       "demoNote": "Dados de demonstração guardados neste navegador.",
       "toast": {
-        "submitted": "Produto enviado para análise da equipa Kandrop."
+        "submitted": "Produto enviado para análise da equipa Kandrop.",
+        "updated": "Produto atualizado e enviado de novo para análise.",
+        "deleted": "Produto removido."
       },
       "modal": {
         "title": "Adicionar produto",
@@ -2749,7 +2763,19 @@
         "suggested": "Preço sugerido (kwz)",
         "reviewNote": "O produto só aparece na Vitrine depois de aprovado pela equipa Kandrop.",
         "cancel": "Cancelar",
-        "submit": "Enviar para análise"
+        "submit": "Enviar para análise",
+        "titleEdit": "Editar produto",
+        "save": "Guardar alterações",
+        "saving": "A guardar…"
+      },
+      "edit": "Editar",
+      "delete": "Remover",
+      "deleteTitle": "Remover produto",
+      "deleteBody": "Remover «{name}» do seu catálogo? Esta ação não pode ser desfeita.",
+      "errors": {
+        "unauthorized": "A sua sessão já não permite esta ação. Entre de novo.",
+        "notFound": "Este produto já não existe.",
+        "generic": "Não foi possível concluir. Tente novamente."
       }
     },
     "finance": {
@@ -2797,6 +2823,27 @@
         "destination": "O valor será transferido para a conta bancária de {name}.",
         "cancel": "Cancelar",
         "submit": "Solicitar"
+      },
+      "bank": {
+        "title": "Dados de recebimento",
+        "none": "Ainda não indicou onde quer receber.",
+        "add": "Adicionar dados bancários",
+        "change": "Alterar dados",
+        "bank": "Banco",
+        "holder": "Titular",
+        "modalTitle": "Dados bancários",
+        "fields": {
+          "bankName": "Nome do banco",
+          "holderName": "Titular da conta",
+          "iban": "IBAN",
+          "password": "A sua palavra-passe"
+        },
+        "securityNote": "O IBAN é encriptado antes de ser guardado e nunca volta a ser mostrado por inteiro. A palavra-passe confirma que é mesmo você a alterar o destino dos pagamentos.",
+        "save": "Guardar",
+        "saving": "A guardar…",
+        "saved": "Dados bancários guardados.",
+        "failed": "Não foi possível guardar. Tente novamente.",
+        "rateLimited": "Demasiadas tentativas. Tente de novo dentro de alguns minutos."
       }
     }
   }

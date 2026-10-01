@@ -10,6 +10,8 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // A product image (at most 2 MB, checked on the server) travels inside the Server Action's form data.
+  experimental: { serverActions: { bodySizeLimit: "3mb" } },
   // Pin the project root: a stray lockfile in a parent folder must never change what is bundled.
   turbopack: { root: fileURLToPath(new URL(".", import.meta.url)) },
   // SSE responses must never be buffered or compressed by the platform.
