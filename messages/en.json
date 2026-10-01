@@ -1224,7 +1224,7 @@
       "body": "This product is no longer available, or the address is wrong."
     },
     "meta": {
-      "fallback": "Pay with Multicaixa Express, Unitel Money or card."
+      "fallback": "Buy online, pay by bank transfer and get delivery handled by Kandrop."
     },
     "header": {
       "store": "{store} store"
@@ -1301,6 +1301,48 @@
     "footer": {
       "soldBy": "Sold by {store}",
       "payments": "Payments by Kandrop"
+    },
+    "landing": {
+      "secureBadge": "Secure purchase",
+      "ctaNote": "Pay by transfer · Delivery handled by Kandrop",
+      "trust": {
+        "secure": {
+          "title": "Secure purchase",
+          "body": "Protected connection; your details are only used for delivery."
+        },
+        "pay": {
+          "title": "Pay by transfer",
+          "body": "Transfer the amount and send the slip on WhatsApp. No card needed."
+        },
+        "delivery": {
+          "title": "Delivery handled by Kandrop",
+          "body": "We only send it once your payment is confirmed."
+        }
+      },
+      "how": {
+        "title": "How to buy",
+        "s1": {
+          "title": "Choose and check out",
+          "body": "Enter your name, phone number and delivery address."
+        },
+        "s2": {
+          "title": "Get your reference",
+          "body": "We show the amount and a reference for the payment."
+        },
+        "s3": {
+          "title": "Pay and send the slip",
+          "body": "Make the transfer and send the proof on WhatsApp."
+        },
+        "s4": {
+          "title": "Receive at home",
+          "body": "Kandrop confirms the payment and handles the delivery."
+        }
+      },
+      "store": {
+        "title": "Sold by",
+        "body": "Store {store}. Payments and deliveries handled by Kandrop.",
+        "whatsapp": "Chat on WhatsApp"
+      }
     }
   },
   "Billing": {
@@ -2101,11 +2143,12 @@
       "emptyBody": "Tap the heart on a Showcase product to keep it here."
     },
     "links": {
-      "preview": "View the customer's page",
+      "preview": "View Landing Page",
       "copy": "Copy promotion link",
       "copied": "Sharing link copied successfully!",
       "copyFailed": "Could not copy. Please copy the address manually.",
-      "inactive": "Activate the product to get a public page."
+      "inactive": "Activate the product to get a public page.",
+      "checkout": "View Checkout"
     },
     "viewsLine": "{count, plural, one {# visit} other {# visits}}",
     "saveFailed": "Could not save the change. Please try again."
@@ -3050,5 +3093,48 @@
     "whatsappText": "Hello! Here is the proof of payment for order #{number} (reference {reference}), amount {total}.",
     "note": "The order is only delivered after Kandrop confirms the payment.",
     "noWhatsapp": "Send the slip to Kandrop when the team contacts you, quoting the order reference."
+  },
+  "QuickCheckout": {
+    "title": "Check out",
+    "subtitle": "Three quick steps. No account needed.",
+    "back": "Back to the product",
+    "secure": "Secure purchase",
+    "invalid": "Please check your details and try again.",
+    "s1": "Your details",
+    "s2": "Delivery address",
+    "s3": "Payment",
+    "fields": {
+      "name": "Full name",
+      "phone": "Mobile phone",
+      "province": "Province",
+      "choose": "Choose…",
+      "city": "Municipality",
+      "street": "Street and number",
+      "reference": "Landmark (optional)",
+      "referenceHint": "Helps the courier find the place."
+    },
+    "validation": {
+      "name_invalid": "Enter your full name.",
+      "phone_invalid": "Angolan mobile number with 9 digits (starts with 9).",
+      "province_invalid": "Choose the province.",
+      "city_invalid": "Enter the municipality.",
+      "street_invalid": "Enter the street and number.",
+      "reference_invalid": "At most 160 characters."
+    },
+    "payment": {
+      "method": "Cash/transfer, confirmed by Kandrop",
+      "body": "After you check out you get the amount and a reference. Make the transfer and send the slip on WhatsApp: Kandrop confirms the payment and your order goes out."
+    },
+    "submit": "Place order · {price}",
+    "submitting": "Placing order…",
+    "lockNote": "Secure connection. Your details are only used for delivery and to confirm the payment.",
+    "summary": {
+      "title": "Order summary",
+      "quantity": "1 unit",
+      "subtotal": "Subtotal",
+      "shipping": "Delivery",
+      "shippingValue": "Handled by Kandrop",
+      "total": "Total to pay"
+    }
   }
 }

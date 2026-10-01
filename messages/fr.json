@@ -1224,7 +1224,7 @@
       "body": "Ce produit n’est plus disponible, ou l’adresse est incorrecte."
     },
     "meta": {
-      "fallback": "Payez avec Multicaixa Express, Unitel Money ou par carte."
+      "fallback": "Achetez en ligne, payez par virement et laissez Kandrop gérer la livraison."
     },
     "header": {
       "store": "Boutique {store}"
@@ -1301,6 +1301,48 @@
     "footer": {
       "soldBy": "Vendu par {store}",
       "payments": "Paiements Kandrop"
+    },
+    "landing": {
+      "secureBadge": "Achat sécurisé",
+      "ctaNote": "Paiement par virement · Livraison gérée par Kandrop",
+      "trust": {
+        "secure": {
+          "title": "Achat sécurisé",
+          "body": "Connexion protégée ; vos données ne servent qu’à la livraison."
+        },
+        "pay": {
+          "title": "Payez par virement",
+          "body": "Faites le virement et envoyez le justificatif sur WhatsApp. Sans carte."
+        },
+        "delivery": {
+          "title": "Livraison gérée par Kandrop",
+          "body": "Nous n’expédions qu’après confirmation de votre paiement."
+        }
+      },
+      "how": {
+        "title": "Comment acheter",
+        "s1": {
+          "title": "Choisissez et validez",
+          "body": "Indiquez votre nom, votre téléphone et l’adresse de livraison."
+        },
+        "s2": {
+          "title": "Recevez la référence",
+          "body": "Nous affichons le montant et une référence de paiement."
+        },
+        "s3": {
+          "title": "Payez et envoyez le justificatif",
+          "body": "Faites le virement et envoyez la preuve sur WhatsApp."
+        },
+        "s4": {
+          "title": "Recevez chez vous",
+          "body": "Kandrop confirme le paiement et s’occupe de la livraison."
+        }
+      },
+      "store": {
+        "title": "Vendu par",
+        "body": "Boutique {store}. Paiements et livraisons gérés par Kandrop.",
+        "whatsapp": "Écrire sur WhatsApp"
+      }
     }
   },
   "Billing": {
@@ -2101,11 +2143,12 @@
       "emptyBody": "Touchez le cœur d’un produit de la Vitrine pour le garder ici."
     },
     "links": {
-      "preview": "Voir la page du client",
+      "preview": "Voir la page de vente",
       "copy": "Copier le lien de promotion",
       "copied": "Lien de partage copié avec succès !",
       "copyFailed": "Impossible de copier. Copiez l’adresse manuellement.",
-      "inactive": "Activez le produit pour avoir une page publique."
+      "inactive": "Activez le produit pour avoir une page publique.",
+      "checkout": "Voir le paiement"
     },
     "viewsLine": "{count, plural, one {# visite} other {# visites}}",
     "saveFailed": "Impossible d’enregistrer la modification. Veuillez réessayer."
@@ -3050,5 +3093,48 @@
     "whatsappText": "Bonjour ! Voici le justificatif de la commande n° {number} (référence {reference}), d’un montant de {total}.",
     "note": "La commande n’est livrée qu’après confirmation du paiement par Kandrop.",
     "noWhatsapp": "Envoyez le justificatif à Kandrop lorsque l’équipe vous contactera, en indiquant la référence de la commande."
+  },
+  "QuickCheckout": {
+    "title": "Finaliser l’achat",
+    "subtitle": "Trois étapes rapides. Sans compte.",
+    "back": "Retour au produit",
+    "secure": "Achat sécurisé",
+    "invalid": "Vérifiez vos informations et réessayez.",
+    "s1": "Vos informations",
+    "s2": "Adresse de livraison",
+    "s3": "Paiement",
+    "fields": {
+      "name": "Nom complet",
+      "phone": "Téléphone mobile",
+      "province": "Province",
+      "choose": "Choisir…",
+      "city": "Municipalité",
+      "street": "Rue et numéro",
+      "reference": "Point de repère (facultatif)",
+      "referenceHint": "Aide le livreur à trouver l’endroit."
+    },
+    "validation": {
+      "name_invalid": "Indiquez votre nom complet.",
+      "phone_invalid": "Mobile angolais à 9 chiffres (commence par 9).",
+      "province_invalid": "Choisissez la province.",
+      "city_invalid": "Indiquez la municipalité.",
+      "street_invalid": "Indiquez la rue et le numéro.",
+      "reference_invalid": "160 caractères au maximum."
+    },
+    "payment": {
+      "method": "Espèces/virement, confirmés par Kandrop",
+      "body": "Après validation, vous recevez le montant et une référence. Faites le virement et envoyez le justificatif sur WhatsApp : Kandrop confirme le paiement et la commande vous est expédiée."
+    },
+    "submit": "Passer la commande · {price}",
+    "submitting": "Enregistrement…",
+    "lockNote": "Connexion sécurisée. Vos données ne servent qu’à la livraison et à confirmer le paiement.",
+    "summary": {
+      "title": "Récapitulatif",
+      "quantity": "1 unité",
+      "subtotal": "Sous-total",
+      "shipping": "Livraison",
+      "shippingValue": "Gérée par Kandrop",
+      "total": "Total à payer"
+    }
   }
 }

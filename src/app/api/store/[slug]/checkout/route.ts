@@ -40,7 +40,7 @@ export const POST = handle(async (req, ctx: Ctx) => {
     }
     // The details were not valid (the browser's own checks were bypassed or are not supported): back to the page.
     if (error instanceof ZodError) {
-      return Response.redirect(new URL(`/${locale}/loja/${slug}?error=details`, req.url), 303);
+      return Response.redirect(new URL(`/${locale}/checkout/${slug}?error=details`, req.url), 303);
     }
     throw error;
   }

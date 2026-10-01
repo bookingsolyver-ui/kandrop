@@ -30,3 +30,6 @@ export const hasPublicPage = (p: Pick<MyProductRow, "status" | "slug">) => p.sta
 
 /** The public page's path, without the origin: what the merchant shares. */
 export const publicPath = (locale: string, slug: string) => `/${locale}/loja/${encodeURIComponent(slug)}`;
+
+/** The direct checkout's path (`/<locale>/checkout/<slug>`). */
+export const checkoutPath = (locale: string, slug: string) => `/${locale}/checkout/${encodeURIComponent(slug)}`;

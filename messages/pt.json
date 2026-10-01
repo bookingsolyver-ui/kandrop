@@ -1224,7 +1224,7 @@
       "body": "Este produto já não está disponível ou o endereço está incorreto."
     },
     "meta": {
-      "fallback": "Compre com Multicaixa Express, Unitel Money ou cartão."
+      "fallback": "Compre online com pagamento por transferência e entrega gerida pela Kandrop."
     },
     "header": {
       "store": "Loja {store}"
@@ -1301,6 +1301,48 @@
     "footer": {
       "soldBy": "Vendido por {store}",
       "payments": "Pagamentos Kandrop"
+    },
+    "landing": {
+      "secureBadge": "Compra segura",
+      "ctaNote": "Pagamento por transferência · Entrega gerida pela Kandrop",
+      "trust": {
+        "secure": {
+          "title": "Compra segura",
+          "body": "Ligação protegida; os seus dados só servem para a entrega."
+        },
+        "pay": {
+          "title": "Pague por transferência",
+          "body": "Transfere e envia o talão por WhatsApp. Sem cartão."
+        },
+        "delivery": {
+          "title": "Entrega gerida pela Kandrop",
+          "body": "Só enviamos depois de confirmarmos o seu pagamento."
+        }
+      },
+      "how": {
+        "title": "Como comprar",
+        "s1": {
+          "title": "Escolha e finalize",
+          "body": "Indique o seu nome, telemóvel e a morada de entrega."
+        },
+        "s2": {
+          "title": "Receba a referência",
+          "body": "Mostramos o valor e uma referência para o pagamento."
+        },
+        "s3": {
+          "title": "Pague e envie o talão",
+          "body": "Faça a transferência e envie o comprovativo por WhatsApp."
+        },
+        "s4": {
+          "title": "Receba em casa",
+          "body": "A Kandrop confirma o pagamento e trata da entrega."
+        }
+      },
+      "store": {
+        "title": "Vendido por",
+        "body": "Loja {store}. Pagamentos e entregas tratados pela Kandrop.",
+        "whatsapp": "Falar no WhatsApp"
+      }
     }
   },
   "Billing": {
@@ -2101,11 +2143,12 @@
       "emptyBody": "Toque no coração de um produto na Vitrine para o guardar aqui."
     },
     "links": {
-      "preview": "Ver visão do cliente",
+      "preview": "Ver Landing Page",
       "copy": "Copiar link de divulgação",
       "copied": "Link de divulgação copiado com sucesso!",
       "copyFailed": "Não foi possível copiar. Copie o endereço manualmente.",
-      "inactive": "Ative o produto para ter uma página pública."
+      "inactive": "Ative o produto para ter uma página pública.",
+      "checkout": "Ver Checkout"
     },
     "viewsLine": "{count, plural, one {# visita} other {# visitas}}",
     "saveFailed": "Não foi possível guardar a alteração. Tente novamente."
@@ -3050,5 +3093,48 @@
     "whatsappText": "Olá! Segue o comprovativo da encomenda #{number} (referência {reference}), no valor de {total}.",
     "note": "A encomenda só é entregue depois de a Kandrop confirmar o pagamento.",
     "noWhatsapp": "Envie o comprovativo à Kandrop quando a equipa o contactar, indicando a referência da encomenda."
+  },
+  "QuickCheckout": {
+    "title": "Finalizar compra",
+    "subtitle": "Três passos rápidos. Sem criar conta.",
+    "back": "Voltar ao produto",
+    "secure": "Compra segura",
+    "invalid": "Confirme os seus dados e tente de novo.",
+    "s1": "Os seus dados",
+    "s2": "Endereço de entrega",
+    "s3": "Pagamento",
+    "fields": {
+      "name": "Nome completo",
+      "phone": "Telemóvel",
+      "province": "Província",
+      "choose": "Escolher…",
+      "city": "Município",
+      "street": "Rua e número",
+      "reference": "Ponto de referência (opcional)",
+      "referenceHint": "Ajuda o estafeta a encontrar o local."
+    },
+    "validation": {
+      "name_invalid": "Indique o nome completo.",
+      "phone_invalid": "Telemóvel angolano com 9 dígitos (começa por 9).",
+      "province_invalid": "Escolha a província.",
+      "city_invalid": "Indique o município.",
+      "street_invalid": "Indique a rua e o número.",
+      "reference_invalid": "No máximo 160 caracteres."
+    },
+    "payment": {
+      "method": "Dinheiro/transferência, confirmados pela Kandrop",
+      "body": "Depois de finalizar, recebe o valor e uma referência. Faça a transferência e envie o talão por WhatsApp: a Kandrop confirma o pagamento e a encomenda segue para si."
+    },
+    "submit": "Finalizar encomenda · {price}",
+    "submitting": "A registar…",
+    "lockNote": "Ligação segura. Os seus dados só servem para a entrega e para confirmar o pagamento.",
+    "summary": {
+      "title": "Resumo da encomenda",
+      "quantity": "1 unidade",
+      "subtotal": "Subtotal",
+      "shipping": "Entrega",
+      "shippingValue": "Gerida pela Kandrop",
+      "total": "Total a pagar"
+    }
   }
 }
