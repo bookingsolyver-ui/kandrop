@@ -28,14 +28,16 @@ const isDev = process.env.NODE_ENV === "development";
 
 /** Everything the app loads comes from itself: fonts are self-hosted (next/font), images are ours, blob: or data:. */
 function contentSecurityPolicy(nonce: string) {
+  // The Meta Pixel (only when configured) loads its script through our nonce'd snippet and sends events to facebook.com.
+  const pixel = /^\d{6,20}$/.test(process.env.NEXT_PUBLIC_META_PIXEL_ID?.trim() ?? "");
   return [
     "default-src 'self'",
     `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${isDev ? " 'unsafe-eval'" : ""}`,
     // Inline style ATTRIBUTES (gradients, sizes set from data) cannot carry a nonce; scripts are what matter for XSS.
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' blob: data:",
+    `img-src 'self' blob: data:${pixel ? " https://www.facebook.com" : ""}`,
     "font-src 'self'",
-    `connect-src 'self'${isDev ? " ws: wss:" : ""}`,
+    `connect-src 'self'${isDev ? " ws: wss:" : ""}${pixel ? " https://www.facebook.com https://connect.facebook.net" : ""}`,
     "media-src 'self'",
     "object-src 'none'",
     "base-uri 'self'",

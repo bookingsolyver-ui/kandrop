@@ -1,10 +1,11 @@
 import { useFormatter, useLocale, useTranslations } from "next-intl";
+import { PixelEvent } from "@/components/analytics/PixelEvent";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import type { ShopperOrder } from "@/server/modules/fulfilment/service";
 import type { OrderPaymentInfo } from "@/server/modules/payments/transfer";
 
 /** Order confirmation: what was bought, how to pay Kandrop, and the WhatsApp button that carries the slip. */
-export function OrderPlacedView({ order, pay }: { order: ShopperOrder; pay: OrderPaymentInfo }) {
+export function OrderPlacedView({ order, pay, orderId, trackPurchase }: { order: ShopperOrder; pay: OrderPaymentInfo; orderId: string; trackPurchase: boolean }) {
   const t = useTranslations("OrderPlaced");
   const f = useFormatter();
   const locale = useLocale();
@@ -23,6 +24,10 @@ export function OrderPlacedView({ order, pay }: { order: ShopperOrder; pay: Orde
 
   return (
     <div className="min-h-screen bg-page text-ink">
+      {/* The order was just saved: one Purchase for it, once per order in this browser (the id also de-duplicates at Meta). */}
+      {trackPurchase && order.productKey && (
+        <PixelEvent name="Purchase" options={{ value: order.total / 100, currency: "AOA", content_ids: [order.productKey], content_type: "product" }} eventID={orderId} onceKey={`kandrop:px:purchase:${orderId}`} />
+      )}
       <header className="mx-auto flex max-w-2xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
         <p className="truncate text-sm font-medium text-ink-2">{order.storeName}</p>
         <LocaleSwitcher />

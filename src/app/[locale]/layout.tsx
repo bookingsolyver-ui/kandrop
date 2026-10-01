@@ -4,6 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { JetBrains_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
+import { MetaPixel } from "@/components/analytics/MetaPixel";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
 
@@ -64,6 +65,7 @@ export default async function LocaleLayout({
     >
       <body>
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        <MetaPixel />
       </body>
     </html>
   );

@@ -27,5 +27,5 @@ export default async function OrderPlacedPage({ params }: Props) {
   if (!order) notFound();
   // Kandrop's REAL details only, each shown only when set and valid (no sandbox example ever reaches a shopper).
   const pay = orderPaymentInfo();
-  return <OrderPlacedView order={order} pay={pay} />;
+  return <OrderPlacedView order={order} pay={pay} orderId={id} trackPurchase={order.justPlaced} />;
 }

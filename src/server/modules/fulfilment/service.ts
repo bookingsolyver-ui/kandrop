@@ -478,6 +478,9 @@ export interface ShopperOrder {
   paymentStatus: OrderPaymentStatus;
   paymentProvider: OrderPaymentProvider;
   customerName: string;
+  /** The product's public slug (or its id): what the ad pixel reports as `content_ids`. */
+  productKey: string | null;
+  justPlaced: boolean;
   /** Pay the courier on arrival: no transfer to make. */
   cashOnDelivery: boolean;
   /** The day the shopper asked for (`YYYY-MM-DD`), when given. */
@@ -487,10 +490,11 @@ export interface ShopperOrder {
 /** By the order's unguessable id (the link the shopper was sent to). Returns only what the shopper needs. */
 export async function getShopperOrder(id: string): Promise<ShopperOrder | null> {
   if (!/^ord_[A-Za-z0-9_-]{10,40}$/.test(id)) return null;
-  const o = must("shopper.order", await db().from("orders").select("store_id,number,total,items,customer,address,payment,payment_status,payment_provider").eq("id", id).maybeSingle());
+  const o = must("shopper.order", await db().from("orders").select("store_id,number,total,items,customer,address,payment,payment_status,payment_provider,created_at").eq("id", id).maybeSingle());
   if (!o) return null;
   const store = must("shopper.store", await db().from("stores").select("name").eq("id", o.store_id).maybeSingle());
-  const item = ((o.items as Array<{ name: string; quantity: number }>) ?? [])[0];
+  const item = ((o.items as Array<{ name: string; quantity: number; productId?: string }>) ?? [])[0];
+  const product = item?.productId ? must("shopper.product", await db().from("products").select("slug").eq("id", item.productId).eq("store_id", o.store_id).maybeSingle()) : null;
   return {
     number: Number(o.number),
     storeName: String(store?.name ?? ""),
@@ -501,6 +505,9 @@ export async function getShopperOrder(id: string): Promise<ShopperOrder | null> 
     paymentStatus: normalizePaymentStatus(o.payment_status),
     paymentProvider: normalizePaymentProvider(o.payment_provider),
     customerName: String((o.customer as { name?: string } | null)?.name ?? ""),
+    productKey: product?.slug ? String(product.slug) : (item?.productId ?? null),
+    // Just placed (within 30 minutes): only then is the order reported to the ad pixel, never when the link is reopened later.
+    justPlaced: Date.now() - Number(o.created_at) < 30 * 60_000,
     cashOnDelivery: isCashOnDelivery(o.payment as { method?: unknown } | null),
     deliveryDate: ((o.address as { deliveryDate?: string } | null)?.deliveryDate) ?? null,
   };

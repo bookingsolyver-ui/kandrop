@@ -2,6 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
+import { PixelEvent } from "@/components/analytics/PixelEvent";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { Link } from "@/i18n/navigation";
 import type { StorefrontProduct } from "@/server/modules/storefront/schema";
@@ -85,6 +86,8 @@ export function CheckoutView({ product: p, invalid, days, today }: { product: St
 
   return (
     <div className="min-h-screen bg-page pb-28 text-ink lg:pb-16">
+      {/* The shopper reached the checkout form. */}
+      <PixelEvent name="InitiateCheckout" options={{ value: p.price / 100, currency: "AOA", content_ids: [p.slug], content_type: "product", num_items: 1 }} />
       <header className="sticky top-0 z-30 border-b border-line bg-surface/90 backdrop-blur-md">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
           <Link href={`/loja/${p.slug}`} aria-label={t("back")} className="inline-flex items-center gap-1.5 text-sm font-medium whitespace-nowrap text-ink-2 transition-colors hover:text-ink">
