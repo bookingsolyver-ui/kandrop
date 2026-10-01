@@ -2593,8 +2593,6 @@
       "password": "Palavra-passe",
       "loginSubmit": "Entrar",
       "loginSubmitting": "A entrar…",
-      "demo": "Entrar com a conta de demonstração",
-      "demoHelp": "Conta fictícia com dados de exemplo, só para explorar o portal.",
       "secure": "Ligação segura",
       "support": "Suporte humano 24/7",
       "registerTitle": "Registe a sua empresa",
@@ -2608,7 +2606,9 @@
       "municipality": "Município do armazém",
       "registerSubmit": "Criar conta de fornecedor",
       "registerSubmitting": "A criar conta…",
-      "warehouseNote": "A morada do armazém é usada para recolher as encomendas."
+      "warehouseNote": "A morada do armazém é usada para recolher as encomendas.",
+      "rateLimited": "Demasiadas tentativas. Tente de novo dentro de alguns minutos.",
+      "genericError": "Não foi possível concluir. Tente novamente."
     },
     "panel": {
       "tag": "Marketplace multi-fornecedor",

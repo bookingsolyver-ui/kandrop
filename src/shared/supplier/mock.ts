@@ -52,8 +52,6 @@ export const productsOfSupplier = (id: string) => {
   return s ? ALL_VITRINE_PRODUCTS.filter((p) => s.brands.includes(p.brand)) : [];
 };
 
-/** The supplier the portal's demo account opens: the one with the richest catalogue. */
-export const DEMO_SUPPLIER_ID = "sup_textil";
 
 // ── Products waiting for approval ────────────────────────────────────────────────────────────
 

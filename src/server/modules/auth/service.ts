@@ -52,7 +52,7 @@ export async function getMe(session: Session): Promise<Me> {
   return {
     id: session.userId,
     storeId: session.storeId,
-    role: session.role,
+    role: session.role === "staff" ? "staff" : "owner",
     fullName: "Demo",
     email: "demo@kandrop.local",
     locale: "pt",

@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { getEnv } from "../config/env";
 import { ApiError } from "../http/errors";
 import { hasAccess } from "./access";
+import { supplierIsActive } from "@/server/modules/supplier/service";
 import { userRepository } from "@/server/modules/auth/userRepository";
 import { verifySession } from "./jwt";
 import type { Session } from "./types";
@@ -28,6 +29,8 @@ function tokenFromRequest(req: Request): string | undefined {
  * been issued after the last "kill switch" (password change, sign out everywhere, ban).
  */
 async function isStillValid(session: Session): Promise<boolean> {
+  // A supplier is valid while its `suppliers` row exists and has not been rejected (the ban).
+  if (session.role === "supplier") return supplierIsActive(session.userId);
   const user = await userRepository.findById(session.userId);
   if (!user || user.banned) return false;
   // `iat` has one-second resolution: a token issued in the same second as the revocation is not
@@ -59,6 +62,8 @@ export async function requireSession(
 ): Promise<Session> {
   const session = await resolveSession(tokenFromRequest(req));
   if (!session) throw new ApiError("unauthenticated");
+  // The merchant API is not the supplier's: a supplier's session opens nothing here.
+  if (session.role === "supplier") throw new ApiError("forbidden");
   if (!opts.allowUnpaid && !(await hasAccess(session))) throw new ApiError("payment_required");
   return session;
 }

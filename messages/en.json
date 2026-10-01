@@ -2593,8 +2593,6 @@
       "password": "Password",
       "loginSubmit": "Sign in",
       "loginSubmitting": "Signing in…",
-      "demo": "Sign in with the demo account",
-      "demoHelp": "A fictional account with sample data, just to explore the portal.",
       "secure": "Secure connection",
       "support": "Human support 24/7",
       "registerTitle": "Register your company",
@@ -2608,7 +2606,9 @@
       "municipality": "Warehouse municipality",
       "registerSubmit": "Create supplier account",
       "registerSubmitting": "Creating account…",
-      "warehouseNote": "The warehouse address is used to collect orders."
+      "warehouseNote": "The warehouse address is used to collect orders.",
+      "rateLimited": "Too many attempts. Try again in a few minutes.",
+      "genericError": "Something went wrong. Please try again."
     },
     "panel": {
       "tag": "Multi-vendor marketplace",

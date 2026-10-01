@@ -1,10 +1,10 @@
 "use client";
 
 import { useCallback, useMemo } from "react";
+import { useSupplierContext } from "@/components/supplier/SupplierProvider";
 import { readList, useLocalList, writeList } from "@/lib/localStore";
 import {
   SEED_SUBMISSIONS,
-  SUPPLIERS,
   submissionToVitrine,
   supplierById,
   type Submission,
@@ -12,116 +12,26 @@ import {
   type Supplier,
 } from "@/shared/supplier/mock";
 import type { VitrineKind, VitrineProduct } from "@/shared/vitrine/mock";
-import type { SupplierRegisterInput } from "@/shared/supplier/schemas";
 
 /**
- * The supplier side of the demo, in the browser: accounts created through the sign-up, the signed-in
- * supplier, the products they submit, the team's decisions and the withdrawals they ask for.
- * !! DEMO ONLY: real supplier accounts need a table, server sessions and a hashed password in the
- * database. Nothing here is a security boundary, and the portal only shows invented data.
+ * The supplier's products-in-review, the team's decisions and the withdrawals, still kept in the browser.
+ * !! DEMO ONLY: the ACCOUNT is real (Supabase Auth + `suppliers` table + server session), but these three
+ * lists need their own tables before they are. Nothing here is a security boundary.
  */
 const K = {
-  accounts: "kandrop:supplier-accounts:v1",
-  session: "kandrop:supplier-session:v1",
   created: "kandrop:supplier-submissions:v1",
   decisions: "kandrop:supplier-decisions:v1",
   withdrawals: "kandrop:supplier-withdrawals:v1",
 } as const;
 
-export interface SupplierAccount {
-  id: string;
-  companyName: string;
-  nif: string;
-  phone: string;
-  email: string;
-  province: string;
-  municipality: string;
-  salt: string;
-  passwordHash: string;
-  createdAt: number;
-  status: "pending_review" | "active";
-}
-
-async function sha256(text: string) {
-  const bytes = new TextEncoder().encode(text);
-  const hash = await crypto.subtle.digest("SHA-256", bytes);
-  return [...new Uint8Array(hash)].map((b) => b.toString(16).padStart(2, "0")).join("");
-}
-
-export function useSupplierAccounts() {
-  const [accounts] = useLocalList<SupplierAccount>(K.accounts);
-
-  /** Creates an account (the e-mail must be new). `null` when the e-mail is taken. */
-  const register = useCallback(async (input: Required<SupplierRegisterInput>) => {
-    const current = readList<SupplierAccount>(K.accounts);
-    const email = input.email.trim().toLowerCase();
-    if (current.some((a) => a.email === email) || SUPPLIERS.some((s) => s.email === email)) return null;
-    const salt = crypto.randomUUID();
-    const account: SupplierAccount = {
-      id: `sup_${crypto.randomUUID().slice(0, 8)}`,
-      companyName: input.companyName.trim(),
-      nif: input.nif.replace(/\D/g, ""),
-      phone: input.phone.replace(/\D/g, ""),
-      email,
-      province: input.province,
-      municipality: input.municipality.trim(),
-      salt,
-      passwordHash: await sha256(`${salt}:${input.password}`),
-      createdAt: Date.now(),
-      status: "pending_review",
-    };
-    writeList(K.accounts, [account, ...current]);
-    return account;
-  }, []);
-
-  /** The account whose e-mail and password match, or `null`. */
-  const verify = useCallback(async (emailRaw: string, password: string) => {
-    const email = emailRaw.trim().toLowerCase();
-    const account = readList<SupplierAccount>(K.accounts).find((a) => a.email === email);
-    if (!account) return null;
-    return (await sha256(`${account.salt}:${password}`)) === account.passwordHash ? account : null;
-  }, []);
-
-  return { accounts, register, verify };
-}
-
-/** The signed-in supplier (an id) and the means to sign in or out. */
-export function useSupplierSession() {
-  const [ids, ready] = useLocalList<string>(K.session);
-  const signIn = useCallback((id: string) => writeList(K.session, [id]), []);
-  const signOut = useCallback(() => writeList(K.session, []), []);
-  return { supplierId: ids[0] ?? null, ready, signIn, signOut };
-}
-
-/** The signed-in supplier as a `Supplier`: a seeded one, or a company that registered in this browser. */
+/**
+ * The signed-in supplier comes from the server now (`SupplierProvider`, filled by the portal layout from
+ * the real account). A seeded demo supplier is only recognised when its id matches, which a real
+ * (uuid) account never does: real suppliers start with an empty portal.
+ */
 export function useCurrentSupplier(): { supplier: Supplier | null; ready: boolean; seeded: boolean } {
-  const { supplierId, ready } = useSupplierSession();
-  const { accounts } = useSupplierAccounts();
-  return useMemo(() => {
-    if (!supplierId) return { supplier: null, ready, seeded: false };
-    const seeded = supplierById(supplierId);
-    if (seeded) return { supplier: seeded, ready, seeded: true };
-    const a = accounts.find((x) => x.id === supplierId);
-    if (!a) return { supplier: null, ready, seeded: false };
-    const supplier: Supplier = {
-      id: a.id,
-      name: a.companyName,
-      nif: a.nif,
-      kind: "nacional",
-      province: a.province,
-      municipality: a.municipality,
-      phone: a.phone,
-      email: a.email,
-      rating: 0,
-      reviews: 0,
-      since: new Date(a.createdAt).getFullYear(),
-      description: "",
-      brands: [a.companyName],
-      banner: ["#ff7e2e", "#ff5a00"],
-      status: a.status === "active" ? "active" : "pending_review",
-    };
-    return { supplier, ready, seeded: false };
-  }, [supplierId, accounts, ready]);
+  const supplier = useSupplierContext();
+  return { supplier, ready: true, seeded: !!(supplier && supplierById(supplier.id)) };
 }
 
 interface Decision {

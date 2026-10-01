@@ -4,6 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { SupplierRegisterScreen } from "@/components/supplier/SupplierAuth";
 import { routing } from "@/i18n/routing";
+import { redirectIfSupplier } from "@/server/auth/supplierGate";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -14,10 +15,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: `${t("register")} — Kandrop` };
 }
 
-/** SAMPLE supplier portal: demo accounts live in this browser until the supplier tables exist. */
+/** Supplier sign-in / sign-up (real accounts: Supabase Auth + the `suppliers` table). */
 export default async function Page({ params }: Props) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
+  await redirectIfSupplier(locale);
   return <SupplierRegisterScreen />;
 }

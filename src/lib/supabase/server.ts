@@ -68,3 +68,12 @@ export function createAdminClient() {
     auth: { persistSession: false, autoRefreshToken: false },
   });
 }
+
+/**
+ * A throwaway client with the anon key, used only to check an e-mail and password against Supabase
+ * Auth (`signInWithPassword`). Nothing is persisted: Kandrop issues its own session cookie afterwards.
+ */
+export function createAnonClient() {
+  const { url, anonKey } = config();
+  return createSupabaseClient(url, anonKey, { auth: { persistSession: false, autoRefreshToken: false } });
+}

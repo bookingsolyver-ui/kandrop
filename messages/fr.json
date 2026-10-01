@@ -2593,8 +2593,6 @@
       "password": "Mot de passe",
       "loginSubmit": "Se connecter",
       "loginSubmitting": "Connexion…",
-      "demo": "Se connecter avec le compte de démonstration",
-      "demoHelp": "Un compte fictif avec des données d’exemple, pour explorer le portail.",
       "secure": "Connexion sécurisée",
       "support": "Support humain 24/7",
       "registerTitle": "Inscrivez votre entreprise",
@@ -2608,7 +2606,9 @@
       "municipality": "Municipalité de l’entrepôt",
       "registerSubmit": "Créer le compte fournisseur",
       "registerSubmitting": "Création du compte…",
-      "warehouseNote": "L’adresse de l’entrepôt sert à récupérer les commandes."
+      "warehouseNote": "L’adresse de l’entrepôt sert à récupérer les commandes.",
+      "rateLimited": "Trop de tentatives. Réessayez dans quelques minutes.",
+      "genericError": "Une erreur est survenue. Veuillez réessayer."
     },
     "panel": {
       "tag": "Marketplace multi-fournisseurs",

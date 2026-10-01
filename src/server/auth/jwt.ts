@@ -46,7 +46,7 @@ export async function verifySession(token: string): Promise<Session | null> {
     });
     const { sub, sto, role, iat } = payload;
     if (typeof sub !== "string" || typeof sto !== "string") return null;
-    if (role !== "owner" && role !== "staff") return null;
+    if (role !== "owner" && role !== "staff" && role !== "supplier") return null;
     return { userId: sub, storeId: sto, role, issuedAt: typeof iat === "number" ? iat : undefined };
   } catch {
     return null;

@@ -20,6 +20,8 @@ import { resolveSession, SESSION_COOKIE } from "./server/auth/session";
 //  4. Locale negotiation (next-intl), for pages only — /api, assets and internals are excluded.
 const intl = createMiddleware(routing);
 const DASHBOARD = new RegExp(`^/(${routing.locales.join("|")})/dashboard(/|$)`);
+const SUPPLIER = new RegExp(`^/(${routing.locales.join("|")})/fornecedor(/|$)`);
+const SUPPLIER_PUBLIC = new RegExp(`^/(${routing.locales.join("|")})/fornecedor/(login|registo)/?$`);
 const ADMIN = new RegExp(`^/(${routing.locales.join("|")})/admin(/|$)`);
 
 const isDev = process.env.NODE_ENV === "development";
@@ -58,7 +60,14 @@ async function route(request: NextRequest) {
   const match = DASHBOARD.exec(request.nextUrl.pathname);
   if (match) {
     const session = await resolveSession(request.cookies.get(SESSION_COOKIE)?.value);
-    const destination = !session ? "login" : (await hasAccess(session)) ? null : "checkout";
+    // A supplier is not a merchant: the dashboard is not theirs.
+    const destination = !session
+      ? "login"
+      : session.role === "supplier"
+        ? "fornecedor"
+        : (await hasAccess(session))
+          ? null
+          : "checkout";
     if (destination) {
       const url = request.nextUrl.clone();
       url.pathname = `/${match[1]}/${destination}`;
@@ -66,6 +75,22 @@ async function route(request: NextRequest) {
       const response = NextResponse.redirect(url);
       // Never cached (the answer changes the moment a payment is confirmed); the header is
       // there so the gate is observable in tests and logs.
+      response.headers.set("Cache-Control", "no-store");
+      response.headers.set("X-Kandrop-Gate", destination);
+      return response;
+    }
+  }
+  // The supplier portal: only a supplier session enters; a merchant is sent to their own dashboard.
+  // (The sign-in and sign-up pages stay open to everyone.)
+  const supplierArea = SUPPLIER.exec(request.nextUrl.pathname);
+  if (supplierArea && !SUPPLIER_PUBLIC.test(request.nextUrl.pathname)) {
+    const session = await resolveSession(request.cookies.get(SESSION_COOKIE)?.value);
+    const destination = !session ? "fornecedor/login" : session.role === "supplier" ? null : "dashboard";
+    if (destination) {
+      const url = request.nextUrl.clone();
+      url.pathname = `/${supplierArea[1]}/${destination}`;
+      url.search = "";
+      const response = NextResponse.redirect(url);
       response.headers.set("Cache-Control", "no-store");
       response.headers.set("X-Kandrop-Gate", destination);
       return response;

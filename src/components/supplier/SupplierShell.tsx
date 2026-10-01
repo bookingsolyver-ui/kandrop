@@ -1,14 +1,14 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useEffect, useRef, type ReactNode } from "react";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { BoxIcon, MenuBarsIcon, TrendingUpIcon, WalletIcon } from "@/components/kai/icons";
 import { CloseIcon } from "@/components/shell/icons";
 import { ToastProvider } from "@/components/ui/Toast";
-import { Link, usePathname, useRouter } from "@/i18n/navigation";
-import { useCurrentSupplier, useSupplierSession } from "@/lib/supplier/store";
+import { Link, usePathname } from "@/i18n/navigation";
+import { useCurrentSupplier } from "@/lib/supplier/store";
 
 const NAV = [
   { key: "dashboard", href: "/fornecedor", icon: <TrendingUpIcon size={18} /> },
@@ -46,26 +46,27 @@ const Logo = () => (
   </Link>
 );
 
-/** The supplier portal's frame: graphite sidebar, header with the company, and the signed-in gate. */
+/** The supplier portal's frame: graphite sidebar and header with the company (the signed-in gate is the server's: proxy + layout). */
 export function SupplierShell({ children }: { children: ReactNode }) {
   const t = useTranslations("Supplier.shell");
-  const router = useRouter();
+  const locale = useLocale();
   const pathname = usePathname();
   const drawer = useRef<HTMLDialogElement>(null);
-  const { supplier, ready } = useCurrentSupplier();
-  const { signOut } = useSupplierSession();
+  const { supplier } = useCurrentSupplier();
 
   useEffect(() => drawer.current?.close(), [pathname]);
-  // Not signed in (checked once the browser's storage has been read): to the supplier sign-in.
-  useEffect(() => {
-    if (ready && !supplier) router.replace("/fornecedor/login");
-  }, [ready, supplier, router]);
-
   if (!supplier) return <div className="min-h-screen bg-[var(--ink-100)]" aria-busy="true" />;
 
-  const logout = () => {
-    signOut();
-    router.replace("/fornecedor/login");
+  /** The server clears the session cookie; then a full page load (drops every client-side cache). */
+  const logout = async () => {
+    try {
+      const res = await fetch("/api/auth/logout", { method: "POST" });
+      if (!res.ok) return;
+    } catch {
+      return;
+    }
+    // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+    window.location.href = `/${locale}/fornecedor/login`;
   };
 
   return (
