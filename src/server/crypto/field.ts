@@ -58,3 +58,20 @@ export function decryptField(stored: string, context: string): string {
 
 export const encryptNullable = (v: string | null, ctx: string) => (v === null ? null : encryptField(v, ctx));
 export const decryptNullable = (v: string | null, ctx: string) => (v === null ? null : decryptField(v, ctx));
+
+/**
+ * For READING a value to show or use: if it cannot be decrypted (the key was changed, or the value was
+ * written with another environment's key) the answer is `null` and the failure is logged (never the
+ * value), instead of an exception that takes the whole page down. A missing or unreadable value is then
+ * simply "not there", and the person is asked to enter it again.
+ */
+export function tryDecryptField(stored: string, context: string): string | null {
+  try {
+    return decryptField(stored, context);
+  } catch (err) {
+    console.error("[crypto] could not decrypt a stored value (wrong or changed DATA_ENCRYPTION_KEY?)", { context: context.split(":")[0] }, err instanceof Error ? err.message : err);
+    return null;
+  }
+}
+
+export const tryDecryptNullable = (v: string | null, ctx: string) => (v === null ? null : tryDecryptField(v, ctx));

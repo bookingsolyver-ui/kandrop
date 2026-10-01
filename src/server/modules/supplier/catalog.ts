@@ -1,4 +1,4 @@
-import { decryptField, encryptField } from "@/server/crypto/field";
+import { encryptField, tryDecryptField } from "@/server/crypto/field";
 import { db, must } from "@/server/db/client";
 import type { ImageMime } from "@/server/modules/products/schema";
 import { maskIban } from "@/shared/bank/schemas";
@@ -159,7 +159,9 @@ export const supplierBank = {
     const row = must("supplier_bank_accounts.get", await db().from("supplier_bank_accounts").select("*").eq("supplier_id", supplierId).maybeSingle());
     if (!row) return null;
     // Decrypted in memory only to be masked; a legacy plaintext value is masked the same way.
-    const iban = decryptField(String(row.iban), ibanContext(supplierId));
+    const iban = tryDecryptField(String(row.iban), ibanContext(supplierId));
+    // Unreadable (the key changed): show "no details yet" so the supplier enters them again, rather than crash.
+    if (iban === null) return null;
     return { bankName: String(row.bank_name), holderName: String(row.holder_name), ibanMasked: maskIban(iban), updatedAt: Number(row.updated_at) };
   },
 

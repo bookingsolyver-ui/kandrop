@@ -1,5 +1,5 @@
 import { db, must } from "@/server/db/client";
-import { decryptNullable } from "@/server/crypto/field";
+import { tryDecryptNullable } from "@/server/crypto/field";
 import type { Store } from "./schema";
 
 /**
@@ -11,7 +11,7 @@ const fromRow = (row: Record<string, unknown>): Store => {
   return {
     id: String(row.id),
     name: String(row.name),
-    nif: decryptNullable(settings.nif ?? null, `stores.nif:${String(row.id)}`),
+    nif: tryDecryptNullable(settings.nif ?? null, `stores.nif:${String(row.id)}`),
     currency: "AOA",
     status: settings.status ?? "pending_verification",
   };

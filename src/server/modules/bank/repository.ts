@@ -1,5 +1,5 @@
 import { db, must } from "@/server/db/client";
-import { decryptField, encryptField } from "@/server/crypto/field";
+import { encryptField, tryDecryptField } from "@/server/crypto/field";
 import type { BankAccountRecord } from "./schema";
 
 export const bankRepository = {
@@ -8,14 +8,11 @@ export const bankRepository = {
       "bank_accounts.get",
       await db().from("bank_accounts").select("*").eq("store_id", storeId).maybeSingle()
     );
-    return row
-      ? {
-          storeId,
-          holderName: String(row.holder_name),
-          iban: decryptField(String(row.iban), `bank_accounts.iban:${storeId}`),
-          updatedAt: Number(row.updated_at),
-        }
-      : null;
+    if (!row) return null;
+    // An IBAN that cannot be read (the key changed) is treated as "no bank account yet": the merchant
+    // enters it again, and no payout can ever go to a wrong or garbled account.
+    const iban = tryDecryptField(String(row.iban), `bank_accounts.iban:${storeId}`);
+    return iban === null ? null : { storeId, holderName: String(row.holder_name), iban, updatedAt: Number(row.updated_at) };
   },
 
   async save(account: BankAccountRecord): Promise<BankAccountRecord> {

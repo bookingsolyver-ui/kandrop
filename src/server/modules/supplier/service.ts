@@ -1,5 +1,5 @@
 import { createPasswordCheckClient } from "@/lib/supabase/server";
-import { decryptNullable, encryptNullable } from "@/server/crypto/field";
+import { encryptNullable, tryDecryptNullable } from "@/server/crypto/field";
 import { db, must } from "@/server/db/client";
 import { ApiError } from "@/server/http/errors";
 import { userRepository } from "@/server/modules/auth/userRepository";
@@ -27,7 +27,7 @@ function fromRow(row: Record<string, unknown>, email: string): SupplierRecord {
     id,
     email,
     companyName: String(row.company_name),
-    nif: decryptNullable(row.nif === null ? null : String(row.nif), nifContext(id)),
+    nif: tryDecryptNullable(row.nif === null ? null : String(row.nif), nifContext(id)),
     phone: row.phone === null ? null : String(row.phone),
     address: row.address === null ? null : String(row.address),
     status: (["pending", "approved", "rejected"].includes(String(row.status)) ? row.status : "pending") as SupplierStatus,
