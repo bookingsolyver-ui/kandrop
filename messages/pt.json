@@ -581,7 +581,10 @@
       "support": "Suporte",
       "settings": "Configurações",
       "plans": "Faturação e planos",
-      "affiliates": "Afiliados"
+      "affiliates": "Afiliados",
+      "vitrine": "Vitrine",
+      "vitrineNational": "Produtos Nacionais",
+      "vitrineInternational": "Produtos Internacionais"
     },
     "breadcrumbs": {
       "label": "Localização",
@@ -1902,5 +1905,59 @@
       "body": "Crie a sua conta, copie o seu link e partilhe-o. O resto acompanha no painel.",
       "cta": "Quero ser afiliado"
     }
+  },
+  "Vitrine": {
+    "national": {
+      "title": "Produtos Nacionais",
+      "subtitle": "Catálogo de fornecedores angolanos — entrega rápida em todo o país, sem comprar stock."
+    },
+    "international": {
+      "title": "Produtos Internacionais",
+      "subtitle": "Catálogo de fornecedores internacionais — produzidos sob encomenda, stock ilimitado."
+    },
+    "occasionsLabel": "Campanhas",
+    "occasions": {
+      "children": "Dia da Criança"
+    },
+    "categories": "Categorias",
+    "cat": {
+      "all": "Todos",
+      "bestSellers": "Mais vendidos",
+      "hot": "Produtos quentes",
+      "kits": "Kits",
+      "beauty": "Beleza e cuidado pessoal",
+      "toys": "Brinquedos e passatempos",
+      "fashion": "Moda, calçado e malas",
+      "home": "Casa, cozinha e decoração",
+      "jewelry": "Joias e relógios",
+      "health": "Saúde",
+      "tech": "Eletrónica",
+      "pets": "Animais"
+    },
+    "filters": "Filtros",
+    "inStock": "Em stock",
+    "newIn": "Novidades",
+    "searchPlaceholder": "Procurar produtos por nome, marca ou SKU…",
+    "searchLabel": "Procurar produtos",
+    "count": "{count, plural, =0 {Nenhum produto} one {# produto} other {# produtos}} em",
+    "empty": "Nenhum produto corresponde à sua pesquisa.",
+    "clear": "Limpar filtros",
+    "badge": {
+      "national": "Nacional",
+      "international": "Internacional"
+    },
+    "hot": "Quente",
+    "new": "Novo",
+    "out": "Sem stock",
+    "cost": "Preço de custo",
+    "start": "Começar a vender",
+    "added": "Na minha loja",
+    "favorite": "Adicionar aos favoritos",
+    "unfavorite": "Remover dos favoritos",
+    "perPage": "Por página",
+    "prev": "Anterior",
+    "next": "Seguinte",
+    "page": "Página {n}",
+    "pagination": "Paginação"
   }
 }

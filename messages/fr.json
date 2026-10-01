@@ -581,7 +581,10 @@
       "support": "Support",
       "settings": "Paramètres",
       "plans": "Facturation et offres",
-      "affiliates": "Affiliés"
+      "affiliates": "Affiliés",
+      "vitrine": "Vitrine",
+      "vitrineNational": "Produits nationaux",
+      "vitrineInternational": "Produits internationaux"
     },
     "breadcrumbs": {
       "label": "Fil d’Ariane",
@@ -1902,5 +1905,59 @@
       "body": "Créez votre compte, copiez votre lien et partagez-le. Vous suivez le reste dans le tableau de bord.",
       "cta": "Je veux devenir affilié"
     }
+  },
+  "Vitrine": {
+    "national": {
+      "title": "Produits nationaux",
+      "subtitle": "Catalogue de fournisseurs angolais — livraison rapide dans tout le pays, sans acheter de stock."
+    },
+    "international": {
+      "title": "Produits internationaux",
+      "subtitle": "Catalogue de fournisseurs internationaux — fabriqués à la commande, stock illimité."
+    },
+    "occasionsLabel": "Campagnes",
+    "occasions": {
+      "children": "Fête des enfants"
+    },
+    "categories": "Catégories",
+    "cat": {
+      "all": "Tous",
+      "bestSellers": "Meilleures ventes",
+      "hot": "Produits tendance",
+      "kits": "Kits",
+      "beauty": "Beauté et soins personnels",
+      "toys": "Jouets et loisirs",
+      "fashion": "Mode, chaussures et sacs",
+      "home": "Maison, cuisine et déco",
+      "jewelry": "Bijoux et montres",
+      "health": "Santé",
+      "tech": "Électronique",
+      "pets": "Animaux"
+    },
+    "filters": "Filtres",
+    "inStock": "En stock",
+    "newIn": "Nouveautés",
+    "searchPlaceholder": "Rechercher un produit par nom, marque ou SKU…",
+    "searchLabel": "Rechercher des produits",
+    "count": "{count, plural, =0 {Aucun produit} one {# produit} other {# produits}} dans",
+    "empty": "Aucun produit ne correspond à votre recherche.",
+    "clear": "Effacer les filtres",
+    "badge": {
+      "national": "National",
+      "international": "International"
+    },
+    "hot": "Tendance",
+    "new": "Nouveau",
+    "out": "Rupture de stock",
+    "cost": "Prix de revient",
+    "start": "Commencer à vendre",
+    "added": "Dans ma boutique",
+    "favorite": "Ajouter aux favoris",
+    "unfavorite": "Retirer des favoris",
+    "perPage": "Par page",
+    "prev": "Précédent",
+    "next": "Suivant",
+    "page": "Page {n}",
+    "pagination": "Pagination"
   }
 }

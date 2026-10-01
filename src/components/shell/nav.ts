@@ -20,7 +20,8 @@ export type NavKey =
   | "overview"
   | "wallet"
   | "orders"
-  | "catalog"
+  | "vitrineNational"
+  | "vitrineInternational"
   | "products"
   | "landingPages"
   | "customers"
@@ -59,7 +60,8 @@ export const NAV_GROUPS: NavGroup[] = [
   {
     key: "dropshipping",
     items: [
-      { key: "catalog", href: "/dashboard/catalog", icon: CatalogIcon, soon: true },
+      { key: "vitrineNational", href: "/dashboard/vitrine/nacional", icon: CatalogIcon },
+      { key: "vitrineInternational", href: "/dashboard/vitrine/internacional", icon: CatalogIcon },
       { key: "products", href: "/dashboard/products", icon: ProductsIcon },
       { key: "landingPages", href: "/dashboard/landing-pages", icon: LandingPageIcon, soon: true },
       { key: "customers", href: "/dashboard/customers", icon: CustomersIcon, soon: true },
@@ -96,7 +98,7 @@ export const ALL_NAV_ITEMS: NavItem[] = [...NAV_GROUPS.flatMap((g) => g.items), 
 export const segmentOf = (item: NavItem) => item.href.split("/")[2] ?? "";
 
 /** The areas on the roadmap that have a "coming soon" page (and a sentence in `ComingSoon.features`). */
-export type SoonKey = "catalog" | "landingPages" | "customers";
+export type SoonKey = "landingPages" | "customers";
 
 export const SOON_ITEMS = ALL_NAV_ITEMS.filter(
   (item): item is NavItem & { key: SoonKey } => item.soon === true
