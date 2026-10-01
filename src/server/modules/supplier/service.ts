@@ -1,4 +1,4 @@
-import { createAnonClient } from "@/lib/supabase/server";
+import { createPasswordCheckClient } from "@/lib/supabase/server";
 import { decryptNullable, encryptNullable } from "@/server/crypto/field";
 import { db, must } from "@/server/db/client";
 import { ApiError } from "@/server/http/errors";
@@ -96,21 +96,56 @@ export async function registerSupplier(raw: unknown): Promise<SupplierRecord> {
   return supplier;
 }
 
+export type SupplierLogin =
+  | { kind: "ok"; supplier: SupplierRecord }
+  /** The password is right but the account has no `suppliers` row (e.g. it belongs to something else). */
+  | { kind: "not_supplier" }
+  | { kind: "pending" };
+
 /**
- * Checks an e-mail and password against Supabase Auth and that the account really is a supplier
- * (trusted `app_metadata.role` AND a `suppliers` row that is not rejected). Every failure is the same
- * `invalid_credentials`: a merchant, a rejected supplier, an unknown e-mail and a wrong password
- * cannot be told apart from outside.
+ * Checks an e-mail and password against Supabase Auth, THEN looks the account up in `suppliers`:
+ * not there → `not_supplier`; `pending` → `pending` (no session is created); `rejected` → plain
+ * `invalid_credentials`. Only a correct password reveals which of these it is, so nothing can be
+ * learned about an e-mail without knowing its password. The Supabase session itself is revoked at
+ * once: Kandrop's own cookie is the only session.
  */
-export async function authenticateSupplier(emailRaw: unknown, password: unknown): Promise<SupplierRecord> {
+export async function authenticateSupplier(emailRaw: unknown, password: unknown): Promise<SupplierLogin> {
   const email = typeof emailRaw === "string" ? emailRaw.trim().toLowerCase() : "";
   if (!email || typeof password !== "string" || password.length === 0 || password.length > 128) {
     throw new ApiError("invalid_credentials");
   }
-  const { data, error } = await createAnonClient().auth.signInWithPassword({ email, password });
-  if (error || !data.user) throw new ApiError("invalid_credentials");
-  if (data.user.app_metadata?.role !== "supplier") throw new ApiError("invalid_credentials");
-  const supplier = await findSupplier(data.user.id);
-  if (!supplier || supplier.status === "rejected") throw new ApiError("invalid_credentials");
-  return supplier;
+  const client = createPasswordCheckClient();
+  try {
+    const { data, error } = await client.auth.signInWithPassword({ email, password });
+    if (error || !data.user) {
+      // A wrong password is expected; anything else (bad key, outage) is ours to know about.
+      if (error && error.code !== "invalid_credentials") console.error("[supplier] sign-in check failed:", error.code, error.message);
+      throw new ApiError("invalid_credentials");
+    }
+    const supplier = await findSupplier(data.user.id);
+    if (!supplier || data.user.app_metadata?.role !== "supplier") return { kind: "not_supplier" };
+    if (supplier.status === "rejected") throw new ApiError("invalid_credentials");
+    if (supplier.status === "pending") return { kind: "pending" };
+    return { kind: "ok", supplier };
+  } finally {
+    await client.auth.signOut().catch(() => undefined);
+  }
+}
+
+/** Newest first, for the admin's approval list. */
+export async function listSuppliers(limit = 100): Promise<SupplierRecord[]> {
+  const list = must("suppliers.list", await db().from("suppliers").select("*").order("created_at", { ascending: false }).limit(limit));
+  return Promise.all(
+    (list ?? []).map(async (row) => {
+      const { data } = await db().auth.admin.getUserById(String(row.id));
+      return fromRow(row, data.user?.email ?? "");
+    })
+  );
+}
+
+export async function setSupplierStatus(id: string, status: SupplierStatus): Promise<{ before: SupplierStatus } | null> {
+  const current = must("suppliers.status", await db().from("suppliers").select("status").eq("id", id).maybeSingle());
+  if (!current) return null;
+  must("suppliers.setStatus", await db().from("suppliers").update({ status }).eq("id", id));
+  return { before: current.status as SupplierStatus };
 }

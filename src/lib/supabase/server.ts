@@ -70,10 +70,13 @@ export function createAdminClient() {
 }
 
 /**
- * A throwaway client with the anon key, used only to check an e-mail and password against Supabase
- * Auth (`signInWithPassword`). Nothing is persisted: Kandrop issues its own session cookie afterwards.
+ * A throwaway client used only to check an e-mail and password against Supabase Auth
+ * (`signInWithPassword`). It uses the service key, so the check does not depend on the public key being
+ * right; the key never leaves the server and nothing is persisted: Kandrop issues its own session
+ * cookie afterwards and the Supabase session is revoked straight away.
  */
-export function createAnonClient() {
-  const { url, anonKey } = config();
-  return createSupabaseClient(url, anonKey, { auth: { persistSession: false, autoRefreshToken: false } });
+export function createPasswordCheckClient() {
+  const { url, serviceRoleKey } = config();
+  if (!serviceRoleKey) throw new Error("Supabase admin access needs SUPABASE_SERVICE_ROLE_KEY");
+  return createSupabaseClient(url, serviceRoleKey, { auth: { persistSession: false, autoRefreshToken: false } });
 }

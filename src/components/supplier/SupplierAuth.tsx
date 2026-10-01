@@ -6,21 +6,8 @@ import { AuthSplit, CheckCircleIcon, TrustStrip } from "@/components/auth/AuthSp
 import { BoxIcon, TrendingUpIcon, WalletIcon } from "@/components/kai/icons";
 import { BRAND_BUTTON_CLASS } from "@/components/ui/BrandButton";
 import { Link, useRouter } from "@/i18n/navigation";
+import { loginSupplierAction, registerSupplierAction } from "@/app/[locale]/fornecedor/(auth)/actions";
 import { PROVINCES, supplierRegisterSchema } from "@/shared/supplier/schemas";
-
-type Failure = { error?: { code?: string; details?: Array<{ path: PropertyKey[]; message: string }> } };
-
-/** POSTs JSON to a supplier API; the failure is the server's (never prose: a code and field codes). */
-async function post(url: string, body: unknown): Promise<{ ok: true } | { ok: false; code: string; details: NonNullable<NonNullable<Failure["error"]>["details"]> }> {
-  try {
-    const res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
-    if (res.ok) return { ok: true };
-    const payload = (await res.json().catch(() => ({}))) as Failure;
-    return { ok: false, code: payload.error?.code ?? "internal", details: payload.error?.details ?? [] };
-  } catch {
-    return { ok: false, code: "internal", details: [] };
-  }
-}
 
 const INPUT = "flex h-12 w-full rounded-xl border bg-input px-3 py-2 text-sm text-foreground shadow-xs outline-none transition-all placeholder:text-muted-foreground/60 focus-visible:border-primary/40 focus-visible:ring-2 focus-visible:ring-primary/20";
 const LABEL = "text-xs font-semibold tracking-wide text-foreground/80 uppercase";
@@ -70,26 +57,25 @@ function Aside({ title }: { title: ReactNode }) {
 
 const card = "relative overflow-hidden rounded-t-3xl rounded-b-2xl border border-border bg-card p-5 shadow-[0_-8px_24px_rgba(20,16,8,.06),0_24px_48px_rgba(20,16,8,.08)] sm:p-8 lg:rounded-2xl lg:shadow-[0_4px_8px_rgba(20,16,8,.05),0_24px_48px_rgba(20,16,8,.08)]";
 
-export function SupplierLoginScreen() {
+export function SupplierLoginScreen({ registered = false }: { registered?: boolean }) {
   const t = useTranslations("Supplier.auth");
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<"invalid" | "not_supplier" | "pending" | "rate_limited" | "internal" | null>(null);
   const [pending, setPending] = useState(false);
 
   const submit = async () => {
     setPending(true);
     setError(null);
-    const result = await post("/api/supplier/login", { email, password });
+    const result = await loginSupplierAction({ email, password });
     if (result.ok) {
       router.replace("/fornecedor");
       router.refresh();
       return;
     }
     setPending(false);
-    // Rate-limited and server errors get their own message; every credential failure is the same one.
-    setError(result.code === "rate_limited" ? "rate" : result.code === "invalid_credentials" ? "invalid" : "generic");
+    setError(result.error);
   };
 
   return (
@@ -107,7 +93,8 @@ export function SupplierLoginScreen() {
           <p className="mt-1 text-xs text-muted-foreground lg:text-sm">{t("loginSub")}</p>
         </div>
         <form onSubmit={(e) => { e.preventDefault(); void submit(); }} noValidate className="space-y-5">
-          {error && <div role="alert" className="rounded-xl border border-down px-3.5 py-3 text-[13px] text-down">{t(error === "rate" ? "rateLimited" : error === "generic" ? "genericError" : "invalid")}</div>}
+          {registered && !error && <div role="status" className="rounded-xl border border-emerald-600/40 bg-emerald-50 px-3.5 py-3 text-[13px] text-emerald-800">{t("registeredNotice")}</div>}
+          {error && <div role="alert" className={`rounded-xl border px-3.5 py-3 text-[13px] ${error === "pending" ? "border-amber-500/50 bg-amber-50 text-amber-900" : "border-down text-down"}`}>{t(error === "rate_limited" ? "rateLimited" : error === "internal" ? "genericError" : error === "not_supplier" ? "notSupplier" : error === "pending" ? "pendingApproval" : "invalid")}</div>}
           <Field id="sup-email" label={t("email")}><input id="sup-email" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} className={`${INPUT} border-border`} /></Field>
           <Field id="sup-password" label={t("password")}><input id="sup-password" type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} className={`${INPUT} border-border`} /></Field>
           <button type="submit" disabled={pending || !email || !password} className={`${BRAND_BUTTON_CLASS} h-12 w-full text-sm`}>{pending ? t("loginSubmitting") : t("loginSubmit")}</button>
@@ -147,23 +134,20 @@ export function SupplierRegisterScreen() {
     setPending(true);
     setFailure(null);
     // The server validates again with the same schema: it never trusts what the browser says.
-    const result = await post("/api/supplier/register", values);
+    const result = await registerSupplierAction(values);
     if (result.ok) {
-      router.replace("/fornecedor");
-      router.refresh();
+      // Nobody is signed in yet: the account waits for the team's approval.
+      router.replace("/fornecedor/login?registered=1");
       return;
     }
     setPending(false);
-    if (result.code === "email_taken") return setTaken(true);
-    if (result.code === "validation_failed") {
+    if (result.error === "email_taken") return setTaken(true);
+    if (result.error === "validation") {
       const next: Partial<Record<keyof typeof empty, string>> = {};
-      for (const d of result.details) {
-        const key = d.path[0] as keyof typeof empty;
-        if (key in empty && !next[key]) next[key] = v(d.message as Parameters<typeof v>[0]);
-      }
+      for (const [key, code] of Object.entries(result.fields)) if (key in empty) next[key as keyof typeof empty] = v(code as Parameters<typeof v>[0]);
       return setErrors(next);
     }
-    setFailure(result.code === "rate_limited" ? "rate" : "generic");
+    setFailure(result.error === "rate_limited" ? "rate" : "generic");
   };
 
   const err = (k: keyof typeof empty) => errors[k];

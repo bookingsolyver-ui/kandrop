@@ -6,6 +6,8 @@ export const AUDIT_ACTIONS = [
   "supplier_product.approve",
   "supplier_product.reject",
   "supplier.approve",
+  "supplier.reject",
+  "supplier.hold",
   "commission.update",
   "payout.approve",
   "payout.reject",

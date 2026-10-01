@@ -2542,7 +2542,20 @@
         "nacional": "Nacional",
         "internacional": "Internacional"
       },
-      "demoNote": "Fornecedores e submissões de demonstração; as decisões ficam guardadas neste navegador."
+      "demoNote": "Fornecedores e submissões de demonstração; as decisões ficam guardadas neste navegador.",
+      "real": {
+        "title": "Registos de fornecedores",
+        "empty": "Ainda sem registos.",
+        "approved": "Fornecedor aprovado: já pode entrar.",
+        "rejected": "Fornecedor recusado.",
+        "failed": "Não foi possível atualizar o estado.",
+        "demoTitle": "Fornecedores de demonstração",
+        "status": {
+          "pending": "Pendente",
+          "approved": "Aprovado",
+          "rejected": "Recusado"
+        }
+      }
     },
     "restricted": {
       "title": "Acesso Restrito",
@@ -2608,7 +2621,10 @@
       "registerSubmitting": "A criar conta…",
       "warehouseNote": "A morada do armazém é usada para recolher as encomendas.",
       "rateLimited": "Demasiadas tentativas. Tente de novo dentro de alguns minutos.",
-      "genericError": "Não foi possível concluir. Tente novamente."
+      "genericError": "Não foi possível concluir. Tente novamente.",
+      "notSupplier": "Conta de fornecedor não encontrada.",
+      "pendingApproval": "Conta pendente de aprovação pela administração.",
+      "registeredNotice": "Conta criada. Está pendente de aprovação pela equipa Kandrop: poderá entrar assim que for aprovada."
     },
     "panel": {
       "tag": "Marketplace multi-fornecedor",

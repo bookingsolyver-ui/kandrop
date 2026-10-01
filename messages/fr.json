@@ -2542,7 +2542,20 @@
         "nacional": "National",
         "internacional": "International"
       },
-      "demoNote": "Fournisseurs et soumissions de démonstration ; les décisions sont enregistrées dans ce navigateur."
+      "demoNote": "Fournisseurs et soumissions de démonstration ; les décisions sont enregistrées dans ce navigateur.",
+      "real": {
+        "title": "Inscriptions de fournisseurs",
+        "empty": "Pas encore d’inscriptions.",
+        "approved": "Fournisseur approuvé : il peut se connecter.",
+        "rejected": "Fournisseur refusé.",
+        "failed": "Impossible de mettre à jour le statut.",
+        "demoTitle": "Fournisseurs de démonstration",
+        "status": {
+          "pending": "En attente",
+          "approved": "Approuvé",
+          "rejected": "Refusé"
+        }
+      }
     },
     "restricted": {
       "title": "Accès restreint",
@@ -2608,7 +2621,10 @@
       "registerSubmitting": "Création du compte…",
       "warehouseNote": "L’adresse de l’entrepôt sert à récupérer les commandes.",
       "rateLimited": "Trop de tentatives. Réessayez dans quelques minutes.",
-      "genericError": "Une erreur est survenue. Veuillez réessayer."
+      "genericError": "Une erreur est survenue. Veuillez réessayer.",
+      "notSupplier": "Compte fournisseur introuvable.",
+      "pendingApproval": "Compte en attente d’approbation par l’administration.",
+      "registeredNotice": "Compte créé. Il est en attente d’approbation par l’équipe Kandrop : vous pourrez vous connecter dès son approbation."
     },
     "panel": {
       "tag": "Marketplace multi-fournisseurs",

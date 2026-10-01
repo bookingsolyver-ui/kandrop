@@ -6,7 +6,7 @@ import { SupplierLoginScreen } from "@/components/supplier/SupplierAuth";
 import { routing } from "@/i18n/routing";
 import { redirectIfSupplier } from "@/server/auth/supplierGate";
 
-type Props = { params: Promise<{ locale: string }> };
+type Props = { params: Promise<{ locale: string }>; searchParams: Promise<{ registered?: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
@@ -16,10 +16,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 /** Supplier sign-in / sign-up (real accounts: Supabase Auth + the `suppliers` table). */
-export default async function Page({ params }: Props) {
+export default async function Page({ params, searchParams }: Props) {
   const { locale } = await params;
+  const registered = (await searchParams).registered === "1";
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
   await redirectIfSupplier(locale);
-  return <SupplierLoginScreen />;
+  return <SupplierLoginScreen registered={registered} />;
 }

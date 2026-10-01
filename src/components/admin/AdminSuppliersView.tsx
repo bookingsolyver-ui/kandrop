@@ -5,18 +5,42 @@ import { useMemo, useState } from "react";
 import { Badge, PageHeader, Pager, card, dateOnly, usePager } from "@/components/admin/ui";
 import { useFormatters } from "@/components/dashboard/useFormatters";
 import { ToastProvider, useToast } from "@/components/ui/Toast";
-import { useAudit } from "./useAudit";
+import { useRouter } from "@/i18n/navigation";
 import { useSubmissions } from "@/lib/supplier/store";
 import { SUPPLIERS, supplierById, type SubmissionStatus } from "@/shared/supplier/mock";
 
 const TONE = { approved: "success", in_review: "warn", rejected: "danger" } as const;
 
-function Body() {
+export interface RealSupplierRow {
+  id: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  address: string | null;
+  status: "pending" | "approved" | "rejected";
+  createdAt: number;
+}
+const REAL_TONE = { approved: "success", pending: "warn", rejected: "danger" } as const;
+
+function Body({ real }: { real: RealSupplierRow[] }) {
+  const router = useRouter();
+  const [busy, setBusy] = useState<string | null>(null);
+  const setStatus = async (id: string, status: "approved" | "rejected") => {
+    setBusy(id);
+    try {
+      const res = await fetch(`/api/admin/suppliers/${id}/status`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status }) });
+      if (res.ok) {
+        toast({ message: t(status === "approved" ? "real.approved" : "real.rejected") });
+        router.refresh();
+      } else toast({ message: t("real.failed") });
+    } finally {
+      setBusy(null);
+    }
+  };
   const t = useTranslations("Admin.suppliers");
   const f = useFormatters();
   const locale = useLocale();
   const toast = useToast();
-  const audit = useAudit();
   const { items, decide } = useSubmissions();
   const [tab, setTab] = useState<"approve" | "suppliers">("approve");
   const [filter, setFilter] = useState<SubmissionStatus>("in_review");
@@ -28,7 +52,11 @@ function Body() {
   const act = (id: string, status: "approved" | "rejected") => {
     const before = items.find((s) => s.id === id)?.status;
     decide(id, status);
-    audit(status === "approved" ? "supplier_product.approve" : "supplier_product.reject", id, { status: before }, { status });
+    void fetch("/api/admin/audit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: status === "approved" ? "supplier_product.approve" : "supplier_product.reject", target: id, before: { status: before }, after: { status } }),
+    }).catch(() => undefined);
     toast({ message: t(status === "approved" ? "toast.approved" : "toast.rejected") });
   };
 
@@ -42,7 +70,7 @@ function Body() {
       <PageHeader title={t("title")} subtitle={t("subtitle")} />
       <div role="tablist" className="mb-5 flex flex-wrap gap-2">
         {tabBtn("approve", t("tabs.approve", { count: waiting }))}
-        {tabBtn("suppliers", t("tabs.suppliers", { count: SUPPLIERS.length }))}
+        {tabBtn("suppliers", t("tabs.suppliers", { count: real.length }))}
       </div>
 
       {tab === "approve" ? (
@@ -87,7 +115,32 @@ function Body() {
           <Pager pager={pager} />
         </section>
       ) : (
+        <>
+        <section className={`${card} mb-6 overflow-x-auto`}>
+          <h2 className="border-b border-[var(--ink-200)] px-5 py-4 text-[17px] font-bold tracking-tight">{t("real.title")}</h2>
+          {real.length === 0 ? <p className="px-6 py-10 text-center text-sm text-[var(--ink-600)]">{t("real.empty")}</p> : (
+            <table className="w-full min-w-[48rem] border-collapse text-sm">
+              <tbody>
+                {real.map((r) => (
+                  <tr key={r.id} className="border-b border-gray-100 last:border-b-0">
+                    <td className="px-4 py-3 font-semibold">{r.name}<span className="block text-[12px] font-normal text-[var(--ink-500)]">{r.email}{r.phone ? ` · ${r.phone}` : ""}</span></td>
+                    <td className="px-4 py-3 text-[var(--ink-600)]">{r.address ?? "—"}</td>
+                    <td className="px-4 py-3 whitespace-nowrap text-[var(--ink-600)]">{dateOnly(r.createdAt, locale)}</td>
+                    <td className="px-4 py-3"><Badge tone={REAL_TONE[r.status]}>{t(`real.status.${r.status}`)}</Badge></td>
+                    <td className="px-4 py-3">
+                      <div className="flex justify-end gap-2">
+                        {r.status !== "approved" && <button type="button" disabled={busy === r.id} onClick={() => void setStatus(r.id, "approved")} className="h-9 rounded-full bg-[var(--ink-900)] px-4 text-[13px] font-semibold text-white hover:bg-black disabled:opacity-50">{t("approve")}</button>}
+                        {r.status !== "rejected" && <button type="button" disabled={busy === r.id} onClick={() => void setStatus(r.id, "rejected")} className="h-9 rounded-full border border-[var(--ink-200)] bg-white px-4 text-[13px] font-semibold text-[var(--ink-700)] hover:border-[var(--ink-300)] disabled:opacity-50">{t("reject")}</button>}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </section>
         <section className={`${card} overflow-x-auto`}>
+          <h2 className="border-b border-[var(--ink-200)] px-5 py-4 text-[17px] font-bold tracking-tight">{t("real.demoTitle")}</h2>
           <table className="w-full min-w-[48rem] border-collapse text-sm">
             <thead className="border-b border-gray-100 bg-[var(--ink-50)]">
               <tr className="text-left text-[11px] font-bold tracking-[0.06em] text-[var(--ink-500)] uppercase">
@@ -108,6 +161,7 @@ function Body() {
             </tbody>
           </table>
         </section>
+        </>
       )}
       <p className="mt-4 text-center text-[12px] text-[var(--ink-500)]">{t("demoNote")}</p>
     </div>
@@ -115,10 +169,10 @@ function Body() {
 }
 
 /** The team's side of the marketplace: approve what suppliers submit and see who they are. */
-export function AdminSuppliersView() {
+export function AdminSuppliersView({ real }: { real: RealSupplierRow[] }) {
   return (
     <ToastProvider>
-      <Body />
+      <Body real={real} />
     </ToastProvider>
   );
 }

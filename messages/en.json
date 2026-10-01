@@ -2542,7 +2542,20 @@
         "nacional": "National",
         "internacional": "International"
       },
-      "demoNote": "Demo suppliers and submissions; decisions are saved in this browser."
+      "demoNote": "Demo suppliers and submissions; decisions are saved in this browser.",
+      "real": {
+        "title": "Supplier registrations",
+        "empty": "No registrations yet.",
+        "approved": "Supplier approved: they can sign in now.",
+        "rejected": "Supplier rejected.",
+        "failed": "Could not update the status.",
+        "demoTitle": "Demo suppliers",
+        "status": {
+          "pending": "Pending",
+          "approved": "Approved",
+          "rejected": "Rejected"
+        }
+      }
     },
     "restricted": {
       "title": "Restricted Access",
@@ -2608,7 +2621,10 @@
       "registerSubmitting": "Creating account…",
       "warehouseNote": "The warehouse address is used to collect orders.",
       "rateLimited": "Too many attempts. Try again in a few minutes.",
-      "genericError": "Something went wrong. Please try again."
+      "genericError": "Something went wrong. Please try again.",
+      "notSupplier": "Supplier account not found.",
+      "pendingApproval": "Account pending approval by the administration.",
+      "registeredNotice": "Account created. It is pending approval by the Kandrop team: you can sign in as soon as it is approved."
     },
     "panel": {
       "tag": "Multi-vendor marketplace",
