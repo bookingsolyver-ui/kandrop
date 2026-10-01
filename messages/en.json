@@ -1959,5 +1959,75 @@
     "next": "Next",
     "page": "Page {n}",
     "pagination": "Pagination"
+  },
+  "MyProducts": {
+    "title": "My products",
+    "subtitle": "The products you imported from the Showcase to sell, with your margin in real time.",
+    "explore": "Explore the Showcase",
+    "sample": "Sample data: no real imported products yet.",
+    "kpi": {
+      "active": "Active products",
+      "total": "Products in my store",
+      "margin": "Average margin"
+    },
+    "search": "Search my products…",
+    "searchLabel": "Search my products",
+    "tabs": {
+      "all": "All",
+      "active": "Active",
+      "paused": "Paused",
+      "out": "Out of stock"
+    },
+    "tabsLabel": "Product status",
+    "cols": {
+      "product": "Product",
+      "cost": "Cost",
+      "price": "Selling price",
+      "margin": "Margin",
+      "sales": "Sales (month)",
+      "status": "Status"
+    },
+    "origin": {
+      "nacional": "National supplier",
+      "internacional": "International supplier"
+    },
+    "stock": {
+      "high": "High stock",
+      "low": "Low stock",
+      "out": "Out of stock"
+    },
+    "status": {
+      "active": "Active",
+      "paused": "Paused",
+      "out": "Out of stock"
+    },
+    "suggested": "Suggested: {price}",
+    "sort": "Sort by {col}",
+    "actions": {
+      "open": "Options for {title}",
+      "editPrice": "Edit price",
+      "landing": "View landing page",
+      "pause": "Pause product",
+      "resume": "Activate product",
+      "remove": "Remove product"
+    },
+    "edit": {
+      "label": "New selling price",
+      "save": "Save",
+      "cancel": "Cancel",
+      "invalid": "Enter a valid price.",
+      "below": "Below cost: you lose {amount} per unit."
+    },
+    "showing": "Showing {from}–{to} of {total} products",
+    "perPage": "Per page",
+    "prev": "Previous",
+    "next": "Next",
+    "page": "Page {n}",
+    "pagination": "Pagination",
+    "empty": {
+      "title": "You have no products yet",
+      "body": "Pick products in the Showcase and import them into your store. They show up here, with your price and your margin.",
+      "none": "No product matches your search."
+    }
   }
 }

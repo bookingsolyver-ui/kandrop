@@ -1959,5 +1959,75 @@
     "next": "Suivant",
     "page": "Page {n}",
     "pagination": "Pagination"
+  },
+  "MyProducts": {
+    "title": "Mes produits",
+    "subtitle": "Les produits importés de la Vitrine pour vendre, avec votre marge en temps réel.",
+    "explore": "Explorer la Vitrine",
+    "sample": "Données d’exemple : aucun produit réel importé pour l’instant.",
+    "kpi": {
+      "active": "Produits actifs",
+      "total": "Produits dans ma boutique",
+      "margin": "Marge moyenne"
+    },
+    "search": "Rechercher dans mes produits…",
+    "searchLabel": "Rechercher dans mes produits",
+    "tabs": {
+      "all": "Tous",
+      "active": "Actifs",
+      "paused": "En pause",
+      "out": "Rupture de stock"
+    },
+    "tabsLabel": "Statut du produit",
+    "cols": {
+      "product": "Produit",
+      "cost": "Coût",
+      "price": "Prix de vente",
+      "margin": "Marge",
+      "sales": "Ventes (mois)",
+      "status": "Statut"
+    },
+    "origin": {
+      "nacional": "Fournisseur national",
+      "internacional": "Fournisseur international"
+    },
+    "stock": {
+      "high": "Stock élevé",
+      "low": "Stock faible",
+      "out": "Rupture de stock"
+    },
+    "status": {
+      "active": "Actif",
+      "paused": "En pause",
+      "out": "Rupture de stock"
+    },
+    "suggested": "Suggéré : {price}",
+    "sort": "Trier par {col}",
+    "actions": {
+      "open": "Options pour {title}",
+      "editPrice": "Modifier le prix",
+      "landing": "Voir la landing page",
+      "pause": "Mettre en pause",
+      "resume": "Activer le produit",
+      "remove": "Retirer le produit"
+    },
+    "edit": {
+      "label": "Nouveau prix de vente",
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "invalid": "Saisissez un prix valide.",
+      "below": "Sous le coût : vous perdez {amount} par unité."
+    },
+    "showing": "Affichage de {from}–{to} sur {total} produits",
+    "perPage": "Par page",
+    "prev": "Précédent",
+    "next": "Suivant",
+    "page": "Page {n}",
+    "pagination": "Pagination",
+    "empty": {
+      "title": "Vous n’avez pas encore de produits",
+      "body": "Choisissez des produits dans la Vitrine et importez-les dans votre boutique. Ils apparaissent ici, avec votre prix et votre marge.",
+      "none": "Aucun produit ne correspond à la recherche."
+    }
   }
 }

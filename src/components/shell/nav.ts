@@ -62,7 +62,7 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [
       { key: "vitrineNational", href: "/dashboard/vitrine/nacional", icon: CatalogIcon },
       { key: "vitrineInternational", href: "/dashboard/vitrine/internacional", icon: CatalogIcon },
-      { key: "products", href: "/dashboard/products", icon: ProductsIcon },
+      { key: "products", href: "/dashboard/meus-produtos", icon: ProductsIcon },
       { key: "landingPages", href: "/dashboard/landing-pages", icon: LandingPageIcon, soon: true },
       { key: "customers", href: "/dashboard/customers", icon: CustomersIcon, soon: true },
     ],
