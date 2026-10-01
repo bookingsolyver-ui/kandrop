@@ -3034,6 +3034,7 @@
     },
     "whatsapp": "Send the slip on WhatsApp",
     "whatsappText": "Hello! Here is the proof of payment for order #{number} (reference {reference}), amount {total}.",
-    "note": "The order is only delivered after Kandrop confirms the payment."
+    "note": "The order is only delivered after Kandrop confirms the payment.",
+    "noWhatsapp": "Send the slip to Kandrop when the team contacts you, quoting the order reference."
   }
 }

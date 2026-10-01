@@ -3034,6 +3034,7 @@
     },
     "whatsapp": "Enviar comprovativo no WhatsApp",
     "whatsappText": "Olá! Segue o comprovativo da encomenda #{number} (referência {reference}), no valor de {total}.",
-    "note": "A encomenda só é entregue depois de a Kandrop confirmar o pagamento."
+    "note": "A encomenda só é entregue depois de a Kandrop confirmar o pagamento.",
+    "noWhatsapp": "Envie o comprovativo à Kandrop quando a equipa o contactar, indicando a referência da encomenda."
   }
 }

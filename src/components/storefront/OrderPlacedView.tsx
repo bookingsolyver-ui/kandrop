@@ -1,16 +1,21 @@
 import { useFormatter, useTranslations } from "next-intl";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import type { ShopperOrder } from "@/server/modules/fulfilment/service";
-
-interface Bank { bank: string; holder: string; account: string; iban: string; whatsapp: string }
+import type { OrderPaymentInfo } from "@/server/modules/payments/transfer";
 
 /** Order confirmation: what was bought, how to pay Kandrop, and the WhatsApp button that carries the slip. */
-export function OrderPlacedView({ order, bank }: { order: ShopperOrder; bank: Bank | null }) {
+export function OrderPlacedView({ order, pay }: { order: ShopperOrder; pay: OrderPaymentInfo }) {
   const t = useTranslations("OrderPlaced");
   const f = useFormatter();
   const total = `${f.number(Math.round(order.total / 100))} kwz`;
   const text = t("whatsappText", { number: order.number, reference: order.reference, total });
-  const link = bank ? `https://wa.me/244${bank.whatsapp}?text=${encodeURIComponent(text)}` : null;
+  const link = pay.whatsapp ? `https://wa.me/244${pay.whatsapp}?text=${encodeURIComponent(text)}` : null;
+  // Each detail is shown only when it exists; with no IBAN the block is replaced by a plain note.
+  const rows: Array<[string, string, boolean]> = [];
+  if (pay.bank) rows.push([t("bank.bank"), pay.bank, false]);
+  if (pay.holder) rows.push([t("bank.holder"), pay.holder, false]);
+  if (pay.iban) rows.push(["IBAN", pay.iban.replace(/(.{4})/g, "$1 ").trim(), true]);
+  if (pay.bic) rows.push(["BIC/SWIFT", pay.bic, true]);
   const verified = order.paymentStatus === "paid_verified";
 
   return (
@@ -43,19 +48,24 @@ export function OrderPlacedView({ order, bank }: { order: ShopperOrder; bank: Ba
               <li>{t("how.step2", { reference: order.reference })}</li>
               <li>{t("how.step3")}</li>
             </ol>
-            {bank ? (
+            {pay.iban ? (
               <dl className="space-y-1 rounded-md bg-page p-3 text-sm">
-                <div className="flex justify-between gap-4"><dt className="text-ink-muted">{t("bank.bank")}</dt><dd>{bank.bank}</dd></div>
-                <div className="flex justify-between gap-4"><dt className="text-ink-muted">{t("bank.holder")}</dt><dd>{bank.holder}</dd></div>
-                <div className="flex justify-between gap-4"><dt className="text-ink-muted">IBAN</dt><dd className="font-mono tabular-nums">{bank.iban}</dd></div>
+                {rows.map(([label, value, mono]) => (
+                  <div key={label} className="flex justify-between gap-4">
+                    <dt className="shrink-0 text-ink-muted">{label}</dt>
+                    <dd className={`min-w-0 text-right break-all ${mono ? "font-mono tabular-nums" : ""}`}>{value}</dd>
+                  </div>
+                ))}
               </dl>
             ) : (
               <p className="rounded-md bg-page p-3 text-sm text-ink-2">{t("bank.pending")}</p>
             )}
-            {link && (
+            {link ? (
               <a href={link} target="_blank" rel="noopener noreferrer" className="flex h-12 w-full items-center justify-center rounded-md bg-action px-6 text-[0.9375rem] font-semibold text-on-action transition-opacity hover:opacity-90">
                 {t("whatsapp")}
               </a>
+            ) : (
+              <p className="text-sm text-ink-2">{t("noWhatsapp")}</p>
             )}
           </section>
         )}

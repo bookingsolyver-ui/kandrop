@@ -86,3 +86,12 @@ Node ≥ 20.9. Health check: `GET /api/health` → `{"status":"ok"}`.
    with `9xxxxxxxx` (Multicaixa confirms after 5–10 s through the signed webhook, so `APP_URL` must
    be reachable from the server itself).
 4. The logs show no `[env]` warning you did not expect.
+
+## Opening the site (leaving "coming soon")
+
+Production builds redirect every public page to the waitlist (see `next.config.ts`). To open the site, set
+`COMING_SOON=false` on Vercel (Production) and redeploy: the value is read at build time. Before opening, set on
+Vercel the details the shopper's order page shows (`/pedido/...`; each one is shown only when set and valid):
+`SUPPORT_WHATSAPP` (9-digit number, no +244), `BANK_TRANSFER_IBAN` (Angolan IBAN, check digits verified),
+`BANK_TRANSFER_BANK_NAME`, `BANK_TRANSFER_ACCOUNT_NAME` and optionally `BANK_TRANSFER_BIC_SWIFT`. Also set
+`COMMISSION_BPS` (Kandrop's share of the merchant's margin, in basis points) and `ADMIN_EMAILS`.

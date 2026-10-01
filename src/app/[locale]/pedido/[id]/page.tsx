@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { OrderPlacedView } from "@/components/storefront/OrderPlacedView";
 import { routing } from "@/i18n/routing";
 import { getShopperOrder } from "@/server/modules/fulfilment/service";
-import { transferInfo } from "@/server/modules/payments/transfer";
+import { orderPaymentInfo } from "@/server/modules/payments/transfer";
 
 export const dynamic = "force-dynamic";
 
@@ -25,8 +25,7 @@ export default async function OrderPlacedPage({ params }: Props) {
   setRequestLocale(locale);
   const order = await getShopperOrder(id);
   if (!order) notFound();
-  // Kandrop's REAL account only: the sandbox example details are fictional and must never be shown to a shopper.
-  const info = transferInfo();
-  const bank = info && !info.example ? { bank: info.bank, holder: info.holder, account: info.account, iban: info.iban, whatsapp: info.whatsapp } : null;
-  return <OrderPlacedView order={order} bank={bank} />;
+  // Kandrop's REAL details only, each shown only when set and valid (no sandbox example ever reaches a shopper).
+  const pay = orderPaymentInfo();
+  return <OrderPlacedView order={order} pay={pay} />;
 }

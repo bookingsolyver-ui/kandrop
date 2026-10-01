@@ -37,6 +37,11 @@ const schema = z.object({
   BANK_TRANSFER_HOLDER: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
   BANK_TRANSFER_ACCOUNT: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
   BANK_TRANSFER_IBAN: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
+  // Aliases and extras read by the order page (`orderPaymentInfo`): the bank's name and the holder under the
+  // names used on the host, and the BIC/SWIFT code (shown when set).
+  BANK_TRANSFER_BANK_NAME: z.preprocess((v) => (typeof v === "string" && v.trim() === "" ? undefined : v), z.string().optional()),
+  BANK_TRANSFER_ACCOUNT_NAME: z.preprocess((v) => (typeof v === "string" && v.trim() === "" ? undefined : v), z.string().optional()),
+  BANK_TRANSFER_BIC_SWIFT: z.preprocess((v) => (typeof v === "string" && v.trim() === "" ? undefined : v), z.string().optional()),
   SUPPORT_WHATSAPP: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
   // The support inbox shown on the Support page (the WhatsApp number is `SUPPORT_WHATSAPP`, shared with
   // the bank-transfer proofs). Both fall back to the values in `support/contacts.ts`.

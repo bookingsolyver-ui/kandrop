@@ -3034,6 +3034,7 @@
     },
     "whatsapp": "Envoyer le justificatif sur WhatsApp",
     "whatsappText": "Bonjour ! Voici le justificatif de la commande n° {number} (référence {reference}), d’un montant de {total}.",
-    "note": "La commande n’est livrée qu’après confirmation du paiement par Kandrop."
+    "note": "La commande n’est livrée qu’après confirmation du paiement par Kandrop.",
+    "noWhatsapp": "Envoyez le justificatif à Kandrop lorsque l’équipe vous contactera, en indiquant la référence de la commande."
   }
 }
