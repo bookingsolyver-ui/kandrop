@@ -24,6 +24,13 @@ export interface VitrineProduct {
   inStock: boolean;
   /** A seasonal campaign the product belongs to, if any. */
   occasion?: "children";
+  /** Real catalogue only (an approved supplier product): */
+  description?: string;
+  /** Units the supplier has. */
+  stock?: number;
+  imageUrl?: string;
+  supplierId?: string;
+  supplierName?: string;
 }
 
 const kz = (n: number) => n * 100;

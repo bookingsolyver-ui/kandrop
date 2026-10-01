@@ -1974,6 +1974,27 @@
       "products": "Produits",
       "onlyFrom": "Affichage des seuls produits de {name}.",
       "empty": "Ce fournisseur n’a pas encore de produits approuvés."
+    },
+    "importing": "Ajout…",
+    "emptyCatalog": "Aucun produit de fournisseur approuvé pour l’instant. Revenez bientôt.",
+    "details": {
+      "title": "Détails du produit",
+      "description": "Description",
+      "stock": "Stock du fournisseur",
+      "units": "{count, plural, one {# unité} other {# unités}}",
+      "cost": "Prix de revient",
+      "suggested": "Prix de vente suggéré",
+      "margin": "Marge estimée",
+      "marginHint": "Le prix de revient est ce que vous payez au fournisseur. Le produit est créé dans votre boutique en brouillon à ce prix suggéré : vous pouvez le modifier dans votre catalogue.",
+      "close": "Fermer"
+    },
+    "import": {
+      "errors": {
+        "already": "Ce produit est déjà dans votre boutique.",
+        "limit": "Vous avez atteint la limite de produits de votre offre.",
+        "unauthorized": "Ajout impossible : connectez-vous à votre compte marchand.",
+        "failed": "Impossible d’ajouter le produit. Veuillez réessayer."
+      }
     }
   },
   "MyProducts": {

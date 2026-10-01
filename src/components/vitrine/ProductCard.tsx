@@ -4,7 +4,6 @@ import { useTranslations } from "next-intl";
 import { BoxIcon, FlagIcon, HeartIcon, PlaneIcon, ThermometerIcon } from "@/components/kai/icons";
 import { BRAND_BUTTON_CLASS } from "@/components/ui/BrandButton";
 import { Link } from "@/i18n/navigation";
-import { supplierOfProduct } from "@/shared/supplier/mock";
 import type { VitrineProduct } from "@/shared/vitrine/mock";
 
 /**
@@ -19,6 +18,8 @@ export function ProductCard({
   selected,
   onToggleFavorite,
   onStart,
+  onDetails,
+  busy = false,
   imageUrl,
 }: {
   product: VitrineProduct;
@@ -28,11 +29,15 @@ export function ProductCard({
   selected: boolean;
   onToggleFavorite: () => void;
   onStart: () => void;
+  /** Opens the product's details (description, cost, stock, margin). */
+  onDetails?: () => void;
+  /** The import is running. */
+  busy?: boolean;
   imageUrl?: string;
 }) {
   const t = useTranslations("Vitrine");
   const international = product.kind === "internacional";
-  const supplier = supplierOfProduct(product);
+  const supplier = product.supplierId ? { id: product.supplierId, name: product.supplierName ?? product.brand } : null;
 
   return (
     <article className="flex flex-col overflow-hidden rounded-[var(--r-lg)] border border-[var(--ink-200)] bg-[var(--ink-0)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[var(--sh-md)]">
@@ -91,7 +96,9 @@ export function ProductCard({
 
       <div className="flex flex-1 flex-col gap-3 p-4">
         <h3 className="line-clamp-2 min-h-[2.5rem] text-[14px] leading-snug font-semibold text-[var(--ink-900)]">
-          {product.title}
+          {onDetails ? (
+            <button type="button" onClick={onDetails} className="text-left hover:text-[var(--kai-orange-600)] hover:underline">{product.title}</button>
+          ) : product.title}
         </h3>
 
         {supplier && (
@@ -125,13 +132,13 @@ export function ProductCard({
         <button
           type="button"
           onClick={onStart}
-          disabled={!product.inStock}
+          disabled={!product.inStock || busy}
           aria-pressed={selected}
           className={`${BRAND_BUTTON_CLASS} h-10 w-full px-4 text-[13px] ${
             selected ? "!bg-white !text-[var(--ink-900)] ring-1 ring-[var(--ink-200)] !shadow-none" : ""
           }`}
         >
-          {selected ? t("added") : t("start")}
+          {busy ? t("importing") : selected ? t("added") : t("start")}
         </button>
       </div>
     </article>

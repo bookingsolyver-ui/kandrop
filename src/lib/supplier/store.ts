@@ -5,13 +5,11 @@ import { useSupplierContext } from "@/components/supplier/SupplierProvider";
 import { readList, useLocalList, writeList } from "@/lib/localStore";
 import {
   SEED_SUBMISSIONS,
-  submissionToVitrine,
   supplierById,
   type Submission,
   type SubmissionStatus,
   type Supplier,
 } from "@/shared/supplier/mock";
-import type { VitrineKind, VitrineProduct } from "@/shared/vitrine/mock";
 
 /**
  * The supplier's products-in-review, the team's decisions and the withdrawals, still kept in the browser.
@@ -74,17 +72,4 @@ export function useWithdrawals(supplierId: string | null) {
     [supplierId]
   );
   return { withdrawals: mine, request };
-}
-
-/** The approved submissions of known suppliers, as Vitrine products of the given kind (empty until approved). */
-export function useApprovedVitrine(kind?: VitrineKind): VitrineProduct[] {
-  const { items } = useSubmissions();
-  return useMemo(
-    () =>
-      items
-        .filter((s) => s.status === "approved" && supplierById(s.supplierId))
-        .map(submissionToVitrine)
-        .filter((p) => !kind || p.kind === kind),
-    [items, kind]
-  );
 }

@@ -1974,6 +1974,27 @@
       "products": "Produtos",
       "onlyFrom": "A mostrar apenas os produtos de {name}.",
       "empty": "Este fornecedor ainda não tem produtos aprovados."
+    },
+    "importing": "A adicionar…",
+    "emptyCatalog": "Ainda não há produtos de fornecedores aprovados. Volte em breve.",
+    "details": {
+      "title": "Detalhes do produto",
+      "description": "Descrição",
+      "stock": "Stock no fornecedor",
+      "units": "{count, plural, one {# unidade} other {# unidades}}",
+      "cost": "Preço de custo",
+      "suggested": "Preço de venda sugerido",
+      "margin": "Margem estimada",
+      "marginHint": "O preço de custo é o que paga ao fornecedor. O produto é criado na sua loja como rascunho, com este preço sugerido: pode alterá-lo no seu catálogo.",
+      "close": "Fechar"
+    },
+    "import": {
+      "errors": {
+        "already": "Este produto já está na sua loja.",
+        "limit": "Atingiu o limite de produtos do seu plano.",
+        "unauthorized": "Não foi possível adicionar: entre na sua conta de lojista.",
+        "failed": "Não foi possível adicionar o produto. Tente novamente."
+      }
     }
   },
   "MyProducts": {

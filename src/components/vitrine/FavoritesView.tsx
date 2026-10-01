@@ -4,33 +4,21 @@ import { useTranslations } from "next-intl";
 import { useFormatters } from "@/components/dashboard/useFormatters";
 import { HeartIcon } from "@/components/kai/icons";
 import { BrandLink } from "@/components/ui/BrandButton";
-import { useToast } from "@/components/ui/Toast";
-import { Link, useRouter } from "@/i18n/navigation";
-import { useFavorites, useMyProducts } from "@/lib/vitrine/store";
-import { importFromCatalog } from "@/shared/vitrine/imported";
-import { findVitrineProduct, type VitrineProduct } from "@/shared/vitrine/mock";
+import { Link } from "@/i18n/navigation";
+import { useFavorites } from "@/lib/vitrine/store";
+import type { VitrineProduct } from "@/shared/vitrine/mock";
 import { ProductCard } from "./ProductCard";
+import { useImport } from "./useImport";
 
 /** The Vitrine products the merchant marked with a heart, ready to import. */
-export function FavoritesView() {
+export function FavoritesView({ catalog, importedIds }: { catalog: VitrineProduct[]; importedIds: string[] }) {
   const t = useTranslations("MyProducts");
-  const v = useTranslations("Vitrine");
   const f = useFormatters();
-  const router = useRouter();
-  const toast = useToast();
   const favorites = useFavorites();
-  const mine = useMyProducts();
+  const { imported, start, busy } = useImport(importedIds);
 
-  const products = favorites.ids
-    .map((id) => findVitrineProduct(id))
-    .filter((p): p is VitrineProduct => p !== undefined);
-
-  const start = (p: VitrineProduct) => {
-    const open = () => router.push("/dashboard/meus-produtos");
-    if (mine.has(p.id)) return open();
-    mine.add(importFromCatalog(p));
-    toast({ message: v("toast.added"), action: { label: v("toast.view"), onClick: open } });
-  };
+  // A heart is a product id kept in this browser; only products that are (still) approved can be shown.
+  const products = favorites.ids.map((id) => catalog.find((p) => p.id === id)).filter((p): p is VitrineProduct => p !== undefined);
 
   return (
     <div>
@@ -68,7 +56,9 @@ export function FavoritesView() {
               product={p}
               priceLabel={f.money(p.costPrice)}
               favorite
-              selected={mine.has(p.id)}
+              selected={imported.has(p.id)}
+              busy={busy === p.id}
+              imageUrl={p.imageUrl}
               onToggleFavorite={() => favorites.toggle(p.id)}
               onStart={() => start(p)}
             />

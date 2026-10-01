@@ -6,7 +6,8 @@ import { PageTransition } from "@/components/shell/PageTransition";
 import { VitrineView } from "@/components/vitrine/VitrineView";
 import { routing } from "@/i18n/routing";
 import { requirePaidSession } from "@/server/auth/pageGate";
-import { INTERNATIONAL_PRODUCTS } from "@/shared/vitrine/mock";
+import { importedIds, listApprovedCatalog } from "@/server/modules/vitrine/service";
+import { toVitrineProduct } from "@/shared/vitrine/catalog";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -17,12 +18,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: `${t("title")} — Kandrop` };
 }
 
-/** Showcase of the international catalogue. SAMPLE products for now: swap `INTERNATIONAL_PRODUCTS` for the database query. */
+/** The showcase: approved products of the real supplier catalogue. */
 export default async function VitrineInternationalPage({ params }: Props) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
-  await requirePaidSession(locale);
+  const session = await requirePaidSession(locale);
+  // The real catalogue: only APPROVED supplier products (Supabase), and which of them this store already imported.
+  const [approved, imports] = await Promise.all([listApprovedCatalog().catch(() => []), importedIds(session.storeId).catch(() => [])]);
+  const products = approved.map((p) => toVitrineProduct(p)).filter((p) => p.kind === "internacional");
   const t = await getTranslations("Vitrine.international");
 
   return (
@@ -34,7 +38,7 @@ export default async function VitrineInternationalPage({ params }: Props) {
           </h1>
           <p className="mt-1 text-[12px] text-[var(--ink-600)] sm:text-[15px]">{t("subtitle")}</p>
         </header>
-        <VitrineView products={INTERNATIONAL_PRODUCTS} />
+        <VitrineView products={products} importedIds={imports} />
       </div>
     </PageTransition>
   );

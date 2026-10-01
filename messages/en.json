@@ -1974,6 +1974,27 @@
       "products": "Products",
       "onlyFrom": "Showing only products from {name}.",
       "empty": "This supplier has no approved products yet."
+    },
+    "importing": "Adding…",
+    "emptyCatalog": "There are no approved supplier products yet. Check back soon.",
+    "details": {
+      "title": "Product details",
+      "description": "Description",
+      "stock": "Supplier stock",
+      "units": "{count, plural, one {# unit} other {# units}}",
+      "cost": "Cost price",
+      "suggested": "Suggested sale price",
+      "margin": "Estimated margin",
+      "marginHint": "The cost price is what you pay the supplier. The product is created in your store as a draft at this suggested price: you can change it in your catalogue.",
+      "close": "Close"
+    },
+    "import": {
+      "errors": {
+        "already": "This product is already in your store.",
+        "limit": "You have reached your plan's product limit.",
+        "unauthorized": "Could not add it: sign in to your merchant account.",
+        "failed": "Could not add the product. Please try again."
+      }
     }
   },
   "MyProducts": {

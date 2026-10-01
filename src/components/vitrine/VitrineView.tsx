@@ -3,14 +3,12 @@
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { useFormatters } from "@/components/dashboard/useFormatters";
-import { useToast } from "@/components/ui/Toast";
-import { useRouter } from "@/i18n/navigation";
-import { useApprovedVitrine } from "@/lib/supplier/store";
-import { useFavorites, useMyProducts } from "@/lib/vitrine/store";
-import { importFromCatalog } from "@/shared/vitrine/imported";
+import { useFavorites } from "@/lib/vitrine/store";
 import { FlameIcon, LayersIcon, SearchIcon, ThermometerIcon } from "@/components/kai/icons";
 import { VITRINE_CATEGORIES, type VitrineProduct } from "@/shared/vitrine/mock";
 import { ProductCard } from "./ProductCard";
+import { ProductDetails } from "./ProductDetails";
+import { useImport } from "./useImport";
 
 type Special = "bestSellers" | "hot" | "kits";
 type Selection = "all" | Special | (typeof VITRINE_CATEGORIES)[number];
@@ -45,15 +43,12 @@ function pageList(current: number, total: number): Array<number | "gap"> {
 }
 
 /** The showcase body: campaign chips, category menu, search, the product grid and the pager. */
-export function VitrineView({ products: seeded }: { products: VitrineProduct[] }) {
+export function VitrineView({ products, importedIds }: { products: VitrineProduct[]; importedIds: string[] }) {
   const t = useTranslations("Vitrine");
   const f = useFormatters();
-  const router = useRouter();
-  const toast = useToast();
   const favorites = useFavorites();
-  const mine = useMyProducts();
-  const approved = useApprovedVitrine(seeded[0]?.kind);
-  const products = useMemo(() => [...approved, ...seeded], [approved, seeded]);
+  const { imported, start, busy } = useImport(importedIds);
+  const [details, setDetails] = useState<VitrineProduct | null>(null);
   const [selection, setSelection] = useState<Selection>("all");
   const [query, setQuery] = useState("");
   const [inStock, setInStock] = useState(true);
@@ -62,13 +57,6 @@ export function VitrineView({ products: seeded }: { products: VitrineProduct[] }
   const [perPage, setPerPage] = useState<(typeof PER_PAGE)[number]>(10);
   const [page, setPage] = useState(1);
 
-  /** "Start selling": imports the product into "My products" (or, if it is there already, goes to it). */
-  const start = (p: VitrineProduct) => {
-    const open = () => router.push("/dashboard/meus-produtos");
-    if (mine.has(p.id)) return open();
-    mine.add(importFromCatalog(p));
-    toast({ message: t("toast.added"), action: { label: t("toast.view"), onClick: open } });
-  };
   /** Any change of what is shown starts again from the first page. */
   const change = <T,>(setter: (value: T) => void) => (value: T) => {
     setter(value);
@@ -212,7 +200,11 @@ export function VitrineView({ products: seeded }: { products: VitrineProduct[] }
             <span className="font-semibold text-[var(--ink-900)]">{label(selection)}</span>
           </p>
 
-          {slice.length === 0 ? (
+          {slice.length === 0 && products.length === 0 ? (
+            <div className={`${card} px-6 py-16 text-center`}>
+              <p className="text-[var(--ink-600)]">{t("emptyCatalog")}</p>
+            </div>
+          ) : slice.length === 0 ? (
             <div className={`${card} flex flex-col items-center gap-3 px-6 py-16 text-center`}>
               <p className="text-[var(--ink-600)]">{t("empty")}</p>
               <button
@@ -238,9 +230,12 @@ export function VitrineView({ products: seeded }: { products: VitrineProduct[] }
                   product={p}
                   priceLabel={f.money(p.costPrice)}
                   favorite={favorites.has(p.id)}
-                  selected={mine.has(p.id)}
+                  selected={imported.has(p.id)}
+                  busy={busy === p.id}
+                  imageUrl={p.imageUrl}
                   onToggleFavorite={() => favorites.toggle(p.id)}
                   onStart={() => start(p)}
+                  onDetails={() => setDetails(p)}
                 />
               ))}
             </div>
@@ -307,6 +302,13 @@ export function VitrineView({ products: seeded }: { products: VitrineProduct[] }
           </nav>
         </div>
       </div>
+      <ProductDetails
+        product={details}
+        imported={details ? imported.has(details.id) : false}
+        busy={details ? busy === details.id : false}
+        onClose={() => setDetails(null)}
+        onStart={() => details && start(details)}
+      />
     </div>
   );
 }
