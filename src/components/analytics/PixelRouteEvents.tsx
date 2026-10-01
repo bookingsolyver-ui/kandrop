@@ -13,7 +13,7 @@ export function PixelRouteEvents() {
       first.current = false;
       return;
     }
-    pageview();
+    pageview(); // `pageview` itself refuses private routes
   }, [pathname]);
   return null;
 }

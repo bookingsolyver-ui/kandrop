@@ -51,6 +51,8 @@ export default async function proxy(original: NextRequest) {
   const csp = contentSecurityPolicy(nonce);
   const headers = new Headers(original.headers);
   headers.set("x-nonce", nonce);
+  // The path of THIS request (set here, so a client cannot choose it): lets server components, like the ad pixel, skip private routes.
+  headers.set("x-pathname", original.nextUrl.pathname);
   headers.set("Content-Security-Policy", csp);
   const request = new NextRequest(original, { headers });
   const response = await route(request);
