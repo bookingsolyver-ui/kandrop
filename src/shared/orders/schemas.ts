@@ -31,16 +31,7 @@ export const ORDER_TRANSITIONS: Record<OrderStatus, readonly OrderStatus[]> = {
 export const canTransition = (from: OrderStatus, to: OrderStatus) =>
   ORDER_TRANSITIONS[from].includes(to);
 
-export const MAX_TRACKING_LENGTH = 40;
-
-const c = (code: OrderValidationCode) => ({ error: code });
-
-export const updateOrderStatusSchema = z.object({
-  status: z.enum(ORDER_STATUSES, c("status_invalid")),
-  /** Only kept when the order is being marked as shipped. */
-  trackingCode: z.string().trim().max(MAX_TRACKING_LENGTH, c("tracking_too_long")).optional(),
-});
-export type UpdateOrderStatusInput = z.input<typeof updateOrderStatusSchema>;
+// (There is no "update order" input any more: merchants cannot change an order; Kandrop does, from the admin console.)
 
 export const listOrdersQuerySchema = z.object({
   q: z.string().trim().max(100).optional(),

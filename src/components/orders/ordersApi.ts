@@ -1,10 +1,9 @@
 import { request, type ApiResult as Result } from "@/components/data/apiClient";
-import type { OrderPage, PublicOrder } from "@/server/modules/orders/schema";
+import type { OrderPage } from "@/server/modules/orders/schema";
 import {
   firstOrderError,
   type ListOrdersQuery,
   type OrderValidationCode,
-  type UpdateOrderStatusInput,
 } from "@/shared/orders/schemas";
 
 export type ApiResult<T> = Result<T, OrderValidationCode>;
@@ -20,5 +19,3 @@ export function listOrders(query: ListOrdersQuery, signal?: AbortSignal) {
   return call<OrderPage>(`/api/orders?${params}`, { signal, cache: "no-store" });
 }
 
-export const updateOrderStatus = (id: string, body: UpdateOrderStatusInput) =>
-  call<PublicOrder>(`/api/orders/${id}`, { method: "PATCH", body: JSON.stringify(body) });

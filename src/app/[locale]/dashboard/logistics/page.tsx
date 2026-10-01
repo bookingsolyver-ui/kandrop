@@ -24,7 +24,7 @@ export default async function LogisticsPage({ params }: Props) {
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
 
-  const session = await requirePaidSession(locale);
+  await requirePaidSession(locale);
   const [t, shell] = await Promise.all([
     getTranslations("Logistics"),
     getTranslations("Shell.groups"),
@@ -42,7 +42,7 @@ export default async function LogisticsPage({ params }: Props) {
           </h1>
           <p className="mt-4 text-lg leading-relaxed text-ink-2">{t("subtitle")}</p>
         </header>
-        <LogisticsView canManage={session!.role === "owner"} />
+        <LogisticsView />
       </div>
     </PageTransition>
   );

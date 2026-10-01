@@ -182,10 +182,6 @@ export function OrdersView() {
           key={selected.id}
           order={selected}
           onClose={() => setSelected(null)}
-          onUpdated={(order) => {
-            setSelected(order);
-            setReload((n) => n + 1); // counts and rows change with the status
-          }}
         />
       )}
     </div>

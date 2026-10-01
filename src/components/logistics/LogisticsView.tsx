@@ -5,16 +5,12 @@ import { useEffect, useRef, useState } from "react";
 import { Tabs, panelId, tabId } from "@/components/data/Tabs";
 import { ListMessage, ListSkeleton, primaryButton } from "@/components/data/ListStates";
 import { Pagination } from "@/components/data/Pagination";
-import { listOrders } from "@/components/orders/ordersApi";
 import { useRouter } from "@/i18n/navigation";
-import type { ApiErrorCode } from "@/server/http/errors";
 import type { DeliveryPage, PublicDelivery } from "@/server/modules/logistics/schema";
-import type { PublicOrder } from "@/server/modules/orders/schema";
 import type { DeliveryStatus } from "@/shared/logistics/schemas";
 import { DeliveriesTable } from "./DeliveriesTable";
 import { DeliverySheet } from "./DeliverySheet";
-import { DispatchPanel } from "./DispatchPanel";
-import { dispatchOrder, getDelivery, listDeliveries, type ApiResult } from "./logisticsApi";
+import { getDelivery, listDeliveries, type ApiResult } from "./logisticsApi";
 import { ProofDialog } from "./ProofDialog";
 
 const PAGE_SIZE = 10;
@@ -22,7 +18,8 @@ type Filter = DeliveryStatus | "all";
 const FILTERS: Filter[] = ["in_transit", "delivered", "returned", "all"];
 const PREFIX = "deliveries";
 
-export function LogisticsView({ canManage }: { canManage: boolean }) {
+/** The deliveries of the store, READ-ONLY: Kandrop dispatches and delivers; the merchant follows. */
+export function LogisticsView() {
   const t = useTranslations("Logistics");
   const errors = useTranslations("Errors");
   const router = useRouter();
@@ -30,8 +27,6 @@ export function LogisticsView({ canManage }: { canManage: boolean }) {
   const [filter, setFilter] = useState<Filter>("in_transit");
   const [page, setPage] = useState(1);
   const [reload, setReload] = useState(0);
-  const [awaiting, setAwaiting] = useState<PublicOrder[] | null>(null);
-  const [notice, setNotice] = useState<string | null>(null);
   const [openId, setOpenId] = useState<string | null>(null);
   const [proofId, setProofId] = useState<string | null>(null);
 
@@ -64,17 +59,6 @@ export function LogisticsView({ canManage }: { canManage: boolean }) {
     return () => controller.abort();
   }, [key, filter, page]);
 
-  // The orders waiting for a courier: packed ("Processing"), oldest first.
-  useEffect(() => {
-    const controller = new AbortController();
-    listOrders({ status: "processing", sort: "date", dir: "asc", pageSize: 50 }, controller.signal)
-      .then((result) => result.ok && setAwaiting(result.data.items))
-      .catch(() => {
-        /* aborted */
-      });
-    return () => controller.abort();
-  }, [reload]);
-
   const result = loaded?.result;
   const data = result?.ok ? result.data : null;
   const unauthenticated = result && !result.ok && result.code === "unauthenticated";
@@ -104,22 +88,6 @@ export function LogisticsView({ canManage }: { canManage: boolean }) {
       setReload((n) => n + 1);
     }
   }, [now, data]);
-
-  async function onDispatch(order: PublicOrder): Promise<ApiErrorCode | null> {
-    const dispatched = await dispatchOrder(order.id);
-    if (!dispatched.ok) return dispatched.code;
-    setNotice(
-      t("dispatch.done", {
-        number: `#${order.number}`,
-        courier: dispatched.data.courier.name,
-      })
-    );
-    setAwaiting((list) => list && list.filter((o) => o.id !== order.id));
-    setFilter("in_transit");
-    setPage(1);
-    setReload((n) => n + 1);
-    return null;
-  }
 
   // The delivery in the sheet must outlive the list: when its trip ends it leaves "In transit",
   // so it is fetched on its own (and again whenever the list reloads) instead of vanishing.
@@ -176,10 +144,6 @@ export function LogisticsView({ canManage }: { canManage: boolean }) {
 
   return (
     <div className="space-y-6">
-      <DispatchPanel orders={awaiting ?? []} canManage={canManage} onDispatch={onDispatch} />
-      <p role="status" className="-mt-2 text-sm text-up empty:hidden">
-        {notice}
-      </p>
 
       <section
         aria-labelledby="deliveries-title"

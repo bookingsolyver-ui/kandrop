@@ -560,7 +560,8 @@
         "delivered": "This order has been delivered. There are no further steps.",
         "cancelled": "This order was cancelled."
       },
-      "updated": "Status updated: {status}."
+      "updated": "Status updated: {status}.",
+      "managedByKandrop": "This order is managed by Kandrop: payment, collection and delivery are handled by our team. You can follow its status here."
     },
     "validation": {
       "status_invalid": "Invalid status.",

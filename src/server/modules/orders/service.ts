@@ -1,11 +1,8 @@
 import type { Session } from "@/server/auth/types";
 import { ApiError } from "@/server/http/errors";
-import { isPaymentVerified } from "@/shared/payments/orderPayment";
 import {
   ORDER_STATUSES,
-  canTransition,
   listOrdersQuerySchema,
-  updateOrderStatusSchema,
   type ListOrdersQuery,
   type OrderStatus,
 } from "@/shared/orders/schemas";
@@ -88,60 +85,4 @@ export async function getOrder(auth: Session, id: string): Promise<PublicOrder> 
   const order = await orderRepository.get(auth.storeId, id);
   if (!order) throw notFound();
   return toPublic(order);
-}
-
-/** Moves an order one step along the fulfilment flow. Anything else is a 409. */
-export async function updateOrderStatus(
-  auth: Session,
-  id: string,
-  input: unknown
-): Promise<PublicOrder> {
-  const order = await orderRepository.get(auth.storeId, id);
-  if (!order) throw notFound();
-
-  const { status, trackingCode } = updateOrderStatusSchema.parse(input);
-  if (!canTransition(order.status, status)) throw new ApiError("invalid_transition");
-  // The golden rule: no order is delivered before Kandrop has verified the payment.
-  if (status === "delivered" && !isPaymentVerified(order.paymentStatus)) throw new ApiError("payment_unverified");
-
-  const now = Date.now();
-  const next: OrderRecord = {
-    ...order,
-    status,
-    trackingCode: status === "shipped" ? trackingCode || undefined : order.trackingCode,
-    history: [...order.history, { status, at: now }],
-    updatedAt: now,
-  };
-  return toPublic(await orderRepository.save(next));
-}
-
-/**
- * Moves an order on behalf of another module (logistics), scoped by store. It follows the same
- * flow as the merchant's button, except that `force` lets a *returned* delivery cancel an order
- * that had already shipped (the merchant-facing flow does not allow cancelling once shipped).
- * Idempotent: an order already in the target status is left alone.
- */
-export async function transitionOrder(
-  storeId: string,
-  id: string,
-  status: OrderStatus,
-  options: { trackingCode?: string; force?: boolean } = {}
-): Promise<PublicOrder> {
-  const order = await orderRepository.get(storeId, id);
-  if (!order) throw notFound();
-  if (order.status === status) return toPublic(order);
-  if (!options.force && !canTransition(order.status, status)) {
-    throw new ApiError("invalid_transition");
-  }
-  if (status === "delivered" && !isPaymentVerified(order.paymentStatus)) throw new ApiError("payment_unverified");
-  const now = Date.now();
-  return toPublic(
-    await orderRepository.save({
-      ...order,
-      status,
-      trackingCode: status === "shipped" ? options.trackingCode : order.trackingCode,
-      history: [...order.history, { status, at: now }],
-      updatedAt: now,
-    })
-  );
 }

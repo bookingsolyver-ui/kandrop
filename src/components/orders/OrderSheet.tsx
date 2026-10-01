@@ -1,23 +1,12 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { CloseIcon } from "@/components/data/icons";
-import { TextField } from "@/components/form/Fields";
 import { useFormatters } from "@/components/dashboard/useFormatters";
-import type { ApiErrorCode } from "@/server/http/errors";
 import type { PublicOrder } from "@/server/modules/orders/schema";
-import {
-  MAX_TRACKING_LENGTH,
-  ORDER_TRANSITIONS,
-  type OrderValidationCode,
-} from "@/shared/orders/schemas";
 import { OrderStatusBadge } from "./OrderStatusBadge";
-import { updateOrderStatus } from "./ordersApi";
 import { useOrderFormat } from "./useOrderFormat";
-
-/** The steps a merchant moves an order to; cancelling is a separate, confirmed action. */
-type Step = "processing" | "shipped" | "delivered";
 
 const H3 = "text-[11px] font-medium tracking-[0.14em] uppercase text-ink-muted";
 
@@ -32,64 +21,21 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 /**
  * The order, in a side sheet that keeps the list (and its filters) exactly where the merchant
- * left it: fulfilling ten orders in a row never loses your place. Native `<dialog>`: focus is
- * trapped, Esc closes, focus goes back to the row that opened it.
+ * left it. READ-ONLY: Kandrop alone moves an order (payment verification, collection, delivery);
+ * the merchant only follows it. Native `<dialog>`: focus is trapped, Esc closes, focus goes back
+ * to the row that opened it.
  */
-export function OrderSheet({
-  order,
-  onClose,
-  onUpdated,
-}: {
-  order: PublicOrder;
-  onClose: () => void;
-  onUpdated: (order: PublicOrder) => void;
-}) {
+export function OrderSheet({ order, onClose }: { order: PublicOrder; onClose: () => void }) {
   const t = useTranslations("Orders");
   const methods = useTranslations("Checkout.method");
-  const errors = useTranslations("Errors");
   const f = useFormatters();
   const fmt = useOrderFormat();
   const ref = useRef<HTMLDialogElement>(null);
-
-  const [tracking, setTracking] = useState("");
-  const [trackingError, setTrackingError] = useState<OrderValidationCode | null>(null);
-  const [confirmCancel, setConfirmCancel] = useState(false);
-  const [pending, setPending] = useState(false);
-  const [error, setError] = useState<ApiErrorCode | null>(null);
-  const [notice, setNotice] = useState<string | null>(null);
 
   useEffect(() => {
     const dialog = ref.current;
     if (dialog && !dialog.open) dialog.showModal();
   }, []);
-
-  const allowed = ORDER_TRANSITIONS[order.status];
-  const forward = allowed.find((s): s is Step => s !== "cancelled" && s !== "pending");
-  const canCancel = allowed.includes("cancelled");
-
-  async function move(status: Step | "cancelled") {
-    if (pending) return;
-    setPending(true);
-    setError(null);
-    setTrackingError(null);
-    setNotice(null);
-    const result = await updateOrderStatus(order.id, {
-      status,
-      ...(status === "shipped" && tracking.trim() ? { trackingCode: tracking } : {}),
-    });
-    setPending(false);
-
-    if (result.ok) {
-      setConfirmCancel(false);
-      setNotice(t("detail.updated", { status: t(`status.${status}`) }));
-      return onUpdated(result.data);
-    }
-    if (result.fieldErrors.trackingCode) return setTrackingError(result.fieldErrors.trackingCode);
-    setError(result.code);
-  }
-
-  const button =
-    "flex h-12 w-full items-center justify-center rounded-md px-5 text-[0.9375rem] font-semibold disabled:cursor-progress disabled:opacity-70";
 
   return (
     <dialog
@@ -144,25 +90,6 @@ export function OrderSheet({
               ))}
             </ol>
           </Section>
-
-          {forward === "shipped" && !confirmCancel && (
-            <div className="border-t border-line px-5 py-5 sm:px-7">
-              <TextField
-                id="order-tracking"
-                value={tracking}
-                onChange={(e) => {
-                  setTracking(e.target.value);
-                  setTrackingError(null);
-                }}
-                onBlur={() => {}}
-                label={t("detail.tracking.label")}
-                hint={t("detail.tracking.hint")}
-                error={trackingError ? t(`validation.${trackingError}`) : undefined}
-                maxLength={MAX_TRACKING_LENGTH + 10}
-                autoComplete="off"
-              />
-            </div>
-          )}
 
           <Section title={t("detail.sections.customer")}>
             <dl className="space-y-2 text-sm">
@@ -273,70 +200,8 @@ export function OrderSheet({
           </Section>
         </div>
 
-        <footer className="space-y-3 border-t border-line bg-surface px-5 pt-4 pb-[calc(1rem+env(safe-area-inset-bottom))] sm:px-7">
-          <p role="status" className="text-sm text-up empty:hidden">
-            {notice}
-          </p>
-          {error && (
-            <p role="alert" className="text-sm text-down">
-              {errors(error)}
-            </p>
-          )}
-
-          {confirmCancel ? (
-            <div>
-              <h3 className="font-serif text-lg leading-tight font-medium">
-                {t("detail.cancelConfirm.title")}
-              </h3>
-              <p className="mt-1 text-sm text-ink-2">{t("detail.cancelConfirm.body")}</p>
-              <div className="mt-4 flex flex-col-reverse gap-3 sm:flex-row-reverse">
-                <button
-                  type="button"
-                  autoFocus
-                  onClick={() => setConfirmCancel(false)}
-                  disabled={pending}
-                  className={`${button} bg-action text-on-action hover:opacity-90`}
-                >
-                  {t("detail.cancelConfirm.keep")}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => move("cancelled")}
-                  disabled={pending}
-                  aria-busy={pending}
-                  className={`${button} border border-down text-down`}
-                >
-                  {pending ? t("detail.actions.updating") : t("detail.cancelConfirm.confirm")}
-                </button>
-              </div>
-            </div>
-          ) : forward ? (
-            <>
-              <button
-                type="button"
-                onClick={() => move(forward)}
-                disabled={pending}
-                aria-busy={pending}
-                className={`${button} bg-action text-on-action hover:opacity-90`}
-              >
-                {pending ? t("detail.actions.updating") : t(`detail.actions.${forward}`)}
-              </button>
-              {canCancel && (
-                <button
-                  type="button"
-                  onClick={() => setConfirmCancel(true)}
-                  disabled={pending}
-                  className="min-h-11 w-full rounded-md text-sm text-ink-2 underline underline-offset-4 hover:text-down"
-                >
-                  {t("detail.actions.cancel")}
-                </button>
-              )}
-            </>
-          ) : (
-            <p className="text-sm text-ink-2">
-              {t(`detail.final.${order.status === "delivered" ? "delivered" : "cancelled"}`)}
-            </p>
-          )}
+        <footer className="border-t border-line bg-surface px-5 pt-4 pb-[calc(1rem+env(safe-area-inset-bottom))] sm:px-7">
+          <p className="text-sm text-ink-2">{t("detail.managedByKandrop")}</p>
         </footer>
       </div>
     </dialog>

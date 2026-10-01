@@ -560,7 +560,8 @@
         "delivered": "Esta encomenda foi entregue. Não há mais passos.",
         "cancelled": "Esta encomenda foi cancelada."
       },
-      "updated": "Estado atualizado: {status}."
+      "updated": "Estado atualizado: {status}.",
+      "managedByKandrop": "Esta encomenda é gerida pela Kandrop: o pagamento, a recolha e a entrega são tratados pela nossa equipa. Aqui acompanha o estado."
     },
     "validation": {
       "status_invalid": "Estado inválido.",

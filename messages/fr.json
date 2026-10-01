@@ -560,7 +560,8 @@
         "delivered": "Cette commande a été livrée. Il n’y a plus d’étape.",
         "cancelled": "Cette commande a été annulée."
       },
-      "updated": "Statut mis à jour : {status}."
+      "updated": "Statut mis à jour : {status}.",
+      "managedByKandrop": "Cette commande est gérée par Kandrop : le paiement, l’enlèvement et la livraison sont pris en charge par notre équipe. Vous suivez ici son statut."
     },
     "validation": {
       "status_invalid": "Statut invalide.",
