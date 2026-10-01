@@ -1963,7 +1963,16 @@
       "added": "Product added to your products!",
       "view": "View"
     },
-    "inStore": "In your showcase"
+    "inStore": "In your showcase",
+    "supplierLabel": "Supplier:",
+    "supplier": {
+      "back": "Back to the Showcase",
+      "rating": "Rating",
+      "since": "Member since",
+      "products": "Products",
+      "onlyFrom": "Showing only products from {name}.",
+      "empty": "This supplier has no approved products yet."
+    }
   },
   "MyProducts": {
     "title": "My products",
@@ -2063,7 +2072,8 @@
       "inventory": "Inventory",
       "reconciliation": "Reconciliation",
       "courierClose": "Courier closing",
-      "adjustments": "Adjustments and refunds"
+      "adjustments": "Adjustments and refunds",
+      "suppliers": "Suppliers"
     },
     "table": {
       "showing": "Showing {from}–{to} of {total}",
@@ -2491,6 +2501,263 @@
       "toast": {
         "debited": "Amount debited to the merchant (simulation).",
         "absorbed": "Loss recorded as a Kandrop cost (simulation)."
+      }
+    },
+    "suppliers": {
+      "title": "Suppliers",
+      "subtitle": "Approve the products suppliers submit and see who they are.",
+      "tabs": {
+        "approve": "Approve Supplier Products ({count})",
+        "suppliers": "Suppliers ({count})"
+      },
+      "status": {
+        "in_review": "Under review",
+        "approved": "Approved",
+        "rejected": "Rejected"
+      },
+      "empty": "No products in this status.",
+      "cols": {
+        "product": "Product",
+        "supplier": "Supplier",
+        "cost": "Cost price",
+        "suggested": "Suggested price",
+        "date": "Submitted",
+        "status": "Status",
+        "actions": "Actions",
+        "origin": "Origin",
+        "location": "Location",
+        "rating": "Rating"
+      },
+      "stockUnits": "{count, plural, one {# unit} other {# units}} in stock",
+      "approve": "Approve",
+      "reject": "Reject",
+      "toast": {
+        "approved": "Product approved: it is now on the Showcase.",
+        "rejected": "Product rejected."
+      },
+      "kind": {
+        "nacional": "National",
+        "internacional": "International"
+      },
+      "demoNote": "Demo suppliers and submissions; decisions are saved in this browser."
+    }
+  },
+  "Supplier": {
+    "meta": {
+      "login": "Sign in — Supplier",
+      "register": "Supplier registration",
+      "dashboard": "Supplier dashboard",
+      "products": "Supplier products",
+      "finance": "Supplier finance"
+    },
+    "auth": {
+      "panelTag": "Supplier Portal",
+      "mobile": "Kandrop",
+      "mobileB": "Supplier",
+      "registerShort": "Sign up",
+      "loginShort": "Sign in",
+      "noAccount": "Not a supplier yet?",
+      "registerLink": "Register your company",
+      "hasAccount": "Already have an account?",
+      "loginLink": "Sign in",
+      "headlineA": "Sell to hundreds of merchants,",
+      "headlineB": "without building a store.",
+      "badge": "Supplier",
+      "loginTitle": "Sign in to the portal",
+      "loginSub": "Manage your products, stock and payouts.",
+      "invalid": "Incorrect e-mail or password.",
+      "email": "E-mail",
+      "password": "Password",
+      "loginSubmit": "Sign in",
+      "loginSubmitting": "Signing in…",
+      "demo": "Sign in with the demo account",
+      "demoHelp": "A fictional account with sample data, just to explore the portal.",
+      "secure": "Secure connection",
+      "support": "Human support 24/7",
+      "registerTitle": "Register your company",
+      "registerSub": "Fill in the company and warehouse details. The Kandrop team validates the registration.",
+      "taken": "An account with this e-mail already exists.",
+      "company": "Company name",
+      "nif": "Tax ID (NIF)",
+      "phone": "Phone",
+      "province": "Warehouse province",
+      "choose": "Choose…",
+      "municipality": "Warehouse municipality",
+      "registerSubmit": "Create supplier account",
+      "registerSubmitting": "Creating account…",
+      "warehouseNote": "The warehouse address is used to collect orders."
+    },
+    "panel": {
+      "tag": "Multi-vendor marketplace",
+      "body": "Publish your catalogue on the Kandrop Showcase and let merchants sell for you.",
+      "items": {
+        "catalog": {
+          "title": "Catalogue on the Showcase",
+          "body": "Your products appear to every merchant."
+        },
+        "sales": {
+          "title": "Real-time sales",
+          "body": "Track what sold and your critical stock."
+        },
+        "payments": {
+          "title": "You receive the cost price",
+          "body": "Every sale creates a balance you can withdraw."
+        }
+      },
+      "approval": "Every new product is validated by the Kandrop team before it reaches the Showcase."
+    },
+    "validation": {
+      "company_required": "Enter the company name.",
+      "nif_invalid": "The tax ID has 10 digits.",
+      "phone_invalid": "Enter an Angolan mobile number with 9 digits (starts with 9).",
+      "email_invalid": "Enter a valid e-mail.",
+      "province_required": "Choose the province.",
+      "municipality_required": "Enter the municipality.",
+      "password_short": "The password must have at least 10 characters.",
+      "title_required": "Enter the product name (at least 5 characters).",
+      "category_required": "Choose the category.",
+      "description_short": "The description must have at least 20 characters.",
+      "weight_invalid": "Enter a valid weight in kg.",
+      "price_invalid": "Enter a whole amount in kwz.",
+      "stock_invalid": "Enter the stock (0 or more).",
+      "suggested_below_cost": "The suggested price must be higher than the cost price."
+    },
+    "shell": {
+      "logout": "Sign out",
+      "menu": "Open menu",
+      "close": "Close",
+      "console": "Supplier Portal",
+      "statusActive": "Active",
+      "statusReview": "Under review"
+    },
+    "nav": {
+      "label": "Supplier navigation",
+      "dashboard": "Dashboard",
+      "products": "Products",
+      "finance": "Finance"
+    },
+    "dashboard": {
+      "title": "Hello, {name}",
+      "subtitle": "A summary of your products, sales and stock.",
+      "review": {
+        "title": "Account under review",
+        "body": "The Kandrop team is validating your registration. You can already prepare your products."
+      },
+      "cards": {
+        "products": "Total Products on the Showcase",
+        "productsNote": "{count, plural, =0 {None under review} one {# under review} other {# under review}}",
+        "sold": "Products Sold (Month)",
+        "soldNote": "Last 30 days",
+        "gross": "Gross Revenue (kwz)",
+        "grossNote": "Cost price × units",
+        "critical": "Critical Stock",
+        "criticalNote": "Fewer than {limit} units"
+      },
+      "top": {
+        "title": "Best sellers this month",
+        "empty": "No sales in this period yet.",
+        "units": "{count, plural, one {# unit} other {# units}}"
+      },
+      "stock": {
+        "title": "Stock that needs attention",
+        "empty": "All stock is healthy.",
+        "out": "Out of stock",
+        "low": "~{weekly} sales/week"
+      },
+      "cta": "Got a new product?",
+      "ctaLink": "Add it under Products"
+    },
+    "products": {
+      "title": "My products",
+      "subtitle": "The catalogue you offer to Kandrop merchants.",
+      "add": "Add Product",
+      "search": "Search by name or SKU",
+      "filters": {
+        "all": "All",
+        "approved": "Approved",
+        "in_review": "Under review",
+        "rejected": "Rejected"
+      },
+      "empty": "No products found.",
+      "cols": {
+        "product": "Product",
+        "sku": "SKU",
+        "cost": "Cost Price (kwz)",
+        "suggested": "Suggested Retail Price (kwz)",
+        "stock": "Physical Stock",
+        "status": "Status"
+      },
+      "status": {
+        "approved": "Approved",
+        "in_review": "Under Review",
+        "rejected": "Rejected"
+      },
+      "demoNote": "Demo data saved in this browser.",
+      "toast": {
+        "submitted": "Product sent to the Kandrop team for review."
+      },
+      "modal": {
+        "title": "Add product",
+        "name": "Product name",
+        "category": "Category",
+        "choose": "Choose…",
+        "description": "Description",
+        "image": "Image",
+        "imageHelp": "Upload image (simulated)",
+        "weight": "Weight (kg)",
+        "stock": "Physical stock",
+        "cost": "Cost price (kwz)",
+        "suggested": "Suggested price (kwz)",
+        "reviewNote": "The product only appears on the Showcase once the Kandrop team approves it.",
+        "cancel": "Cancel",
+        "submit": "Send for review"
+      }
+    },
+    "finance": {
+      "title": "Finance",
+      "subtitle": "You receive the cost price of every product merchants sell.",
+      "withdraw": "Request Withdrawal",
+      "cards": {
+        "available": "Available Balance (kwz)",
+        "availableNote": "Ready to withdraw",
+        "pending": "Pending Balance (kwz)",
+        "pendingNote": "Awaiting delivery and return window"
+      },
+      "sales": {
+        "title": "Sales",
+        "empty": "No sales yet.",
+        "cols": {
+          "date": "Date",
+          "order": "Order",
+          "product": "Product",
+          "merchant": "Merchant",
+          "amount": "You receive (cost price)",
+          "status": "Status"
+        },
+        "qty": "{count, plural, one {# unit} other {# units}}",
+        "status": {
+          "available": "Available",
+          "pending": "Pending"
+        }
+      },
+      "history": {
+        "title": "Withdrawals",
+        "empty": "No withdrawals yet.",
+        "paid": "Paid",
+        "pending": "Processing"
+      },
+      "demoNote": "Demo data saved in this browser.",
+      "toast": {
+        "requested": "Withdrawal requested."
+      },
+      "modal": {
+        "title": "Request withdrawal",
+        "available": "Available balance: {amount}",
+        "amount": "Amount (kwz)",
+        "help": "Minimum {min}.",
+        "destination": "The amount will be transferred to the bank account of {name}.",
+        "cancel": "Cancel",
+        "submit": "Request"
       }
     }
   }

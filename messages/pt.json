@@ -1963,7 +1963,16 @@
       "added": "Produto adicionado aos seus produtos!",
       "view": "Ver"
     },
-    "inStore": "Na sua vitrine"
+    "inStore": "Na sua vitrine",
+    "supplierLabel": "Fornecedor:",
+    "supplier": {
+      "back": "Voltar à Vitrine",
+      "rating": "Avaliação",
+      "since": "Membro desde",
+      "products": "Produtos",
+      "onlyFrom": "A mostrar apenas os produtos de {name}.",
+      "empty": "Este fornecedor ainda não tem produtos aprovados."
+    }
   },
   "MyProducts": {
     "title": "Os meus produtos",
@@ -2063,7 +2072,8 @@
       "inventory": "Inventário",
       "reconciliation": "Conciliação",
       "courierClose": "Fecho de estafetas",
-      "adjustments": "Ajustes e estornos"
+      "adjustments": "Ajustes e estornos",
+      "suppliers": "Fornecedores"
     },
     "table": {
       "showing": "A mostrar {from}–{to} de {total}",
@@ -2491,6 +2501,263 @@
       "toast": {
         "debited": "Valor debitado ao lojista (simulação).",
         "absorbed": "Prejuízo registado como custo da Kandrop (simulação)."
+      }
+    },
+    "suppliers": {
+      "title": "Fornecedores",
+      "subtitle": "Aprove os produtos que os fornecedores submetem e consulte quem são.",
+      "tabs": {
+        "approve": "Aprovar Produtos de Fornecedores ({count})",
+        "suppliers": "Fornecedores ({count})"
+      },
+      "status": {
+        "in_review": "Em análise",
+        "approved": "Aprovado",
+        "rejected": "Recusado"
+      },
+      "empty": "Sem produtos neste estado.",
+      "cols": {
+        "product": "Produto",
+        "supplier": "Fornecedor",
+        "cost": "Preço de custo",
+        "suggested": "Preço sugerido",
+        "date": "Submetido",
+        "status": "Estado",
+        "actions": "Ações",
+        "origin": "Origem",
+        "location": "Localização",
+        "rating": "Avaliação"
+      },
+      "stockUnits": "{count, plural, one {# un.} other {# un.}} em stock",
+      "approve": "Aprovar",
+      "reject": "Recusar",
+      "toast": {
+        "approved": "Produto aprovado: já está na Vitrine.",
+        "rejected": "Produto recusado."
+      },
+      "kind": {
+        "nacional": "Nacional",
+        "internacional": "Internacional"
+      },
+      "demoNote": "Fornecedores e submissões de demonstração; as decisões ficam guardadas neste navegador."
+    }
+  },
+  "Supplier": {
+    "meta": {
+      "login": "Entrar — Fornecedor",
+      "register": "Registo de fornecedor",
+      "dashboard": "Painel do fornecedor",
+      "products": "Produtos do fornecedor",
+      "finance": "Financeiro do fornecedor"
+    },
+    "auth": {
+      "panelTag": "Portal do Fornecedor",
+      "mobile": "Kandrop",
+      "mobileB": "Fornecedor",
+      "registerShort": "Criar conta",
+      "loginShort": "Entrar",
+      "noAccount": "Ainda não é fornecedor?",
+      "registerLink": "Registe a sua empresa",
+      "hasAccount": "Já tem conta?",
+      "loginLink": "Entrar",
+      "headlineA": "Venda para centenas de lojistas,",
+      "headlineB": "sem montar loja.",
+      "badge": "Fornecedor",
+      "loginTitle": "Entrar no portal",
+      "loginSub": "Gira os seus produtos, stock e recebimentos.",
+      "invalid": "E-mail ou palavra-passe incorretos.",
+      "email": "E-mail",
+      "password": "Palavra-passe",
+      "loginSubmit": "Entrar",
+      "loginSubmitting": "A entrar…",
+      "demo": "Entrar com a conta de demonstração",
+      "demoHelp": "Conta fictícia com dados de exemplo, só para explorar o portal.",
+      "secure": "Ligação segura",
+      "support": "Suporte humano 24/7",
+      "registerTitle": "Registe a sua empresa",
+      "registerSub": "Preencha os dados da empresa e do armazém. A equipa Kandrop valida o registo.",
+      "taken": "Já existe uma conta com este e-mail.",
+      "company": "Nome da empresa",
+      "nif": "NIF",
+      "phone": "Telefone",
+      "province": "Província do armazém",
+      "choose": "Escolher…",
+      "municipality": "Município do armazém",
+      "registerSubmit": "Criar conta de fornecedor",
+      "registerSubmitting": "A criar conta…",
+      "warehouseNote": "A morada do armazém é usada para recolher as encomendas."
+    },
+    "panel": {
+      "tag": "Marketplace multi-fornecedor",
+      "body": "Publique o seu catálogo na Vitrine da Kandrop e deixe os lojistas venderem por si.",
+      "items": {
+        "catalog": {
+          "title": "Catálogo na Vitrine",
+          "body": "Os seus produtos aparecem a todos os lojistas."
+        },
+        "sales": {
+          "title": "Vendas em tempo real",
+          "body": "Acompanhe o que se vendeu e o stock crítico."
+        },
+        "payments": {
+          "title": "Recebe o preço de custo",
+          "body": "Cada venda gera um saldo a levantar."
+        }
+      },
+      "approval": "Cada produto novo é validado pela equipa Kandrop antes de ir para a Vitrine."
+    },
+    "validation": {
+      "company_required": "Indique o nome da empresa.",
+      "nif_invalid": "O NIF tem 10 dígitos.",
+      "phone_invalid": "Indique um telemóvel angolano com 9 dígitos (começa por 9).",
+      "email_invalid": "Indique um e-mail válido.",
+      "province_required": "Escolha a província.",
+      "municipality_required": "Indique o município.",
+      "password_short": "A palavra-passe deve ter pelo menos 10 caracteres.",
+      "title_required": "Indique o nome do produto (mínimo 5 caracteres).",
+      "category_required": "Escolha a categoria.",
+      "description_short": "A descrição deve ter pelo menos 20 caracteres.",
+      "weight_invalid": "Indique um peso válido em kg.",
+      "price_invalid": "Indique um valor inteiro em kwz.",
+      "stock_invalid": "Indique o stock (0 ou mais).",
+      "suggested_below_cost": "O preço sugerido deve ser superior ao preço de custo."
+    },
+    "shell": {
+      "logout": "Terminar sessão",
+      "menu": "Abrir menu",
+      "close": "Fechar",
+      "console": "Portal do Fornecedor",
+      "statusActive": "Ativo",
+      "statusReview": "Em análise"
+    },
+    "nav": {
+      "label": "Navegação do fornecedor",
+      "dashboard": "Painel",
+      "products": "Produtos",
+      "finance": "Financeiro"
+    },
+    "dashboard": {
+      "title": "Olá, {name}",
+      "subtitle": "O resumo dos seus produtos, vendas e stock.",
+      "review": {
+        "title": "Conta em análise",
+        "body": "A equipa Kandrop está a validar o seu registo. Já pode preparar os seus produtos."
+      },
+      "cards": {
+        "products": "Total de Produtos na Vitrine",
+        "productsNote": "{count, plural, =0 {Nenhum em análise} one {# em análise} other {# em análise}}",
+        "sold": "Produtos Vendidos (Mês)",
+        "soldNote": "Últimos 30 dias",
+        "gross": "Faturação Bruta (kwz)",
+        "grossNote": "Preço de custo × unidades",
+        "critical": "Stock Crítico",
+        "criticalNote": "Menos de {limit} unidades"
+      },
+      "top": {
+        "title": "Mais vendidos no mês",
+        "empty": "Ainda sem vendas neste período.",
+        "units": "{count, plural, one {# un.} other {# un.}}"
+      },
+      "stock": {
+        "title": "Stock a precisar de atenção",
+        "empty": "Todo o stock está saudável.",
+        "out": "Esgotado",
+        "low": "~{weekly} vendas/semana"
+      },
+      "cta": "Tem um produto novo?",
+      "ctaLink": "Adicione-o em Produtos"
+    },
+    "products": {
+      "title": "Os meus produtos",
+      "subtitle": "O catálogo que oferece aos lojistas da Kandrop.",
+      "add": "Adicionar Produto",
+      "search": "Pesquisar por nome ou SKU",
+      "filters": {
+        "all": "Todos",
+        "approved": "Aprovados",
+        "in_review": "Em análise",
+        "rejected": "Recusados"
+      },
+      "empty": "Nenhum produto encontrado.",
+      "cols": {
+        "product": "Produto",
+        "sku": "SKU",
+        "cost": "Preço de Custo (kwz)",
+        "suggested": "Preço de Venda Sugerido (kwz)",
+        "stock": "Stock Físico",
+        "status": "Status"
+      },
+      "status": {
+        "approved": "Aprovado",
+        "in_review": "Em Análise",
+        "rejected": "Recusado"
+      },
+      "demoNote": "Dados de demonstração guardados neste navegador.",
+      "toast": {
+        "submitted": "Produto enviado para análise da equipa Kandrop."
+      },
+      "modal": {
+        "title": "Adicionar produto",
+        "name": "Nome do produto",
+        "category": "Categoria",
+        "choose": "Escolher…",
+        "description": "Descrição",
+        "image": "Imagem",
+        "imageHelp": "Carregar imagem (simulado)",
+        "weight": "Peso (kg)",
+        "stock": "Stock físico",
+        "cost": "Preço de custo (kwz)",
+        "suggested": "Preço sugerido (kwz)",
+        "reviewNote": "O produto só aparece na Vitrine depois de aprovado pela equipa Kandrop.",
+        "cancel": "Cancelar",
+        "submit": "Enviar para análise"
+      }
+    },
+    "finance": {
+      "title": "Financeiro",
+      "subtitle": "Recebe o preço de custo de cada produto vendido pelos lojistas.",
+      "withdraw": "Solicitar Levantamento",
+      "cards": {
+        "available": "Saldo Disponível (kwz)",
+        "availableNote": "Pronto a levantar",
+        "pending": "Saldo Pendente (kwz)",
+        "pendingNote": "A aguardar entrega e prazo de devolução"
+      },
+      "sales": {
+        "title": "Vendas",
+        "empty": "Ainda sem vendas.",
+        "cols": {
+          "date": "Data",
+          "order": "Encomenda",
+          "product": "Produto",
+          "merchant": "Lojista",
+          "amount": "Recebe (preço de custo)",
+          "status": "Estado"
+        },
+        "qty": "{count, plural, one {# unidade} other {# unidades}}",
+        "status": {
+          "available": "Disponível",
+          "pending": "Pendente"
+        }
+      },
+      "history": {
+        "title": "Levantamentos",
+        "empty": "Ainda sem levantamentos.",
+        "paid": "Pago",
+        "pending": "Em processamento"
+      },
+      "demoNote": "Dados de demonstração guardados neste navegador.",
+      "toast": {
+        "requested": "Levantamento solicitado."
+      },
+      "modal": {
+        "title": "Solicitar levantamento",
+        "available": "Saldo disponível: {amount}",
+        "amount": "Valor (kwz)",
+        "help": "Mínimo {min}.",
+        "destination": "O valor será transferido para a conta bancária de {name}.",
+        "cancel": "Cancelar",
+        "submit": "Solicitar"
       }
     }
   }

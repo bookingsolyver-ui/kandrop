@@ -3,6 +3,8 @@
 import { useTranslations } from "next-intl";
 import { BoxIcon, FlagIcon, HeartIcon, PlaneIcon, ThermometerIcon } from "@/components/kai/icons";
 import { BRAND_BUTTON_CLASS } from "@/components/ui/BrandButton";
+import { Link } from "@/i18n/navigation";
+import { supplierOfProduct } from "@/shared/supplier/mock";
 import type { VitrineProduct } from "@/shared/vitrine/mock";
 
 /**
@@ -30,6 +32,7 @@ export function ProductCard({
 }) {
   const t = useTranslations("Vitrine");
   const international = product.kind === "internacional";
+  const supplier = supplierOfProduct(product);
 
   return (
     <article className="flex flex-col overflow-hidden rounded-[var(--r-lg)] border border-[var(--ink-200)] bg-[var(--ink-0)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[var(--sh-md)]">
@@ -90,6 +93,15 @@ export function ProductCard({
         <h3 className="line-clamp-2 min-h-[2.5rem] text-[14px] leading-snug font-semibold text-[var(--ink-900)]">
           {product.title}
         </h3>
+
+        {supplier && (
+          <p className="-mt-1.5 truncate text-[12px] text-[var(--ink-500)]">
+            {t("supplierLabel")}{" "}
+            <Link href={`/dashboard/vitrine/fornecedor/${supplier.id}`} className="font-semibold text-[var(--ink-700)] underline-offset-2 hover:text-[var(--kai-orange-600)] hover:underline">
+              {supplier.name}
+            </Link>
+          </p>
+        )}
 
         {product.hot && (
           <div className="flex items-center gap-2 text-[12px] font-semibold text-[var(--kai-orange-600)]">

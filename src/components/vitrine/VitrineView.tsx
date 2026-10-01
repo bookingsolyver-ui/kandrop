@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { useFormatters } from "@/components/dashboard/useFormatters";
 import { useToast } from "@/components/ui/Toast";
 import { useRouter } from "@/i18n/navigation";
+import { useApprovedVitrine } from "@/lib/supplier/store";
 import { useFavorites, useMyProducts } from "@/lib/vitrine/store";
 import { importFromCatalog } from "@/shared/vitrine/imported";
 import { FlameIcon, LayersIcon, SearchIcon, ThermometerIcon } from "@/components/kai/icons";
@@ -44,13 +45,15 @@ function pageList(current: number, total: number): Array<number | "gap"> {
 }
 
 /** The showcase body: campaign chips, category menu, search, the product grid and the pager. */
-export function VitrineView({ products }: { products: VitrineProduct[] }) {
+export function VitrineView({ products: seeded }: { products: VitrineProduct[] }) {
   const t = useTranslations("Vitrine");
   const f = useFormatters();
   const router = useRouter();
   const toast = useToast();
   const favorites = useFavorites();
   const mine = useMyProducts();
+  const approved = useApprovedVitrine(seeded[0]?.kind);
+  const products = useMemo(() => [...approved, ...seeded], [approved, seeded]);
   const [selection, setSelection] = useState<Selection>("all");
   const [query, setQuery] = useState("");
   const [inStock, setInStock] = useState(true);

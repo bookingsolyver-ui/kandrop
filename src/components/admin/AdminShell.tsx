@@ -9,7 +9,7 @@ import { CloseIcon } from "@/components/shell/icons";
 import { ToastProvider } from "@/components/ui/Toast";
 import { Link, usePathname } from "@/i18n/navigation";
 
-type NavLabel = "merchants" | "orders" | "finance" | "cashFlow" | "reconciliation" | "courierClose" | "adjustments" | "payouts" | "showcase" | "catalog" | "inventory";
+type NavLabel = "merchants" | "orders" | "finance" | "cashFlow" | "reconciliation" | "courierClose" | "adjustments" | "payouts" | "showcase" | "catalog" | "inventory" | "suppliers";
 type Leaf = { key: NavLabel; href: string };
 type Item =
   | { type: "link"; key: NavLabel; href: string; icon: ReactNode }
@@ -39,6 +39,7 @@ const NAV: Item[] = [
       { key: "payouts", href: "/admin/financeiro/saques" },
     ],
   },
+  { type: "link", key: "suppliers", href: "/admin/fornecedores", icon: <UsersIcon /> },
   {
     type: "group",
     key: "showcase",
