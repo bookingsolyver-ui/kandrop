@@ -2043,7 +2043,8 @@
       "sales": "Ventes (mois)",
       "status": "Statut",
       "suggested": "Suggéré",
-      "links": "Liens"
+      "links": "Liens",
+      "actions": "Actions"
     },
     "origin": {
       "nacional": "Fournisseur national",
@@ -2069,7 +2070,8 @@
       "landing": "Voir la landing page",
       "pause": "Mettre en pause",
       "resume": "Activer le produit",
-      "remove": "Retirer le produit"
+      "remove": "Retirer le produit",
+      "edit": "Modifier le produit"
     },
     "edit": {
       "label": "Nouveau prix de vente",
@@ -2100,7 +2102,7 @@
     },
     "links": {
       "preview": "Voir la page du client",
-      "copy": "Copier le lien de partage",
+      "copy": "Copier le lien de promotion",
       "copied": "Lien de partage copié avec succès !",
       "copyFailed": "Impossible de copier. Copiez l’adresse manuellement.",
       "inactive": "Activez le produit pour avoir une page publique."

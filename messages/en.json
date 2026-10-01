@@ -2043,7 +2043,8 @@
       "sales": "Sales (month)",
       "status": "Status",
       "suggested": "Suggested",
-      "links": "Links"
+      "links": "Links",
+      "actions": "Actions"
     },
     "origin": {
       "nacional": "National supplier",
@@ -2069,7 +2070,8 @@
       "landing": "View landing page",
       "pause": "Pause product",
       "resume": "Activate product",
-      "remove": "Remove product"
+      "remove": "Remove product",
+      "edit": "Edit product"
     },
     "edit": {
       "label": "New selling price",
@@ -2100,7 +2102,7 @@
     },
     "links": {
       "preview": "View the customer's page",
-      "copy": "Copy share link",
+      "copy": "Copy promotion link",
       "copied": "Sharing link copied successfully!",
       "copyFailed": "Could not copy. Please copy the address manually.",
       "inactive": "Activate the product to get a public page."

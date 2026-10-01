@@ -1,13 +1,15 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { useFormatters } from "@/components/dashboard/useFormatters";
 import { BoxIcon, CartIcon, HeartIcon, SearchIcon } from "@/components/kai/icons";
-import { deleteProduct, updateProduct } from "@/components/products/productsApi";
+import { DeleteProductDialog } from "@/components/products/DeleteProductDialog";
+import { updateProduct } from "@/components/products/productsApi";
 import { ProductLinks } from "@/components/products/ProductLinks";
 import { BrandLink } from "@/components/ui/BrandButton";
 import { useToast } from "@/components/ui/Toast";
+import { Tooltip } from "@/components/ui/Tooltip";
 import { Link, useRouter } from "@/i18n/navigation";
 import type { MyProductRow } from "@/shared/products/myProducts";
 import { marginOf } from "@/shared/vitrine/imported";
@@ -30,84 +32,30 @@ const PILL = {
   out: "bg-[var(--kai-danger-bg)] text-[var(--kai-danger)]",
 } as const;
 
-/** The row's "…" menu: edit price, open the product editor, pause/activate, remove. */
-function RowMenu({
-  product,
-  onEditPrice,
-  onToggle,
-  onRemove,
-}: {
-  product: MyProductRow;
-  onEditPrice: () => void;
-  onToggle: () => void;
-  onRemove: () => void;
-}) {
+const ICON = "grid size-9 place-items-center rounded-full border border-[var(--ink-200)] bg-white text-[var(--ink-700)] transition-all duration-150 hover:-translate-y-px hover:border-[var(--ink-300)] hover:text-[var(--ink-900)] hover:shadow-[var(--sh-md)] focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:outline-none active:translate-y-0 disabled:cursor-wait disabled:opacity-50";
+const svg = { "aria-hidden": true, width: 17, height: 17, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.9, strokeLinecap: "round", strokeLinejoin: "round" } as const;
+
+/** The row's actions, all in plain sight (no hidden menu): edit the product, pause/activate it, remove it. */
+function RowActions({ product, busy, onToggle, onRemove }: { product: MyProductRow; busy: boolean; onToggle: () => void; onRemove: () => void }) {
   const t = useTranslations("MyProducts.actions");
-  const [open, setOpen] = useState(false);
-  const root = useRef<HTMLDivElement>(null);
-  const id = useId();
-
-  useEffect(() => {
-    if (!open) return;
-    const away = (e: PointerEvent) => !root.current?.contains(e.target as Node) && setOpen(false);
-    const esc = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
-    document.addEventListener("pointerdown", away);
-    document.addEventListener("keydown", esc);
-    return () => {
-      document.removeEventListener("pointerdown", away);
-      document.removeEventListener("keydown", esc);
-    };
-  }, [open]);
-
-  const item =
-    "flex w-full items-center rounded-[var(--r-md)] px-3 py-2 text-left text-[13px] font-medium text-[var(--ink-700)] hover:bg-[var(--ink-100)] hover:text-[var(--ink-900)]";
-  const run = (fn: () => void) => () => {
-    setOpen(false);
-    fn();
-  };
-
+  const active = product.status === "active";
   return (
-    <div ref={root} className="relative inline-block">
-      <button
-        type="button"
-        aria-haspopup="menu"
-        aria-expanded={open}
-        aria-controls={open ? id : undefined}
-        aria-label={t("open", { title: product.title })}
-        onClick={() => setOpen((v) => !v)}
-        className="grid size-9 place-items-center rounded-full border border-[var(--ink-200)] bg-white text-[var(--ink-700)] hover:border-[var(--ink-300)] hover:text-[var(--ink-900)]"
-      >
-        <svg aria-hidden width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-          <circle cx="5" cy="12" r="1.8" />
-          <circle cx="12" cy="12" r="1.8" />
-          <circle cx="19" cy="12" r="1.8" />
-        </svg>
-      </button>
-      {open && (
-        <div
-          id={id}
-          role="menu"
-          className="absolute top-full right-0 z-30 mt-2 w-56 rounded-[var(--r-lg)] border border-[var(--ink-200)] bg-white p-1.5 shadow-[var(--sh-md)]"
-        >
-          <button type="button" role="menuitem" onClick={run(onEditPrice)} className={item}>
-            {t("editPrice")}
-          </button>
-          <Link href={`/dashboard/products/${product.id}`} role="menuitem" onClick={() => setOpen(false)} className={item}>
-            {t("landing")}
-          </Link>
-          <button type="button" role="menuitem" onClick={run(onToggle)} className={item}>
-            {t(product.status === "active" ? "pause" : "resume")}
-          </button>
-          <button
-            type="button"
-            role="menuitem"
-            onClick={run(onRemove)}
-            className={`${item} text-[var(--kai-danger)] hover:text-[var(--kai-danger)]`}
-          >
-            {t("remove")}
-          </button>
-        </div>
-      )}
+    <div className="flex items-center justify-end gap-2">
+      <Tooltip label={t("edit")}>
+        <Link href={`/dashboard/products/${product.id}`} aria-label={`${t("edit")}: ${product.title}`} className={ICON}>
+          <svg {...svg}><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>
+        </Link>
+      </Tooltip>
+      <Tooltip label={t(active ? "pause" : "resume")}>
+        <button type="button" onClick={onToggle} disabled={busy} aria-label={`${t(active ? "pause" : "resume")}: ${product.title}`} className={ICON}>
+          {active ? <svg {...svg}><rect x="6" y="5" width="4" height="14" rx="1" /><rect x="14" y="5" width="4" height="14" rx="1" /></svg> : <svg {...svg}><path d="m7 4 13 8-13 8Z" /></svg>}
+        </button>
+      </Tooltip>
+      <Tooltip label={t("remove")}>
+        <button type="button" onClick={onRemove} disabled={busy} aria-label={`${t("remove")}: ${product.title}`} className={`${ICON} hover:!border-[var(--kai-danger)] hover:!text-[var(--kai-danger)]`}>
+          <svg {...svg}><path d="M4 7h16" /><path d="M10 11v6M14 11v6" /><path d="M6 7l1 13h10l1-13" /><path d="M9 7V4h6v3" /></svg>
+        </button>
+      </Tooltip>
     </div>
   );
 }
@@ -190,7 +138,7 @@ export function MyProductsView({ products }: { products: MyProductRow[] }) {
     }
   }
   const update = (id: string, patch: { salePrice?: number; status?: "active" | "draft" }) => change(id, () => updateProduct(id, patch));
-  const remove = (id: string) => change(id, () => deleteProduct(id));
+  const [toDelete, setToDelete] = useState<MyProductRow | null>(null);
   const [tab, setTab] = useState<Tab>("all");
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<{ key: SortKey; dir: "asc" | "desc" }>({ key: "sales", dir: "desc" });
@@ -359,7 +307,7 @@ export function MyProductsView({ products }: { products: MyProductRow[] }) {
           <p className="px-6 py-16 text-center text-sm text-[var(--ink-600)]">{t("empty.none")}</p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[62rem] border-collapse text-sm">
+            <table className="w-full min-w-[66rem] border-collapse text-sm">
               <thead className="border-b border-gray-100 bg-[var(--ink-50)]">
                 <tr>
                   {th("product")}
@@ -371,7 +319,7 @@ export function MyProductsView({ products }: { products: MyProductRow[] }) {
                   <th scope="col" className="px-4 py-3 text-center text-[11px] font-bold tracking-[0.06em] text-[var(--ink-500)] uppercase">
                     {t("cols.links")}
                   </th>
-                  <th scope="col" className="w-14 px-4 py-3" />
+                  <th scope="col" className="px-4 py-3 text-right text-[11px] font-bold tracking-[0.06em] text-[var(--ink-500)] uppercase">{t("cols.actions")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -439,11 +387,11 @@ export function MyProductsView({ products }: { products: MyProductRow[] }) {
                         <ProductLinks product={p} />
                       </td>
                       <td className="px-4 py-3 text-right">
-                        <RowMenu
+                        <RowActions
                           product={p}
-                          onEditPrice={() => setEditing(p.id)}
+                          busy={busy === p.id}
                           onToggle={() => update(p.id, { status: p.status === "active" ? "draft" : "active" })}
-                          onRemove={() => remove(p.id)}
+                          onRemove={() => setToDelete(p)}
                         />
                       </td>
                     </tr>
@@ -502,6 +450,14 @@ export function MyProductsView({ products }: { products: MyProductRow[] }) {
         )}
       </div>
 
+      <DeleteProductDialog
+        product={toDelete}
+        onClose={() => setToDelete(null)}
+        onDeleted={() => {
+          setToDelete(null);
+          router.refresh();
+        }}
+      />
     </div>
   );
 }
