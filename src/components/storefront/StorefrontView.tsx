@@ -1,6 +1,7 @@
 import { useFormatter, useTranslations } from "next-intl";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import type { StorefrontProduct } from "@/server/modules/storefront/schema";
+import { DeliveryCutoff } from "./DeliveryCutoff";
 import { BuyActions } from "./BuyActions";
 import { ChevronDownIcon, ClockIcon, LockIcon, ShieldIcon, StarIcon, WalletIcon, WhatsAppIcon } from "./icons";
 import { OfferTimer } from "./OfferTimer";
@@ -24,11 +25,11 @@ function PriceBlock({ p }: { p: StorefrontProduct }) {
       </p>
       {p.regularPrice !== null && (
         <>
-          <p className="pb-0.5 text-xl text-ink-muted tabular-nums">
+          <p className="pb-0.5 text-lg text-ink-muted tabular-nums">
             <span className="sr-only">{t("regular")}: </span>
-            <s>{money(p.regularPrice)}</s>
+            <s className="line-through">{money(p.regularPrice)}</s>
           </p>
-          {off && <p className="mb-1 rounded-full bg-action px-2.5 py-0.5 text-[13px] font-bold text-on-action tabular-nums">{t("off", { percent: off })}</p>}
+          {off && <p className="mb-1 rounded-full bg-emerald-100 px-3 py-1 text-sm font-bold text-emerald-800 tabular-nums">{t("save", { percent: off })}</p>}
         </>
       )}
     </div>
@@ -107,6 +108,8 @@ export function StorefrontView({ product: p, whatsapp }: { product: StorefrontPr
           </div>
 
           <BuyActions slug={p.slug} soldOut={soldOut} price={price} label={t("page.cta")} shortLabel={t("page.ctaShort")} soldOutLabel={t("buy.soldOut")} note={soldOut ? t("buy.soldOutNote") : t("page.ctaNote")} />
+
+          <DeliveryCutoff now={p.now} />
 
           <ul className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
             {trust.map(({ key, icon }) => (

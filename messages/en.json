@@ -417,8 +417,8 @@
         "intro": "Optional. This appears on the product's public page and is always true: the low-stock notice only shows with real stock and, when the deadline passes, the shop charges the original price.",
         "stock": "Units in stock",
         "stockHint": "Leave empty to show no stock. The page warns when 5 or fewer are left.",
-        "regular": "Original price",
-        "regularHint": "Shown struck through next to the sale price.",
+        "regular": "Price without discount (optional)",
+        "regularHint": "If filled in, this value is shown struck through on the product page, next to the sale price, with the percentage saved. Use the product's real previous price.",
         "ends": "Offer ends at",
         "endsHint": "Optional. After this moment the shop charges the original price and the countdown disappears.",
         "clear": "Clear deadline"
@@ -1297,7 +1297,8 @@
     "price": {
       "regular": "Original price",
       "off": "-{percent}",
-      "now": "Offer price"
+      "now": "Offer price",
+      "save": "Save {percent}"
     },
     "gallery": {
       "label": "Product images",
@@ -1442,6 +1443,11 @@
           "title": "Pay the courier",
           "body": "You only pay when the product is in your hands."
         }
+      },
+      "cutoff": {
+        "beforeTomorrow": "Order within the next {hours}h {minutes}m to receive it tomorrow",
+        "beforeDay": "Order within the next {hours}h {minutes}m and receive it on the next delivery ({day})",
+        "after": "Delivery guaranteed in 24/48 working hours"
       }
     }
   },

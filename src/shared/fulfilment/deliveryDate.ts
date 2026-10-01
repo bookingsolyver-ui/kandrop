@@ -43,3 +43,24 @@ export function deliveryOptions(now = Date.now(), count = DELIVERY_OPTIONS): str
 export function checkoutDays(now = Date.now()) {
   return { today: toIsoDay(luandaToday(now)), days: deliveryOptions(now) };
 }
+
+/** Orders placed before this hour (Luanda time) are prepared for the next delivery day. */
+export const DELIVERY_CUTOFF_HOUR = 16;
+
+export interface CutoffInfo {
+  /** Still before today's cut-off. */
+  before: boolean;
+  /** Milliseconds until the cut-off (0 once it has passed). */
+  msLeft: number;
+  /** The next delivery day (`YYYY-MM-DD`): the first non-Sunday after today. */
+  nextDay: string;
+}
+
+/** The delivery cut-off at `now`: how long is left to order and which day it will arrive. Pure, so the server and the browser agree. */
+export function cutoffInfo(now = Date.now()): CutoffInfo {
+  const today = luandaToday(now);
+  const cutoffAt = today + DELIVERY_CUTOFF_HOUR * 3_600_000 - LUANDA_OFFSET; // 16:00 Luanda as a UTC instant
+  let next = today + DAY;
+  while (isSunday(next)) next += DAY;
+  return { before: now < cutoffAt, msLeft: Math.max(0, cutoffAt - now), nextDay: toIsoDay(next) };
+}

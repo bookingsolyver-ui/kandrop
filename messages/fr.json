@@ -417,8 +417,8 @@
         "intro": "Facultatif. Ces informations apparaissent sur la page publique du produit et sont toujours vraies : l’alerte de stock faible n’apparaît qu’avec un stock réel et, à l’échéance, la boutique facture le prix d’origine.",
         "stock": "Unités en stock",
         "stockHint": "Laissez vide pour ne pas afficher de stock. La page prévient quand il en reste 5 ou moins.",
-        "regular": "Prix d’origine",
-        "regularHint": "Affiché barré à côté du prix de vente.",
+        "regular": "Prix sans remise (facultatif)",
+        "regularHint": "Si renseigné, cette valeur s’affiche barrée sur la page produit, à côté du prix de vente, avec le pourcentage économisé. Utilisez le vrai prix précédent du produit.",
         "ends": "L’offre se termine le",
         "endsHint": "Facultatif. Après ce moment, la boutique facture le prix d’origine et le compte à rebours disparaît.",
         "clear": "Effacer l’échéance"
@@ -1297,7 +1297,8 @@
     "price": {
       "regular": "Prix d’origine",
       "off": "-{percent}",
-      "now": "Prix de l’offre"
+      "now": "Prix de l’offre",
+      "save": "Économisez {percent}"
     },
     "gallery": {
       "label": "Images du produit",
@@ -1442,6 +1443,11 @@
           "title": "Payez le livreur",
           "body": "Vous ne payez que lorsque le produit est entre vos mains."
         }
+      },
+      "cutoff": {
+        "beforeTomorrow": "Commandez dans les {hours}h {minutes}m pour recevoir demain",
+        "beforeDay": "Commandez dans les {hours}h {minutes}m et recevez à la prochaine livraison ({day})",
+        "after": "Livraison garantie sous 24/48 h ouvrées"
       }
     }
   },

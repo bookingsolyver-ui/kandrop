@@ -417,8 +417,8 @@
         "intro": "Opcional. Estes dados aparecem na página pública do produto e são sempre verdadeiros: o aviso de stock baixo só surge com stock real e, quando o prazo acaba, a loja passa a cobrar o preço original.",
         "stock": "Unidades em stock",
         "stockHint": "Deixe vazio para não indicar stock. A página avisa quando restarem 5 ou menos.",
-        "regular": "Preço original",
-        "regularHint": "Aparece riscado ao lado do preço de venda.",
+        "regular": "Preço sem desconto (opcional)",
+        "regularHint": "Se preenchido, este valor aparece riscado na página do produto, ao lado do preço de venda, com a percentagem poupada. Use o preço anterior real do produto.",
         "ends": "A oferta termina em",
         "endsHint": "Opcional. Depois deste momento a loja cobra o preço original e o contador desaparece.",
         "clear": "Limpar prazo"
@@ -1297,7 +1297,8 @@
     "price": {
       "regular": "Preço original",
       "off": "-{percent}",
-      "now": "Preço da oferta"
+      "now": "Preço da oferta",
+      "save": "Poupe {percent}"
     },
     "gallery": {
       "label": "Imagens do produto",
@@ -1442,6 +1443,11 @@
           "title": "Pague ao entregador",
           "body": "Só paga quando o produto chega às suas mãos."
         }
+      },
+      "cutoff": {
+        "beforeTomorrow": "Encomende nas próximas {hours}h {minutes}m para receber amanhã",
+        "beforeDay": "Encomende nas próximas {hours}h {minutes}m e receba na próxima entrega ({day})",
+        "after": "Entrega garantida em 24/48h úteis"
       }
     }
   },
