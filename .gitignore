@@ -16,3 +16,6 @@ undefined/
 supabase/.temp
 referencia-*.html
 referencia.html
+
+# third-party reference pages (also the misspelt "refrencia*")
+refrencia*.html
