@@ -9,7 +9,7 @@ import { CloseIcon } from "@/components/shell/icons";
 import { ToastProvider } from "@/components/ui/Toast";
 import { Link, usePathname } from "@/i18n/navigation";
 
-type NavLabel = "merchants" | "orders" | "finance" | "cashFlow" | "payouts" | "showcase" | "catalog" | "inventory";
+type NavLabel = "merchants" | "orders" | "finance" | "cashFlow" | "reconciliation" | "courierClose" | "adjustments" | "payouts" | "showcase" | "catalog" | "inventory";
 type Leaf = { key: NavLabel; href: string };
 type Item =
   | { type: "link"; key: NavLabel; href: string; icon: ReactNode }
@@ -33,6 +33,9 @@ const NAV: Item[] = [
     icon: <WalletIcon size={18} />,
     children: [
       { key: "cashFlow", href: "/admin/financeiro/fluxo-caixa" },
+      { key: "reconciliation", href: "/admin/financeiro/conciliacao" },
+      { key: "courierClose", href: "/admin/financeiro/fecho-estafetas" },
+      { key: "adjustments", href: "/admin/financeiro/ajustes" },
       { key: "payouts", href: "/admin/financeiro/saques" },
     ],
   },

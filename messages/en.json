@@ -2059,7 +2059,10 @@
       "payouts": "Payouts",
       "showcase": "Showcase",
       "catalog": "Catalogue",
-      "inventory": "Inventory"
+      "inventory": "Inventory",
+      "reconciliation": "Reconciliation",
+      "courierClose": "Courier closing",
+      "adjustments": "Adjustments and refunds"
     },
     "table": {
       "showing": "Showing {from}–{to} of {total}",
@@ -2310,26 +2313,40 @@
       "subtitle": "Withdrawals requested by merchants. Approve or reject the pending ones.",
       "cards": {
         "pending": "Pending payouts",
-        "amount": "Amount to pay"
+        "amount": "Amount to pay",
+        "approved": "Approved in the batch",
+        "total": "Batch total",
+        "totalNote": "Pending + approved"
       },
       "cols": {
         "date": "Date",
         "merchant": "Merchant",
         "bank": "Account",
         "amount": "Amount",
-        "status": "Status"
+        "status": "Status",
+        "iban": "IBAN"
       },
       "status": {
         "paid": "Paid",
         "pending": "Pending",
-        "rejected": "Rejected"
+        "rejected": "Rejected",
+        "approved": "Approved"
       },
       "approve": "Approve",
       "reject": "Reject",
       "toast": {
         "approved": "Payout approved (simulation).",
-        "rejected": "Payout rejected (simulation)."
-      }
+        "rejected": "Payout rejected (simulation).",
+        "batch": "{count, plural, one {# payout approved in the batch} other {# payouts approved in the batch}} (simulation).",
+        "exported": "Batch exported: {count, plural, one {# transfer} other {# transfers}}."
+      },
+      "batch": {
+        "title": "Batch closing",
+        "body": "Approve the pending payouts in one go and export the transfer file (CSV, with IBAN and bank) for the bank to process.",
+        "approveAll": "Approve all pending ({count})",
+        "export": "Export transfer batch (CSV) · {count}"
+      },
+      "demoNote": "Simulation: approvals do not write to the database. The IBANs are fictional."
     },
     "catalog": {
       "title": "Catalogue",
@@ -2348,6 +2365,132 @@
       },
       "visible": "Visible",
       "hidden": "Hidden"
+    },
+    "recon": {
+      "title": "Reconciliation and distribution",
+      "subtitle": "Delivered orders and the balance to pay: the total charged splits into the product cost and delivery fee (Kandrop) and the merchant’s profit.",
+      "releaseAll": "Release all pending ({count})",
+      "release": "Release balance",
+      "table": "Delivered vs. balance to pay",
+      "balanced": "The sum adds up",
+      "unbalanced": "The sum does not add up: check",
+      "demoNote": "Simulation: releasing a balance does not write to the database.",
+      "cards": {
+        "pending": "Merchants’ pending profit",
+        "pendingNote": "{count, plural, one {# order to release} other {# orders to release}}",
+        "available": "Profit available to withdraw",
+        "availableNote": "Already released",
+        "kandrop": "Cost + delivery (Kandrop)",
+        "kandropNote": "What Kandrop keeps on these deliveries"
+      },
+      "tabs": {
+        "all": "All",
+        "pending": "Pending",
+        "available": "Available"
+      },
+      "status": {
+        "pending": "Pending",
+        "available": "Available"
+      },
+      "cols": {
+        "order": "Order",
+        "merchant": "Merchant",
+        "total": "Total charged",
+        "cost": "Product cost (Kandrop)",
+        "delivery": "Delivery fee (Kandrop)",
+        "profit": "Profit (merchant)",
+        "status": "Merchant balance"
+      },
+      "toast": {
+        "released": "{count, plural, one {Balance of # order released} other {Balance of # orders released}} (simulation)."
+      }
+    },
+    "couriers": {
+      "title": "Courier cash closing",
+      "subtitle": "Cash-on-delivery orders: how much cash each courier has to hand in at the base at the end of the day.",
+      "demoNote": "Simulation: confirming a closing does not write to the database.",
+      "cards": {
+        "cash": "Cash to collect",
+        "cashNote": "Closings still to confirm",
+        "tpa": "Paid by Multicaixa Express (terminal)",
+        "tpaNote": "Already in the bank: nothing to collect",
+        "pending": "Pending closings",
+        "pendingNote": "of {total} couriers"
+      },
+      "cols": {
+        "courier": "Courier",
+        "delivered": "Orders delivered",
+        "tpa": "Multicaixa Express (terminal)",
+        "cash": "Cash",
+        "counted": "Cash counted",
+        "difference": "Difference",
+        "status": "Closing"
+      },
+      "status": {
+        "pending": "Pending",
+        "confirmed": "Confirmed"
+      },
+      "confirm": "Confirm closing",
+      "confirmDiff": "Confirm with difference",
+      "toast": {
+        "confirmed": "Closing confirmed (simulation).",
+        "confirmedDiff": "Closing confirmed with a difference (simulation)."
+      }
+    },
+    "refunds": {
+      "title": "Adjustments and refunds",
+      "subtitle": "Refused deliveries, refunds and manual adjustments: decide who pays for the failed attempt.",
+      "demoNote": "Simulation: the entries on this page do not write to the database.",
+      "refused": {
+        "title": "Deliveries refused at the door",
+        "body": "The customer refused. Kandrop keeps the product: decide who pays for the delivery attempt.",
+        "cols": {
+          "order": "Order",
+          "product": "Product and store",
+          "attempt": "Attempt cost",
+          "held": "Product held",
+          "decision": "Decision"
+        }
+      },
+      "actions": {
+        "debit": "Debit the merchant",
+        "absorb": "Absorb the loss"
+      },
+      "decided": {
+        "debit": "Debited to the merchant",
+        "absorb": "Kandrop’s loss"
+      },
+      "prefill": {
+        "debit": "Failed delivery fee: the customer refused the order at the door",
+        "absorb": "Customer refused at the door: loss absorbed by Kandrop"
+      },
+      "form": {
+        "title": "New manual adjustment",
+        "type": "Entry type",
+        "kind": {
+          "debit_merchant": "Debit the merchant’s balance",
+          "absorb_loss": "Absorb the loss (Kandrop cost)"
+        },
+        "kindHelp": {
+          "debit_merchant": "The amount comes out of the merchant’s balance (e.g. a failed delivery fee).",
+          "absorb_loss": "The merchant does not pay: the cost stays on Kandrop’s account."
+        },
+        "merchant": "Merchant",
+        "order": "Order",
+        "amount": "Amount (kwz)",
+        "reason": "Justification",
+        "reasonHelp": "Required (min. 10 characters): it is recorded.",
+        "submitDebit": "Debit the merchant",
+        "submitAbsorb": "Record Kandrop’s loss"
+      },
+      "log": {
+        "title": "Adjustments log",
+        "legend": "+ credits Kandrop (debited to the merchant) · − cost absorbed by Kandrop"
+      },
+      "toast": {
+        "debited": "Amount debited to the merchant (simulation).",
+        "absorbed": "Loss recorded as a Kandrop cost (simulation)."
+      }
     }
   }
 }

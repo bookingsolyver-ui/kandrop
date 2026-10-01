@@ -2059,7 +2059,10 @@
       "payouts": "Retraits",
       "showcase": "Vitrine",
       "catalog": "Catalogue",
-      "inventory": "Inventaire"
+      "inventory": "Inventaire",
+      "reconciliation": "Rapprochement",
+      "courierClose": "Clôture des livreurs",
+      "adjustments": "Ajustements et remboursements"
     },
     "table": {
       "showing": "Affichage de {from}–{to} sur {total}",
@@ -2310,26 +2313,40 @@
       "subtitle": "Retraits demandés par les commerçants. Approuvez ou refusez ceux en attente.",
       "cards": {
         "pending": "Retraits en attente",
-        "amount": "Montant à payer"
+        "amount": "Montant à payer",
+        "approved": "Approuvés dans le lot",
+        "total": "Total du lot",
+        "totalNote": "En attente + approuvés"
       },
       "cols": {
         "date": "Date",
         "merchant": "Commerçant",
         "bank": "Compte",
         "amount": "Montant",
-        "status": "Statut"
+        "status": "Statut",
+        "iban": "IBAN"
       },
       "status": {
         "paid": "Payé",
         "pending": "En attente",
-        "rejected": "Refusé"
+        "rejected": "Refusé",
+        "approved": "Approuvé"
       },
       "approve": "Approuver",
       "reject": "Refuser",
       "toast": {
         "approved": "Retrait approuvé (simulation).",
-        "rejected": "Retrait refusé (simulation)."
-      }
+        "rejected": "Retrait refusé (simulation).",
+        "batch": "{count, plural, one {# retrait approuvé dans le lot} other {# retraits approuvés dans le lot}} (simulation).",
+        "exported": "Lot exporté : {count, plural, one {# virement} other {# virements}}."
+      },
+      "batch": {
+        "title": "Clôture de lot",
+        "body": "Approuvez les retraits en attente d’un coup et exportez le fichier de virements (CSV, avec IBAN et banque) pour que la banque le traite.",
+        "approveAll": "Approuver tout ce qui est en attente ({count})",
+        "export": "Exporter le lot de virements (CSV) · {count}"
+      },
+      "demoNote": "Simulation : les approbations n’écrivent pas dans la base de données. Les IBAN sont fictifs."
     },
     "catalog": {
       "title": "Catalogue",
@@ -2348,6 +2365,132 @@
       },
       "visible": "Visible",
       "hidden": "Masqué"
+    },
+    "recon": {
+      "title": "Rapprochement et répartition",
+      "subtitle": "Commandes livrées et solde à payer : le total facturé se répartit entre le coût du produit et les frais de livraison (Kandrop) et le bénéfice du commerçant.",
+      "releaseAll": "Libérer tout ce qui est en attente ({count})",
+      "release": "Libérer le solde",
+      "table": "Livrées vs. solde à payer",
+      "balanced": "La somme est correcte",
+      "unbalanced": "La somme ne correspond pas : à vérifier",
+      "demoNote": "Simulation : libérer un solde n’écrit pas dans la base de données.",
+      "cards": {
+        "pending": "Bénéfice des commerçants en attente",
+        "pendingNote": "{count, plural, one {# commande à libérer} other {# commandes à libérer}}",
+        "available": "Bénéfice disponible au retrait",
+        "availableNote": "Déjà libéré",
+        "kandrop": "Coût + livraison (Kandrop)",
+        "kandropNote": "Ce que Kandrop garde sur ces livraisons"
+      },
+      "tabs": {
+        "all": "Toutes",
+        "pending": "En attente",
+        "available": "Disponible"
+      },
+      "status": {
+        "pending": "En attente",
+        "available": "Disponible"
+      },
+      "cols": {
+        "order": "Commande",
+        "merchant": "Commerçant",
+        "total": "Total facturé",
+        "cost": "Coût du produit (Kandrop)",
+        "delivery": "Frais de livraison (Kandrop)",
+        "profit": "Bénéfice (commerçant)",
+        "status": "Solde du commerçant"
+      },
+      "toast": {
+        "released": "{count, plural, one {Solde de # commande libéré} other {Solde de # commandes libéré}} (simulation)."
+      }
+    },
+    "couriers": {
+      "title": "Clôture de caisse des livreurs",
+      "subtitle": "Commandes payées à la livraison : combien d’espèces chaque livreur doit remettre à la base en fin de journée.",
+      "demoNote": "Simulation : confirmer une clôture n’écrit pas dans la base de données.",
+      "cards": {
+        "cash": "Espèces à récupérer",
+        "cashNote": "Clôtures encore à confirmer",
+        "tpa": "Payé par Multicaixa Express (terminal)",
+        "tpaNote": "Déjà en banque : rien à récupérer",
+        "pending": "Clôtures en attente",
+        "pendingNote": "sur {total} livreurs"
+      },
+      "cols": {
+        "courier": "Livreur",
+        "delivered": "Commandes livrées",
+        "tpa": "Multicaixa Express (terminal)",
+        "cash": "Espèces",
+        "counted": "Espèces comptées",
+        "difference": "Écart",
+        "status": "Clôture"
+      },
+      "status": {
+        "pending": "En attente",
+        "confirmed": "Confirmée"
+      },
+      "confirm": "Confirmer la clôture",
+      "confirmDiff": "Confirmer avec écart",
+      "toast": {
+        "confirmed": "Clôture confirmée (simulation).",
+        "confirmedDiff": "Clôture confirmée avec écart (simulation)."
+      }
+    },
+    "refunds": {
+      "title": "Ajustements et remboursements",
+      "subtitle": "Livraisons refusées, remboursements et ajustements manuels : décidez qui paie la tentative échouée.",
+      "demoNote": "Simulation : les écritures de cette page n’écrivent pas dans la base de données.",
+      "refused": {
+        "title": "Livraisons refusées à la porte",
+        "body": "Le client a refusé. Kandrop garde le produit : décidez qui paie la tentative de livraison.",
+        "cols": {
+          "order": "Commande",
+          "product": "Produit et boutique",
+          "attempt": "Coût de la tentative",
+          "held": "Produit retenu",
+          "decision": "Décision"
+        }
+      },
+      "actions": {
+        "debit": "Débiter le commerçant",
+        "absorb": "Assumer la perte"
+      },
+      "decided": {
+        "debit": "Débité au commerçant",
+        "absorb": "Perte de Kandrop"
+      },
+      "prefill": {
+        "debit": "Frais de livraison échouée : le client a refusé la commande à la porte",
+        "absorb": "Client a refusé à la porte : perte assumée par Kandrop"
+      },
+      "form": {
+        "title": "Nouvel ajustement manuel",
+        "type": "Type d’écriture",
+        "kind": {
+          "debit_merchant": "Débiter le solde du commerçant",
+          "absorb_loss": "Assumer la perte (coût Kandrop)"
+        },
+        "kindHelp": {
+          "debit_merchant": "Le montant est prélevé sur le solde du commerçant (ex. frais de livraison échouée).",
+          "absorb_loss": "Le commerçant ne paie pas : le coût reste au compte de Kandrop."
+        },
+        "merchant": "Commerçant",
+        "order": "Commande",
+        "amount": "Montant (kwz)",
+        "reason": "Justification",
+        "reasonHelp": "Obligatoire (min. 10 caractères) : elle est consignée.",
+        "submitDebit": "Débiter le commerçant",
+        "submitAbsorb": "Enregistrer la perte de Kandrop"
+      },
+      "log": {
+        "title": "Journal des ajustements",
+        "legend": "+ crédite Kandrop (débité au commerçant) · − coût assumé par Kandrop"
+      },
+      "toast": {
+        "debited": "Montant débité au commerçant (simulation).",
+        "absorbed": "Perte enregistrée comme coût de Kandrop (simulation)."
+      }
     }
   }
 }

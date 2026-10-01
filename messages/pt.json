@@ -2059,7 +2059,10 @@
       "payouts": "Saques",
       "showcase": "Vitrine",
       "catalog": "Catálogo",
-      "inventory": "Inventário"
+      "inventory": "Inventário",
+      "reconciliation": "Conciliação",
+      "courierClose": "Fecho de estafetas",
+      "adjustments": "Ajustes e estornos"
     },
     "table": {
       "showing": "A mostrar {from}–{to} de {total}",
@@ -2310,26 +2313,40 @@
       "subtitle": "Levantamentos pedidos pelos lojistas. Aprove ou recuse os pendentes.",
       "cards": {
         "pending": "Saques pendentes",
-        "amount": "Valor a pagar"
+        "amount": "Valor a pagar",
+        "approved": "Aprovados no lote",
+        "total": "Total do lote",
+        "totalNote": "Pendentes + aprovados"
       },
       "cols": {
         "date": "Data",
         "merchant": "Lojista",
         "bank": "Conta",
         "amount": "Valor",
-        "status": "Estado"
+        "status": "Estado",
+        "iban": "IBAN"
       },
       "status": {
         "paid": "Pago",
         "pending": "Pendente",
-        "rejected": "Recusado"
+        "rejected": "Recusado",
+        "approved": "Aprovado"
       },
       "approve": "Aprovar",
       "reject": "Recusar",
       "toast": {
         "approved": "Saque aprovado (simulação).",
-        "rejected": "Saque recusado (simulação)."
-      }
+        "rejected": "Saque recusado (simulação).",
+        "batch": "{count, plural, one {# saque aprovado no lote} other {# saques aprovados no lote}} (simulação).",
+        "exported": "Lote exportado: {count, plural, one {# transferência} other {# transferências}}."
+      },
+      "batch": {
+        "title": "Fecho de lote",
+        "body": "Aprove os saques pendentes de uma só vez e exporte o ficheiro de transferências (CSV, com o IBAN e o banco) para o banco processar.",
+        "approveAll": "Aprovar todos os pendentes ({count})",
+        "export": "Exportar lote de transferências (CSV) · {count}"
+      },
+      "demoNote": "Simulação: as aprovações não gravam na base de dados. Os IBAN são fictícios."
     },
     "catalog": {
       "title": "Catálogo",
@@ -2348,6 +2365,132 @@
       },
       "visible": "Visível",
       "hidden": "Oculto"
+    },
+    "recon": {
+      "title": "Conciliação e distribuição",
+      "subtitle": "Encomendas entregues e o saldo a pagar: o total cobrado divide-se entre o custo do produto e a taxa de entrega (Kandrop) e o lucro do lojista.",
+      "releaseAll": "Liberar todos os pendentes ({count})",
+      "release": "Liberar saldo",
+      "table": "Entregues vs. saldo a pagar",
+      "balanced": "A soma bate certo",
+      "unbalanced": "A soma não bate: verificar",
+      "demoNote": "Simulação: libertar saldo não grava na base de dados.",
+      "cards": {
+        "pending": "Lucro dos lojistas pendente",
+        "pendingNote": "{count, plural, one {# encomenda por libertar} other {# encomendas por libertar}}",
+        "available": "Lucro disponível para levantar",
+        "availableNote": "Já libertado",
+        "kandrop": "Custo + entrega (Kandrop)",
+        "kandropNote": "O que fica com a Kandrop nestas entregas"
+      },
+      "tabs": {
+        "all": "Todas",
+        "pending": "Pendente",
+        "available": "Disponível"
+      },
+      "status": {
+        "pending": "Pendente",
+        "available": "Disponível"
+      },
+      "cols": {
+        "order": "Encomenda",
+        "merchant": "Lojista",
+        "total": "Total cobrado",
+        "cost": "Custo do produto (Kandrop)",
+        "delivery": "Taxa de entrega (Kandrop)",
+        "profit": "Lucro (lojista)",
+        "status": "Saldo do lojista"
+      },
+      "toast": {
+        "released": "{count, plural, one {Saldo de # encomenda libertado} other {Saldo de # encomendas libertado}} (simulação)."
+      }
+    },
+    "couriers": {
+      "title": "Fecho de caixa dos estafetas",
+      "subtitle": "Entregas com pagamento no ato: quanto dinheiro vivo cada estafeta tem de devolver à base no fim do dia.",
+      "demoNote": "Simulação: confirmar o fecho não grava na base de dados.",
+      "cards": {
+        "cash": "Dinheiro vivo a recolher",
+        "cashNote": "Fechos ainda por confirmar",
+        "tpa": "Pago por Multicaixa Express (TPA)",
+        "tpaNote": "Já no banco: não é preciso recolher",
+        "pending": "Fechos pendentes",
+        "pendingNote": "de {total} estafetas"
+      },
+      "cols": {
+        "courier": "Estafeta",
+        "delivered": "Encomendas entregues",
+        "tpa": "Multicaixa Express (TPA)",
+        "cash": "Dinheiro vivo",
+        "counted": "Dinheiro contado",
+        "difference": "Diferença",
+        "status": "Fecho"
+      },
+      "status": {
+        "pending": "Pendente",
+        "confirmed": "Confirmado"
+      },
+      "confirm": "Confirmar fecho",
+      "confirmDiff": "Confirmar com diferença",
+      "toast": {
+        "confirmed": "Fecho confirmado (simulação).",
+        "confirmedDiff": "Fecho confirmado com diferença (simulação)."
+      }
+    },
+    "refunds": {
+      "title": "Ajustes e estornos",
+      "subtitle": "Entregas recusadas, estornos e ajustes manuais: decida quem paga o custo da tentativa falhada.",
+      "demoNote": "Simulação: os lançamentos desta página não gravam na base de dados.",
+      "refused": {
+        "title": "Entregas recusadas à porta",
+        "body": "O cliente recusou. A Kandrop retém o produto: decida quem paga a tentativa de entrega.",
+        "cols": {
+          "order": "Encomenda",
+          "product": "Produto e loja",
+          "attempt": "Custo da tentativa",
+          "held": "Produto retido",
+          "decision": "Decisão"
+        }
+      },
+      "actions": {
+        "debit": "Debitar do lojista",
+        "absorb": "Assumir prejuízo"
+      },
+      "decided": {
+        "debit": "Debitado ao lojista",
+        "absorb": "Prejuízo da Kandrop"
+      },
+      "prefill": {
+        "debit": "Taxa de entrega falhada: cliente recusou a encomenda na porta",
+        "absorb": "Cliente recusou na porta: prejuízo assumido pela Kandrop"
+      },
+      "form": {
+        "title": "Novo ajuste manual",
+        "type": "Tipo de lançamento",
+        "kind": {
+          "debit_merchant": "Debitar do saldo do lojista",
+          "absorb_loss": "Assumir prejuízo (custo Kandrop)"
+        },
+        "kindHelp": {
+          "debit_merchant": "O valor sai do saldo do lojista (ex.: taxa de entrega falhada).",
+          "absorb_loss": "O lojista não paga: o custo fica na conta da Kandrop."
+        },
+        "merchant": "Lojista",
+        "order": "Encomenda",
+        "amount": "Valor (kwz)",
+        "reason": "Justificação",
+        "reasonHelp": "Obrigatória (mín. 10 caracteres): fica registada.",
+        "submitDebit": "Debitar do lojista",
+        "submitAbsorb": "Registar prejuízo da Kandrop"
+      },
+      "log": {
+        "title": "Registo de ajustes",
+        "legend": "+ credita a Kandrop (debitado ao lojista) · − custo assumido pela Kandrop"
+      },
+      "toast": {
+        "debited": "Valor debitado ao lojista (simulação).",
+        "absorbed": "Prejuízo registado como custo da Kandrop (simulação)."
+      }
     }
   }
 }

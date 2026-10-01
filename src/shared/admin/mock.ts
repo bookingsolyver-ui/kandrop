@@ -301,3 +301,154 @@ export const INVENTORY: InventoryItem[] = [...NAT, ...INT].map((p, i) => ({
 }));
 
 export const CRITICAL_STOCK = 10;
+
+// ── Banking details (FICTIONAL IBANs, for the payout batch export) ──────────────────────────
+
+const BANKS: Record<string, { bank: string; iban: string; holder: string }> = {
+  m_001: { bank: "BAI", iban: "AO06004000000212345610101", holder: "Teresa Mbala" },
+  m_002: { bank: "BFA", iban: "AO06000600000598765410102", holder: "Nuno Fernandes" },
+  m_003: { bank: "BIC", iban: "AO06005100000331122310103", holder: "Marta Quissanga" },
+  m_004: { bank: "BAI", iban: "AO06004000000744556610104", holder: "Eduardo Chivela" },
+  m_005: { bank: "Atlântico", iban: "AO06005500000126677810105", holder: "Sónia Capita" },
+  m_006: { bank: "BAI", iban: "AO06004000000983210110106", holder: "Rui Baptista" },
+  m_007: { bank: "BFA", iban: "AO06000600000455566710107", holder: "Paula Domingos" },
+  m_008: { bank: "BIC", iban: "AO06005100000867788910108", holder: "Albertina Zau" },
+  m_009: { bank: "BIC", iban: "AO06005100000219988710109", holder: "Joaquim Pinto" },
+  m_010: { bank: "BAI", iban: "AO06004000000653344510110", holder: "Cecília Lemos" },
+};
+
+/** A payout waiting in the queue (or already decided), with the destination account. */
+export interface PayoutQueueItem {
+  id: string;
+  store: string;
+  holder: string;
+  bank: string;
+  iban: string;
+  amount: number;
+  date: number;
+  status: "paid" | "pending" | "rejected";
+}
+
+const EXTRA_STORES = ["Loja Girassol", "Mercado Kuvale", "Tendência Mulemba", "Casa do Planalto", "Eletro Cunene", "Beleza Okavango", "Moda Cuanza", "Bazar Zaire", "Tech Sumbe", "Estilo Soyo"];
+const EXTRA_BANKS = ["BAI", "BFA", "BIC", "Atlântico", "BPC"];
+
+/** The real sample payouts plus 40 invented pending ones: the "pay 50 merchants at once" case. */
+export const PAYOUT_QUEUE: PayoutQueueItem[] = [
+  ...PAYOUT_REQUESTS.map((p) => {
+    const m = merchantById(p.merchantId)!;
+    const b = BANKS[p.merchantId]!;
+    return { id: p.id.toUpperCase(), store: m.store, holder: b.holder, bank: b.bank, iban: b.iban, amount: p.amount, date: p.date, status: p.status };
+  }),
+  ...Array.from({ length: 40 }, (_, i): PayoutQueueItem => ({
+    id: `PO-X${String(i + 1).padStart(3, "0")}`,
+    store: `${EXTRA_STORES[i % EXTRA_STORES.length]} ${Math.floor(i / EXTRA_STORES.length) + 1}`,
+    holder: `Titular ${String(i + 1).padStart(2, "0")}`,
+    bank: EXTRA_BANKS[i % EXTRA_BANKS.length]!,
+    iban: `AO06${String(40_000_000_000_000 + i * 7_919_113).padStart(21, "0")}`,
+    amount: kz(35_000 + ((i * 37_000) % 420_000)),
+    date: NOW - ((i % 5) + 1) * DAY,
+    status: "pending",
+  })),
+].sort((a, b) => b.date - a.date);
+
+// ── Reconciliation: delivered orders vs the balance still to pay ─────────────────────────────
+
+export interface ReconRow {
+  orderId: string;
+  number: number;
+  merchantId: string;
+  deliveredAt: number;
+  /** Total charged = productCost + deliveryFee + merchantProfit. */
+  total: number;
+  productCost: number;
+  deliveryFee: number;
+  merchantProfit: number;
+  /** The merchant's profit is `pending` until Kandrop releases it, then `available`. */
+  status: "pending" | "available";
+}
+
+export const RECON_ROWS: ReconRow[] = ADMIN_ORDERS.filter((o) => o.state === "delivered").map((o) => {
+  const deliveredAt = o.createdAt + 2 * DAY;
+  return {
+    orderId: o.id,
+    number: o.number,
+    merchantId: o.merchantId,
+    deliveredAt,
+    total: o.total,
+    productCost: o.productCost,
+    deliveryFee: o.deliveryFee,
+    merchantProfit: o.merchantMargin,
+    status: (NOW - deliveredAt > 4 * DAY ? "available" : "pending") as ReconRow["status"],
+  };
+}).sort((a, b) => b.deliveredAt - a.deliveredAt);
+
+// ── Couriers' end-of-day closing (cash on delivery) ──────────────────────────────────────────
+
+export interface CourierClosing {
+  courier: string;
+  zone: string;
+  delivered: number;
+  /** Paid by card/Multicaixa Express on the courier's terminal: already in the bank. */
+  tpa: number;
+  /** Cash in hand that must be handed over at the base. */
+  cash: number;
+  status: "pending" | "confirmed";
+}
+
+const COURIER_ROWS: Array<[string, string, number, number, number, "pending" | "confirmed"]> = [
+  ["Express Luanda", "Luanda", 14, 312_400, 187_600, "pending"],
+  ["Kuenda Entregas", "Luanda Sul", 11, 148_900, 221_300, "pending"],
+  ["Rápido do Sul", "Benguela", 9, 96_500, 134_200, "pending"],
+  ["Planalto Express", "Huambo", 7, 58_300, 102_700, "confirmed"],
+  ["Kianda Moto", "Luanda Norte", 16, 405_100, 96_400, "pending"],
+  ["Huíla Entregas", "Lubango", 6, 41_800, 88_900, "confirmed"],
+  ["Cabinda Rápido", "Cabinda", 5, 33_700, 129_600, "pending"],
+];
+export const COURIER_CLOSINGS: CourierClosing[] = COURIER_ROWS.map(([courier, zone, delivered, tpa, cash, status]) => ({
+  courier,
+  zone,
+  delivered,
+  tpa: kz(tpa),
+  cash: kz(cash),
+  status,
+}));
+
+// ── Refused deliveries and manual adjustments ────────────────────────────────────────────────
+
+export interface RefusedDelivery {
+  orderId: string;
+  number: number;
+  merchantId: string;
+  product: string;
+  at: number;
+  /** What the failed attempt cost (the delivery fee). */
+  attemptCost: number;
+  productCost: number;
+}
+
+/** The customer refused at the door: Kandrop holds the product and has to decide who pays the attempt. */
+export const REFUSED: RefusedDelivery[] = ADMIN_ORDERS.filter((o) => o.state === "returned").map((o) => ({
+  orderId: o.id,
+  number: o.number,
+  merchantId: o.merchantId,
+  product: o.product,
+  at: o.createdAt + 3 * DAY,
+  attemptCost: o.deliveryFee,
+  productCost: o.productCost,
+}));
+
+export type AdjustmentKind = "debit_merchant" | "absorb_loss";
+export interface ManualAdjustment {
+  id: string;
+  at: number;
+  kind: AdjustmentKind;
+  merchantId: string;
+  orderNumber?: number;
+  amount: number;
+  reason: string;
+}
+export const ADJUSTMENTS_SEED: ManualAdjustment[] = [
+  { id: "ADJ-021", at: NOW - 2 * DAY, kind: "debit_merchant", merchantId: "m_003", orderNumber: 2029, amount: kz(2_000), reason: "Taxa de entrega falhada: cliente ausente" },
+  { id: "ADJ-020", at: NOW - 3 * DAY, kind: "absorb_loss", merchantId: "m_007", orderNumber: 2013, amount: kz(6_600), reason: "Produto danificado no transporte: custo assumido pela Kandrop" },
+  { id: "ADJ-019", at: NOW - 6 * DAY, kind: "debit_merchant", merchantId: "m_001", orderNumber: 2017, amount: kz(2_500), reason: "Tentativa de entrega recusada na porta" },
+];
