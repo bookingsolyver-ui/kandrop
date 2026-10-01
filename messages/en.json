@@ -2199,11 +2199,11 @@
         "gmv": "Gross merchandise value (GMV)",
         "gmvNote": "Everything end customers paid",
         "revenue": "Kandrop’s own revenue",
-        "revenueNote": "Fees on margin + logistics",
+        "revenueNote": "Commission on merchants' margin",
         "held": "Merchants’ held balance",
-        "heldNote": "Wallets and amounts to release from {count} stores",
+        "heldNote": "Net margin owed to {count} stores",
         "transit": "Money in transit",
-        "transitNote": "Deliveries awaiting collection"
+        "transitNote": "Paid and on their way to the customer"
       },
       "chart": {
         "title": "Last 14 days",
@@ -2226,7 +2226,8 @@
           "merchant": "Merchant",
           "ref": "Reference",
           "amount": "Amount"
-        }
+        },
+        "empty": "No movements yet: the statement fills up with verified payments."
       },
       "kind": {
         "payment_in": "Payment received",
@@ -2312,10 +2313,10 @@
         "title": "Recent orders",
         "empty": "No orders."
       },
-      "demoNote": "Simulation: the actions on this page do not write to the database.",
       "products": {
         "title": "Active products of {store}",
-        "empty": "This store has no products yet."
+        "empty": "This store has no products yet.",
+        "listTitle": "Imported products"
       },
       "close": "Close",
       "cancel": "Cancel",
@@ -2387,7 +2388,7 @@
       "subtitle": "Stock health: what sold out, what is about to, and how much money sits on the shelves.",
       "cards": {
         "out": "Out-of-stock products",
-        "outNote": "Still visible for sale",
+        "outNote": "Approved with no units left",
         "critical": "Critical stock (< {limit} units)",
         "criticalNote": "Urgent restock",
         "capital": "Capital tied up in stock",
@@ -2405,7 +2406,8 @@
         "sku": "SKU",
         "quantity": "Physical qty",
         "weekly": "Sales/week",
-        "status": "Status"
+        "status": "Status",
+        "category": "Category"
       },
       "stores": "{count, plural, one {# store sells it} other {# stores sell it}}",
       "coverage": "covers {weeks} weeks",
@@ -2427,17 +2429,18 @@
         "confirm": "Disable sales"
       },
       "cancel": "Cancel",
-      "demoNote": "Simulation: the actions on this page do not write to the database."
+      "empty": "No approved products with recorded stock."
     },
     "payouts": {
       "title": "Payouts",
-      "subtitle": "Withdrawals requested by merchants. Approve or reject the pending ones.",
+      "subtitle": "Withdrawals requested by suppliers. Mark them as paid once the transfer is made.",
       "cards": {
         "pending": "Pending payouts",
         "amount": "Amount to pay",
-        "approved": "Approved in the batch",
-        "total": "Batch total",
-        "totalNote": "Pending + approved"
+        "total": "Requests on record",
+        "totalNote": "In every status",
+        "paid": "Total already paid",
+        "paidNote": "Completed withdrawals"
       },
       "cols": {
         "date": "Date",
@@ -2445,33 +2448,41 @@
         "bank": "Account",
         "amount": "Amount",
         "status": "Status",
-        "iban": "IBAN"
+        "iban": "IBAN",
+        "supplier": "Supplier"
       },
       "status": {
         "paid": "Paid",
         "pending": "Pending",
         "rejected": "Rejected",
-        "approved": "Approved"
+        "approved": "Approved",
+        "requested": "Requested"
       },
       "approve": "Approve",
       "reject": "Reject",
       "toast": {
         "approved": "Payout approved (simulation).",
-        "rejected": "Payout rejected (simulation).",
+        "rejected": "Withdrawal rejected.",
         "batch": "{count, plural, one {# payout approved in the batch} other {# payouts approved in the batch}} (simulation).",
-        "exported": "Batch exported: {count, plural, one {# transfer} other {# transfers}}."
+        "exported": "Batch exported: {count, plural, one {# transfer} other {# transfers}}.",
+        "paid": "Withdrawal marked as paid.",
+        "failed": "Could not update the withdrawal."
       },
       "batch": {
         "title": "Batch closing",
-        "body": "Approve the pending payouts in one go and export the transfer file (CSV, with IBAN and bank) for the bank to process.",
+        "body": "Export the transfer file (CSV, with the IBAN and the bank) of the pending requests for the bank to process. The export is logged.",
         "approveAll": "Approve all pending ({count})",
         "export": "Export transfer batch (CSV) · {count}"
       },
-      "demoNote": "Simulation: approvals do not write to the database. The IBANs are fictional."
+      "filters": {
+        "all": "All"
+      },
+      "markPaid": "Mark as paid",
+      "empty": "No withdrawals in this status."
     },
     "catalog": {
       "title": "Catalogue",
-      "subtitle": "The Showcase products: supplier, cost and visibility for merchants.",
+      "subtitle": "Supplier products in every status, with their cost and how many stores sell them.",
       "search": "Search by product, SKU or brand…",
       "cols": {
         "product": "Product",
@@ -2485,24 +2496,29 @@
         "internacional": "International"
       },
       "visible": "Visible",
-      "hidden": "Hidden"
+      "hidden": "Hidden",
+      "status": {
+        "approved": "Visible on the Showcase",
+        "in_review": "Under review",
+        "rejected": "Rejected"
+      },
+      "empty": "There are no supplier products yet."
     },
     "recon": {
       "title": "Reconciliation and distribution",
-      "subtitle": "Delivered orders and the balance to pay: the total charged splits into the product cost and delivery fee (Kandrop) and the merchant’s profit.",
+      "subtitle": "Orders with a verified payment: the amount charged is split into the supplier's cost, Kandrop's commission and the merchant's net margin.",
       "releaseAll": "Release all pending ({count})",
       "release": "Release balance",
       "table": "Delivered vs. balance to pay",
       "balanced": "The sum adds up",
       "unbalanced": "The sum does not add up: check",
-      "demoNote": "Simulation: releasing a balance does not write to the database.",
       "cards": {
         "pending": "Merchants’ pending profit",
-        "pendingNote": "{count, plural, one {# order to release} other {# orders to release}}",
+        "pendingNote": "{count, plural, one {# order yet to be delivered} other {# orders yet to be delivered}}",
         "available": "Profit available to withdraw",
-        "availableNote": "Already released",
-        "kandrop": "Cost + delivery (Kandrop)",
-        "kandropNote": "What Kandrop keeps on these deliveries"
+        "availableNote": "Delivered and payment verified",
+        "kandrop": "Cost + commission (Kandrop)",
+        "kandropNote": "What Kandrop handles on these orders"
       },
       "tabs": {
         "all": "All",
@@ -2518,18 +2534,20 @@
         "merchant": "Merchant",
         "total": "Total charged",
         "cost": "Product cost (Kandrop)",
-        "delivery": "Delivery fee (Kandrop)",
+        "delivery": "Kandrop commission",
         "profit": "Profit (merchant)",
-        "status": "Merchant balance"
+        "status": "Merchant balance",
+        "commission": "Kandrop commission"
       },
       "toast": {
         "released": "{count, plural, one {Balance of # order released} other {Balance of # orders released}} (simulation)."
-      }
+      },
+      "empty": "There are no orders with a verified payment yet.",
+      "autoRelease": "The merchant's margin becomes available on its own once the order is delivered and the payment is verified."
     },
     "couriers": {
       "title": "Courier cash closing",
       "subtitle": "Cash-on-delivery orders: how much cash each courier has to hand in at the base at the end of the day.",
-      "demoNote": "Simulation: confirming a closing does not write to the database.",
       "cards": {
         "cash": "Cash to collect",
         "cashNote": "Closings still to confirm",
@@ -2561,7 +2579,6 @@
     "refunds": {
       "title": "Adjustments and refunds",
       "subtitle": "Refused deliveries, refunds and manual adjustments: decide who pays for the failed attempt.",
-      "demoNote": "Simulation: the entries on this page do not write to the database.",
       "refused": {
         "title": "Deliveries refused at the door",
         "body": "The customer refused. Kandrop keeps the product: decide who pays for the delivery attempt.",
@@ -2649,7 +2666,6 @@
         "nacional": "National",
         "internacional": "International"
       },
-      "demoNote": "Demo suppliers and submissions; decisions are saved in this browser.",
       "real": {
         "title": "Supplier registrations",
         "empty": "No registrations yet.",
@@ -2707,7 +2723,8 @@
         "preparing": "Being prepared by the supplier",
         "picked_up": "Picked up by Kandrop",
         "in_transit": "In transit",
-        "delivered": "Delivered"
+        "delivered": "Delivered",
+        "cancelled": "Cancelled"
       },
       "cards": {
         "toPrepare": "To prepare",
@@ -2762,7 +2779,10 @@
         "failed": "Could not update the status.",
         "proof": "Slip registered.",
         "verified": "Payment confirmed.",
-        "unverified": "The payment has not been confirmed yet: the order cannot be delivered."
+        "unverified": "The payment has not been confirmed yet: the order cannot be delivered.",
+        "cancelled": "Order cancelled. Stock put back: {count, plural, one {# unit} other {# units}}.",
+        "cancelledRefund": "Order cancelled and stock put back. Remember to refund the customer.",
+        "cannotCancel": "This order can no longer be cancelled (it was already collected or delivered)."
       },
       "payment": {
         "pending_payment": "Awaiting payment",
@@ -2776,7 +2796,17 @@
       "confirmPayment": "Confirm Payment",
       "confirmPaymentLong": "Confirm Payment / Validate WhatsApp Slip",
       "registerProof": "Register slip received",
-      "blocked": "It can only be delivered once the payment is confirmed."
+      "blocked": "It can only be delivered once the payment is confirmed.",
+      "cancel": {
+        "action": "Cancel order",
+        "title": "Cancel order",
+        "body": "Are you sure you want to cancel order #{number}? This cannot be undone.",
+        "stock": "The stock reserved from the supplier goes back to the inventory.",
+        "noStock": "The merchant's own product: there is no supplier stock to put back.",
+        "refund": "The payment was already verified: the customer's refund must be made manually.",
+        "keep": "Keep order",
+        "confirm": "Yes, cancel"
+      }
     }
   },
   "Supplier": {
@@ -3009,11 +3039,15 @@
         "title": "Withdrawals",
         "empty": "No withdrawals yet.",
         "paid": "Paid",
-        "pending": "Processing"
+        "pending": "Processing",
+        "requested": "Processing",
+        "rejected": "Rejected"
       },
-      "demoNote": "Demo data saved in this browser.",
       "toast": {
-        "requested": "Withdrawal requested."
+        "requested": "Withdrawal requested.",
+        "noBank": "Add the bank account where you get paid first.",
+        "insufficient": "Invalid amount: the minimum is 5,000 kwz and it cannot exceed your available balance.",
+        "failed": "Could not request the withdrawal. Please try again."
       },
       "modal": {
         "title": "Request withdrawal",
@@ -3071,7 +3105,8 @@
         "preparing": "Being prepared by the supplier",
         "picked_up": "Picked up by Kandrop",
         "in_transit": "In transit",
-        "delivered": "Delivered"
+        "delivered": "Delivered",
+        "cancelled": "Cancelled"
       }
     }
   },

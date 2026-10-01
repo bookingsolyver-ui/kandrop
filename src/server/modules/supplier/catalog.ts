@@ -165,6 +165,14 @@ export const supplierBank = {
     return { bankName: String(row.bank_name), holderName: String(row.holder_name), ibanMasked: maskIban(iban), updatedAt: Number(row.updated_at) };
   },
 
+  /** The FULL account, decrypted: only for the administrator's transfer export (audited), never for a page payload. */
+  async getFull(supplierId: string): Promise<{ bankName: string; holderName: string; iban: string } | null> {
+    const row = must("supplier_bank_accounts.getFull", await db().from("supplier_bank_accounts").select("*").eq("supplier_id", supplierId).maybeSingle());
+    if (!row) return null;
+    const iban = tryDecryptField(String(row.iban), ibanContext(supplierId));
+    return iban === null ? null : { bankName: String(row.bank_name), holderName: String(row.holder_name), iban };
+  },
+
   async save(supplierId: string, input: { bankName: string; holderName: string; iban: string }): Promise<void> {
     must(
       "supplier_bank_accounts.save",

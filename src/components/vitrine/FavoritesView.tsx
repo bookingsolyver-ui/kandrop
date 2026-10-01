@@ -6,7 +6,7 @@ import { HeartIcon } from "@/components/kai/icons";
 import { BrandLink } from "@/components/ui/BrandButton";
 import { Link } from "@/i18n/navigation";
 import { useFavorites } from "@/lib/vitrine/store";
-import type { VitrineProduct } from "@/shared/vitrine/mock";
+import type { VitrineProduct } from "@/shared/vitrine/types";
 import { ProductCard } from "./ProductCard";
 import { useImport } from "./useImport";
 

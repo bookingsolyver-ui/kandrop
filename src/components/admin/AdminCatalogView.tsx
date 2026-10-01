@@ -3,23 +3,20 @@
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { useFormatters } from "@/components/dashboard/useFormatters";
-import { INVENTORY } from "@/shared/admin/mock";
-import { ALL_VITRINE_PRODUCTS } from "@/shared/vitrine/mock";
+import type { CatalogRow } from "@/shared/admin/types";
 import { Badge, Pager, PageHeader, card, fold, usePager } from "./ui";
 
 /** The catalogue as the operator sees it: cost, supplier, how many stores sell it, and whether it is visible. */
-export function AdminCatalogView() {
+export function AdminCatalogView({ rows: all }: { rows: CatalogRow[] }) {
   const t = useTranslations("Admin.catalog");
   const f = useFormatters();
   const [query, setQuery] = useState("");
-  const [hidden, setHidden] = useState<Set<string>>(new Set());
 
   const rows = useMemo(() => {
     const q = fold(query.trim());
-    return ALL_VITRINE_PRODUCTS.filter((p) => !q || fold(`${p.title} ${p.sku} ${p.brand}`).includes(q));
-  }, [query]);
+    return all.filter((p) => !q || fold(`${p.name} ${p.supplierName} ${p.category}`).includes(q));
+  }, [all, query]);
   const pager = usePager(rows, 10);
-  const storesOf = (id: string) => INVENTORY.find((i) => i.id === id)?.stores ?? 0;
 
   return (
     <div>
@@ -43,20 +40,17 @@ export function AdminCatalogView() {
             <tbody>
               {pager.slice.map((p) => (
                 <tr key={p.id} className="border-b border-gray-100 last:border-b-0 hover:bg-[var(--ink-50)]">
-                  <td className="px-4 py-3"><p className="line-clamp-1 max-w-md font-semibold text-[var(--ink-900)]">{p.title}</p><p className="mono-num text-[12px] text-[var(--ink-500)]">{p.sku}</p></td>
-                  <td className="px-4 py-3 text-[var(--ink-600)]">{p.brand} · {t(`origin.${p.kind}`)}</td>
+                  <td className="px-4 py-3"><p className="line-clamp-1 max-w-md font-semibold text-[var(--ink-900)]">{p.name}</p><p className="text-[12px] text-[var(--ink-500)]">{p.category}</p></td>
+                  <td className="px-4 py-3 text-[var(--ink-600)]">{p.supplierName}</td>
                   <td className="mono-num px-4 py-3 text-right font-bold">{f.money(p.costPrice)}</td>
-                  <td className="mono-num px-4 py-3 text-right text-[var(--ink-600)]">{storesOf(p.id)}</td>
-                  <td className="px-4 py-3">
-                    <button type="button" aria-pressed={!hidden.has(p.id)} onClick={() => setHidden((s) => { const n = new Set(s); if (!n.delete(p.id)) n.add(p.id); return n; })}>
-                      <Badge tone={hidden.has(p.id) ? "neutral" : "success"}>{t(hidden.has(p.id) ? "hidden" : "visible")}</Badge>
-                    </button>
-                  </td>
+                  <td className="mono-num px-4 py-3 text-right text-[var(--ink-600)]">{p.stores}</td>
+                  <td className="px-4 py-3"><Badge tone={p.status === "approved" ? "success" : p.status === "rejected" ? "danger" : "warn"}>{t(`status.${p.status}`)}</Badge></td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+        {rows.length === 0 && <p className="px-6 py-14 text-center text-sm text-[var(--ink-600)]">{t("empty")}</p>}
         <Pager pager={pager} />
       </div>
     </div>

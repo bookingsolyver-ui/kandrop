@@ -8,7 +8,7 @@ import { BoxIcon, LogOutIcon, MenuBarsIcon, TrendingUpIcon, WalletIcon } from "@
 import { CloseIcon } from "@/components/shell/icons";
 import { ToastProvider } from "@/components/ui/Toast";
 import { Link, usePathname } from "@/i18n/navigation";
-import { useCurrentSupplier } from "@/lib/supplier/store";
+import { useCurrentSupplier } from "@/components/supplier/SupplierProvider";
 
 const TruckIcon = () => (
   <svg aria-hidden width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

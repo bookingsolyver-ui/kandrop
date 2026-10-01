@@ -6,7 +6,7 @@ import { useFormatters } from "@/components/dashboard/useFormatters";
 import { ChevronLeftIcon } from "@/components/kai/icons";
 import { Link } from "@/i18n/navigation";
 import { useFavorites } from "@/lib/vitrine/store";
-import type { VitrineProduct } from "@/shared/vitrine/mock";
+import type { VitrineProduct } from "@/shared/vitrine/types";
 import { ProductCard } from "./ProductCard";
 import { ProductDetails } from "./ProductDetails";
 import { useImport } from "./useImport";

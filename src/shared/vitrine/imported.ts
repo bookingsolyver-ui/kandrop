@@ -1,9 +1,8 @@
-import type { VitrineKind, VitrineProduct } from "./mock";
+import type { VitrineKind, VitrineProduct } from "./types";
 
 /**
- * A product the merchant imported from the Vitrine into "My products". For the demo it lives in the
- * browser (`src/lib/vitrine/store.ts`); the shape is the contract for the Supabase table that replaces
- * it (`store_products`: store, catalogue product, sale price, status). Money is Kwanzas in minor units.
+ * A product the merchant imported from the Vitrine into "My products" (the real rows are the store's `products`,
+ * linked to the supplier product in `supplier_imports`). Money is Kwanzas in minor units.
  */
 export type StockLevel = "high" | "low" | "out";
 export type ImportedStatus = "active" | "paused";

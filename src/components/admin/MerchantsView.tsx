@@ -5,14 +5,14 @@ import { useMemo, useState } from "react";
 import { useFormatters } from "@/components/dashboard/useFormatters";
 import { SearchIcon } from "@/components/kai/icons";
 import { Link } from "@/i18n/navigation";
-import { MERCHANTS, type MerchantStatus } from "@/shared/admin/mock";
+import type { MerchantRow, MerchantStatus } from "@/shared/admin/types";
 import { Badge, Pager, PageHeader, card, fold, usePager } from "./ui";
 
 export const STATUS_TONE = { active: "success", suspended: "danger", pending_verification: "warn" } as const;
 const FILTERS: Array<"all" | MerchantStatus> = ["all", "active", "suspended", "pending_verification"];
 
 /** Every store on the platform, with its balance and activity; a click opens its full profile. */
-export function MerchantsView() {
+export function MerchantsView({ merchants }: { merchants: MerchantRow[] }) {
   const t = useTranslations("Admin.merchants");
   const f = useFormatters();
   const [query, setQuery] = useState("");
@@ -20,8 +20,8 @@ export function MerchantsView() {
 
   const rows = useMemo(() => {
     const q = fold(query.trim());
-    return MERCHANTS.filter((m) => (filter === "all" || m.status === filter) && (!q || fold(`${m.store} ${m.owner} ${m.email} ${m.city}`).includes(q)));
-  }, [query, filter]);
+    return merchants.filter((m) => (filter === "all" || m.status === filter) && (!q || fold(`${m.store} ${m.owner} ${m.email}`).includes(q)));
+  }, [merchants, query, filter]);
   const pager = usePager(rows, 10);
 
   return (
@@ -39,7 +39,7 @@ export function MerchantsView() {
             {FILTERS.map((s) => (
               <button key={s} type="button" aria-pressed={filter === s} onClick={() => { setFilter(s); pager.setPage(1); }}
                 className={`rounded-full px-3.5 py-2 text-[13px] font-semibold ${filter === s ? "bg-[var(--ink-900)] text-white" : "text-[var(--ink-600)] hover:bg-[var(--ink-100)]"}`}>
-                {t(`filters.${s}`)} ({s === "all" ? MERCHANTS.length : MERCHANTS.filter((m) => m.status === s).length})
+                {t(`filters.${s}`)} ({s === "all" ? merchants.length : merchants.filter((m) => m.status === s).length})
               </button>
             ))}
           </div>
@@ -48,11 +48,10 @@ export function MerchantsView() {
           <p className="px-6 py-16 text-center text-sm text-[var(--ink-600)]">{t("empty")}</p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[60rem] border-collapse text-sm">
+            <table className="w-full min-w-[52rem] border-collapse text-sm">
               <thead className="border-b border-gray-100 bg-[var(--ink-50)]">
                 <tr className="text-left text-[11px] font-bold tracking-[0.06em] text-[var(--ink-500)] uppercase">
                   <th className="px-4 py-3">{t("cols.store")}</th>
-                  <th className="px-4 py-3">{t("cols.city")}</th>
                   <th className="px-4 py-3">{t("cols.plan")}</th>
                   <th className="px-4 py-3">{t("cols.status")}</th>
                   <th className="px-4 py-3 text-right">{t("cols.balance")}</th>
@@ -68,7 +67,6 @@ export function MerchantsView() {
                       <Link href={`/admin/lojistas/${m.id}`} className="block font-semibold text-[var(--ink-900)] hover:text-[var(--kai-orange-600)]">{m.store}</Link>
                       <span className="text-[12px] text-[var(--ink-500)]">{m.owner} · {m.email}</span>
                     </td>
-                    <td className="px-4 py-3 text-[var(--ink-600)]">{m.city}</td>
                     <td className="px-4 py-3"><Badge tone={m.plan === "pro" ? "brand" : "neutral"}>{t(`plan.${m.plan}`)}</Badge></td>
                     <td className="px-4 py-3"><Badge tone={STATUS_TONE[m.status]}>{t(`status.${m.status}`)}</Badge></td>
                     <td className="mono-num px-4 py-3 text-right font-bold text-[var(--ink-900)]">{f.money(m.balance)}</td>

@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 import { useFormatters } from "@/components/dashboard/useFormatters";
 import { useFavorites } from "@/lib/vitrine/store";
 import { FlameIcon, LayersIcon, SearchIcon, ThermometerIcon } from "@/components/kai/icons";
-import { VITRINE_CATEGORIES, type VitrineProduct } from "@/shared/vitrine/mock";
+import { VITRINE_CATEGORIES, type VitrineProduct } from "@/shared/vitrine/types";
 import { ProductCard } from "./ProductCard";
 import { ProductDetails } from "./ProductDetails";
 import { useImport } from "./useImport";

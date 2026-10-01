@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, type ReactNode } from "react";
-import type { Supplier } from "@/shared/supplier/mock";
+import type { Supplier } from "@/shared/supplier/types";
 
 const SupplierContext = createContext<Supplier | null>(null);
 
@@ -11,3 +11,8 @@ export function SupplierProvider({ supplier, children }: { supplier: Supplier; c
 }
 
 export const useSupplierContext = () => useContext(SupplierContext);
+
+/** The signed-in supplier (from the real account), for the portal's client views. */
+export function useCurrentSupplier(): { supplier: Supplier | null } {
+  return { supplier: useSupplierContext() };
+}

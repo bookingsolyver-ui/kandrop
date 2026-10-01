@@ -7,10 +7,11 @@ import { EmptyState, Section, SupplierPageHeader, SupplierStat, td } from "./ui"
 import { useFormatters } from "@/components/dashboard/useFormatters";
 import { BoxIcon, ClockIcon, TrendingUpIcon, WalletIcon } from "@/components/kai/icons";
 import { Link } from "@/i18n/navigation";
-import { useCurrentSupplier } from "@/lib/supplier/store";
+import { useCurrentSupplier } from "@/components/supplier/SupplierProvider";
 import type { SupplierOrderRow } from "./types";
-import { CRITICAL_STOCK } from "@/shared/admin/mock";
 
+/** Fewer units than this is critical stock. */
+const CRITICAL_STOCK = 10;
 const MONTH = 30 * 86_400_000;
 
 /** The supplier's home: four headline numbers, the best sellers and the stock that needs attention. */
@@ -29,10 +30,10 @@ export function SupplierDashboard({ products: catalogue, orders, now }: { produc
 
   const data = useMemo(() => {
     if (!supplier) return null;
-    // Products come from the database; sales stay sample data (only the seeded demo suppliers have any).
+    // Products and sales both come from the database.
     const inVitrine = catalogue.filter((p) => p.status === "approved").length;
     const pending = catalogue.filter((p) => p.status === "in_review").length;
-    const sales = orders.filter((o) => now - o.createdAt <= MONTH);
+    const sales = orders.filter((o) => o.status !== "cancelled" && now - o.createdAt <= MONTH);
     const toPrepare = orders.filter((o) => o.status === "pending" || o.status === "preparing").length;
     const sold = sales.reduce((n, o) => n + o.quantity, 0);
     const gross = sales.reduce((n, o) => n + o.costTotal, 0);

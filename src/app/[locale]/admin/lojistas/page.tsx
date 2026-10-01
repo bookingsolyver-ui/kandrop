@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { MerchantsView } from "@/components/admin/MerchantsView";
 import { routing } from "@/i18n/routing";
 import { requireAdmin } from "@/server/auth/admin";
+import { merchantsOverview } from "@/server/modules/admin/overview";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -20,5 +21,5 @@ export default async function Page({ params }: Props) {
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
   await requireAdmin(locale);
-  return <MerchantsView />;
+  return <MerchantsView merchants={await merchantsOverview().catch(() => [])} />;
 }

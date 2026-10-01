@@ -3,8 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { ZodError } from "zod";
 import { readSession } from "@/server/auth/session";
+import { ApiError } from "@/server/http/errors";
 import { attemptLimiter } from "@/server/http/rateLimit";
 import { supplierBank, supplierProducts } from "@/server/modules/supplier/catalog";
+import { MIN_WITHDRAWAL, requestWithdrawal } from "@/server/modules/supplier/withdrawals";
 import { findSupplier, verifySupplierPassword } from "@/server/modules/supplier/service";
 import { MAX_IMAGE_BYTES, sniffImage } from "@/server/security/imageSniff";
 import { bankDetailsSchema, productInputSchema } from "@/shared/supplier/schemas";
@@ -12,7 +14,7 @@ import { bankDetailsSchema, productInputSchema } from "@/shared/supplier/schemas
 export type ActionResult =
   | { ok: true }
   | { ok: false; error: "validation"; fields: Record<string, string> }
-  | { ok: false; error: "unauthorized" | "not_found" | "password_incorrect" | "rate_limited" | "internal" };
+  | { ok: false; error: "unauthorized" | "not_found" | "password_incorrect" | "rate_limited" | "insufficient_balance" | "no_bank_account" | "internal" };
 
 const fieldsOf = (err: ZodError): ActionResult => {
   const fields: Record<string, string> = {};
@@ -132,6 +134,25 @@ export async function saveBankDetailsAction(raw: unknown): Promise<ActionResult>
     return { ok: true };
   } catch (err) {
     console.error("[supplier] saveBankDetails failed", err instanceof Error ? err.message : err);
+    return { ok: false, error: "internal" };
+  }
+}
+
+/**
+ * Asks Kandrop to pay the supplier. The amount (whole Kwanzas from the form) is checked in the database against the
+ * supplier's REAL balance (delivered and payment-verified lines, minus earlier withdrawals) in one locked transaction.
+ */
+export async function requestWithdrawalAction(amountKz: number): Promise<ActionResult> {
+  const supplierId = await currentSupplierId();
+  if (!supplierId) return { ok: false, error: "unauthorized" };
+  if (!Number.isSafeInteger(amountKz) || amountKz <= 0 || amountKz * 100 < MIN_WITHDRAWAL) return { ok: false, error: "insufficient_balance" };
+  try {
+    await requestWithdrawal(supplierId, amountKz * 100);
+    revalidatePath("/[locale]/fornecedor", "layout");
+    return { ok: true };
+  } catch (err) {
+    if (err instanceof ApiError && (err.code === "insufficient_balance" || err.code === "no_bank_account" || err.code === "not_found")) return { ok: false, error: err.code };
+    console.error("[supplier] requestWithdrawal failed", err instanceof Error ? err.message : err);
     return { ok: false, error: "internal" };
   }
 }

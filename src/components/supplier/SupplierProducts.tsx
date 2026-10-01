@@ -11,7 +11,7 @@ import { BRAND_BUTTON_CLASS } from "@/components/ui/BrandButton";
 import { useToast } from "@/components/ui/Toast";
 import { useRouter } from "@/i18n/navigation";
 import { productInputSchema } from "@/shared/supplier/schemas";
-import { VITRINE_CATEGORIES } from "@/shared/vitrine/mock";
+import { VITRINE_CATEGORIES } from "@/shared/vitrine/types";
 
 /** What the server sends: no image bytes, only whether there is one. */
 export interface ProductRow {

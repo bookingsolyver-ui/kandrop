@@ -2199,11 +2199,11 @@
         "gmv": "Volume brut transigé (GMV)",
         "gmvNote": "Tout ce que les clients finaux ont payé",
         "revenue": "Revenu propre de Kandrop",
-        "revenueNote": "Frais sur la marge + logistique",
+        "revenueNote": "Commission sur la marge des marchands",
         "held": "Solde retenu des commerçants",
-        "heldNote": "Portefeuilles et montants à libérer de {count} boutiques",
+        "heldNote": "Marge nette due à {count} boutiques",
         "transit": "Argent en transit",
-        "transitNote": "Livraisons à encaisser"
+        "transitNote": "Payées et en route vers le client"
       },
       "chart": {
         "title": "14 derniers jours",
@@ -2226,7 +2226,8 @@
           "merchant": "Commerçant",
           "ref": "Référence",
           "amount": "Montant"
-        }
+        },
+        "empty": "Aucun mouvement pour l’instant : le relevé se remplit avec les paiements vérifiés."
       },
       "kind": {
         "payment_in": "Paiement reçu",
@@ -2312,10 +2313,10 @@
         "title": "Commandes récentes",
         "empty": "Aucune commande."
       },
-      "demoNote": "Simulation : les actions de cette page n’écrivent pas dans la base de données.",
       "products": {
         "title": "Produits actifs de {store}",
-        "empty": "Cette boutique n’a pas encore de produits."
+        "empty": "Cette boutique n’a pas encore de produits.",
+        "listTitle": "Produits importés"
       },
       "close": "Fermer",
       "cancel": "Annuler",
@@ -2387,7 +2388,7 @@
       "subtitle": "La santé du stock : ce qui est épuisé, ce qui va l’être et combien d’argent dort en rayon.",
       "cards": {
         "out": "Produits en rupture de stock",
-        "outNote": "Encore visibles à la vente",
+        "outNote": "Approuvés sans aucune unité",
         "critical": "Stock critique (< {limit} unités)",
         "criticalNote": "Réapprovisionnement urgent",
         "capital": "Capital immobilisé en stock",
@@ -2405,7 +2406,8 @@
         "sku": "SKU",
         "quantity": "Qté physique",
         "weekly": "Ventes/semaine",
-        "status": "Statut"
+        "status": "Statut",
+        "category": "Catégorie"
       },
       "stores": "{count, plural, one {# boutique le vend} other {# boutiques le vendent}}",
       "coverage": "couvre {weeks} semaines",
@@ -2427,17 +2429,18 @@
         "confirm": "Désactiver les ventes"
       },
       "cancel": "Annuler",
-      "demoNote": "Simulation : les actions de cette page n’écrivent pas dans la base de données."
+      "empty": "Aucun produit approuvé avec un stock enregistré."
     },
     "payouts": {
       "title": "Retraits",
-      "subtitle": "Retraits demandés par les commerçants. Approuvez ou refusez ceux en attente.",
+      "subtitle": "Retraits demandés par les fournisseurs. Marquez-les comme payés une fois le virement effectué.",
       "cards": {
         "pending": "Retraits en attente",
         "amount": "Montant à payer",
-        "approved": "Approuvés dans le lot",
-        "total": "Total du lot",
-        "totalNote": "En attente + approuvés"
+        "total": "Demandes enregistrées",
+        "totalNote": "Dans tous les états",
+        "paid": "Total déjà payé",
+        "paidNote": "Retraits terminés"
       },
       "cols": {
         "date": "Date",
@@ -2445,33 +2448,41 @@
         "bank": "Compte",
         "amount": "Montant",
         "status": "Statut",
-        "iban": "IBAN"
+        "iban": "IBAN",
+        "supplier": "Fournisseur"
       },
       "status": {
         "paid": "Payé",
         "pending": "En attente",
         "rejected": "Refusé",
-        "approved": "Approuvé"
+        "approved": "Approuvé",
+        "requested": "Demandé"
       },
       "approve": "Approuver",
       "reject": "Refuser",
       "toast": {
         "approved": "Retrait approuvé (simulation).",
-        "rejected": "Retrait refusé (simulation).",
+        "rejected": "Retrait refusé.",
         "batch": "{count, plural, one {# retrait approuvé dans le lot} other {# retraits approuvés dans le lot}} (simulation).",
-        "exported": "Lot exporté : {count, plural, one {# virement} other {# virements}}."
+        "exported": "Lot exporté : {count, plural, one {# virement} other {# virements}}.",
+        "paid": "Retrait marqué comme payé.",
+        "failed": "Impossible de mettre à jour le retrait."
       },
       "batch": {
         "title": "Clôture de lot",
-        "body": "Approuvez les retraits en attente d’un coup et exportez le fichier de virements (CSV, avec IBAN et banque) pour que la banque le traite.",
+        "body": "Exportez le fichier de virements (CSV, avec l’IBAN et la banque) des demandes en attente pour que la banque le traite. L’export est journalisé.",
         "approveAll": "Approuver tout ce qui est en attente ({count})",
         "export": "Exporter le lot de virements (CSV) · {count}"
       },
-      "demoNote": "Simulation : les approbations n’écrivent pas dans la base de données. Les IBAN sont fictifs."
+      "filters": {
+        "all": "Tous"
+      },
+      "markPaid": "Marquer comme payé",
+      "empty": "Aucun retrait dans cet état."
     },
     "catalog": {
       "title": "Catalogue",
-      "subtitle": "Les produits de la Vitrine : fournisseur, coût et visibilité pour les commerçants.",
+      "subtitle": "Les produits des fournisseurs dans tous les états, avec leur coût et le nombre de boutiques qui les vendent.",
       "search": "Rechercher par produit, SKU ou marque…",
       "cols": {
         "product": "Produit",
@@ -2485,24 +2496,29 @@
         "internacional": "International"
       },
       "visible": "Visible",
-      "hidden": "Masqué"
+      "hidden": "Masqué",
+      "status": {
+        "approved": "Visible dans la Vitrine",
+        "in_review": "En examen",
+        "rejected": "Refusé"
+      },
+      "empty": "Il n’y a pas encore de produits de fournisseurs."
     },
     "recon": {
       "title": "Rapprochement et répartition",
-      "subtitle": "Commandes livrées et solde à payer : le total facturé se répartit entre le coût du produit et les frais de livraison (Kandrop) et le bénéfice du commerçant.",
+      "subtitle": "Commandes au paiement vérifié : le montant facturé se répartit entre le coût du fournisseur, la commission de Kandrop et la marge nette du marchand.",
       "releaseAll": "Libérer tout ce qui est en attente ({count})",
       "release": "Libérer le solde",
       "table": "Livrées vs. solde à payer",
       "balanced": "La somme est correcte",
       "unbalanced": "La somme ne correspond pas : à vérifier",
-      "demoNote": "Simulation : libérer un solde n’écrit pas dans la base de données.",
       "cards": {
         "pending": "Bénéfice des commerçants en attente",
-        "pendingNote": "{count, plural, one {# commande à libérer} other {# commandes à libérer}}",
+        "pendingNote": "{count, plural, one {# commande à livrer} other {# commandes à livrer}}",
         "available": "Bénéfice disponible au retrait",
-        "availableNote": "Déjà libéré",
-        "kandrop": "Coût + livraison (Kandrop)",
-        "kandropNote": "Ce que Kandrop garde sur ces livraisons"
+        "availableNote": "Livrée et paiement vérifié",
+        "kandrop": "Coût + commission (Kandrop)",
+        "kandropNote": "Ce que Kandrop gère sur ces commandes"
       },
       "tabs": {
         "all": "Toutes",
@@ -2518,18 +2534,20 @@
         "merchant": "Commerçant",
         "total": "Total facturé",
         "cost": "Coût du produit (Kandrop)",
-        "delivery": "Frais de livraison (Kandrop)",
+        "delivery": "Commission Kandrop",
         "profit": "Bénéfice (commerçant)",
-        "status": "Solde du commerçant"
+        "status": "Solde du commerçant",
+        "commission": "Commission Kandrop"
       },
       "toast": {
         "released": "{count, plural, one {Solde de # commande libéré} other {Solde de # commandes libéré}} (simulation)."
-      }
+      },
+      "empty": "Aucune commande au paiement vérifié pour l’instant.",
+      "autoRelease": "La marge du marchand devient disponible d’elle-même une fois la commande livrée et le paiement vérifié."
     },
     "couriers": {
       "title": "Clôture de caisse des livreurs",
       "subtitle": "Commandes payées à la livraison : combien d’espèces chaque livreur doit remettre à la base en fin de journée.",
-      "demoNote": "Simulation : confirmer une clôture n’écrit pas dans la base de données.",
       "cards": {
         "cash": "Espèces à récupérer",
         "cashNote": "Clôtures encore à confirmer",
@@ -2561,7 +2579,6 @@
     "refunds": {
       "title": "Ajustements et remboursements",
       "subtitle": "Livraisons refusées, remboursements et ajustements manuels : décidez qui paie la tentative échouée.",
-      "demoNote": "Simulation : les écritures de cette page n’écrivent pas dans la base de données.",
       "refused": {
         "title": "Livraisons refusées à la porte",
         "body": "Le client a refusé. Kandrop garde le produit : décidez qui paie la tentative de livraison.",
@@ -2649,7 +2666,6 @@
         "nacional": "National",
         "internacional": "International"
       },
-      "demoNote": "Fournisseurs et soumissions de démonstration ; les décisions sont enregistrées dans ce navigateur.",
       "real": {
         "title": "Inscriptions de fournisseurs",
         "empty": "Pas encore d’inscriptions.",
@@ -2707,7 +2723,8 @@
         "preparing": "En préparation chez le fournisseur",
         "picked_up": "Récupéré par Kandrop",
         "in_transit": "En transit",
-        "delivered": "Livré"
+        "delivered": "Livré",
+        "cancelled": "Annulée"
       },
       "cards": {
         "toPrepare": "À préparer",
@@ -2762,7 +2779,10 @@
         "failed": "Impossible de mettre à jour le statut.",
         "proof": "Justificatif enregistré.",
         "verified": "Paiement confirmé.",
-        "unverified": "Le paiement n’a pas encore été confirmé : la commande ne peut pas être livrée."
+        "unverified": "Le paiement n’a pas encore été confirmé : la commande ne peut pas être livrée.",
+        "cancelled": "Commande annulée. Stock remis : {count, plural, one {# unité} other {# unités}}.",
+        "cancelledRefund": "Commande annulée et stock remis. Pensez à rembourser le client.",
+        "cannotCancel": "Cette commande ne peut plus être annulée (déjà collectée ou livrée)."
       },
       "payment": {
         "pending_payment": "En attente de paiement",
@@ -2776,7 +2796,17 @@
       "confirmPayment": "Confirmer le paiement",
       "confirmPaymentLong": "Confirmer le paiement / Valider le justificatif WhatsApp",
       "registerProof": "Enregistrer le justificatif reçu",
-      "blocked": "Elle ne peut être livrée qu’une fois le paiement confirmé."
+      "blocked": "Elle ne peut être livrée qu’une fois le paiement confirmé.",
+      "cancel": {
+        "action": "Annuler la commande",
+        "title": "Annuler la commande",
+        "body": "Voulez-vous vraiment annuler la commande #{number} ? Cette action est irréversible.",
+        "stock": "Le stock réservé chez le fournisseur retourne à l’inventaire.",
+        "noStock": "Produit du marchand : il n’y a pas de stock fournisseur à remettre.",
+        "refund": "Le paiement a déjà été vérifié : le remboursement du client doit être fait manuellement.",
+        "keep": "Garder la commande",
+        "confirm": "Oui, annuler"
+      }
     }
   },
   "Supplier": {
@@ -3009,11 +3039,15 @@
         "title": "Retraits",
         "empty": "Pas encore de retraits.",
         "paid": "Payé",
-        "pending": "En cours"
+        "pending": "En cours",
+        "requested": "En cours",
+        "rejected": "Refusé"
       },
-      "demoNote": "Données de démonstration enregistrées dans ce navigateur.",
       "toast": {
-        "requested": "Retrait demandé."
+        "requested": "Retrait demandé.",
+        "noBank": "Ajoutez d’abord le compte bancaire où vous êtes payé.",
+        "insufficient": "Montant invalide : le minimum est de 5 000 kwz et il ne peut pas dépasser votre solde disponible.",
+        "failed": "Impossible de demander le retrait. Veuillez réessayer."
       },
       "modal": {
         "title": "Demander un retrait",
@@ -3071,7 +3105,8 @@
         "preparing": "En préparation chez le fournisseur",
         "picked_up": "Récupéré par Kandrop",
         "in_transit": "En transit",
-        "delivered": "Livré"
+        "delivered": "Livré",
+        "cancelled": "Annulée"
       }
     }
   },

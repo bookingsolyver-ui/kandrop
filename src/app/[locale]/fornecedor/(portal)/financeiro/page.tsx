@@ -7,6 +7,7 @@ import { routing } from "@/i18n/routing";
 import { requireSupplier } from "@/server/auth/supplierGate";
 import { supplierOrderRows } from "@/server/modules/fulfilment/supplierView";
 import { supplierBank } from "@/server/modules/supplier/catalog";
+import { listSupplierWithdrawals } from "@/server/modules/supplier/withdrawals";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -26,5 +27,7 @@ export default async function Page({ params }: Props) {
   // Masked on the server: the IBAN is decrypted only to show its last four digits.
   const bank = await supplierBank.get(supplier.id).catch(() => null);
   const orders = await supplierOrderRows(supplier.id);
-  return <SupplierFinance bank={bank} orders={orders} />;
+  // Real withdrawals (Supabase). Until the table exists the list is simply empty.
+  const withdrawals = await listSupplierWithdrawals(supplier.id).catch(() => []);
+  return <SupplierFinance bank={bank} orders={orders} withdrawals={withdrawals} />;
 }

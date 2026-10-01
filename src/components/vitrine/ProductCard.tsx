@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { BoxIcon, FlagIcon, HeartIcon, PlaneIcon, ThermometerIcon } from "@/components/kai/icons";
 import { BRAND_BUTTON_CLASS } from "@/components/ui/BrandButton";
 import { Link } from "@/i18n/navigation";
-import type { VitrineProduct } from "@/shared/vitrine/mock";
+import type { VitrineProduct } from "@/shared/vitrine/types";
 
 /**
  * One product of the showcase. Reusable: the national and the international page both render it,

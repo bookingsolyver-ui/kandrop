@@ -2199,11 +2199,11 @@
         "gmv": "Volume bruto transacionado (GMV)",
         "gmvNote": "Tudo o que os clientes finais pagaram",
         "revenue": "Receita própria Kandrop",
-        "revenueNote": "Taxas sobre a margem + logística",
+        "revenueNote": "Comissão sobre a margem dos lojistas",
         "held": "Saldo retido dos lojistas",
-        "heldNote": "Carteiras e valores a libertar de {count} lojas",
+        "heldNote": "Margem líquida a pagar a {count} lojas",
         "transit": "Dinheiro em trânsito",
-        "transitNote": "Entregas por cobrar"
+        "transitNote": "Pagas e a caminho do cliente"
       },
       "chart": {
         "title": "Últimos 14 dias",
@@ -2226,7 +2226,8 @@
           "merchant": "Lojista",
           "ref": "Referência",
           "amount": "Valor"
-        }
+        },
+        "empty": "Ainda não há movimentos: o extrato enche-se com os pagamentos verificados."
       },
       "kind": {
         "payment_in": "Pagamento recebido",
@@ -2312,10 +2313,10 @@
         "title": "Encomendas recentes",
         "empty": "Sem encomendas."
       },
-      "demoNote": "Simulação: as ações desta página não gravam na base de dados.",
       "products": {
         "title": "Produtos ativos de {store}",
-        "empty": "Esta loja ainda não tem produtos."
+        "empty": "Esta loja ainda não tem produtos.",
+        "listTitle": "Produtos importados"
       },
       "close": "Fechar",
       "cancel": "Cancelar",
@@ -2387,7 +2388,7 @@
       "subtitle": "A saúde do stock: o que esgotou, o que está quase a esgotar e quanto dinheiro está parado em prateleira.",
       "cards": {
         "out": "Produtos sem stock (esgotados)",
-        "outNote": "Ainda visíveis para venda",
+        "outNote": "Aprovados e sem unidades",
         "critical": "Stock crítico (< {limit} unid.)",
         "criticalNote": "Reposição urgente",
         "capital": "Capital imobilizado em stock",
@@ -2405,7 +2406,8 @@
         "sku": "SKU",
         "quantity": "Qtd. física",
         "weekly": "Vendas/semana",
-        "status": "Estado"
+        "status": "Estado",
+        "category": "Categoria"
       },
       "stores": "{count, plural, one {# loja vende} other {# lojas vendem}}",
       "coverage": "cobre {weeks} semanas",
@@ -2427,17 +2429,18 @@
         "confirm": "Desativar vendas"
       },
       "cancel": "Cancelar",
-      "demoNote": "Simulação: as ações desta página não gravam na base de dados."
+      "empty": "Sem produtos aprovados com stock registado."
     },
     "payouts": {
       "title": "Saques",
-      "subtitle": "Levantamentos pedidos pelos lojistas. Aprove ou recuse os pendentes.",
+      "subtitle": "Levantamentos pedidos pelos fornecedores. Marque como pago depois de fazer a transferência.",
       "cards": {
         "pending": "Saques pendentes",
         "amount": "Valor a pagar",
-        "approved": "Aprovados no lote",
-        "total": "Total do lote",
-        "totalNote": "Pendentes + aprovados"
+        "total": "Pedidos registados",
+        "totalNote": "Em todos os estados",
+        "paid": "Total já pago",
+        "paidNote": "Levantamentos concluídos"
       },
       "cols": {
         "date": "Data",
@@ -2445,33 +2448,41 @@
         "bank": "Conta",
         "amount": "Valor",
         "status": "Estado",
-        "iban": "IBAN"
+        "iban": "IBAN",
+        "supplier": "Fornecedor"
       },
       "status": {
         "paid": "Pago",
         "pending": "Pendente",
         "rejected": "Recusado",
-        "approved": "Aprovado"
+        "approved": "Aprovado",
+        "requested": "Pedido"
       },
       "approve": "Aprovar",
       "reject": "Recusar",
       "toast": {
         "approved": "Saque aprovado (simulação).",
-        "rejected": "Saque recusado (simulação).",
+        "rejected": "Levantamento recusado.",
         "batch": "{count, plural, one {# saque aprovado no lote} other {# saques aprovados no lote}} (simulação).",
-        "exported": "Lote exportado: {count, plural, one {# transferência} other {# transferências}}."
+        "exported": "Lote exportado: {count, plural, one {# transferência} other {# transferências}}.",
+        "paid": "Levantamento marcado como pago.",
+        "failed": "Não foi possível atualizar o levantamento."
       },
       "batch": {
         "title": "Fecho de lote",
-        "body": "Aprove os saques pendentes de uma só vez e exporte o ficheiro de transferências (CSV, com o IBAN e o banco) para o banco processar.",
+        "body": "Exporte o ficheiro de transferências (CSV, com o IBAN e o banco) dos pedidos pendentes para o banco processar. A exportação fica registada.",
         "approveAll": "Aprovar todos os pendentes ({count})",
         "export": "Exportar lote de transferências (CSV) · {count}"
       },
-      "demoNote": "Simulação: as aprovações não gravam na base de dados. Os IBAN são fictícios."
+      "filters": {
+        "all": "Todos"
+      },
+      "markPaid": "Marcar como pago",
+      "empty": "Sem levantamentos neste estado."
     },
     "catalog": {
       "title": "Catálogo",
-      "subtitle": "Os produtos da Vitrine: fornecedor, custo e visibilidade para os lojistas.",
+      "subtitle": "Os produtos dos fornecedores em todos os estados, com o custo e quantas lojas os vendem.",
       "search": "Procurar por produto, SKU ou marca…",
       "cols": {
         "product": "Produto",
@@ -2485,24 +2496,29 @@
         "internacional": "Internacional"
       },
       "visible": "Visível",
-      "hidden": "Oculto"
+      "hidden": "Oculto",
+      "status": {
+        "approved": "Visível na Vitrine",
+        "in_review": "Em análise",
+        "rejected": "Recusado"
+      },
+      "empty": "Ainda não há produtos de fornecedores."
     },
     "recon": {
       "title": "Conciliação e distribuição",
-      "subtitle": "Encomendas entregues e o saldo a pagar: o total cobrado divide-se entre o custo do produto e a taxa de entrega (Kandrop) e o lucro do lojista.",
+      "subtitle": "Encomendas com pagamento verificado: o total cobrado divide-se entre o custo do fornecedor, a comissão da Kandrop e a margem líquida do lojista.",
       "releaseAll": "Liberar todos os pendentes ({count})",
       "release": "Liberar saldo",
       "table": "Entregues vs. saldo a pagar",
       "balanced": "A soma bate certo",
       "unbalanced": "A soma não bate: verificar",
-      "demoNote": "Simulação: libertar saldo não grava na base de dados.",
       "cards": {
         "pending": "Lucro dos lojistas pendente",
-        "pendingNote": "{count, plural, one {# encomenda por libertar} other {# encomendas por libertar}}",
+        "pendingNote": "{count, plural, one {# encomenda por entregar} other {# encomendas por entregar}}",
         "available": "Lucro disponível para levantar",
-        "availableNote": "Já libertado",
-        "kandrop": "Custo + entrega (Kandrop)",
-        "kandropNote": "O que fica com a Kandrop nestas entregas"
+        "availableNote": "Entregue e com pagamento verificado",
+        "kandrop": "Custo + comissão (Kandrop)",
+        "kandropNote": "O que a Kandrop movimenta nestas encomendas"
       },
       "tabs": {
         "all": "Todas",
@@ -2518,18 +2534,20 @@
         "merchant": "Lojista",
         "total": "Total cobrado",
         "cost": "Custo do produto (Kandrop)",
-        "delivery": "Taxa de entrega (Kandrop)",
+        "delivery": "Comissão Kandrop",
         "profit": "Lucro (lojista)",
-        "status": "Saldo do lojista"
+        "status": "Saldo do lojista",
+        "commission": "Comissão Kandrop"
       },
       "toast": {
         "released": "{count, plural, one {Saldo de # encomenda libertado} other {Saldo de # encomendas libertado}} (simulação)."
-      }
+      },
+      "empty": "Ainda não há encomendas com pagamento verificado.",
+      "autoRelease": "A margem do lojista fica disponível sozinha quando a encomenda é entregue e o pagamento está verificado."
     },
     "couriers": {
       "title": "Fecho de caixa dos estafetas",
       "subtitle": "Entregas com pagamento no ato: quanto dinheiro vivo cada estafeta tem de devolver à base no fim do dia.",
-      "demoNote": "Simulação: confirmar o fecho não grava na base de dados.",
       "cards": {
         "cash": "Dinheiro vivo a recolher",
         "cashNote": "Fechos ainda por confirmar",
@@ -2561,7 +2579,6 @@
     "refunds": {
       "title": "Ajustes e estornos",
       "subtitle": "Entregas recusadas, estornos e ajustes manuais: decida quem paga o custo da tentativa falhada.",
-      "demoNote": "Simulação: os lançamentos desta página não gravam na base de dados.",
       "refused": {
         "title": "Entregas recusadas à porta",
         "body": "O cliente recusou. A Kandrop retém o produto: decida quem paga a tentativa de entrega.",
@@ -2649,7 +2666,6 @@
         "nacional": "Nacional",
         "internacional": "Internacional"
       },
-      "demoNote": "Fornecedores e submissões de demonstração; as decisões ficam guardadas neste navegador.",
       "real": {
         "title": "Registos de fornecedores",
         "empty": "Ainda sem registos.",
@@ -2707,7 +2723,8 @@
         "preparing": "Em preparação pelo fornecedor",
         "picked_up": "Recolhido pela Kandrop",
         "in_transit": "Em trânsito",
-        "delivered": "Entregue"
+        "delivered": "Entregue",
+        "cancelled": "Cancelada"
       },
       "cards": {
         "toPrepare": "A preparar",
@@ -2762,7 +2779,10 @@
         "failed": "Não foi possível atualizar o estado.",
         "proof": "Comprovativo registado.",
         "verified": "Pagamento confirmado.",
-        "unverified": "O pagamento ainda não foi confirmado: a encomenda não pode ser entregue."
+        "unverified": "O pagamento ainda não foi confirmado: a encomenda não pode ser entregue.",
+        "cancelled": "Encomenda cancelada. Stock reposto: {count, plural, one {# unidade} other {# unidades}}.",
+        "cancelledRefund": "Encomenda cancelada e stock reposto. Lembre-se de reembolsar o cliente.",
+        "cannotCancel": "Esta encomenda já não pode ser cancelada (já foi recolhida ou entregue)."
       },
       "payment": {
         "pending_payment": "A aguardar pagamento",
@@ -2776,7 +2796,17 @@
       "confirmPayment": "Confirmar Pagamento",
       "confirmPaymentLong": "Confirmar Pagamento / Validar Comprovativo WhatsApp",
       "registerProof": "Registar comprovativo recebido",
-      "blocked": "Só pode ser entregue depois de o pagamento ser confirmado."
+      "blocked": "Só pode ser entregue depois de o pagamento ser confirmado.",
+      "cancel": {
+        "action": "Cancelar encomenda",
+        "title": "Cancelar encomenda",
+        "body": "Tem a certeza de que quer cancelar a encomenda #{number}? Esta ação não se pode desfazer.",
+        "stock": "O stock reservado ao fornecedor volta ao inventário.",
+        "noStock": "Produto do próprio lojista: não há stock de fornecedor a repor.",
+        "refund": "O pagamento já foi verificado: o reembolso ao cliente tem de ser feito manualmente.",
+        "keep": "Manter encomenda",
+        "confirm": "Sim, cancelar"
+      }
     }
   },
   "Supplier": {
@@ -3009,11 +3039,15 @@
         "title": "Levantamentos",
         "empty": "Ainda sem levantamentos.",
         "paid": "Pago",
-        "pending": "Em processamento"
+        "pending": "Em processamento",
+        "requested": "Em processamento",
+        "rejected": "Recusado"
       },
-      "demoNote": "Dados de demonstração guardados neste navegador.",
       "toast": {
-        "requested": "Levantamento solicitado."
+        "requested": "Levantamento solicitado.",
+        "noBank": "Adicione primeiro a conta bancária onde recebe.",
+        "insufficient": "Valor inválido: o mínimo é 5.000 kwz e não pode exceder o saldo disponível.",
+        "failed": "Não foi possível pedir o levantamento. Tente novamente."
       },
       "modal": {
         "title": "Solicitar levantamento",
@@ -3071,7 +3105,8 @@
         "preparing": "Em preparação pelo fornecedor",
         "picked_up": "Recolhido pela Kandrop",
         "in_transit": "Em trânsito",
-        "delivered": "Entregue"
+        "delivered": "Entregue",
+        "cancelled": "Cancelada"
       }
     }
   },

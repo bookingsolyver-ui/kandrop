@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { CashFlowView } from "@/components/admin/CashFlowView";
 import { routing } from "@/i18n/routing";
 import { requireAdmin } from "@/server/auth/admin";
+import { cashFlow } from "@/server/modules/admin/overview";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -20,5 +21,9 @@ export default async function Page({ params }: Props) {
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
   await requireAdmin(locale);
-  return <CashFlowView />;
+  const data = await cashFlow().catch((err) => {
+    console.error("[admin] cash flow failed", err instanceof Error ? err.message : err);
+    return { totals: { gmv: 0, revenue: 0, held: 0, inTransit: 0, stores: 0 }, series: [], ledger: [] };
+  });
+  return <CashFlowView data={data} />;
 }

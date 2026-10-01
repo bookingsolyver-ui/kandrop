@@ -4,45 +4,32 @@ import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { useFormatters } from "@/components/dashboard/useFormatters";
 import { BoxIcon, ClockIcon, WalletIcon } from "@/components/kai/icons";
-import { useToast } from "@/components/ui/Toast";
-import { CRITICAL_STOCK, INVENTORY, type InventoryItem } from "@/shared/admin/mock";
-import { Badge, Modal, Pager, PageHeader, StatCard, card, fold, usePager } from "./ui";
+import type { CatalogRow } from "@/shared/admin/types";
+import { Badge, Pager, PageHeader, StatCard, card, fold, usePager } from "./ui";
 
 type Tab = "all" | "out" | "critical" | "healthy";
 const TABS: Tab[] = ["all", "out", "critical", "healthy"];
-const levelOf = (i: InventoryItem): "out" | "critical" | "healthy" => (i.quantity === 0 ? "out" : i.quantity < CRITICAL_STOCK ? "critical" : "healthy");
+/** Fewer units than this is critical stock. */
+const CRITICAL_STOCK = 10;
+const levelOf = (i: CatalogRow): "out" | "critical" | "healthy" => (i.stock === 0 ? "out" : i.stock < CRITICAL_STOCK ? "critical" : "healthy");
 
 /** Stock health only: what is out, what is about to be, and how much money sits on the shelves. */
-export function InventoryView() {
+export function InventoryView({ rows: INVENTORY }: { rows: CatalogRow[] }) {
   const t = useTranslations("Admin.inventory");
   const f = useFormatters();
-  const toast = useToast();
   const [tab, setTab] = useState<Tab>("all");
   const [query, setQuery] = useState("");
-  const [disabled, setDisabled] = useState<Set<string>>(new Set());
-  const [bulk, setBulk] = useState(false);
 
-  const out = INVENTORY.filter((i) => i.quantity === 0);
+  const out = INVENTORY.filter((i) => i.stock === 0);
   const critical = INVENTORY.filter((i) => levelOf(i) === "critical");
-  const capital = INVENTORY.reduce((sum, i) => sum + i.quantity * i.costPrice, 0);
+  const capital = INVENTORY.reduce((sum, i) => sum + i.stock * i.costPrice, 0);
 
   const rows = useMemo(() => {
     const q = fold(query.trim());
-    return INVENTORY.filter((i) => (tab === "all" || levelOf(i) === tab) && (!q || fold(`${i.title} ${i.sku} ${i.supplier}`).includes(q))).sort((a, b) => a.quantity - b.quantity);
-  }, [tab, query]);
+    return INVENTORY.filter((i) => (tab === "all" || levelOf(i) === tab) && (!q || fold(`${i.name} ${i.category} ${i.supplierName}`).includes(q))).sort((a, b) => a.stock - b.stock);
+  }, [INVENTORY, tab, query]);
   const pager = usePager(rows, 10);
   const count = (k: Tab) => (k === "all" ? INVENTORY.length : INVENTORY.filter((i) => levelOf(i) === k).length);
-
-  const disableOne = (id: string) => {
-    setDisabled((s) => new Set(s).add(id));
-    toast({ message: t("autoDisable.done", { count: 1 }) });
-  };
-  const disableAll = () => {
-    setDisabled(new Set(out.map((i) => i.id)));
-    setBulk(false);
-    toast({ message: t("autoDisable.done", { count: out.length }) });
-  };
-  const pendingOut = out.filter((i) => !disabled.has(i.id)).length;
 
   return (
     <div>
@@ -53,22 +40,6 @@ export function InventoryView() {
         <StatCard label={t("cards.critical", { limit: CRITICAL_STOCK })} value={String(critical.length)} note={t("cards.criticalNote")} icon={<ClockIcon size={18} />} tone="warn" />
         <StatCard label={t("cards.capital")} value={f.money(capital)} note={t("cards.capitalNote")} icon={<WalletIcon size={18} />} />
       </div>
-
-      {out.length > 0 && (
-        <section className="mt-6 flex flex-col gap-3 rounded-[var(--r-lg)] border border-[var(--kai-danger)] bg-[var(--kai-danger-bg)] p-4 sm:flex-row sm:items-center sm:justify-between" aria-label={t("autoDisable.title")}>
-          <div>
-            <p className="flex items-center gap-2 font-bold text-[var(--kai-danger)]">
-              <span aria-hidden className="size-2.5 animate-pulse rounded-full bg-[var(--kai-danger)]" />
-              {t("autoDisable.title")}
-            </p>
-            <p className="mt-1 text-sm text-[var(--ink-700)]">{t("autoDisable.body", { count: out.length })}</p>
-          </div>
-          <button type="button" onClick={() => setBulk(true)} disabled={pendingOut === 0}
-            className="inline-flex h-11 shrink-0 items-center justify-center rounded-full bg-[var(--kai-danger)] px-5 text-sm font-bold text-white disabled:opacity-50">
-            {pendingOut === 0 ? t("autoDisable.allDone") : t("autoDisable.button")}
-          </button>
-        </section>
-      )}
 
       <div className={`${card} mt-6 overflow-hidden`}>
         <div className="flex flex-col gap-3 border-b border-[var(--ink-200)] p-4 lg:flex-row lg:items-center lg:justify-between">
@@ -88,25 +59,24 @@ export function InventoryView() {
             <thead className="border-b border-gray-100 bg-[var(--ink-50)]">
               <tr className="text-left text-[11px] font-bold tracking-[0.06em] text-[var(--ink-500)] uppercase">
                 <th className="px-4 py-3">{t("cols.product")}</th>
-                <th className="px-4 py-3">{t("cols.sku")}</th>
+                <th className="px-4 py-3">{t("cols.category")}</th>
                 <th className="px-4 py-3 text-right">{t("cols.quantity")}</th>
                 <th className="px-4 py-3 text-right">{t("cols.weekly")}</th>
                 <th className="px-4 py-3">{t("cols.status")}</th>
-                <th className="px-4 py-3" />
               </tr>
             </thead>
             <tbody>
               {pager.slice.map((i) => {
                 const level = levelOf(i);
-                const weeks = i.weeklySales > 0 ? i.quantity / i.weeklySales : 0;
+                const weeks = i.weeklySales > 0 ? i.stock / i.weeklySales : 0;
                 return (
                   <tr key={i.id} className="border-b border-gray-100 last:border-b-0 hover:bg-[var(--ink-50)]">
                     <td className="px-4 py-3">
-                      <p className="line-clamp-1 max-w-md font-semibold text-[var(--ink-900)]">{i.title}</p>
-                      <p className="text-[12px] text-[var(--ink-500)]">{i.supplier} · {t("stores", { count: i.stores })}</p>
+                      <p className="line-clamp-1 max-w-md font-semibold text-[var(--ink-900)]">{i.name}</p>
+                      <p className="text-[12px] text-[var(--ink-500)]">{i.supplierName} · {t("stores", { count: i.stores })}</p>
                     </td>
-                    <td className="mono-num px-4 py-3 text-[var(--ink-600)]">{i.sku}</td>
-                    <td className={`mono-num px-4 py-3 text-right font-extrabold ${level === "out" ? "text-[var(--kai-danger)]" : level === "critical" ? "text-[var(--kai-warn)]" : "text-[var(--ink-900)]"}`}>{i.quantity}</td>
+                    <td className="px-4 py-3 text-[var(--ink-600)]">{i.category}</td>
+                    <td className={`mono-num px-4 py-3 text-right font-extrabold ${level === "out" ? "text-[var(--kai-danger)]" : level === "critical" ? "text-[var(--kai-warn)]" : "text-[var(--ink-900)]"}`}>{i.stock}</td>
                     <td className="px-4 py-3 text-right">
                       <span className="mono-num font-semibold">{i.weeklySales}</span>
                       <span className="block text-[11px] text-[var(--ink-500)]">{level === "out" ? "—" : t("coverage", { weeks: weeks.toFixed(1) })}</span>
@@ -120,30 +90,17 @@ export function InventoryView() {
                         <Badge tone="success">{t("badge.ok")}</Badge>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-right">
-                      {level === "out" && (disabled.has(i.id) ? (
-                        <Badge tone="neutral">{t("disabled")}</Badge>
-                      ) : (
-                        <button type="button" onClick={() => disableOne(i.id)} className="inline-flex h-9 items-center rounded-full border border-[var(--kai-danger)] bg-white px-3.5 text-[12px] font-bold text-[var(--kai-danger)] hover:bg-[var(--kai-danger-bg)]">{t("disableRow")}</button>
-                      ))}
-                    </td>
+
                   </tr>
                 );
               })}
             </tbody>
           </table>
         </div>
+        {rows.length === 0 && <p className="px-6 py-14 text-center text-sm text-[var(--ink-600)]">{t("empty")}</p>}
         <Pager pager={pager} />
       </div>
-      <p className="mt-4 text-center text-[12px] text-[var(--ink-500)]">{t("demoNote")}</p>
 
-      <Modal open={bulk} onClose={() => setBulk(false)} title={t("autoDisable.confirmTitle")}>
-        <p className="text-sm text-[var(--ink-600)]">{t("autoDisable.confirmBody", { count: pendingOut })}</p>
-        <div className="mt-5 flex justify-end gap-2">
-          <button type="button" onClick={() => setBulk(false)} className="inline-flex h-10 items-center rounded-full border border-[var(--ink-200)] bg-white px-4 text-sm font-semibold">{t("cancel")}</button>
-          <button type="button" onClick={disableAll} className="inline-flex h-10 items-center rounded-full bg-[var(--kai-danger)] px-5 text-sm font-bold text-white">{t("autoDisable.confirm")}</button>
-        </div>
-      </Modal>
     </div>
   );
 }

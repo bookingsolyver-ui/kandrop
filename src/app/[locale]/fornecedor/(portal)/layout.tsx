@@ -6,7 +6,7 @@ import { SupplierProvider } from "@/components/supplier/SupplierProvider";
 import { SupplierShell } from "@/components/supplier/SupplierShell";
 import { routing } from "@/i18n/routing";
 import { requireSupplier } from "@/server/auth/supplierGate";
-import type { Supplier } from "@/shared/supplier/mock";
+import type { Supplier } from "@/shared/supplier/types";
 
 export const metadata = { robots: { index: false, follow: false } };
 

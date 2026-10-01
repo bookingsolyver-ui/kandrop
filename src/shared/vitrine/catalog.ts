@@ -1,4 +1,4 @@
-import { VITRINE_CATEGORIES, type VitrineCategory, type VitrineProduct } from "./mock";
+import { VITRINE_CATEGORIES, type VitrineCategory, type VitrineProduct } from "./types";
 
 /** A starting sale price: cost × 1.5, rounded to a tidy 100 Kz (minor units). The merchant can change it afterwards. */
 export const suggestedSalePrice = (cost: number) => Math.max(cost + 10_000, Math.round((cost * 1.5) / 10_000) * 10_000);

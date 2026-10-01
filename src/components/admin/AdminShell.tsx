@@ -40,8 +40,6 @@ const NAV: Item[] = [
     children: [
       { key: "cashFlow", href: "/admin/financeiro/fluxo-caixa" },
       { key: "reconciliation", href: "/admin/financeiro/conciliacao" },
-      { key: "courierClose", href: "/admin/financeiro/fecho-estafetas" },
-      { key: "adjustments", href: "/admin/financeiro/ajustes" },
       { key: "payouts", href: "/admin/financeiro/saques" },
     ],
   },

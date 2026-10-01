@@ -8,14 +8,15 @@ import { useFormatters } from "@/components/dashboard/useFormatters";
 import { ClockIcon, WalletIcon } from "@/components/kai/icons";
 import { BRAND_BUTTON_CLASS } from "@/components/ui/BrandButton";
 import { useToast } from "@/components/ui/Toast";
-import { saveBankDetailsAction } from "@/app/[locale]/fornecedor/(portal)/actions";
+import { requestWithdrawalAction, saveBankDetailsAction } from "@/app/[locale]/fornecedor/(portal)/actions";
 import { useRouter } from "@/i18n/navigation";
 import { formatIbanInput } from "@/shared/bank/schemas";
 import { bankDetailsSchema } from "@/shared/supplier/schemas";
-import { useCurrentSupplier, useWithdrawals } from "@/lib/supplier/store";
+import { useCurrentSupplier } from "@/components/supplier/SupplierProvider";
 import type { SupplierOrderRow } from "./types";
+import type { Withdrawal } from "@/server/modules/supplier/withdrawals";
 
-const MIN = 500_000; // 5 000 kwz, in minor units
+const MIN = 500_000; // 5 000 kwz, in minor units (the database enforces the same minimum)
 
 /** What the supplier earns (the cost price of each product a merchant sells) and the withdrawals. */
 /** The payout account as the server sends it: the IBAN is already masked, the full number never leaves the server. */
@@ -26,13 +27,13 @@ export interface BankView {
   updatedAt: number;
 }
 
-export function SupplierFinance({ bank, orders }: { bank: BankView | null; orders: SupplierOrderRow[] }) {
+export function SupplierFinance({ bank, orders, withdrawals }: { bank: BankView | null; orders: SupplierOrderRow[]; withdrawals: Withdrawal[] }) {
   const t = useTranslations("Supplier.finance");
   const f = useFormatters();
   const locale = useLocale();
   const toast = useToast();
   const { supplier } = useCurrentSupplier();
-  const { withdrawals, request } = useWithdrawals(supplier?.id ?? null);
+  const [withdrawing, startWithdraw] = useTransition();
   const [open, setOpen] = useState(false);
   const [amount, setAmount] = useState("");
   const router = useRouter();
@@ -73,29 +74,35 @@ export function SupplierFinance({ bank, orders }: { bank: BankView | null; order
 
   // Every order is worth the supplier's cost price. Kandrop collects the money, so it becomes AVAILABLE only when the
   // payment is verified AND the parcel is delivered; until then it is pending.
-  const sales = useMemo(() => orders.map((o) => ({ ...o, money: o.costTotal, state: o.status === "delivered" && o.paymentStatus === "paid_verified" ? ("available" as const) : ("pending" as const), awaitingPayment: o.status === "delivered" && o.paymentStatus !== "paid_verified" })), [orders]);
+  const sales = useMemo(() => orders.filter((o) => o.status !== "cancelled").map((o) => ({ ...o, money: o.costTotal, state: o.status === "delivered" && o.paymentStatus === "paid_verified" ? ("available" as const) : ("pending" as const), awaitingPayment: o.status === "delivered" && o.paymentStatus !== "paid_verified" })), [orders]);
   const sum = (state: "available" | "pending") => sales.filter((s) => s.state === state).reduce((n, s) => n + s.money, 0);
-  const requested = withdrawals.reduce((n, w) => n + w.amount, 0);
+  const requested = withdrawals.filter((w) => w.status !== "rejected").reduce((n, w) => n + w.amount, 0);
   const available = Math.max(0, sum("available") - requested);
   const pending = sum("pending");
   const pager = usePager(sales, 10);
 
   const kz = Number(amount.replace(/\s/g, "").replace(",", "."));
   const minor = Math.round(kz * 100);
-  const valid = Number.isFinite(kz) && minor >= MIN && minor <= available;
+  const valid = Number.isFinite(kz) && Number.isInteger(kz) && minor >= MIN && minor <= available && !withdrawing;
   const close = () => { setOpen(false); setAmount(""); };
   const submit = () => {
     if (!valid) return;
-    request(minor);
-    toast({ message: t("toast.requested") });
-    close();
+    startWithdraw(async () => {
+      // The server re-checks the amount against the real balance, inside the database.
+      const result = await requestWithdrawalAction(Math.round(minor / 100));
+      if (result.ok) {
+        toast({ message: t("toast.requested") });
+        close();
+        router.refresh();
+      } else toast({ message: t(result.error === "no_bank_account" ? "toast.noBank" : result.error === "insufficient_balance" ? "toast.insufficient" : "toast.failed") });
+    });
   };
 
   if (!supplier) return null;
   return (
     <div>
       <SupplierPageHeader title={t("title")} subtitle={t("subtitle")}
-        actions={<button type="button" onClick={() => { setAmount(String(Math.floor(available / 100))); setOpen(true); }} disabled={available < MIN} className={`${BRAND_BUTTON_CLASS} h-11 px-5 text-sm`}>{t("withdraw")}</button>} />
+        actions={<button type="button" onClick={() => { setAmount(String(Math.floor(available / 100))); setOpen(true); }} disabled={available < MIN || !bank} className={`${BRAND_BUTTON_CLASS} h-11 px-5 text-sm`}>{t("withdraw")}</button>} />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
         <SupplierStat label={t("cards.available")} value={f.money(available)} note={t("cards.availableNote")} icon={<WalletIcon size={18} />} />
@@ -177,16 +184,15 @@ export function SupplierFinance({ bank, orders }: { bank: BankView | null; order
       <Section title={t("history.title")} className="mt-8">
         {withdrawals.length === 0 ? <EmptyState>{t("history.empty")}</EmptyState> : (
           <ul>
-            {withdrawals.map((w) => ({ id: w.id, at: w.at, amount: w.amount, status: "pending" as const })).map((w) => (
+            {withdrawals.map((w) => (
               <li key={w.id} className="flex items-center justify-between gap-4 border-b border-[var(--ink-100)] px-5 py-4 last:border-b-0 sm:px-6">
-                <div><p className="mono-num font-semibold">{w.id}</p><p className="text-[12px] text-[var(--ink-500)]">{dateOnly(w.at, locale)}</p></div>
-                <div className="flex items-center gap-4"><span className="mono-num font-bold">{f.money(w.amount)}</span><Badge tone="warn">{t("history.pending")}</Badge></div>
+                <div><p className="mono-num font-semibold">WD-{w.id.slice(0, 8).toUpperCase()}</p><p className="text-[12px] text-[var(--ink-500)]">{dateOnly(w.createdAt, locale)}</p></div>
+                <div className="flex items-center gap-4"><span className="mono-num font-bold">{f.money(w.amount)}</span><Badge tone={w.status === "paid" ? "success" : w.status === "rejected" ? "danger" : "warn"}>{t(`history.${w.status}`)}</Badge></div>
               </li>
             ))}
           </ul>
         )}
       </Section>
-      <p className="mt-6 text-center text-[12px] text-[var(--ink-500)]">{t("demoNote")}</p>
 
       <Modal open={open} onClose={close} title={t("modal.title")}>
         <form onSubmit={(e) => { e.preventDefault(); submit(); }} className="space-y-4">

@@ -2,17 +2,18 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { Fragment, useMemo, useState } from "react";
-import { Badge, PageHeader, Pager, StatCard, card, dateTime, fold, usePager } from "@/components/admin/ui";
+import { Badge, Modal, PageHeader, Pager, StatCard, card, dateTime, fold, usePager } from "@/components/admin/ui";
 import { useFormatters } from "@/components/dashboard/useFormatters";
 import { BoxIcon, ClockIcon, TrendingUpIcon, WalletIcon } from "@/components/kai/icons";
 import { ToastProvider, useToast } from "@/components/ui/Toast";
 import { useRouter } from "@/i18n/navigation";
-import { LOGISTICS_STATUSES, nextLogisticsStatus, type LogisticsStatus } from "@/shared/fulfilment/schemas";
+import { LOGISTICS_JOURNEY, nextLogisticsStatus, type LogisticsStatus } from "@/shared/fulfilment/schemas";
 import { ORDER_PAYMENT_STATUSES, type OrderPaymentProvider, type OrderPaymentStatus } from "@/shared/payments/orderPayment";
 
 export interface LogisticsRow {
   orderId: string;
   orderNumber: number;
+  orderStatus: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
   storeName: string;
   createdAt: number;
   total: number;
@@ -37,7 +38,7 @@ export interface LogisticsRow {
 }
 
 const PAY_TONE: Record<OrderPaymentStatus, "warn" | "brand" | "success"> = { pending_payment: "warn", proof_submitted: "brand", paid_verified: "success" };
-const LOG_TONE: Record<LogisticsStatus, "warn" | "brand" | "success"> = { pending: "warn", preparing: "brand", picked_up: "brand", in_transit: "brand", delivered: "success" };
+const LOG_TONE: Record<LogisticsStatus, "warn" | "brand" | "success" | "neutral"> = { pending: "warn", preparing: "brand", picked_up: "brand", in_transit: "brand", delivered: "success", cancelled: "neutral" };
 
 function Body({ rows }: { rows: LogisticsRow[] }) {
   const t = useTranslations("Admin.logistics");
@@ -49,6 +50,7 @@ function Body({ rows }: { rows: LogisticsRow[] }) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
+  const [cancelling, setCancelling] = useState<LogisticsRow | null>(null);
   const [evidence, setEvidence] = useState<Record<string, { reference: string; note: string }>>({});
 
   const shown = useMemo(() => {
@@ -84,6 +86,25 @@ function Body({ rows }: { rows: LogisticsRow[] }) {
     const to = r.line && nextLogisticsStatus(r.line.status);
     if (!r.line || !to) return;
     return call(r.line.id, `/api/admin/logistics/${r.line.id}/status`, { status: to }, t("toast.updated", { status: t(`status.${to}`) }));
+  };
+
+  /** Only an administrator reaches this (the page and the API both check): the order is cancelled and its stock goes back. */
+  const cancel = async (r: LogisticsRow) => {
+    setBusy(`${r.orderId}:cancel`);
+    try {
+      const res = await fetch(`/api/admin/orders/${r.orderId}/cancel`, { method: "POST" });
+      if (res.ok) {
+        const data = ((await res.json().catch(() => ({}))) as { data?: { restored?: number; refundDue?: boolean } }).data;
+        toast({ message: data?.refundDue ? t("toast.cancelledRefund") : t("toast.cancelled", { count: data?.restored ?? 0 }) });
+        setCancelling(null);
+        router.refresh();
+      } else {
+        const code = ((await res.json().catch(() => ({}))) as { error?: { code?: string } }).error?.code;
+        toast({ message: code === "invalid_transition" ? t("toast.cannotCancel") : t("toast.failed") });
+      }
+    } finally {
+      setBusy(null);
+    }
   };
 
   const th = "px-4 py-3";
@@ -124,7 +145,9 @@ function Body({ rows }: { rows: LogisticsRow[] }) {
                 {pager.slice.map((r) => {
                   const manual = r.paymentProvider === "manual_whatsapp_transfer";
                   const next = r.line ? nextLogisticsStatus(r.line.status) : null;
-                  const blocked = next === "delivered" && r.paymentStatus !== "paid_verified";
+                  const cancelled = r.orderStatus === "cancelled";
+                  const canCancel = (r.orderStatus === "pending" || r.orderStatus === "processing") && (!r.line || r.line.status === "pending" || r.line.status === "preparing");
+                  const blocked = !cancelled && next === "delivered" && r.paymentStatus !== "paid_verified";
                   const e = evidence[r.orderId] ?? { reference: "", note: "" };
                   return (
                     <Fragment key={r.orderId}>
@@ -134,14 +157,17 @@ function Body({ rows }: { rows: LogisticsRow[] }) {
                         <td className="px-4 py-3 text-[var(--ink-700)]">{r.storeName}</td>
                         <td className="mono-num px-4 py-3 text-right font-bold">{f.money(r.total)}</td>
                         <td className="px-4 py-3"><Badge tone={PAY_TONE[r.paymentStatus]}>{t(`payment.${r.paymentStatus}`)}</Badge><span className="mt-1 block max-w-[14rem] text-[11px] leading-snug text-[var(--ink-500)]">{t(`provider.${r.paymentProvider}`)}</span></td>
-                        <td className="px-4 py-3">{r.line ? <Badge tone={LOG_TONE[r.line.status]}>{t(`status.${r.line.status}`)}</Badge> : <span className="text-[var(--ink-400,var(--ink-500))]">—</span>}</td>
+                        <td className="px-4 py-3">{cancelled ? <Badge tone="neutral">{t("status.cancelled")}</Badge> : r.line ? <Badge tone={LOG_TONE[r.line.status]}>{t(`status.${r.line.status}`)}</Badge> : <span className="text-[var(--ink-400,var(--ink-500))]">—</span>}</td>
                         <td className="px-4 py-3">
                           <div className="flex flex-wrap justify-end gap-2">
                             <button type="button" onClick={() => setOpen(open === r.orderId ? null : r.orderId)} className="h-9 rounded-full border border-[var(--ink-200)] bg-white px-3.5 text-[13px] font-semibold hover:border-[var(--ink-300)]">{t("details")}</button>
-                            {manual && r.paymentStatus !== "paid_verified" && (
+                            {!cancelled && manual && r.paymentStatus !== "paid_verified" && (
                               <button type="button" disabled={busy === `${r.orderId}:confirm`} onClick={() => void pay(r, "confirm")} className="h-9 rounded-full bg-[var(--kai-success)] px-4 text-[13px] font-semibold whitespace-nowrap text-white hover:opacity-90 disabled:opacity-50">{t("confirmPayment")}</button>
                             )}
-                            {next && (
+                            {canCancel && (
+                              <button type="button" disabled={busy === `${r.orderId}:cancel`} onClick={() => setCancelling(r)} className="h-9 rounded-full border border-[var(--kai-danger)] bg-white px-4 text-[13px] font-semibold whitespace-nowrap text-[var(--kai-danger)] hover:bg-[var(--kai-danger-bg)] disabled:opacity-50">{t("cancel.action")}</button>
+                            )}
+                            {!cancelled && next && (
                               <button type="button" disabled={blocked || busy === r.line!.id} title={blocked ? t("blocked") : undefined} onClick={() => void advance(r)} className="h-9 rounded-full bg-[var(--ink-900)] px-4 text-[13px] font-semibold whitespace-nowrap text-white hover:bg-black disabled:cursor-not-allowed disabled:opacity-40">{t("advance", { status: t(`status.${next}`) })}</button>
                             )}
                           </div>
@@ -191,7 +217,7 @@ function Body({ rows }: { rows: LogisticsRow[] }) {
                             </div>
                             {r.line && (
                               <ol className="mt-4 flex flex-wrap gap-2 text-[12px]">
-                                {LOGISTICS_STATUSES.map((s) => <li key={s} className={`rounded-full px-3 py-1 ${s === r.line!.status ? "bg-[var(--ink-900)] text-white" : "bg-white text-[var(--ink-500)] ring-1 ring-[var(--ink-200)]"}`}>{t(`status.${s}`)}</li>)}
+                                {LOGISTICS_JOURNEY.map((s) => <li key={s} className={`rounded-full px-3 py-1 ${s === r.line!.status ? "bg-[var(--ink-900)] text-white" : "bg-white text-[var(--ink-500)] ring-1 ring-[var(--ink-200)]"}`}>{t(`status.${s}`)}</li>)}
                               </ol>
                             )}
                           </td>
@@ -206,6 +232,20 @@ function Body({ rows }: { rows: LogisticsRow[] }) {
         )}
         <Pager pager={pager} />
       </section>
+
+      <Modal open={cancelling !== null} onClose={() => setCancelling(null)} title={t("cancel.title")}>
+        {cancelling && (
+          <div className="space-y-4 text-sm">
+            <p>{t("cancel.body", { number: cancelling.orderNumber })}</p>
+            <p className="text-[var(--ink-600)]">{t(cancelling.line ? "cancel.stock" : "cancel.noStock")}</p>
+            {cancelling.paymentStatus === "paid_verified" && <p className="rounded-xl bg-[var(--kai-warn-bg)] p-3 font-semibold text-[var(--kai-warn)]">{t("cancel.refund")}</p>}
+            <div className="flex justify-end gap-2">
+              <button type="button" onClick={() => setCancelling(null)} className="h-10 rounded-full border border-[var(--ink-200)] bg-white px-4 text-sm font-semibold">{t("cancel.keep")}</button>
+              <button type="button" disabled={busy === `${cancelling.orderId}:cancel`} onClick={() => void cancel(cancelling)} className="h-10 rounded-full bg-[var(--kai-danger)] px-4 text-sm font-bold text-white hover:opacity-90 disabled:opacity-50">{t("cancel.confirm")}</button>
+            </div>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 }

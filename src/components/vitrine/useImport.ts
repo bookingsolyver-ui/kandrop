@@ -5,7 +5,7 @@ import { useState, useTransition } from "react";
 import { importSupplierProductAction } from "@/app/[locale]/dashboard/vitrine/actions";
 import { useToast } from "@/components/ui/Toast";
 import { useRouter } from "@/i18n/navigation";
-import type { VitrineProduct } from "@/shared/vitrine/mock";
+import type { VitrineProduct } from "@/shared/vitrine/types";
 
 /**
  * "Start selling": adds an approved supplier product to the merchant's own store (a draft in their

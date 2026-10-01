@@ -5,11 +5,16 @@ import { PROVINCES } from "@/shared/supplier/schemas";
  * The parcel's journey from the supplier's warehouse to the shopper, driven by the Kandrop team.
  * One table for the API (the rule) and the screens (which button to offer), so they cannot drift.
  */
-export const LOGISTICS_STATUSES = ["pending", "preparing", "picked_up", "in_transit", "delivered"] as const;
+export const LOGISTICS_JOURNEY = ["pending", "preparing", "picked_up", "in_transit", "delivered"] as const;
+/** The journey, plus the one way out: an administrator cancelled the order before it left the warehouse. */
+export const LOGISTICS_STATUSES = [...LOGISTICS_JOURNEY, "cancelled"] as const;
 export type LogisticsStatus = (typeof LOGISTICS_STATUSES)[number];
 
-/** Forward one step at a time; `delivered` is final. */
-export const nextLogisticsStatus = (s: LogisticsStatus): LogisticsStatus | null => LOGISTICS_STATUSES[LOGISTICS_STATUSES.indexOf(s) + 1] ?? null;
+/** Forward one step at a time; `delivered` and `cancelled` are final. */
+export const nextLogisticsStatus = (s: LogisticsStatus): LogisticsStatus | null => {
+  const i = (LOGISTICS_JOURNEY as readonly string[]).indexOf(s);
+  return i < 0 ? null : (LOGISTICS_JOURNEY[i + 1] ?? null);
+};
 export const canAdvanceLogistics = (from: LogisticsStatus, to: LogisticsStatus) => nextLogisticsStatus(from) === to;
 
 /** What the buyer types on the product page. Messages are codes: `Storefront.buy.validation.<code>`. */

@@ -3,11 +3,11 @@
 import { useLocale, useTranslations } from "next-intl";
 import { Badge, dateTime } from "@/components/admin/ui";
 import { useFormatters } from "@/components/dashboard/useFormatters";
-import { LOGISTICS_STATUSES, type LogisticsStatus } from "@/shared/fulfilment/schemas";
+import { LOGISTICS_JOURNEY, type LogisticsStatus } from "@/shared/fulfilment/schemas";
 import type { SupplierOrderRow } from "./types";
 import { EmptyState, Section, SupplierPageHeader, th } from "./ui";
 
-const TONE: Record<LogisticsStatus, "warn" | "brand" | "success"> = { pending: "warn", preparing: "brand", picked_up: "brand", in_transit: "brand", delivered: "success" };
+const TONE: Record<LogisticsStatus, "warn" | "brand" | "success" | "neutral"> = { pending: "warn", preparing: "brand", picked_up: "brand", in_transit: "brand", delivered: "success", cancelled: "neutral" };
 
 function Table({ rows, showWhen }: { rows: SupplierOrderRow[]; showWhen: boolean }) {
   const t = useTranslations("Supplier.orders");
@@ -56,7 +56,7 @@ export function SupplierOrders({ orders }: { orders: SupplierOrderRow[] }) {
         {rest.length === 0 ? <EmptyState>{t("history.empty")}</EmptyState> : <Table rows={rest} showWhen />}
       </Section>
       <ol className="mt-8 grid gap-3 text-[13px] text-[var(--ink-600)] sm:grid-cols-5">
-        {LOGISTICS_STATUSES.map((s, i) => (
+        {LOGISTICS_JOURNEY.map((s, i) => (
           <li key={s} className="rounded-xl border border-[var(--ink-200)] bg-white px-3.5 py-3"><span className="mono-num mr-1.5 font-bold text-[var(--ink-900)]">{i + 1}.</span>{t(`status.${s}`)}</li>
         ))}
       </ol>

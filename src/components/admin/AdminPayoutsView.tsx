@@ -1,57 +1,46 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useFormatters } from "@/components/dashboard/useFormatters";
 import { ClockIcon, WalletIcon } from "@/components/kai/icons";
-import { useToast } from "@/components/ui/Toast";
-import { useAudit } from "./useAudit";
-import { PAYOUT_QUEUE, type PayoutQueueItem } from "@/shared/admin/mock";
+import { ToastProvider, useToast } from "@/components/ui/Toast";
+import { useRouter } from "@/i18n/navigation";
+import type { AdminWithdrawal, WithdrawalStatus } from "@/server/modules/supplier/withdrawals";
 import { Badge, Pager, PageHeader, StatCard, card, dateOnly, usePager } from "./ui";
 
-type Status = PayoutQueueItem["status"] | "approved";
-const TONE = { paid: "success", pending: "warn", rejected: "danger", approved: "brand" } as const;
+const TONE = { paid: "success", requested: "warn", rejected: "danger" } as const;
 
-/** `;`-separated with a BOM, which is what Excel in Portuguese opens without asking questions. */
-function toCsv(rows: Array<Omit<PayoutQueueItem, "status">>) {
-  const head = ["referencia", "lojista", "titular", "banco", "iban", "valor_kwz", "data"];
-  const lines = rows.map((r) =>
-    [r.id, r.store, r.holder, r.bank, r.iban, Math.round(r.amount / 100), new Date(r.date).toISOString().slice(0, 10)]
-      .map((v) => `"${String(v).replace(/"/g, '""')}"`)
-      .join(";")
-  );
-  return `﻿${[head.join(";"), ...lines].join("\r\n")}\r\n`;
-}
-
-/** The withdrawals queue and the batch closing: approve the pending ones, export the transfer file. */
-export function AdminPayoutsView() {
+function Body({ rows }: { rows: AdminWithdrawal[] }) {
   const t = useTranslations("Admin.payouts");
   const f = useFormatters();
   const locale = useLocale();
   const toast = useToast();
-  const audit = useAudit();
-  const [decided, setDecided] = useState<Record<string, "approved" | "rejected">>({});
+  const router = useRouter();
+  const [filter, setFilter] = useState<"all" | WithdrawalStatus>("requested");
+  const [busy, setBusy] = useState<string | null>(null);
 
-  const rows = useMemo(() => PAYOUT_QUEUE.map((p) => ({ ...p, status: (decided[p.id] ?? p.status) as Status })), [decided]);
-  const pager = usePager(rows, 20);
-  const pending = rows.filter((r) => r.status === "pending");
-  const approved = rows.filter((r) => r.status === "approved");
-  const sum = (list: typeof rows) => list.reduce((s, r) => s + r.amount, 0);
+  const shown = rows.filter((r) => filter === "all" || r.status === filter);
+  const pager = usePager(shown, 20);
+  const pending = rows.filter((r) => r.status === "requested");
+  const sum = (list: AdminWithdrawal[]) => list.reduce((n, r) => n + r.amount, 0);
 
-  const decide = (id: string, status: "approved" | "rejected") => {
-    const before = rows.find((r) => r.id === id)?.status;
-    setDecided((d) => ({ ...d, [id]: status }));
-    audit(status === "approved" ? "payout.approve" : "payout.reject", id, { status: before }, { status });
-    toast({ message: t(status === "approved" ? "toast.approved" : "toast.rejected") });
+  const decide = async (id: string, status: "paid" | "rejected") => {
+    setBusy(id);
+    try {
+      const res = await fetch(`/api/admin/withdrawals/${id}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status }) });
+      if (res.ok) {
+        toast({ message: t(status === "paid" ? "toast.paid" : "toast.rejected") });
+        router.refresh();
+      } else toast({ message: t("toast.failed") });
+    } finally {
+      setBusy(null);
+    }
   };
-  const approveAll = () => {
-    setDecided((d) => ({ ...d, ...Object.fromEntries(pending.map((r) => [r.id, "approved" as const])) }));
-    audit("payout.approve_batch", `${pending.length} payouts`, { status: "pending" }, { status: "approved", ids: pending.map((r) => r.id) });
-    toast({ message: t("toast.batch", { count: pending.length }) });
-  };
-  const exportCsv = () => {
-    const blob = new Blob([toCsv(approved)], { type: "text/csv;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
+  const exportCsv = async () => {
+    const res = await fetch("/api/admin/withdrawals/export");
+    if (!res.ok) return toast({ message: t("toast.failed") });
+    const url = URL.createObjectURL(await res.blob());
     const link = document.createElement("a");
     link.href = url;
     link.download = `kandrop-lote-transferencias-${new Date().toISOString().slice(0, 10)}.csv`;
@@ -59,7 +48,7 @@ export function AdminPayoutsView() {
     link.click();
     link.remove();
     URL.revokeObjectURL(url);
-    toast({ message: t("toast.exported", { count: approved.length }) });
+    toast({ message: t("toast.exported", { count: pending.length }) });
   };
 
   return (
@@ -68,8 +57,8 @@ export function AdminPayoutsView() {
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
         <StatCard label={t("cards.pending")} value={String(pending.length)} note={f.money(sum(pending))} icon={<ClockIcon size={18} />} tone="warn" />
-        <StatCard label={t("cards.approved")} value={String(approved.length)} note={f.money(sum(approved))} icon={<WalletIcon size={18} />} />
-        <StatCard label={t("cards.total")} value={f.money(sum(pending) + sum(approved))} note={t("cards.totalNote")} icon={<WalletIcon size={18} />} />
+        <StatCard label={t("cards.paid")} value={f.money(sum(rows.filter((r) => r.status === "paid")))} note={t("cards.paidNote")} icon={<WalletIcon size={18} />} />
+        <StatCard label={t("cards.total")} value={String(rows.length)} note={t("cards.totalNote")} icon={<WalletIcon size={18} />} />
       </div>
 
       <section className={`${card} mt-6 flex flex-col gap-4 p-5 lg:flex-row lg:items-center lg:justify-between`} aria-labelledby="batch-title">
@@ -77,57 +66,67 @@ export function AdminPayoutsView() {
           <h2 id="batch-title" className="text-[17px] font-bold tracking-tight">{t("batch.title")}</h2>
           <p className="mt-1 max-w-2xl text-[13px] text-[var(--ink-600)]">{t("batch.body")}</p>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <button type="button" onClick={approveAll} disabled={pending.length === 0}
-            className="inline-flex h-11 items-center rounded-full bg-brand-orange px-5 text-sm font-bold text-brand-black disabled:opacity-50">
-            {t("batch.approveAll", { count: pending.length })}
-          </button>
-          <button type="button" onClick={exportCsv} disabled={approved.length === 0}
-            className="inline-flex h-11 items-center rounded-full border border-[var(--ink-200)] bg-white px-5 text-sm font-semibold text-[var(--ink-900)] hover:border-[var(--ink-300)] disabled:opacity-50">
-            {t("batch.export", { count: approved.length })}
-          </button>
-        </div>
+        <button type="button" onClick={() => void exportCsv()} disabled={pending.length === 0}
+          className="inline-flex h-11 items-center rounded-full border border-[var(--ink-200)] bg-white px-5 text-sm font-semibold text-[var(--ink-900)] hover:border-[var(--ink-300)] disabled:opacity-50">
+          {t("batch.export", { count: pending.length })}
+        </button>
       </section>
 
       <div className={`${card} mt-6 overflow-hidden`}>
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[68rem] border-collapse text-sm">
-            <thead className="border-b border-gray-100 bg-[var(--ink-50)]">
-              <tr className="text-left text-[11px] font-bold tracking-[0.06em] text-[var(--ink-500)] uppercase">
-                <th className="px-4 py-3">{t("cols.date")}</th>
-                <th className="px-4 py-3">{t("cols.merchant")}</th>
-                <th className="px-4 py-3">{t("cols.bank")}</th>
-                <th className="px-4 py-3">{t("cols.iban")}</th>
-                <th className="px-4 py-3 text-right">{t("cols.amount")}</th>
-                <th className="px-4 py-3">{t("cols.status")}</th>
-                <th className="px-4 py-3" />
-              </tr>
-            </thead>
-            <tbody>
-              {pager.slice.map((p) => (
-                <tr key={p.id} className="border-b border-gray-100 last:border-b-0 hover:bg-[var(--ink-50)]">
-                  <td className="px-4 py-3 whitespace-nowrap text-[var(--ink-600)]">{dateOnly(p.date, locale)}</td>
-                  <td className="px-4 py-3"><p className="font-semibold text-[var(--ink-900)]">{p.store}</p><p className="mono-num text-[12px] text-[var(--ink-500)]">{p.id} · {p.holder}</p></td>
-                  <td className="px-4 py-3 text-[var(--ink-600)]">{p.bank}</td>
-                  <td className="mono-num px-4 py-3 text-[12px] whitespace-nowrap text-[var(--ink-600)]">{p.iban.replace(/(.{4})/g, "$1 ").trim()}</td>
-                  <td className="mono-num px-4 py-3 text-right font-bold">{f.money(p.amount)}</td>
-                  <td className="px-4 py-3"><Badge tone={TONE[p.status]}>{t(`status.${p.status}`)}</Badge></td>
-                  <td className="px-4 py-3 text-right">
-                    {p.status === "pending" && (
-                      <div className="flex justify-end gap-1.5">
-                        <button type="button" onClick={() => decide(p.id, "approved")} className="h-9 rounded-full bg-brand-orange px-3.5 text-[12px] font-bold text-brand-black">{t("approve")}</button>
-                        <button type="button" onClick={() => decide(p.id, "rejected")} className="h-9 rounded-full border border-[var(--ink-200)] bg-white px-3.5 text-[12px] font-semibold">{t("reject")}</button>
-                      </div>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div role="group" className="flex flex-wrap gap-1.5 border-b border-[var(--ink-200)] p-4">
+          {(["requested", "paid", "rejected", "all"] as const).map((k) => (
+            <button key={k} type="button" aria-pressed={filter === k} onClick={() => { setFilter(k); pager.setPage(1); }}
+              className={`rounded-full px-3.5 py-2 text-[13px] font-semibold ${filter === k ? "bg-[var(--ink-900)] text-white" : "text-[var(--ink-600)] hover:bg-[var(--ink-100)]"}`}>
+              {k === "all" ? t("filters.all") : t(`status.${k}`)}
+            </button>
+          ))}
         </div>
+        {shown.length === 0 ? <p className="px-6 py-16 text-center text-sm text-[var(--ink-600)]">{t("empty")}</p> : (
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[56rem] border-collapse text-sm">
+              <thead className="border-b border-gray-100 bg-[var(--ink-50)]">
+                <tr className="text-left text-[11px] font-bold tracking-[0.06em] text-[var(--ink-500)] uppercase">
+                  <th className="px-4 py-3">{t("cols.date")}</th>
+                  <th className="px-4 py-3">{t("cols.supplier")}</th>
+                  <th className="px-4 py-3">{t("cols.bank")}</th>
+                  <th className="px-4 py-3 text-right">{t("cols.amount")}</th>
+                  <th className="px-4 py-3">{t("cols.status")}</th>
+                  <th className="px-4 py-3" />
+                </tr>
+              </thead>
+              <tbody>
+                {pager.slice.map((p) => (
+                  <tr key={p.id} className="border-b border-gray-100 last:border-b-0 hover:bg-[var(--ink-50)]">
+                    <td className="px-4 py-3 whitespace-nowrap text-[var(--ink-600)]">{dateOnly(p.createdAt, locale)}</td>
+                    <td className="px-4 py-3"><p className="font-semibold text-[var(--ink-900)]">{p.supplierName}</p><p className="mono-num text-[12px] text-[var(--ink-500)]">WD-{p.id.slice(0, 8).toUpperCase()}</p></td>
+                    <td className="px-4 py-3 text-[var(--ink-600)]">{p.bank ? <>{p.bank.bankName}<span className="mono-num block text-[12px] text-[var(--ink-500)]">{p.bank.holderName} · {p.bank.ibanMasked}</span></> : "—"}</td>
+                    <td className="mono-num px-4 py-3 text-right font-bold">{f.money(p.amount)}</td>
+                    <td className="px-4 py-3"><Badge tone={TONE[p.status]}>{t(`status.${p.status}`)}</Badge></td>
+                    <td className="px-4 py-3 text-right">
+                      {p.status === "requested" && (
+                        <div className="flex justify-end gap-1.5">
+                          <button type="button" disabled={busy === p.id} onClick={() => void decide(p.id, "paid")} className="h-9 rounded-full bg-brand-orange px-3.5 text-[12px] font-bold whitespace-nowrap text-brand-black disabled:opacity-50">{t("markPaid")}</button>
+                          <button type="button" disabled={busy === p.id} onClick={() => void decide(p.id, "rejected")} className="h-9 rounded-full border border-[var(--ink-200)] bg-white px-3.5 text-[12px] font-semibold disabled:opacity-50">{t("reject")}</button>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
         <Pager pager={pager} />
       </div>
-      <p className="mt-4 text-center text-[12px] text-[var(--ink-500)]">{t("demoNote")}</p>
     </div>
+  );
+}
+
+/** Suppliers' withdrawals: mark them paid once the transfer was made (or reject them), and export the bank file. */
+export function AdminPayoutsView({ rows }: { rows: AdminWithdrawal[] }) {
+  return (
+    <ToastProvider>
+      <Body rows={rows} />
+    </ToastProvider>
   );
 }

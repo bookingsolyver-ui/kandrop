@@ -7,7 +7,7 @@ import { BoxIcon } from "@/components/kai/icons";
 import { BRAND_BUTTON_CLASS } from "@/components/ui/BrandButton";
 import { Link } from "@/i18n/navigation";
 import { suggestedSalePrice } from "@/shared/vitrine/catalog";
-import type { VitrineProduct } from "@/shared/vitrine/mock";
+import type { VitrineProduct } from "@/shared/vitrine/types";
 
 /** A supplier product in detail: what it costs the merchant, what the supplier has, and a margin to aim for. */
 export function ProductDetails({ product, imported, busy, onClose, onStart }: { product: VitrineProduct | null; imported: boolean; busy: boolean; onClose: () => void; onStart: () => void }) {

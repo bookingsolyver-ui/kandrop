@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { ReconciliationView } from "@/components/admin/ReconciliationView";
 import { routing } from "@/i18n/routing";
 import { requireAdmin } from "@/server/auth/admin";
+import { reconciliation } from "@/server/modules/admin/overview";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -20,5 +21,5 @@ export default async function Page({ params }: Props) {
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
   await requireAdmin(locale);
-  return <ReconciliationView />;
+  return <ReconciliationView rows={await reconciliation().catch(() => [])} />;
 }

@@ -9,7 +9,7 @@ import type { PaymentRecord } from "@/server/modules/payments/schema";
 import type { PaymentMethod } from "@/shared/checkout/schemas";
 import { canAdvanceLogistics, type LogisticsStatus } from "@/shared/fulfilment/schemas";
 import { canMovePayment, isPaymentVerified, normalizePaymentProvider, normalizePaymentStatus, type OrderPaymentProvider, type OrderPaymentStatus, type PaymentEvidence } from "@/shared/payments/orderPayment";
-import { canTransition, type OrderStatus } from "@/shared/orders/schemas";
+import { ORDER_STATUSES, canTransition, type OrderStatus } from "@/shared/orders/schemas";
 
 import { splitSale, type Split } from "./split";
 export { splitSale, type Split };
@@ -207,6 +207,11 @@ export async function placeOrder(input: PlaceOrderInput): Promise<{ order: Order
   // The supplier's stock is reserved with the order (atomic). Never negative: an oversold unit is logged for the team.
   const remaining = must("supplier_stock", await db().rpc("reserve_supplier_stock", { p_supplier_product_id: sp.id, p_qty: input.item.quantity }));
   if (remaining === null) console.error("[fulfilment] OVERSOLD: the supplier has less stock than was sold", { supplierProduct: sp.id, order: order.number });
+  // Remember what was REALLY reserved: cancelling gives back exactly this (an oversold sale reserved nothing).
+  else {
+    const { error: reservedError } = await db().from("supplier_orders").update({ stock_reserved: input.item.quantity }).eq("id", lineRow.id);
+    if (reservedError) console.error("[fulfilment] could not record the reserved stock (is the cancel_order migration applied?)", reservedError.code, reservedError.message);
+  }
 
   const year = new Date(now).getUTCFullYear();
   const base = { supplier_order_id: lineRow.id, order_id: order.id, order_number: order.number, store_id: input.storeId, supplier_id: sp.supplier_id, sale_total: split.saleTotal, cost_total: split.costTotal, commission: split.commission, currency: "AOA", created_at: now };
@@ -329,6 +334,7 @@ export async function fulfilPaidCheckout(session: CheckoutSession, payment: Paym
 export interface AdminOrderRow {
   orderId: string;
   orderNumber: number;
+  orderStatus: OrderStatus;
   storeId: string;
   storeName: string;
   createdAt: number;
@@ -346,7 +352,7 @@ export interface AdminOrderRow {
 
 /** Admin: EVERY order of the platform (supplier products or not), newest first, with its payment and its parcel. */
 export async function listAllLogistics(limit = 300): Promise<AdminOrderRow[]> {
-  const orders = must("admin.orders", await db().from("orders").select("id,store_id,number,total,customer,address,items,payment,payment_status,payment_provider,payment_evidence,created_at").order("created_at", { ascending: false }).limit(limit)) ?? [];
+  const orders = must("admin.orders", await db().from("orders").select("id,store_id,number,status,total,customer,address,items,payment,payment_status,payment_provider,payment_evidence,created_at").order("created_at", { ascending: false }).limit(limit)) ?? [];
   if (!orders.length) return [];
   const ids = orders.map((o) => String(o.id));
   const lines = (must("admin.lines", await db().from("supplier_orders").select(SO_COLUMNS).in("order_id", ids)) ?? []).map(toSupplierOrder);
@@ -361,6 +367,7 @@ export async function listAllLogistics(limit = 300): Promise<AdminOrderRow[]> {
     return {
       orderId: String(o.id),
       orderNumber: Number(o.number),
+      orderStatus: (ORDER_STATUSES as readonly string[]).includes(String(o.status)) ? (o.status as OrderStatus) : "pending",
       storeId: String(o.store_id),
       storeName: line?.storeName ?? storeName.get(String(o.store_id)) ?? String(o.store_id),
       createdAt: Number(o.created_at),
@@ -471,4 +478,31 @@ export async function getShopperOrder(id: string): Promise<ShopperOrder | null> 
     paymentProvider: normalizePaymentProvider(o.payment_provider),
     customerName: String((o.customer as { name?: string } | null)?.name ?? ""),
   };
+}
+
+// ── Cancelling (administrators only) ──────────────────────────────────────────────────────
+
+export interface CancelResult {
+  before: OrderStatus;
+  paymentStatus: OrderPaymentStatus;
+  /** Units given back to the suppliers' stock. */
+  restored: number;
+}
+
+/**
+ * Kandrop cancels an order that has not left the warehouse and the reserved stock goes back to the supplier.
+ * All of it happens inside ONE database transaction (`cancel_order`): the order's status, the supplier lines and the
+ * stock are updated together or not at all, and the order row is locked so a double click cannot restore the stock
+ * twice. A paid order can be cancelled too, but the refund is Kandrop's manual job (the caller says so).
+ */
+export async function cancelOrder(orderId: string): Promise<CancelResult> {
+  const { data, error } = await db().rpc("cancel_order", { p_order_id: orderId, p_now: Date.now() });
+  if (error) {
+    const message = error.message ?? "";
+    if (message.includes("not_found")) throw new ApiError("not_found");
+    if (message.includes("invalid_transition")) throw new ApiError("invalid_transition");
+    must("orders.cancel", { data: null, error });
+  }
+  const result = data as { before: string; paymentStatus: string; restored: number };
+  return { before: result.before as OrderStatus, paymentStatus: normalizePaymentStatus(result.paymentStatus), restored: Number(result.restored) };
 }
