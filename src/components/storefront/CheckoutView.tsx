@@ -5,7 +5,6 @@ import { useMemo, useState } from "react";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { Link } from "@/i18n/navigation";
 import type { StorefrontProduct } from "@/server/modules/storefront/schema";
-import { DeliveryDatePicker } from "./DeliveryDatePicker";
 import { buyerSchema } from "@/shared/fulfilment/schemas";
 import { PROVINCES } from "@/shared/supplier/schemas";
 import { ArrowLeftIcon, BanknoteIcon, LockIcon, ShieldIcon, TruckIcon } from "./icons";
@@ -26,7 +25,7 @@ const formatPhone = (raw: string) => raw.replace(/\D/g, "").replace(/^244(?=\d{9
  * summary beside it (under it on a phone). The browser validates as you type; the server validates again. The form is
  * a plain POST (it also works without JavaScript) that places the order and sends the shopper to its page.
  */
-export function CheckoutView({ product: p, invalid }: { product: StorefrontProduct; invalid: boolean }) {
+export function CheckoutView({ product: p, invalid, days, today }: { product: StorefrontProduct; invalid: boolean; /** The 4 offered delivery days (`YYYY-MM-DD`, never a Sunday). */ days: string[]; today: string }) {
   const t = useTranslations("QuickCheckout");
   const trust = useTranslations("QuickCheckout.trust");
   const locale = useLocale();
@@ -76,6 +75,13 @@ export function CheckoutView({ product: p, invalid }: { product: StorefrontProdu
   };
   const removeCoupon = () => { setValues((v) => ({ ...v, coupon: "" })); setCouponInput(""); };
   const price = money(p.price);
+  /** `Hoje` / `Amanhã` / `Sáb`, then `3 out`: the day cards' two lines. Days are UTC calendar days, so server and browser agree. */
+  const dayLabel = (iso: string) => {
+    const at = Date.parse(`${iso}T00:00:00Z`);
+    const diff = Math.round((at - Date.parse(`${today}T00:00:00Z`)) / 86_400_000);
+    const weekday = new Intl.DateTimeFormat(locale, { weekday: "short", timeZone: "UTC" }).format(at).replace(/\.$/, "");
+    return { main: diff === 0 ? t("fields.today") : diff === 1 ? t("fields.tomorrow") : weekday, date: new Intl.DateTimeFormat(locale, { day: "numeric", month: "short", timeZone: "UTC" }).format(at).replace(/\.$/, "") };
+  };
   const step = "grid size-7 shrink-0 place-items-center rounded-full bg-action text-[13px] font-extrabold text-on-action";
 
   return (
@@ -169,19 +175,32 @@ export function CheckoutView({ product: p, invalid }: { product: StorefrontProdu
                 <p id="reference-hint" className="mt-1.5 flex justify-between gap-3 text-[12px] text-ink-muted"><span>{t("fields.referenceHint")}</span><span className="tabular-nums">{values.reference.length}/{REFERENCE_MAX}</span></p>
                 {err("reference")}
               </div>
-              <div>
-                <label htmlFor="f-deliveryDate" className={LABEL}>{t("fields.deliveryDate")}</label>
-                <div className="mt-1.5">
-                  <DeliveryDatePicker id="f-deliveryDate" name="deliveryDate" value={values.deliveryDate} onChange={(iso) => { setValues((v) => ({ ...v, deliveryDate: iso })); setTouched((s) => ({ ...s, deliveryDate: true })); }} onBlur={blur("deliveryDate")} className={`h-12 w-full rounded-xl border bg-surface px-3.5 text-[0.9375rem] text-ink outline-none transition-all focus-visible:border-action focus-visible:ring-4 focus-visible:ring-action/20 ${border("deliveryDate")}`} />
-                </div>
-                {err("deliveryDate")}
-              </div>
             </div>
           </section>
 
           <section className="rounded-2xl border border-line bg-surface p-5 sm:p-6">
-            <h2 className="flex items-center gap-3 text-base font-bold"><span className={step}>3</span>{t("s3")}</h2>
-            <div className="mt-4 flex items-start gap-3 rounded-xl bg-page p-4">
+            <h2 id="s3-title" className="flex items-center gap-3 text-base font-bold"><span className={step}>3</span>{t("s3")}</h2>
+            <input type="hidden" name="deliveryDate" value={values.deliveryDate} />
+            <div role="radiogroup" aria-labelledby="s3-title" aria-describedby={show("deliveryDate") ? "deliveryDate-error" : undefined} className="mt-4 grid grid-cols-2 gap-3">
+              {days.map((iso) => {
+                const label = dayLabel(iso);
+                const selected = values.deliveryDate === iso;
+                return (
+                  <button key={iso} id={iso === days[0] ? "f-deliveryDate" : undefined} type="button" role="radio" aria-checked={selected}
+                    onClick={() => { setValues((v) => ({ ...v, deliveryDate: iso })); setTouched((s) => ({ ...s, deliveryDate: true })); }}
+                    className={`flex min-h-16 flex-col items-start justify-center rounded-xl border-2 px-4 py-3 text-left transition-all focus-visible:ring-4 focus-visible:ring-action/20 focus-visible:outline-none ${selected ? "border-action bg-action/10" : "border-line bg-surface hover:border-ink-muted"}`}>
+                    <span className="text-[15px] font-bold first-letter:uppercase">{label.main}</span>
+                    <span className="text-[13px] text-ink-2">{label.date}</span>
+                  </button>
+                );
+              })}
+            </div>
+            {err("deliveryDate")}
+            <p className="mt-3 text-[12px] text-ink-muted">{t("fields.dateHint")}</p>
+          </section>
+
+          <section className="rounded-2xl border border-line bg-surface p-5 sm:p-6">
+            <div className="flex items-start gap-3 rounded-xl bg-page p-4">
               <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-xl bg-brand text-on-brand"><BanknoteIcon /></span>
               <div>
                 <p className="text-sm font-semibold">{t("payment.method")}</p>

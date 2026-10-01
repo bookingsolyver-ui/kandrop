@@ -3189,7 +3189,7 @@
     "subtitle": "Trois étapes rapides. Sans compte et sans rien payer maintenant.",
     "s1": "Vos informations",
     "s2": "Adresse et livraison",
-    "s3": "Paiement",
+    "s3": "Choisissez le jour de réception du livreur",
     "fields": {
       "name": "Nom complet",
       "email": "E-mail",
@@ -3202,10 +3202,12 @@
       "referenceHint": "Aide le livreur à trouver le lieu.",
       "deliveryDate": "Jour de livraison souhaité",
       "datePlaceholder": "Choisir le jour",
-      "dateHint": "Nous livrons du lundi au samedi. Pas de livraison le dimanche.",
+      "dateHint": "Nous affichons les 4 prochains jours de livraison. Pas de livraison le dimanche.",
       "prevMonth": "Mois précédent",
       "nextMonth": "Mois suivant",
-      "sundayOff": "Dimanche : pas de livraison"
+      "sundayOff": "Dimanche : pas de livraison",
+      "today": "Aujourd’hui",
+      "tomorrow": "Demain"
     },
     "validation": {
       "name_invalid": "Indiquez le nom complet.",
@@ -3215,7 +3217,7 @@
       "city_invalid": "Indiquez la municipalité.",
       "street_invalid": "Indiquez la rue ou le quartier.",
       "reference_invalid": "160 caractères au maximum.",
-      "date_invalid": "Choisissez un jour de livraison valide (sous 30 jours).",
+      "date_invalid": "Choisissez l’un des jours de livraison.",
       "date_sunday": "Nous ne livrons pas le dimanche. Choisissez un autre jour.",
       "coupon_invalid": "Code invalide : 3 à 32 lettres, chiffres, - ou _."
     },

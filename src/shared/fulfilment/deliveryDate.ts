@@ -1,8 +1,11 @@
 /**
- * The delivery day the shopper asks for. Rules (one place, shared by the picker and the server):
- * a calendar day `YYYY-MM-DD` in Luanda time, from tomorrow up to 30 days ahead, never a Sunday.
+ * The delivery day the shopper asks for. Rules (one place, shared by the checkout and the server):
+ * a calendar day `YYYY-MM-DD` in Luanda time, never a Sunday. The checkout offers the next 4 such days starting TODAY
+ * (a Sunday is skipped, so there are always 4 real options); the server accepts any non-Sunday day from today up to
+ * `DELIVERY_WINDOW_DAYS` ahead, so a page left open overnight does not fail.
  */
-export const DELIVERY_WINDOW_DAYS = 30;
+export const DELIVERY_WINDOW_DAYS = 10;
+export const DELIVERY_OPTIONS = 4;
 const DAY = 86_400_000;
 const LUANDA_OFFSET = 3_600_000; // UTC+1, no daylight saving
 
@@ -19,7 +22,7 @@ export const isSunday = (utcMidnight: number) => new Date(utcMidnight).getUTCDay
 
 export function isDeliverableDay(utcMidnight: number, now = Date.now()) {
   const today = luandaToday(now);
-  return utcMidnight >= today + DAY && utcMidnight <= today + DELIVERY_WINDOW_DAYS * DAY && !isSunday(utcMidnight);
+  return utcMidnight >= today && utcMidnight <= today + DELIVERY_WINDOW_DAYS * DAY && !isSunday(utcMidnight);
 }
 
 /** `YYYY-MM-DD` → UTC midnight, or `null` when it is not a real calendar day. */
@@ -27,4 +30,11 @@ export function parseIsoDay(value: string): number | null {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
   const t = Date.parse(`${value}T00:00:00Z`);
   return Number.isNaN(t) || toIsoDay(t) !== value ? null : t;
+}
+
+/** The days offered at checkout: `count` calendar days from today on, skipping every Sunday (`YYYY-MM-DD`). */
+export function deliveryOptions(now = Date.now(), count = DELIVERY_OPTIONS): string[] {
+  const out: string[] = [];
+  for (let day = luandaToday(now); out.length < count; day += DAY) if (!isSunday(day)) out.push(toIsoDay(day));
+  return out;
 }

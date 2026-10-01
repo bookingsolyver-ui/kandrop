@@ -3189,7 +3189,7 @@
     "subtitle": "Three quick steps. No account and nothing to pay now.",
     "s1": "Your details",
     "s2": "Address and delivery",
-    "s3": "Payment",
+    "s3": "Choose the day to receive the courier",
     "fields": {
       "name": "Full name",
       "email": "E-mail",
@@ -3202,10 +3202,12 @@
       "referenceHint": "Helps the courier find the place.",
       "deliveryDate": "Preferred delivery day",
       "datePlaceholder": "Choose the day",
-      "dateHint": "We deliver Monday to Saturday. No deliveries on Sundays.",
+      "dateHint": "We show the next 4 delivery days. No deliveries on Sundays.",
       "prevMonth": "Previous month",
       "nextMonth": "Next month",
-      "sundayOff": "Sunday: no deliveries"
+      "sundayOff": "Sunday: no deliveries",
+      "today": "Today",
+      "tomorrow": "Tomorrow"
     },
     "validation": {
       "name_invalid": "Enter your full name.",
@@ -3215,7 +3217,7 @@
       "city_invalid": "Enter the municipality.",
       "street_invalid": "Enter the street or neighbourhood.",
       "reference_invalid": "At most 160 characters.",
-      "date_invalid": "Choose a valid delivery day (within 30 days).",
+      "date_invalid": "Choose one of the delivery days.",
       "date_sunday": "We do not deliver on Sundays. Choose another day.",
       "coupon_invalid": "Invalid code: use 3 to 32 letters, numbers, - or _."
     },

@@ -3189,7 +3189,7 @@
     "subtitle": "Três passos rápidos. Sem criar conta e sem pagar agora.",
     "s1": "Suas informações",
     "s2": "Endereço e entrega",
-    "s3": "Pagamento",
+    "s3": "Escolha o dia para receber o entregador",
     "fields": {
       "name": "Nome completo",
       "email": "E-mail",
@@ -3202,10 +3202,12 @@
       "referenceHint": "Ajuda o estafeta a encontrar o local.",
       "deliveryDate": "Dia de entrega desejado",
       "datePlaceholder": "Escolher o dia",
-      "dateHint": "Entregamos de segunda a sábado. Não entregamos aos domingos.",
+      "dateHint": "Mostramos os próximos 4 dias de entrega. Não entregamos aos domingos.",
       "prevMonth": "Mês anterior",
       "nextMonth": "Mês seguinte",
-      "sundayOff": "Domingo: sem entregas"
+      "sundayOff": "Domingo: sem entregas",
+      "today": "Hoje",
+      "tomorrow": "Amanhã"
     },
     "validation": {
       "name_invalid": "Indique o nome completo.",
@@ -3215,7 +3217,7 @@
       "city_invalid": "Indique o município.",
       "street_invalid": "Indique a rua ou o bairro.",
       "reference_invalid": "No máximo 160 caracteres.",
-      "date_invalid": "Escolha um dia de entrega válido (até 30 dias).",
+      "date_invalid": "Escolha um dos dias de entrega.",
       "date_sunday": "Não entregamos aos domingos. Escolha outro dia.",
       "coupon_invalid": "Código inválido: use 3 a 32 letras, números, - ou _."
     },
