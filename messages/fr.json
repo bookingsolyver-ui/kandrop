@@ -11,7 +11,8 @@
       "previous": "Précédent",
       "next": "Suivant",
       "range": "{from}–{to} sur {total}"
-    }
+    },
+    "backHome": "Accueil"
   },
   "Locales": {
     "pt": "Português",

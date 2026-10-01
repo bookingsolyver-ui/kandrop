@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import type { ReactNode } from "react";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
@@ -63,6 +64,7 @@ export function AuthSplit({
   aside: ReactNode;
   children: ReactNode;
 }) {
+  const t = useTranslations("Common");
   return (
     // `workspace`: the light tokens, whatever the device's colour scheme.
     <div className="workspace relative flex min-h-screen w-full" style={{ background: "#fff" }}>
@@ -90,9 +92,15 @@ export function AuthSplit({
         <div aria-hidden className="pointer-events-none absolute top-0 left-1/2 -z-0 hidden h-[500px] w-[700px] -translate-x-1/2 opacity-[0.10] lg:block" style={{ background: "radial-gradient(ellipse at top, rgba(255,90,0,0.55) 0%, rgba(255,90,0,0.15) 40%, transparent 70%)", filter: "blur(80px)" }} />
 
         <header className="relative z-10 mb-8 hidden w-full items-center justify-between px-6 py-5 sm:px-10 sm:py-6 lg:flex lg:px-14">
-          <Link href="/" aria-label="Kandrop" className="inline-flex rounded-md transition-opacity hover:opacity-80">
-            <Image src="/logo-kandrop-full.png" alt="Kandrop" width={1024} height={206} priority className="h-9 w-auto" />
-          </Link>
+          <div className="flex items-center gap-5">
+            <Link href="/" aria-label="Kandrop" className="inline-flex rounded-md transition-opacity hover:opacity-80">
+              <Image src="/logo-kandrop-full.png" alt="Kandrop" width={1024} height={206} priority className="h-9 w-auto" />
+            </Link>
+            <Link href="/" className="inline-flex items-center gap-1.5 border-l border-border pl-5 text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground">
+              <svg aria-hidden width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5" /><path d="m12 19-7-7 7-7" /></svg>
+              {t("backHome")}
+            </Link>
+          </div>
           <div className="flex items-center gap-4">
             <LocaleSwitcher className="h-9 cursor-pointer rounded-full border border-border bg-white px-3 text-[13px] font-medium text-foreground" />
             {topLink && <span className="hidden text-sm font-medium text-foreground sm:inline-flex">{topLink}</span>}
