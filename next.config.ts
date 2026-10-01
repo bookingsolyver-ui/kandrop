@@ -8,12 +8,30 @@ import createNextIntlPlugin from "next-intl/plugin";
 // docs/DEPLOY.md). Launched from anywhere else it fails with "Could not find i18n config".
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
+/**
+ * COMING SOON mode: every public page is redirected (307, temporary) to the waitlist. On in production builds
+ * unless `COMING_SOON=false`; `COMING_SOON=true` forces it elsewhere. Read at BUILD time: change it and redeploy.
+ * Left reachable on purpose: `/api` (webhooks, sign-in calls), `/_next`, files with an extension (icons, images),
+ * and the operators' door, `/login` and `/admin` (with or without the language prefix), so the team can still
+ * sign in and work while the public site is closed.
+ */
+const WAITLIST = "https://kandrop-waitlist.vercel.app/?ref=226M";
+const comingSoon = process.env.COMING_SOON === "true" || (process.env.NODE_ENV === "production" && process.env.COMING_SOON !== "false");
+const OPEN = "api(?:/|$)|_next(?:/|$)|_vercel(?:/|$)|[^/]*\\.[^/]*$|(?:(?:pt|en|fr)/)?(?:login|admin)(?:/|$)";
+
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   // A product image (at most 2 MB, checked on the server) travels inside the Server Action's form data.
   experimental: { serverActions: { bodySizeLimit: "3mb" } },
   // Pin the project root: a stray lockfile in a parent folder must never change what is bundled.
   turbopack: { root: fileURLToPath(new URL(".", import.meta.url)) },
+  async redirects() {
+    if (!comingSoon) return [];
+    return [
+      { source: "/", destination: WAITLIST, permanent: false },
+      { source: `/:path((?!${OPEN}).+)`, destination: WAITLIST, permanent: false },
+    ];
+  },
   // SSE responses must never be buffered or compressed by the platform.
   async headers() {
     return [
