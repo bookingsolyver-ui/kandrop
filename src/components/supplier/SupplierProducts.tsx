@@ -3,7 +3,8 @@
 import { useTranslations } from "next-intl";
 import { useMemo, useRef, useState, useTransition } from "react";
 import { saveProductAction, deleteProductAction, type ActionResult } from "@/app/[locale]/fornecedor/(portal)/actions";
-import { Badge, Modal, Pager, PageHeader, card, fold, usePager } from "@/components/admin/ui";
+import { Badge, Modal, Pager, fold, usePager } from "@/components/admin/ui";
+import { EmptyState, SupplierPageHeader, inputClass, labelClass, panel, th } from "./ui";
 import { useFormatters } from "@/components/dashboard/useFormatters";
 import { BoxIcon } from "@/components/kai/icons";
 import { BRAND_BUTTON_CLASS } from "@/components/ui/BrandButton";
@@ -107,18 +108,18 @@ export function SupplierProducts({ products }: { products: ProductRow[] }) {
     });
   };
 
-  const input = "h-11 w-full rounded-xl border border-border bg-white px-3 text-sm outline-none focus-visible:border-primary/40 focus-visible:ring-2 focus-visible:ring-primary/20";
-  const lbl = "text-xs font-semibold tracking-wide text-[var(--ink-700)] uppercase";
+  const input = inputClass;
+  const lbl = labelClass;
   const box = (k: Field, label: string, node: React.ReactNode) => (
     <label className="block"><span className={lbl}>{label}</span>{node}{errors[k] && <span role="alert" className="mt-1 block text-[12px] text-down">{errors[k]}</span>}</label>
   );
 
   return (
     <div>
-      <PageHeader title={t("title")} subtitle={t("subtitle")} actions={<button type="button" onClick={() => setOpen(true)} className={`${BRAND_BUTTON_CLASS} h-11 px-5 text-sm`}>{t("add")}</button>} />
+      <SupplierPageHeader title={t("title")} subtitle={t("subtitle")} actions={<button type="button" onClick={() => setOpen(true)} className={`${BRAND_BUTTON_CLASS} h-11 px-5 text-sm`}>{t("add")}</button>} />
 
-      <div className={`${card} overflow-hidden`}>
-        <div className="flex flex-col gap-3 border-b border-[var(--ink-200)] p-4 lg:flex-row lg:items-center lg:justify-between">
+      <div className={`${panel} overflow-hidden`}>
+        <div className="flex flex-col gap-4 border-b border-[var(--ink-200)] p-4 sm:p-5 lg:flex-row lg:items-center lg:justify-between">
           <input type="search" value={query} onChange={(e) => { setQuery(e.target.value); pager.setPage(1); }} placeholder={t("search")} aria-label={t("search")} className={`${input} lg:w-96`} />
           <div role="group" className="flex flex-wrap gap-1.5">
             {(["all", "approved", "in_review", "rejected"] as const).map((k) => (
@@ -127,21 +128,21 @@ export function SupplierProducts({ products }: { products: ProductRow[] }) {
             ))}
           </div>
         </div>
-        {rows.length === 0 ? <p className="px-6 py-16 text-center text-sm text-[var(--ink-600)]">{t("empty")}</p> : (
+        {rows.length === 0 ? <EmptyState>{t("empty")}</EmptyState> : (
           <div className="overflow-x-auto">
             <table className="w-full min-w-[56rem] border-collapse text-sm">
-              <thead className="border-b border-gray-100 bg-[var(--ink-50)]">
-                <tr className="text-left text-[11px] font-bold tracking-[0.06em] text-[var(--ink-500)] uppercase">
-                  <th className="px-4 py-3">{t("cols.product")}</th>
-                  <th className="px-4 py-3 text-right">{t("cols.cost")}</th>
-                  <th className="px-4 py-3 text-right">{t("cols.stock")}</th><th className="px-4 py-3">{t("cols.status")}</th>
-                  <th className="px-4 py-3 text-right">{t("cols.actions")}</th>
+              <thead className="border-b border-[var(--ink-200)] bg-[var(--ink-50)]">
+                <tr className="text-left">
+                  <th className={`${th}`}>{t("cols.product")}</th>
+                  <th className={`${th} text-right`}>{t("cols.cost")}</th>
+                  <th className={`${th} text-right`}>{t("cols.stock")}</th><th className={`${th}`}>{t("cols.status")}</th>
+                  <th className={`${th} text-right`}>{t("cols.actions")}</th>
                 </tr>
               </thead>
               <tbody>
                 {pager.slice.map((p) => (
-                  <tr key={p.id} className="border-b border-gray-100 last:border-b-0 hover:bg-[var(--ink-50)]">
-                    <td className="px-4 py-3"><div className="flex items-center gap-3">
+                  <tr key={p.id} className="border-b border-[var(--ink-100)] transition-colors last:border-b-0 hover:bg-[var(--ink-50)]">
+                    <td className="px-5 py-4"><div className="flex items-center gap-3">
                       {p.hasImage ? (
                         // eslint-disable-next-line @next/next/no-img-element -- a private, per-supplier image route
                         <img src={`/api/supplier/products/${p.id}/image?v=${p.updatedAt}`} alt="" loading="lazy" className="size-12 shrink-0 rounded-xl object-cover" />
@@ -151,8 +152,8 @@ export function SupplierProducts({ products }: { products: ProductRow[] }) {
                       <span><span className="line-clamp-2 max-w-sm font-semibold text-[var(--ink-900)]">{p.name}</span><span className="text-[12px] text-[var(--ink-500)]">{VITRINE_CATEGORIES.includes(p.category as never) ? cats(p.category as never) : p.category}</span></span></div></td>
                     <td className="mono-num px-4 py-3 text-right font-bold">{f.money(p.costPrice)}</td>
                     <td className={`mono-num px-4 py-3 text-right font-extrabold ${p.stock === 0 ? "text-[var(--kai-danger)]" : p.stock < 10 ? "text-[var(--kai-warn)]" : ""}`}>{p.stock}</td>
-                    <td className="px-4 py-3"><Badge tone={TONE[p.status]}>{t(`status.${p.status}`)}</Badge></td>
-                    <td className="px-4 py-3">
+                    <td className="px-5 py-4"><Badge tone={TONE[p.status]}>{t(`status.${p.status}`)}</Badge></td>
+                    <td className="px-5 py-4">
                       <div className="flex justify-end gap-2">
                         <button type="button" onClick={() => edit(p)} className="h-9 rounded-full border border-[var(--ink-200)] bg-white px-3.5 text-[13px] font-semibold hover:border-[var(--ink-300)]">{t("edit")}</button>
                         <button type="button" onClick={() => setToDelete(p)} className="h-9 rounded-full border border-[var(--ink-200)] bg-white px-3.5 text-[13px] font-semibold text-[var(--kai-danger)] hover:border-[var(--kai-danger)]">{t("delete")}</button>
@@ -168,7 +169,7 @@ export function SupplierProducts({ products }: { products: ProductRow[] }) {
       </div>
 
       <Modal open={open} onClose={close} title={t(form.id ? "modal.titleEdit" : "modal.title")}>
-        <form onSubmit={(e) => { e.preventDefault(); submit(); }} noValidate className="space-y-4">
+        <form onSubmit={(e) => { e.preventDefault(); submit(); }} noValidate className="space-y-5">
           {formError && <div role="alert" className="rounded-xl border border-down px-3.5 py-3 text-[13px] text-down">{formError}</div>}
           {box("name", t("modal.name"), <input value={form.name} onChange={set("name")} maxLength={140} className={`${input} mt-1.5`} />)}
           {box("category", t("modal.category"), (
@@ -177,7 +178,7 @@ export function SupplierProducts({ products }: { products: ProductRow[] }) {
               {VITRINE_CATEGORIES.map((c) => <option key={c} value={c}>{cats(c)}</option>)}
             </select>
           ))}
-          {box("description", t("modal.description"), <textarea value={form.description} onChange={set("description")} rows={3} maxLength={1500} className="mt-1.5 w-full rounded-xl border border-border bg-white p-3 text-sm outline-none focus-visible:border-primary/40 focus-visible:ring-2 focus-visible:ring-primary/20" />)}
+          {box("description", t("modal.description"), <textarea value={form.description} onChange={set("description")} rows={3} maxLength={1500} className="mt-1.5 w-full rounded-xl border border-[var(--ink-200)] bg-white p-3.5 text-sm shadow-xs outline-none transition hover:border-[var(--ink-300)] focus-visible:border-primary/50 focus-visible:ring-4 focus-visible:ring-primary/15" />)}
           {box("image", t("modal.image"), (
             <span className="mt-1.5 flex cursor-pointer items-center gap-3 rounded-xl border border-dashed border-[var(--ink-300)] bg-[var(--ink-50)] p-3 text-sm text-[var(--ink-600)]">
               {preview ? (
@@ -188,12 +189,12 @@ export function SupplierProducts({ products }: { products: ProductRow[] }) {
               <input ref={file} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(e) => { const chosen = e.target.files?.[0]; if (chosen) setPreview(URL.createObjectURL(chosen)); }} />
             </span>
           ))}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {box("costPrice", t("modal.cost"), <input inputMode="numeric" value={form.costPrice} onChange={set("costPrice")} className={`${input} mono-num mt-1.5`} />)}
             {box("stock", t("modal.stock"), <input inputMode="numeric" value={form.stock} onChange={set("stock")} className={`${input} mono-num mt-1.5`} />)}
           </div>
           <p className="text-[12px] text-[var(--ink-500)]">{t("modal.reviewNote")}</p>
-          <div className="flex justify-end gap-2 pt-1">
+          <div className="flex justify-end gap-3 border-t border-[var(--ink-100)] pt-5">
             <button type="button" onClick={close} className="inline-flex h-10 items-center rounded-full border border-[var(--ink-200)] bg-white px-4 text-sm font-semibold">{t("modal.cancel")}</button>
             <button type="submit" disabled={pending} className={`${BRAND_BUTTON_CLASS} h-10 px-5 text-sm`}>{pending ? t("modal.saving") : t(form.id ? "modal.save" : "modal.submit")}</button>
           </div>

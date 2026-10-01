@@ -2721,7 +2721,7 @@
       "title": "Os meus produtos",
       "subtitle": "O catálogo que oferece aos lojistas da Kandrop.",
       "add": "Adicionar Produto",
-      "search": "Pesquisar por nome ou SKU",
+      "search": "Pesquisar por nome ou categoria",
       "filters": {
         "all": "Todos",
         "approved": "Aprovados",
@@ -2756,7 +2756,7 @@
         "choose": "Escolher…",
         "description": "Descrição",
         "image": "Imagem",
-        "imageHelp": "Carregar imagem (simulado)",
+        "imageHelp": "Escolher imagem (JPG, PNG ou WebP, até 2 MB)",
         "weight": "Peso (kg)",
         "stock": "Stock físico",
         "cost": "Preço de custo (kwz)",

@@ -2721,7 +2721,7 @@
       "title": "My products",
       "subtitle": "The catalogue you offer to Kandrop merchants.",
       "add": "Add Product",
-      "search": "Search by name or SKU",
+      "search": "Search by name or category",
       "filters": {
         "all": "All",
         "approved": "Approved",
@@ -2756,7 +2756,7 @@
         "choose": "Choose…",
         "description": "Description",
         "image": "Image",
-        "imageHelp": "Upload image (simulated)",
+        "imageHelp": "Choose an image (JPG, PNG or WebP, up to 2 MB)",
         "weight": "Weight (kg)",
         "stock": "Physical stock",
         "cost": "Cost price (kwz)",

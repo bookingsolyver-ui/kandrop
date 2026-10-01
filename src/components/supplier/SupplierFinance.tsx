@@ -2,7 +2,8 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState, useTransition } from "react";
-import { Badge, Modal, Pager, PageHeader, StatCard, card, dateOnly, usePager } from "@/components/admin/ui";
+import { Badge, Modal, Pager, dateOnly, usePager } from "@/components/admin/ui";
+import { EmptyState, Section, SupplierPageHeader, SupplierStat, inputClass, labelClass, panel, th } from "./ui";
 import { useFormatters } from "@/components/dashboard/useFormatters";
 import { ClockIcon, WalletIcon } from "@/components/kai/icons";
 import { BRAND_BUTTON_CLASS } from "@/components/ui/BrandButton";
@@ -92,36 +93,36 @@ export function SupplierFinance({ bank }: { bank: BankView | null }) {
   if (!supplier) return null;
   return (
     <div>
-      <PageHeader title={t("title")} subtitle={t("subtitle")}
+      <SupplierPageHeader title={t("title")} subtitle={t("subtitle")}
         actions={<button type="button" onClick={() => { setAmount(String(Math.floor(available / 100))); setOpen(true); }} disabled={available < MIN} className={`${BRAND_BUTTON_CLASS} h-11 px-5 text-sm`}>{t("withdraw")}</button>} />
 
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
-        <StatCard label={t("cards.available")} value={f.money(available)} note={t("cards.availableNote")} icon={<WalletIcon size={18} />} />
-        <StatCard label={t("cards.pending")} value={f.money(pending)} note={t("cards.pendingNote")} icon={<ClockIcon size={18} />} tone="warn" />
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
+        <SupplierStat label={t("cards.available")} value={f.money(available)} note={t("cards.availableNote")} icon={<WalletIcon size={18} />} />
+        <SupplierStat label={t("cards.pending")} value={f.money(pending)} note={t("cards.pendingNote")} icon={<ClockIcon size={18} />} tone="warn" />
       </div>
 
-      <section className={`${card} mt-6 p-5`}>
+      <section className={`${panel} mt-8 p-5 sm:p-6`}>
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <h2 className="text-[17px] font-bold tracking-tight">{bt("title")}</h2>
+            <h2 className="text-base font-semibold tracking-tight text-[var(--ink-900)]">{bt("title")}</h2>
             {bank ? (
-              <dl className="mt-3 space-y-1 text-sm">
-                <div className="flex gap-2"><dt className="w-20 text-[var(--ink-500)]">{bt("bank")}</dt><dd className="font-semibold">{bank.bankName}</dd></div>
-                <div className="flex gap-2"><dt className="w-20 text-[var(--ink-500)]">{bt("holder")}</dt><dd className="font-semibold">{bank.holderName}</dd></div>
-                <div className="flex gap-2"><dt className="w-20 text-[var(--ink-500)]">IBAN</dt><dd className="mono-num font-semibold">{bank.ibanMasked}</dd></div>
+              <dl className="mt-4 space-y-2 text-sm">
+                <div className="flex gap-2"><dt className="w-20 shrink-0 text-[var(--ink-500)]">{bt("bank")}</dt><dd className="font-semibold">{bank.bankName}</dd></div>
+                <div className="flex gap-2"><dt className="w-20 shrink-0 text-[var(--ink-500)]">{bt("holder")}</dt><dd className="font-semibold">{bank.holderName}</dd></div>
+                <div className="flex gap-2"><dt className="w-20 shrink-0 text-[var(--ink-500)]">IBAN</dt><dd className="mono-num font-semibold">{bank.ibanMasked}</dd></div>
               </dl>
             ) : <p className="mt-2 text-sm text-[var(--ink-600)]">{bt("none")}</p>}
           </div>
-          <button type="button" onClick={() => setBankOpen(true)} className="inline-flex h-10 items-center rounded-full border border-[var(--ink-200)] bg-white px-4 text-sm font-semibold hover:border-[var(--ink-300)]">{bt(bank ? "change" : "add")}</button>
+          <button type="button" onClick={() => setBankOpen(true)} className="inline-flex h-10 items-center rounded-full border border-[var(--ink-200)] bg-white px-5 text-sm font-semibold shadow-xs transition-colors hover:border-[var(--ink-300)] hover:bg-[var(--ink-50)]">{bt(bank ? "change" : "add")}</button>
         </div>
       </section>
 
       <Modal open={bankOpen} onClose={closeBank} title={bt("modalTitle")}>
-        <form onSubmit={(e) => { e.preventDefault(); submitBank(); }} noValidate autoComplete="off" className="space-y-4">
+        <form onSubmit={(e) => { e.preventDefault(); submitBank(); }} noValidate autoComplete="off" className="space-y-5">
           {bankFailure && <div role="alert" className="rounded-xl border border-down px-3.5 py-3 text-[13px] text-down">{bankFailure}</div>}
           {(["bankName", "holderName", "iban", "password"] as const).map((k) => (
             <label key={k} className="block">
-              <span className="text-xs font-semibold tracking-wide text-[var(--ink-700)] uppercase">{bt(`fields.${k}`)}</span>
+              <span className={labelClass}>{bt(`fields.${k}`)}</span>
               <input
                 type={k === "password" ? "password" : "text"}
                 autoComplete={k === "password" ? "current-password" : "off"}
@@ -130,40 +131,39 @@ export function SupplierFinance({ bank }: { bank: BankView | null }) {
                 value={bankForm[k]}
                 onChange={(e) => setBankForm((b) => ({ ...b, [k]: k === "iban" ? formatIbanInput(e.target.value) : e.target.value }))}
                 aria-invalid={!!bankErrors[k]}
-                className={`mt-1.5 h-11 w-full rounded-xl border bg-white px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-primary/20 ${k === "iban" ? "mono-num" : ""} ${bankErrors[k] ? "border-down" : "border-border"}`}
+                className={`${inputClass} mt-1.5 ${k === "iban" ? "mono-num" : ""} ${bankErrors[k] ? "!border-down" : ""}`}
               />
               {bankErrors[k] && <span role="alert" className="mt-1 block text-[12px] text-down">{bankErrors[k]}</span>}
             </label>
           ))}
           <p className="text-[12px] text-[var(--ink-500)]">{bt("securityNote")}</p>
-          <div className="flex justify-end gap-2">
+          <div className="flex justify-end gap-3 border-t border-[var(--ink-100)] pt-5">
             <button type="button" onClick={closeBank} className="inline-flex h-10 items-center rounded-full border border-[var(--ink-200)] bg-white px-4 text-sm font-semibold">{t("modal.cancel")}</button>
             <button type="submit" disabled={bankPending} className={`${BRAND_BUTTON_CLASS} h-10 px-5 text-sm`}>{bankPending ? bt("saving") : bt("save")}</button>
           </div>
         </form>
       </Modal>
 
-      <section className={`${card} mt-6 overflow-hidden`}>
-        <h2 className="border-b border-[var(--ink-200)] px-5 py-4 text-[17px] font-bold tracking-tight">{t("sales.title")}</h2>
-        {sales.length === 0 ? <p className="px-6 py-14 text-center text-sm text-[var(--ink-600)]">{t("sales.empty")}</p> : (
+      <Section title={t("sales.title")} className="mt-8">
+        {sales.length === 0 ? <EmptyState>{t("sales.empty")}</EmptyState> : (
           <div className="overflow-x-auto">
             <table className="w-full min-w-[52rem] border-collapse text-sm">
-              <thead className="border-b border-gray-100 bg-[var(--ink-50)]">
-                <tr className="text-left text-[11px] font-bold tracking-[0.06em] text-[var(--ink-500)] uppercase">
-                  <th className="px-4 py-3">{t("sales.cols.date")}</th><th className="px-4 py-3">{t("sales.cols.order")}</th>
-                  <th className="px-4 py-3">{t("sales.cols.product")}</th><th className="px-4 py-3">{t("sales.cols.merchant")}</th>
-                  <th className="px-4 py-3 text-right">{t("sales.cols.amount")}</th><th className="px-4 py-3">{t("sales.cols.status")}</th>
+              <thead className="border-b border-[var(--ink-200)] bg-[var(--ink-50)]">
+                <tr className="text-left">
+                  <th className={`${th}`}>{t("sales.cols.date")}</th><th className={`${th}`}>{t("sales.cols.order")}</th>
+                  <th className={`${th}`}>{t("sales.cols.product")}</th><th className={`${th}`}>{t("sales.cols.merchant")}</th>
+                  <th className={`${th} text-right`}>{t("sales.cols.amount")}</th><th className={`${th}`}>{t("sales.cols.status")}</th>
                 </tr>
               </thead>
               <tbody>
                 {pager.slice.map((s) => (
-                  <tr key={s.id} className="border-b border-gray-100 last:border-b-0 hover:bg-[var(--ink-50)]">
-                    <td className="px-4 py-3 whitespace-nowrap text-[var(--ink-600)]">{dateOnly(s.at, locale)}</td>
+                  <tr key={s.id} className="border-b border-[var(--ink-100)] transition-colors last:border-b-0 hover:bg-[var(--ink-50)]">
+                    <td className="px-5 py-4 whitespace-nowrap text-[var(--ink-600)]">{dateOnly(s.at, locale)}</td>
                     <td className="mono-num px-4 py-3 font-semibold">#{s.orderNumber}</td>
-                    <td className="px-4 py-3"><span className="line-clamp-1 max-w-xs font-semibold">{s.product}</span><span className="text-[12px] text-[var(--ink-500)]">{t("sales.qty", { count: s.quantity })}</span></td>
-                    <td className="px-4 py-3 text-[var(--ink-600)]">{s.merchant}</td>
+                    <td className="px-5 py-4"><span className="line-clamp-1 max-w-xs font-semibold">{s.product}</span><span className="text-[12px] text-[var(--ink-500)]">{t("sales.qty", { count: s.quantity })}</span></td>
+                    <td className="px-5 py-4 text-[var(--ink-600)]">{s.merchant}</td>
                     <td className="mono-num px-4 py-3 text-right font-bold">{f.money(s.amount)}</td>
-                    <td className="px-4 py-3"><Badge tone={s.status === "available" ? "success" : "warn"}>{t(`sales.status.${s.status}`)}</Badge></td>
+                    <td className="px-5 py-4"><Badge tone={s.status === "available" ? "success" : "warn"}>{t(`sales.status.${s.status}`)}</Badge></td>
                   </tr>
                 ))}
               </tbody>
@@ -171,28 +171,27 @@ export function SupplierFinance({ bank }: { bank: BankView | null }) {
           </div>
         )}
         <Pager pager={pager} />
-      </section>
+      </Section>
 
-      <section className={`${card} mt-6 overflow-hidden`}>
-        <h2 className="border-b border-[var(--ink-200)] px-5 py-4 text-[17px] font-bold tracking-tight">{t("history.title")}</h2>
-        {withdrawals.length + paid.length === 0 ? <p className="px-6 py-10 text-center text-sm text-[var(--ink-600)]">{t("history.empty")}</p> : (
+      <Section title={t("history.title")} className="mt-8">
+        {withdrawals.length + paid.length === 0 ? <EmptyState>{t("history.empty")}</EmptyState> : (
           <ul>
             {[...withdrawals.map((w) => ({ id: w.id, at: w.at, amount: w.amount, status: "pending" as const })), ...paid.map((p) => ({ id: p.id, at: p.at, amount: p.amount, status: "paid" as const }))].map((w) => (
-              <li key={w.id} className="flex items-center justify-between gap-4 border-b border-gray-100 px-5 py-3 last:border-b-0">
+              <li key={w.id} className="flex items-center justify-between gap-4 border-b border-[var(--ink-100)] px-5 py-4 last:border-b-0 sm:px-6">
                 <div><p className="mono-num font-semibold">{w.id}</p><p className="text-[12px] text-[var(--ink-500)]">{dateOnly(w.at, locale)}</p></div>
                 <div className="flex items-center gap-4"><span className="mono-num font-bold">{f.money(w.amount)}</span><Badge tone={w.status === "paid" ? "success" : "warn"}>{t(`history.${w.status}`)}</Badge></div>
               </li>
             ))}
           </ul>
         )}
-      </section>
-      <p className="mt-4 text-center text-[12px] text-[var(--ink-500)]">{t("demoNote")}</p>
+      </Section>
+      <p className="mt-6 text-center text-[12px] text-[var(--ink-500)]">{t("demoNote")}</p>
 
       <Modal open={open} onClose={close} title={t("modal.title")}>
         <form onSubmit={(e) => { e.preventDefault(); submit(); }} className="space-y-4">
           <p className="text-sm text-[var(--ink-600)]">{t("modal.available", { amount: f.money(available) })}</p>
-          <label className="block"><span className="text-xs font-semibold tracking-wide text-[var(--ink-700)] uppercase">{t("modal.amount")}</span>
-            <input value={amount} onChange={(e) => setAmount(e.target.value)} inputMode="decimal" aria-invalid={amount !== "" && !valid} className="mono-num mt-1.5 h-11 w-full rounded-xl border border-border bg-white px-3 text-sm outline-none focus-visible:border-primary/40 focus-visible:ring-2 focus-visible:ring-primary/20" />
+          <label className="block"><span className={labelClass}>{t("modal.amount")}</span>
+            <input value={amount} onChange={(e) => setAmount(e.target.value)} inputMode="decimal" aria-invalid={amount !== "" && !valid} className={`${inputClass} mono-num mt-1.5`} />
             <span className="mt-1 block text-[12px] text-[var(--ink-500)]">{t("modal.help", { min: f.money(MIN) })}</span>
           </label>
           <p className="text-[12px] text-[var(--ink-500)]">{t("modal.destination", { name: supplier.name })}</p>
