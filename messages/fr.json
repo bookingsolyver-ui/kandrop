@@ -195,6 +195,10 @@
       "bank_transfer": {
         "name": "Virement bancaire",
         "hint": "Justificatif par WhatsApp"
+      },
+      "cash_on_delivery": {
+        "name": "Paiement à la livraison",
+        "hint": "Payez le livreur"
       }
     },
     "fields": {
@@ -2772,7 +2776,10 @@
         "verifiedAt": "Confirmé le {when} par {who}",
         "slipRefPlaceholder": "Référence du justificatif (facultatif)",
         "notePlaceholder": "Note (facultatif)",
-        "automatic": "Ce paiement est confirmé automatiquement par le prestataire."
+        "automatic": "Ce paiement est confirmé automatiquement par le prestataire.",
+        "email": "E-mail",
+        "deliveryDate": "Jour de livraison demandé",
+        "coupon": "Coupon"
       },
       "toast": {
         "updated": "Statut mis à jour : {status}.",
@@ -2787,7 +2794,8 @@
       "payment": {
         "pending_payment": "En attente de paiement",
         "proof_submitted": "Justificatif reçu",
-        "paid_verified": "Paiement confirmé"
+        "paid_verified": "Paiement confirmé",
+        "cod": "Paiement à la livraison"
       },
       "provider": {
         "manual_whatsapp_transfer": "Espèces/Virement (validation manuelle via WhatsApp)",
@@ -3137,50 +3145,90 @@
     "whatsapp": "Envoyer le justificatif sur WhatsApp",
     "whatsappText": "Bonjour ! Voici le justificatif de la commande n° {number} (référence {reference}), d’un montant de {total}.",
     "note": "La commande n’est livrée qu’après confirmation du paiement par Kandrop.",
-    "noWhatsapp": "Envoyez le justificatif à Kandrop lorsque l’équipe vous contactera, en indiquant la référence de la commande."
+    "noWhatsapp": "Envoyez le justificatif à Kandrop lorsque l’équipe vous contactera, en indiquant la référence de la commande.",
+    "cod": {
+      "status": "À payer à la livraison",
+      "title": "Payez à la livraison",
+      "body": "Payez {total} au livreur à la réception de la commande. Aucun virement nécessaire.",
+      "date": "Jour de livraison demandé : {date}",
+      "note": "L’équipe Kandrop vous contactera pour convenir de la livraison.",
+      "greeting": "Merci, {name}. Votre commande part en préparation."
+    }
   },
   "QuickCheckout": {
     "title": "Finaliser l’achat",
-    "subtitle": "Trois étapes rapides. Sans compte.",
-    "back": "Retour au produit",
-    "secure": "Achat sécurisé",
-    "invalid": "Vérifiez vos informations et réessayez.",
+    "subtitle": "Trois étapes rapides. Sans compte et sans rien payer maintenant.",
     "s1": "Vos informations",
-    "s2": "Adresse de livraison",
+    "s2": "Adresse et livraison",
     "s3": "Paiement",
     "fields": {
       "name": "Nom complet",
-      "phone": "Téléphone mobile",
-      "province": "Province",
+      "email": "E-mail",
+      "phone": "Téléphone ou WhatsApp",
+      "province": "Ville",
       "choose": "Choisir…",
       "city": "Municipalité",
-      "street": "Rue et numéro",
+      "street": "Détail de la rue ou du quartier",
       "reference": "Point de repère (facultatif)",
-      "referenceHint": "Aide le livreur à trouver l’endroit."
+      "referenceHint": "Aide le livreur à trouver le lieu.",
+      "deliveryDate": "Jour de livraison souhaité",
+      "datePlaceholder": "Choisir le jour",
+      "dateHint": "Nous livrons du lundi au samedi. Pas de livraison le dimanche.",
+      "prevMonth": "Mois précédent",
+      "nextMonth": "Mois suivant",
+      "sundayOff": "Dimanche : pas de livraison"
     },
     "validation": {
-      "name_invalid": "Indiquez votre nom complet.",
-      "phone_invalid": "Mobile angolais à 9 chiffres (commence par 9).",
-      "province_invalid": "Choisissez la province.",
+      "name_invalid": "Indiquez le nom complet.",
+      "email_invalid": "Indiquez un e-mail valide.",
+      "phone_invalid": "Numéro angolais à 9 chiffres (commence par 9).",
+      "province_invalid": "Choisissez la ville.",
       "city_invalid": "Indiquez la municipalité.",
-      "street_invalid": "Indiquez la rue et le numéro.",
-      "reference_invalid": "160 caractères au maximum."
+      "street_invalid": "Indiquez la rue ou le quartier.",
+      "reference_invalid": "160 caractères au maximum.",
+      "date_invalid": "Choisissez un jour de livraison valide (sous 30 jours).",
+      "date_sunday": "Nous ne livrons pas le dimanche. Choisissez un autre jour.",
+      "coupon_invalid": "Code invalide : 3 à 32 lettres, chiffres, - ou _."
     },
     "payment": {
-      "method": "Espèces/virement, confirmés par Kandrop",
-      "body": "Après validation, vous recevez le montant et une référence. Faites le virement et envoyez le justificatif sur WhatsApp : Kandrop confirme le paiement et la commande vous est expédiée."
+      "method": "Paiement à la livraison",
+      "body": "Vous ne payez rien maintenant. Après validation, Kandrop prépare la commande et vous payez le livreur à l’arrivée du produit chez vous."
     },
-    "submit": "Passer la commande · {price}",
-    "submitting": "Enregistrement…",
-    "lockNote": "Connexion sécurisée. Vos données ne servent qu’à la livraison et à confirmer le paiement.",
+    "lockNote": "Connexion sécurisée. Vos données ne servent qu’à la livraison.",
     "summary": {
-      "title": "Récapitulatif",
-      "quantity": "1 unité",
+      "title": "Récapitulatif de la commande",
+      "quantity": "1 unité(s)",
+      "value": "Prix : {price}",
       "subtotal": "Sous-total",
       "shipping": "Livraison",
-      "shippingValue": "Gérée par Kandrop",
-      "total": "Total à payer"
-    }
+      "total": "Montant final"
+    },
+    "coupon": {
+      "toggle": "Ajouter un coupon",
+      "placeholder": "Saisissez le code du coupon",
+      "apply": "Appliquer",
+      "applied": "Coupon {code} enregistré avec la commande. L’équipe Kandrop confirme la réduction si elle est valide.",
+      "remove": "Retirer"
+    },
+    "trust": {
+      "secure": {
+        "title": "Protection par chiffrement SSL",
+        "body": "Toutes les données reçues ici sont protégées de bout en bout."
+      },
+      "fast": {
+        "title": "Livraison rapide et garantie, zéro risque",
+        "body": "Vous ne payez rien tant que le produit n’est pas arrivé chez vous."
+      },
+      "courier": {
+        "title": "Payez uniquement le livreur",
+        "body": "Le paiement se fait directement au livreur, seulement au moment où vous recevez le produit."
+      }
+    },
+    "back": "Retour au produit",
+    "secure": "Achat sécurisé",
+    "invalid": "Vérifiez vos informations et réessayez.",
+    "submit": "Valider la commande · {price}",
+    "submitting": "Enregistrement…"
   },
   "Customers": {
     "title": "Clients",

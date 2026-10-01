@@ -4,7 +4,7 @@ import { userRepository } from "@/server/modules/auth/userRepository";
 import { productRepository } from "@/server/modules/products/repository";
 import type { ProductRecord } from "@/server/modules/products/schema";
 import { placeOrder, supplierStockFor } from "@/server/modules/fulfilment/service";
-import { DEFAULT_ORDER_PAYMENT_PROVIDER } from "@/shared/payments/orderPayment";
+import { CASH_ON_DELIVERY, DEFAULT_ORDER_PAYMENT_PROVIDER } from "@/shared/payments/orderPayment";
 import { buyerSchema } from "@/shared/fulfilment/schemas";
 import { offerOf, stockState } from "@/shared/products/schemas";
 import type { StorefrontProduct } from "./schema";
@@ -56,8 +56,8 @@ export async function recordView(slug: string): Promise<void> {
 
 /**
  * "Buy now": the order is PLACED at the price of that very second (taken on the server, never from the browser),
- * UNPAID. The shopper pays Kandrop by transfer or cash and sends the slip to Kandrop's WhatsApp; a person verifies
- * it. Returns the order id (the unguessable link to the order page). `out_of_stock` when nothing is left.
+ * UNPAID. The shopper PAYS THE COURIER ON DELIVERY (cash on delivery): the order may be prepared and shipped at once and
+ * is settled when it is delivered. Returns the order id (the unguessable link to the order page). `out_of_stock` when nothing is left.
  */
 export async function placeStorefrontOrder(slug: string, rawBuyer: unknown): Promise<string> {
   // Who buys and where it goes: validated here, on the server, whatever the browser did.
@@ -74,9 +74,11 @@ export async function placeStorefrontOrder(slug: string, rawBuyer: unknown): Pro
     // The store has no shipping rates yet, so none is added (see docs/ARCHITECTURE.md).
     shippingAmount: 0,
     item: { name: p.title, quantity: 1, unitAmount: offerOf(p, Date.now()).price },
-    buyer: { customer: { name: buyer.name, phone: buyer.phone }, address: { street: buyer.street, city: buyer.city, province: buyer.province, reference: buyer.reference } },
+    buyer: { customer: { name: buyer.name, phone: buyer.phone, email: buyer.email }, address: { street: buyer.street, city: buyer.city, province: buyer.province, reference: buyer.reference, deliveryDate: buyer.deliveryDate } },
+    coupon: buyer.coupon,
+    // Cash on delivery: the shopper pays the courier; the manual provider stays the (optional) verifier.
     provider: DEFAULT_ORDER_PAYMENT_PROVIDER,
-    method: "bank_transfer",
+    method: CASH_ON_DELIVERY,
   });
   return order.id;
 }

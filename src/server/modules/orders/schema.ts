@@ -1,6 +1,6 @@
 import type { PaymentMethod } from "@/shared/checkout/schemas";
 import type { OrderStatus } from "@/shared/orders/schemas";
-import type { OrderPaymentProvider, OrderPaymentStatus, PaymentEvidence } from "@/shared/payments/orderPayment";
+import type { CASH_ON_DELIVERY, OrderPaymentProvider, OrderPaymentStatus, PaymentEvidence } from "@/shared/payments/orderPayment";
 
 /**
  * Personal data (customer name, phone, address) and merchant content (product names).
@@ -30,6 +30,8 @@ export interface OrderAddress {
   zone?: string;
   /** A landmark ("next to…"): how most deliveries in Angola are actually found. */
   reference?: string;
+  /** The day the shopper asked for (`YYYY-MM-DD`). */
+  deliveryDate?: string;
 }
 
 /** Internal record. Always scoped to a store. */
@@ -46,7 +48,7 @@ export interface OrderRecord {
   /** items + shipping, computed on the server. */
   total: number;
   currency: "AOA";
-  payment: { method: PaymentMethod; reference: string; paidAt: number };
+  payment: { method: PaymentMethod | typeof CASH_ON_DELIVERY; reference: string; paidAt: number; /** A coupon code the shopper typed (recorded only). */ coupon?: string };
   /** Where the money is: see `shared/payments/orderPayment.ts`. */
   paymentStatus: OrderPaymentStatus;
   paymentProvider: OrderPaymentProvider;
@@ -69,7 +71,7 @@ export interface PublicOrder {
   shippingAmount: number;
   total: number;
   currency: "AOA";
-  payment: { method: PaymentMethod; reference: string; paidAt: string };
+  payment: { method: PaymentMethod | typeof CASH_ON_DELIVERY; reference: string; paidAt: string; coupon?: string };
   paymentStatus: OrderPaymentStatus;
   paymentProvider: OrderPaymentProvider;
   trackingCode?: string;

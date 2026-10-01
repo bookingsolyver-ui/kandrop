@@ -21,8 +21,10 @@ export interface LogisticsRow {
   paymentProvider: OrderPaymentProvider;
   paymentReference: string;
   evidence: { reference?: string; note?: string; proofAt?: number; verifiedAt?: number; verifiedBy?: string };
-  customer: { name: string; phone: string } | null;
-  address: { street: string; city: string; province: string; reference?: string } | null;
+  customer: { name: string; phone: string; email?: string } | null;
+  address: { street: string; city: string; province: string; reference?: string; deliveryDate?: string } | null;
+  cashOnDelivery: boolean;
+  coupon: string | null;
   productTitle: string;
   line: null | {
     id: string;
@@ -143,11 +145,11 @@ function Body({ rows }: { rows: LogisticsRow[] }) {
               </thead>
               <tbody>
                 {pager.slice.map((r) => {
-                  const manual = r.paymentProvider === "manual_whatsapp_transfer";
+                  const manual = r.paymentProvider === "manual_whatsapp_transfer" && !r.cashOnDelivery;
                   const next = r.line ? nextLogisticsStatus(r.line.status) : null;
                   const cancelled = r.orderStatus === "cancelled";
                   const canCancel = (r.orderStatus === "pending" || r.orderStatus === "processing") && (!r.line || r.line.status === "pending" || r.line.status === "preparing");
-                  const blocked = !cancelled && next === "delivered" && r.paymentStatus !== "paid_verified";
+                  const blocked = !cancelled && !r.cashOnDelivery && next === "delivered" && r.paymentStatus !== "paid_verified";
                   const e = evidence[r.orderId] ?? { reference: "", note: "" };
                   return (
                     <Fragment key={r.orderId}>
@@ -156,7 +158,7 @@ function Body({ rows }: { rows: LogisticsRow[] }) {
                         <td className="px-4 py-3"><span className="line-clamp-2 max-w-xs font-semibold">{r.productTitle}</span>{r.line && <span className="text-[12px] text-[var(--ink-500)]">{r.line.supplierName}</span>}</td>
                         <td className="px-4 py-3 text-[var(--ink-700)]">{r.storeName}</td>
                         <td className="mono-num px-4 py-3 text-right font-bold">{f.money(r.total)}</td>
-                        <td className="px-4 py-3"><Badge tone={PAY_TONE[r.paymentStatus]}>{t(`payment.${r.paymentStatus}`)}</Badge><span className="mt-1 block max-w-[14rem] text-[11px] leading-snug text-[var(--ink-500)]">{t(`provider.${r.paymentProvider}`)}</span></td>
+                        <td className="px-4 py-3"><Badge tone={PAY_TONE[r.paymentStatus]}>{t(`payment.${r.paymentStatus}`)}</Badge><span className="mt-1 block max-w-[14rem] text-[11px] leading-snug text-[var(--ink-500)]">{r.cashOnDelivery ? t("payment.cod") : t(`provider.${r.paymentProvider}`)}</span></td>
                         <td className="px-4 py-3">{cancelled ? <Badge tone="neutral">{t("status.cancelled")}</Badge> : r.line ? <Badge tone={LOG_TONE[r.line.status]}>{t(`status.${r.line.status}`)}</Badge> : <span className="text-[var(--ink-400,var(--ink-500))]">—</span>}</td>
                         <td className="px-4 py-3">
                           <div className="flex flex-wrap justify-end gap-2">
@@ -181,7 +183,7 @@ function Body({ rows }: { rows: LogisticsRow[] }) {
                               <div>
                                 <p className="text-[11px] font-bold tracking-wide text-[var(--ink-500)] uppercase">{t("detail.deliverTo")}</p>
                                 {r.customer && r.address ? (
-                                  <p className="mt-1 leading-relaxed">{r.customer.name}<br />{r.customer.phone}<br />{r.address.street}, {r.address.city}, {r.address.province}{r.address.reference ? <><br /><span className="text-[var(--ink-500)]">{r.address.reference}</span></> : null}</p>
+                                  <p className="mt-1 leading-relaxed">{r.customer.name}<br />{r.customer.phone}{r.customer.email && <><br />{r.customer.email}</>}<br />{r.address.street}, {r.address.city}, {r.address.province}{r.address.reference ? <><br /><span className="text-[var(--ink-500)]">{r.address.reference}</span></> : null}{r.address.deliveryDate ? <><br /><span className="font-semibold">{t("detail.deliveryDate")}: {r.address.deliveryDate}</span></> : null}</p>
                                 ) : <p className="mt-1 text-[var(--ink-500)]">—</p>}
                               </div>
                               <div>
@@ -198,7 +200,7 @@ function Body({ rows }: { rows: LogisticsRow[] }) {
                               </div>
                               <div>
                                 <p className="text-[11px] font-bold tracking-wide text-[var(--ink-500)] uppercase">{t("detail.paymentTitle")}</p>
-                                <p className="mt-1">{t(`provider.${r.paymentProvider}`)}</p>
+                                <p className="mt-1">{r.cashOnDelivery ? t("payment.cod") : t(`provider.${r.paymentProvider}`)}</p>{r.coupon && <p className="mt-1 text-[12px] text-[var(--ink-600)]">{t("detail.coupon")}: <span className="mono-num">{r.coupon}</span></p>}
                                 {(r.evidence.reference || r.evidence.note) && <p className="mt-1 text-[var(--ink-600)]">{r.evidence.reference && <>{t("detail.slipRef")}: <span className="mono-num">{r.evidence.reference}</span><br /></>}{r.evidence.note}</p>}
                                 {r.evidence.proofAt && <p className="mt-1 text-[12px] text-[var(--ink-500)]">{t("detail.proofAt", { when: dateTime(r.evidence.proofAt, locale) })}</p>}
                                 {r.evidence.verifiedAt && <p className="mt-1 text-[12px] text-[var(--ink-500)]">{t("detail.verifiedAt", { when: dateTime(r.evidence.verifiedAt, locale), who: r.evidence.verifiedBy ?? "—" })}</p>}
@@ -212,7 +214,7 @@ function Body({ rows }: { rows: LogisticsRow[] }) {
                                     </div>
                                   </div>
                                 )}
-                                {!manual && r.paymentStatus !== "paid_verified" && <p className="mt-2 text-[12px] text-[var(--ink-500)]">{t("detail.automatic")}</p>}
+                                {!manual && !r.cashOnDelivery && r.paymentStatus !== "paid_verified" && <p className="mt-2 text-[12px] text-[var(--ink-500)]">{t("detail.automatic")}</p>}
                               </div>
                             </div>
                             {r.line && (

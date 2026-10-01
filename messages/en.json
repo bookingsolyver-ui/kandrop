@@ -195,6 +195,10 @@
       "bank_transfer": {
         "name": "Bank transfer",
         "hint": "Proof by WhatsApp"
+      },
+      "cash_on_delivery": {
+        "name": "Cash on delivery",
+        "hint": "Pay the courier"
       }
     },
     "fields": {
@@ -2772,7 +2776,10 @@
         "verifiedAt": "Confirmed on {when} by {who}",
         "slipRefPlaceholder": "Slip reference (optional)",
         "notePlaceholder": "Note (optional)",
-        "automatic": "This payment is confirmed automatically by the provider."
+        "automatic": "This payment is confirmed automatically by the provider.",
+        "email": "E-mail",
+        "deliveryDate": "Requested delivery day",
+        "coupon": "Coupon"
       },
       "toast": {
         "updated": "Status updated: {status}.",
@@ -2787,7 +2794,8 @@
       "payment": {
         "pending_payment": "Awaiting payment",
         "proof_submitted": "Slip received",
-        "paid_verified": "Payment confirmed"
+        "paid_verified": "Payment confirmed",
+        "cod": "Cash on delivery"
       },
       "provider": {
         "manual_whatsapp_transfer": "Cash/Transfer (Manual verification via WhatsApp)",
@@ -3137,50 +3145,90 @@
     "whatsapp": "Send the slip on WhatsApp",
     "whatsappText": "Hello! Here is the proof of payment for order #{number} (reference {reference}), amount {total}.",
     "note": "The order is only delivered after Kandrop confirms the payment.",
-    "noWhatsapp": "Send the slip to Kandrop when the team contacts you, quoting the order reference."
+    "noWhatsapp": "Send the slip to Kandrop when the team contacts you, quoting the order reference.",
+    "cod": {
+      "status": "To pay on delivery",
+      "title": "Pay on delivery",
+      "body": "Pay {total} to the courier when you receive the order. No bank transfer needed.",
+      "date": "Requested delivery day: {date}",
+      "note": "The Kandrop team will contact you to arrange the delivery.",
+      "greeting": "Thank you, {name}. Your order is going into preparation."
+    }
   },
   "QuickCheckout": {
-    "title": "Check out",
-    "subtitle": "Three quick steps. No account needed.",
-    "back": "Back to the product",
-    "secure": "Secure purchase",
-    "invalid": "Please check your details and try again.",
+    "title": "Checkout",
+    "subtitle": "Three quick steps. No account and nothing to pay now.",
     "s1": "Your details",
-    "s2": "Delivery address",
+    "s2": "Address and delivery",
     "s3": "Payment",
     "fields": {
       "name": "Full name",
-      "phone": "Mobile phone",
-      "province": "Province",
+      "email": "E-mail",
+      "phone": "Phone or WhatsApp",
+      "province": "City",
       "choose": "Choose…",
       "city": "Municipality",
-      "street": "Street and number",
+      "street": "Street or neighbourhood details",
       "reference": "Landmark (optional)",
-      "referenceHint": "Helps the courier find the place."
+      "referenceHint": "Helps the courier find the place.",
+      "deliveryDate": "Preferred delivery day",
+      "datePlaceholder": "Choose the day",
+      "dateHint": "We deliver Monday to Saturday. No deliveries on Sundays.",
+      "prevMonth": "Previous month",
+      "nextMonth": "Next month",
+      "sundayOff": "Sunday: no deliveries"
     },
     "validation": {
       "name_invalid": "Enter your full name.",
-      "phone_invalid": "Angolan mobile number with 9 digits (starts with 9).",
-      "province_invalid": "Choose the province.",
+      "email_invalid": "Enter a valid e-mail.",
+      "phone_invalid": "Angolan number with 9 digits (starts with 9).",
+      "province_invalid": "Choose the city.",
       "city_invalid": "Enter the municipality.",
-      "street_invalid": "Enter the street and number.",
-      "reference_invalid": "At most 160 characters."
+      "street_invalid": "Enter the street or neighbourhood.",
+      "reference_invalid": "At most 160 characters.",
+      "date_invalid": "Choose a valid delivery day (within 30 days).",
+      "date_sunday": "We do not deliver on Sundays. Choose another day.",
+      "coupon_invalid": "Invalid code: use 3 to 32 letters, numbers, - or _."
     },
     "payment": {
-      "method": "Cash/transfer, confirmed by Kandrop",
-      "body": "After you check out you get the amount and a reference. Make the transfer and send the slip on WhatsApp: Kandrop confirms the payment and your order goes out."
+      "method": "Pay on delivery",
+      "body": "You pay nothing now. After you finish, Kandrop prepares the order and you pay the courier when the product arrives at your address."
     },
-    "submit": "Place order · {price}",
-    "submitting": "Placing order…",
-    "lockNote": "Secure connection. Your details are only used for delivery and to confirm the payment.",
+    "lockNote": "Secure connection. Your details are only used for the delivery.",
     "summary": {
       "title": "Order summary",
-      "quantity": "1 unit",
+      "quantity": "1 unit(s)",
+      "value": "Price: {price}",
       "subtotal": "Subtotal",
-      "shipping": "Delivery",
-      "shippingValue": "Handled by Kandrop",
-      "total": "Total to pay"
-    }
+      "shipping": "Shipping",
+      "total": "Final amount"
+    },
+    "coupon": {
+      "toggle": "Add coupon",
+      "placeholder": "Enter the coupon code",
+      "apply": "Apply",
+      "applied": "Coupon {code} saved with the order. The Kandrop team confirms the discount if it is valid.",
+      "remove": "Remove"
+    },
+    "trust": {
+      "secure": {
+        "title": "SSL encryption protection",
+        "body": "All the data received here is protected end to end."
+      },
+      "fast": {
+        "title": "Fast, guaranteed delivery, zero risk",
+        "body": "You pay nothing until the product reaches your address."
+      },
+      "courier": {
+        "title": "Pay only the courier",
+        "body": "You pay the courier directly, only at the moment you receive the product."
+      }
+    },
+    "back": "Back to the product",
+    "secure": "Secure purchase",
+    "invalid": "Check your details and try again.",
+    "submit": "Place order · {price}",
+    "submitting": "Placing order…"
   },
   "Customers": {
     "title": "Customers",

@@ -38,3 +38,11 @@ export interface PaymentEvidence {
   reference?: string;
   note?: string;
 }
+
+/**
+ * CASH ON DELIVERY: the shopper pays the courier when the parcel arrives (`payment.method`). There is nothing to
+ * verify beforehand, so the golden rule does not hold the parcel back; the payment becomes `paid_verified` at the
+ * moment of delivery (see `advanceLogistics`), which is also when the supplier's money is released.
+ */
+export const CASH_ON_DELIVERY = "cash_on_delivery" as const;
+export const isCashOnDelivery = (payment: { method?: unknown } | null | undefined) => payment?.method === CASH_ON_DELIVERY;

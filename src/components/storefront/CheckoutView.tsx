@@ -5,13 +5,14 @@ import { useMemo, useState } from "react";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { Link } from "@/i18n/navigation";
 import type { StorefrontProduct } from "@/server/modules/storefront/schema";
+import { DeliveryDatePicker } from "./DeliveryDatePicker";
 import { buyerSchema } from "@/shared/fulfilment/schemas";
 import { PROVINCES } from "@/shared/supplier/schemas";
 import { ArrowLeftIcon, BanknoteIcon, LockIcon, ShieldIcon, TruckIcon } from "./icons";
 import { useMoney } from "./useMoney";
 
-type Field = "name" | "phone" | "province" | "city" | "street" | "reference";
-const EMPTY: Record<Field, string> = { name: "", phone: "", province: "", city: "", street: "", reference: "" };
+type Field = "name" | "email" | "phone" | "province" | "city" | "street" | "reference" | "deliveryDate" | "coupon";
+const EMPTY: Record<Field, string> = { name: "", email: "", phone: "", province: "", city: "", street: "", reference: "", deliveryDate: "", coupon: "" };
 const REFERENCE_MAX = 160;
 
 const INPUT = "mt-1.5 h-12 w-full rounded-xl border bg-surface px-3.5 text-[0.9375rem] text-ink outline-none transition-all placeholder:text-ink-muted/70 focus-visible:border-action focus-visible:ring-4 focus-visible:ring-action/20";
@@ -27,12 +28,15 @@ const formatPhone = (raw: string) => raw.replace(/\D/g, "").replace(/^244(?=\d{9
  */
 export function CheckoutView({ product: p, invalid }: { product: StorefrontProduct; invalid: boolean }) {
   const t = useTranslations("QuickCheckout");
-  const trust = useTranslations("Storefront.landing.trust");
+  const trust = useTranslations("QuickCheckout.trust");
   const locale = useLocale();
   const money = useMoney();
   const [values, setValues] = useState(EMPTY);
   const [touched, setTouched] = useState<Partial<Record<Field, boolean>>>({});
   const [submitting, setSubmitting] = useState(false);
+  const [couponOpen, setCouponOpen] = useState(false);
+  const [couponInput, setCouponInput] = useState("");
+  const [couponError, setCouponError] = useState(false);
 
   const errors = useMemo(() => {
     const parsed = buyerSchema.safeParse(values);
@@ -50,7 +54,7 @@ export function CheckoutView({ product: p, invalid }: { product: StorefrontProdu
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     if (!ok) {
       e.preventDefault();
-      setTouched({ name: true, phone: true, province: true, city: true, street: true, reference: true });
+      setTouched({ name: true, email: true, phone: true, province: true, city: true, street: true, reference: true, deliveryDate: true });
       const first = (Object.keys(errors) as Field[])[0];
       if (first) document.getElementById(`f-${first}`)?.focus();
       return;
@@ -58,11 +62,19 @@ export function CheckoutView({ product: p, invalid }: { product: StorefrontProdu
     setSubmitting(true);
   }
 
+  // The same three icons as before: shield, truck, cash.
   const items = [
     { key: "secure", icon: <ShieldIcon /> },
-    { key: "pay", icon: <BanknoteIcon /> },
-    { key: "delivery", icon: <TruckIcon /> },
+    { key: "fast", icon: <TruckIcon /> },
+    { key: "courier", icon: <BanknoteIcon /> },
   ] as const;
+  const applyCoupon = () => {
+    const code = couponInput.trim().toUpperCase();
+    if (!/^[A-Z0-9_-]{3,32}$/.test(code)) return setCouponError(true);
+    setCouponError(false);
+    setValues((v) => ({ ...v, coupon: code }));
+  };
+  const removeCoupon = () => { setValues((v) => ({ ...v, coupon: "" })); setCouponInput(""); };
   const price = money(p.price);
   const step = "grid size-7 shrink-0 place-items-center rounded-full bg-action text-[13px] font-extrabold text-on-action";
 
@@ -97,6 +109,7 @@ export function CheckoutView({ product: p, invalid }: { product: StorefrontProdu
 
         <form id="checkout-form" method="post" action={`/api/store/${p.slug}/checkout`} onSubmit={onSubmit} noValidate className="space-y-5 lg:col-start-1 lg:row-start-1">
           <input type="hidden" name="locale" value={locale} />
+          <input type="hidden" name="coupon" value={values.coupon} />
           <div>
             <h1 className="text-[1.6rem] leading-tight font-extrabold tracking-tight sm:text-3xl">{t("title")}</h1>
             <p className="mt-1 text-sm text-ink-2">{t("subtitle")}</p>
@@ -110,6 +123,11 @@ export function CheckoutView({ product: p, invalid }: { product: StorefrontProdu
                 <label htmlFor="f-name" className={LABEL}>{t("fields.name")}</label>
                 <input id="f-name" name="name" value={values.name} onChange={set("name")} onBlur={blur("name")} autoComplete="name" maxLength={80} aria-invalid={!!show("name")} aria-describedby={show("name") ? "name-error" : undefined} className={`${INPUT} ${border("name")}`} />
                 {err("name")}
+              </div>
+              <div>
+                <label htmlFor="f-email" className={LABEL}>{t("fields.email")}</label>
+                <input id="f-email" name="email" type="email" value={values.email} onChange={set("email")} onBlur={blur("email")} autoComplete="email" inputMode="email" maxLength={120} required aria-invalid={!!show("email")} aria-describedby={show("email") ? "email-error" : undefined} className={`${INPUT} ${border("email")}`} />
+                {err("email")}
               </div>
               <div>
                 <label htmlFor="f-phone" className={LABEL}>{t("fields.phone")}</label>
@@ -151,6 +169,13 @@ export function CheckoutView({ product: p, invalid }: { product: StorefrontProdu
                 <p id="reference-hint" className="mt-1.5 flex justify-between gap-3 text-[12px] text-ink-muted"><span>{t("fields.referenceHint")}</span><span className="tabular-nums">{values.reference.length}/{REFERENCE_MAX}</span></p>
                 {err("reference")}
               </div>
+              <div>
+                <label htmlFor="f-deliveryDate" className={LABEL}>{t("fields.deliveryDate")}</label>
+                <div className="mt-1.5">
+                  <DeliveryDatePicker id="f-deliveryDate" name="deliveryDate" value={values.deliveryDate} onChange={(iso) => { setValues((v) => ({ ...v, deliveryDate: iso })); setTouched((s) => ({ ...s, deliveryDate: true })); }} onBlur={blur("deliveryDate")} invalid={!!show("deliveryDate")} className={`h-12 w-full rounded-xl border bg-surface px-3.5 text-[0.9375rem] text-ink outline-none transition-all focus-visible:border-action focus-visible:ring-4 focus-visible:ring-action/20 ${border("deliveryDate")}`} />
+                </div>
+                {err("deliveryDate")}
+              </div>
             </div>
           </section>
 
@@ -184,12 +209,35 @@ export function CheckoutView({ product: p, invalid }: { product: StorefrontProdu
               <div className="min-w-0">
                 <p className="line-clamp-2 text-sm leading-snug font-semibold">{p.title}</p>
                 <p className="mt-1 text-[13px] text-ink-muted">{t("summary.quantity")}</p>
-                <p className="mt-1 text-sm font-bold tabular-nums">{price}</p>
+                <p className="mt-1 text-sm font-bold tabular-nums">{t("summary.value", { price })}</p>
               </div>
             </div>
+
+            <div className="mt-4 border-t border-line pt-4">
+              {values.coupon ? (
+                <div className="rounded-xl bg-page p-3 text-[13px] leading-snug text-ink-2">
+                  <p>{t("coupon.applied", { code: values.coupon })}</p>
+                  <button type="button" onClick={removeCoupon} className="mt-1.5 font-semibold text-ink underline underline-offset-4">{t("coupon.remove")}</button>
+                </div>
+              ) : (
+                <>
+                  <button type="button" aria-expanded={couponOpen} aria-controls="coupon-panel" onClick={() => setCouponOpen((o) => !o)} className="text-sm font-semibold text-action underline-offset-4 hover:underline">{t("coupon.toggle")}</button>
+                  {couponOpen && (
+                    <div id="coupon-panel" className="mt-3">
+                      <div className="flex gap-2">
+                        <input value={couponInput} onChange={(e) => { setCouponInput(e.target.value); setCouponError(false); }} onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); applyCoupon(); } }} aria-label={t("coupon.placeholder")} placeholder={t("coupon.placeholder")} maxLength={32} autoComplete="off" aria-invalid={couponError} className="h-11 min-w-0 flex-1 rounded-xl border border-field bg-surface px-3.5 text-sm text-ink uppercase outline-none placeholder:text-ink-muted/70 placeholder:normal-case focus-visible:border-action focus-visible:ring-4 focus-visible:ring-action/20" />
+                        <button type="button" onClick={applyCoupon} className="h-11 shrink-0 rounded-xl bg-ink px-4 text-sm font-bold text-surface transition-opacity hover:opacity-90">{t("coupon.apply")}</button>
+                      </div>
+                      {couponError && <p role="alert" className="mt-1.5 text-[13px] text-down">{t("validation.coupon_invalid")}</p>}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+
             <dl className="mt-4 space-y-2 border-t border-line pt-4 text-sm">
               <div className="flex justify-between gap-4"><dt className="text-ink-2">{t("summary.subtotal")}</dt><dd className="tabular-nums">{price}</dd></div>
-              <div className="flex justify-between gap-4"><dt className="text-ink-2">{t("summary.shipping")}</dt><dd className="text-right">{t("summary.shippingValue")}</dd></div>
+              <div className="flex justify-between gap-4"><dt className="text-ink-2">{t("summary.shipping")}</dt><dd className="tabular-nums">{money(0)}</dd></div>
               <div className="flex justify-between gap-4 border-t border-line pt-3 text-base font-extrabold"><dt>{t("summary.total")}</dt><dd className="tabular-nums">{price}</dd></div>
             </dl>
           </section>

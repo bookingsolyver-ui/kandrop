@@ -1,4 +1,4 @@
-import { useFormatter, useTranslations } from "next-intl";
+import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import type { ShopperOrder } from "@/server/modules/fulfilment/service";
 import type { OrderPaymentInfo } from "@/server/modules/payments/transfer";
@@ -7,6 +7,7 @@ import type { OrderPaymentInfo } from "@/server/modules/payments/transfer";
 export function OrderPlacedView({ order, pay }: { order: ShopperOrder; pay: OrderPaymentInfo }) {
   const t = useTranslations("OrderPlaced");
   const f = useFormatter();
+  const locale = useLocale();
   const total = `${f.number(Math.round(order.total / 100))} kwz`;
   const text = t("whatsappText", { number: order.number, reference: order.reference, total });
   const link = pay.whatsapp ? `https://wa.me/244${pay.whatsapp}?text=${encodeURIComponent(text)}` : null;
@@ -17,6 +18,8 @@ export function OrderPlacedView({ order, pay }: { order: ShopperOrder; pay: Orde
   if (pay.iban) rows.push(["IBAN", pay.iban.replace(/(.{4})/g, "$1 ").trim(), true]);
   if (pay.bic) rows.push(["BIC/SWIFT", pay.bic, true]);
   const verified = order.paymentStatus === "paid_verified";
+  const cod = order.cashOnDelivery;
+  const day = order.deliveryDate ? new Intl.DateTimeFormat(locale, { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" }).format(Date.parse(`${order.deliveryDate}T00:00:00Z`)) : null;
 
   return (
     <div className="min-h-screen bg-page text-ink">
@@ -28,7 +31,7 @@ export function OrderPlacedView({ order, pay }: { order: ShopperOrder; pay: Orde
         <div>
           <p className="text-sm font-semibold text-up">{t("placed")}</p>
           <h1 className="mt-1 font-serif text-[clamp(1.6rem,5vw,2.2rem)] leading-tight font-medium">{t("title", { number: order.number })}</h1>
-          <p className="mt-2 text-sm text-ink-2">{t("greeting", { name: order.customerName.split(" ")[0] ?? "" })}</p>
+          <p className="mt-2 text-sm text-ink-2">{t(cod ? "cod.greeting" : "greeting", { name: order.customerName.split(" ")[0] ?? "" })}</p>
         </div>
 
         <section className="rounded-lg border border-line bg-surface p-4">
@@ -36,11 +39,20 @@ export function OrderPlacedView({ order, pay }: { order: ShopperOrder; pay: Orde
             <div className="flex justify-between gap-4"><dt className="text-ink-muted">{t("product")}</dt><dd className="text-right font-medium">{order.productTitle} × {order.quantity}</dd></div>
             <div className="flex justify-between gap-4 text-base font-semibold"><dt>{t("total")}</dt><dd className="tabular-nums">{total}</dd></div>
             <div className="flex justify-between gap-4"><dt className="text-ink-muted">{t("reference")}</dt><dd className="font-mono font-semibold tabular-nums">{order.reference}</dd></div>
-            <div className="flex justify-between gap-4"><dt className="text-ink-muted">{t("status.label")}</dt><dd className="text-right font-medium">{t(`status.${order.paymentStatus}`)}</dd></div>
+            <div className="flex justify-between gap-4"><dt className="text-ink-muted">{t("status.label")}</dt><dd className="text-right font-medium">{cod && !verified ? t("cod.status") : t(`status.${order.paymentStatus}`)}</dd></div>
           </dl>
         </section>
 
-        {!verified && (
+        {cod && (
+          <section className="space-y-2 rounded-lg border border-line bg-surface p-4">
+            <h2 className="text-sm font-semibold">{t("cod.title")}</h2>
+            <p className="text-sm text-ink-2">{t("cod.body", { total })}</p>
+            {day && <p className="text-sm font-medium first-letter:uppercase">{t("cod.date", { date: day })}</p>}
+            <p className="text-[13px] text-ink-muted">{t("cod.note")}</p>
+          </section>
+        )}
+
+        {!cod && !verified && (
           <section className="space-y-3 rounded-lg border border-line bg-surface p-4">
             <h2 className="text-sm font-semibold">{t("how.title")}</h2>
             <ol className="list-decimal space-y-1.5 pl-5 text-sm text-ink-2">
@@ -69,7 +81,7 @@ export function OrderPlacedView({ order, pay }: { order: ShopperOrder; pay: Orde
             )}
           </section>
         )}
-        <p className="text-center text-[12px] text-ink-muted">{t("note")}</p>
+        {!cod && <p className="text-center text-[12px] text-ink-muted">{t("note")}</p>}
       </main>
     </div>
   );

@@ -8,7 +8,7 @@ import type { OrderRecord } from "@/server/modules/orders/schema";
 import type { PaymentRecord } from "@/server/modules/payments/schema";
 import type { PaymentMethod } from "@/shared/checkout/schemas";
 import { canAdvanceLogistics, type LogisticsStatus } from "@/shared/fulfilment/schemas";
-import { canMovePayment, isPaymentVerified, normalizePaymentProvider, normalizePaymentStatus, type OrderPaymentProvider, type OrderPaymentStatus, type PaymentEvidence } from "@/shared/payments/orderPayment";
+import { CASH_ON_DELIVERY, canMovePayment, isCashOnDelivery, isPaymentVerified, normalizePaymentProvider, normalizePaymentStatus, type OrderPaymentProvider, type OrderPaymentStatus, type PaymentEvidence } from "@/shared/payments/orderPayment";
 import { ORDER_STATUSES, canTransition, type OrderStatus } from "@/shared/orders/schemas";
 
 import { splitSale, type Split } from "./split";
@@ -125,10 +125,12 @@ export interface PlaceOrderInput {
   productId: string;
   item: { name: string; quantity: number; unitAmount: number };
   shippingAmount: number;
-  buyer: { customer: { name: string; phone: string }; address: { street: string; city: string; province: string; reference?: string } };
+  buyer: { customer: { name: string; phone: string; email?: string }; address: { street: string; city: string; province: string; reference?: string; deliveryDate?: string } };
+  /** A coupon code typed by the shopper: recorded with the order (there is no coupon system yet). */
+  coupon?: string;
   /** Who will verify the payment. */
   provider: OrderPaymentProvider;
-  method: PaymentMethod;
+  method: PaymentMethod | typeof CASH_ON_DELIVERY;
   /** A reference that is already known (a provider's), or a fresh `KD-…` one is made. */
   reference?: string;
 }
@@ -158,13 +160,13 @@ export async function placeOrder(input: PlaceOrderInput): Promise<{ order: Order
       storeId: input.storeId,
       number: await nextOrderNumber(input.storeId),
       status: "pending",
-      customer: { name: input.buyer.customer.name, phone: input.buyer.customer.phone },
-      address: { street: input.buyer.address.street, city: input.buyer.address.city, province: input.buyer.address.province, reference: input.buyer.address.reference },
+      customer: { name: input.buyer.customer.name, phone: input.buyer.customer.phone, email: input.buyer.customer.email },
+      address: { street: input.buyer.address.street, city: input.buyer.address.city, province: input.buyer.address.province, reference: input.buyer.address.reference, deliveryDate: input.buyer.address.deliveryDate },
       items: [{ name: input.item.name, productId: input.productId, quantity: input.item.quantity, unitAmount: input.item.unitAmount }],
       shippingAmount: input.shippingAmount,
       total: subtotal + input.shippingAmount,
       currency: "AOA",
-      payment: { method: input.method, reference, paidAt: 0 },
+      payment: { method: input.method, reference, paidAt: 0, ...(input.coupon ? { coupon: input.coupon } : {}) },
       paymentStatus: "pending_payment",
       paymentProvider: input.provider,
       history: [{ status: "pending", at: now }],
@@ -343,8 +345,11 @@ export interface AdminOrderRow {
   paymentProvider: OrderPaymentProvider;
   paymentReference: string;
   evidence: { reference?: string; note?: string; proofAt?: number; verifiedAt?: number; verifiedBy?: string };
-  customer: { name: string; phone: string } | null;
-  address: { street: string; city: string; province: string; reference?: string } | null;
+  customer: { name: string; phone: string; email?: string } | null;
+  address: { street: string; city: string; province: string; reference?: string; deliveryDate?: string } | null;
+  /** Cash on delivery: nothing to verify, the parcel may go and the payment is settled on delivery. */
+  cashOnDelivery: boolean;
+  coupon: string | null;
   productTitle: string;
   /** The supplier's line, when the product came from a supplier (logistics applies to it). */
   line: (SupplierOrder & { invoices: Array<{ party: "merchant" | "supplier"; number: string }> }) | null;
@@ -378,6 +383,8 @@ export async function listAllLogistics(limit = 300): Promise<AdminOrderRow[]> {
       evidence: (o.payment_evidence ?? {}) as AdminOrderRow["evidence"],
       customer: (o.customer as AdminOrderRow["customer"]) ?? null,
       address: (o.address as AdminOrderRow["address"]) ?? null,
+      cashOnDelivery: isCashOnDelivery(o.payment as { method?: unknown } | null),
+      coupon: (o.payment as { coupon?: string } | null)?.coupon ?? null,
       productTitle: line?.productTitle ?? items[0]?.name ?? "—",
       line: line ? { ...line, invoices: invoices.filter((i) => String(i.supplier_order_id) === line.id).map((i) => ({ party: i.party as "merchant" | "supplier", number: String(i.number) })) } : null,
     };
@@ -414,9 +421,12 @@ export async function advanceLogistics(id: string, to: LogisticsStatus): Promise
   if (!canAdvanceLogistics(row.status, to)) throw new ApiError("invalid_transition");
   // THE golden rule: a parcel is not delivered before Kandrop has verified the payment. The check reads the
   // ORDER (the source of truth), not the copy on the line. (In transit stays possible: cash-on-delivery runs.)
+  // Cash on delivery is the exception: the shopper pays the courier on arrival, so there is nothing to verify first.
+  let cod = false;
   if (to === "delivered") {
     const o = await paymentOrder(row.orderId);
-    if (!isPaymentVerified(o.status)) throw new ApiError("payment_unverified");
+    cod = isCashOnDelivery(o.payment);
+    if (!cod && !isPaymentVerified(o.status)) throw new ApiError("payment_unverified");
   }
 
   const now = Date.now();
@@ -424,6 +434,16 @@ export async function advanceLogistics(id: string, to: LogisticsStatus): Promise
   // Compare-and-set on the old status: two admins clicking at once cannot both advance the same step.
   const updated = must("logistics.update", await db().from("supplier_orders").update({ logistics_status: to, history, updated_at: now }).eq("id", id).eq("logistics_status", row.status).select(SO_COLUMNS).maybeSingle());
   if (!updated) throw new ApiError("invalid_transition");
+
+  // Delivered cash on delivery: the courier collected the money, so the payment is settled now (this releases the
+  // supplier's and the merchant's money, exactly like a verified transfer). A failure is logged, never silent.
+  if (cod) {
+    try {
+      await confirmOrderPayment(row.orderId, { kind: "admin", operatorId: "system:cash_on_delivery", operatorEmail: null }, { note: "Pagamento na entrega" });
+    } catch (err) {
+      console.error("[fulfilment] delivered cash-on-delivery order could not be settled; needs manual verification", { order: row.orderNumber }, err instanceof Error ? err.message : err);
+    }
+  }
 
   const target = ORDER_FOR[to];
   if (target) {
@@ -458,12 +478,16 @@ export interface ShopperOrder {
   paymentStatus: OrderPaymentStatus;
   paymentProvider: OrderPaymentProvider;
   customerName: string;
+  /** Pay the courier on arrival: no transfer to make. */
+  cashOnDelivery: boolean;
+  /** The day the shopper asked for (`YYYY-MM-DD`), when given. */
+  deliveryDate: string | null;
 }
 
 /** By the order's unguessable id (the link the shopper was sent to). Returns only what the shopper needs. */
 export async function getShopperOrder(id: string): Promise<ShopperOrder | null> {
   if (!/^ord_[A-Za-z0-9_-]{10,40}$/.test(id)) return null;
-  const o = must("shopper.order", await db().from("orders").select("store_id,number,total,items,customer,payment,payment_status,payment_provider").eq("id", id).maybeSingle());
+  const o = must("shopper.order", await db().from("orders").select("store_id,number,total,items,customer,address,payment,payment_status,payment_provider").eq("id", id).maybeSingle());
   if (!o) return null;
   const store = must("shopper.store", await db().from("stores").select("name").eq("id", o.store_id).maybeSingle());
   const item = ((o.items as Array<{ name: string; quantity: number }>) ?? [])[0];
@@ -477,6 +501,8 @@ export async function getShopperOrder(id: string): Promise<ShopperOrder | null> 
     paymentStatus: normalizePaymentStatus(o.payment_status),
     paymentProvider: normalizePaymentProvider(o.payment_provider),
     customerName: String((o.customer as { name?: string } | null)?.name ?? ""),
+    cashOnDelivery: isCashOnDelivery(o.payment as { method?: unknown } | null),
+    deliveryDate: ((o.address as { deliveryDate?: string } | null)?.deliveryDate) ?? null,
   };
 }
 

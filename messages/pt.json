@@ -195,6 +195,10 @@
       "bank_transfer": {
         "name": "Transferência bancária",
         "hint": "Comprovativo por WhatsApp"
+      },
+      "cash_on_delivery": {
+        "name": "Pagamento na entrega",
+        "hint": "Paga ao entregador"
       }
     },
     "fields": {
@@ -2772,7 +2776,10 @@
         "verifiedAt": "Confirmado em {when} por {who}",
         "slipRefPlaceholder": "Referência do talão (opcional)",
         "notePlaceholder": "Nota (opcional)",
-        "automatic": "Este pagamento é confirmado automaticamente pelo prestador."
+        "automatic": "Este pagamento é confirmado automaticamente pelo prestador.",
+        "email": "E-mail",
+        "deliveryDate": "Dia de entrega pedido",
+        "coupon": "Cupom"
       },
       "toast": {
         "updated": "Estado atualizado: {status}.",
@@ -2787,7 +2794,8 @@
       "payment": {
         "pending_payment": "A aguardar pagamento",
         "proof_submitted": "Comprovativo recebido",
-        "paid_verified": "Pagamento confirmado"
+        "paid_verified": "Pagamento confirmado",
+        "cod": "Pagamento na entrega"
       },
       "provider": {
         "manual_whatsapp_transfer": "Dinheiro/Transferência (Validação Manual via WhatsApp)",
@@ -3137,50 +3145,90 @@
     "whatsapp": "Enviar comprovativo no WhatsApp",
     "whatsappText": "Olá! Segue o comprovativo da encomenda #{number} (referência {reference}), no valor de {total}.",
     "note": "A encomenda só é entregue depois de a Kandrop confirmar o pagamento.",
-    "noWhatsapp": "Envie o comprovativo à Kandrop quando a equipa o contactar, indicando a referência da encomenda."
+    "noWhatsapp": "Envie o comprovativo à Kandrop quando a equipa o contactar, indicando a referência da encomenda.",
+    "cod": {
+      "status": "A pagar na entrega",
+      "title": "Pague na entrega",
+      "body": "Pague {total} ao entregador quando receber a encomenda. Não precisa de fazer nenhuma transferência.",
+      "date": "Dia de entrega pedido: {date}",
+      "note": "A equipa Kandrop vai contactá-lo para combinar a entrega.",
+      "greeting": "Obrigado, {name}. A sua encomenda segue para preparação."
+    }
   },
   "QuickCheckout": {
     "title": "Finalizar compra",
-    "subtitle": "Três passos rápidos. Sem criar conta.",
-    "back": "Voltar ao produto",
-    "secure": "Compra segura",
-    "invalid": "Confirme os seus dados e tente de novo.",
-    "s1": "Os seus dados",
-    "s2": "Endereço de entrega",
+    "subtitle": "Três passos rápidos. Sem criar conta e sem pagar agora.",
+    "s1": "Suas informações",
+    "s2": "Endereço e entrega",
     "s3": "Pagamento",
     "fields": {
       "name": "Nome completo",
-      "phone": "Telemóvel",
-      "province": "Província",
+      "email": "E-mail",
+      "phone": "Telefone ou Whatsapp",
+      "province": "Cidade",
       "choose": "Escolher…",
       "city": "Município",
-      "street": "Rua e número",
+      "street": "Detalhe da rua ou bairro",
       "reference": "Ponto de referência (opcional)",
-      "referenceHint": "Ajuda o estafeta a encontrar o local."
+      "referenceHint": "Ajuda o estafeta a encontrar o local.",
+      "deliveryDate": "Dia de entrega desejado",
+      "datePlaceholder": "Escolher o dia",
+      "dateHint": "Entregamos de segunda a sábado. Não entregamos aos domingos.",
+      "prevMonth": "Mês anterior",
+      "nextMonth": "Mês seguinte",
+      "sundayOff": "Domingo: sem entregas"
     },
     "validation": {
       "name_invalid": "Indique o nome completo.",
-      "phone_invalid": "Telemóvel angolano com 9 dígitos (começa por 9).",
-      "province_invalid": "Escolha a província.",
+      "email_invalid": "Indique um e-mail válido.",
+      "phone_invalid": "Telefone angolano com 9 dígitos (começa por 9).",
+      "province_invalid": "Escolha a cidade.",
       "city_invalid": "Indique o município.",
-      "street_invalid": "Indique a rua e o número.",
-      "reference_invalid": "No máximo 160 caracteres."
+      "street_invalid": "Indique a rua ou o bairro.",
+      "reference_invalid": "No máximo 160 caracteres.",
+      "date_invalid": "Escolha um dia de entrega válido (até 30 dias).",
+      "date_sunday": "Não entregamos aos domingos. Escolha outro dia.",
+      "coupon_invalid": "Código inválido: use 3 a 32 letras, números, - ou _."
     },
     "payment": {
-      "method": "Dinheiro/transferência, confirmados pela Kandrop",
-      "body": "Depois de finalizar, recebe o valor e uma referência. Faça a transferência e envie o talão por WhatsApp: a Kandrop confirma o pagamento e a encomenda segue para si."
+      "method": "Pagamento na entrega",
+      "body": "Não paga nada agora. Depois de finalizar, a Kandrop prepara a encomenda e paga ao entregador quando receber o produto no seu endereço."
     },
-    "submit": "Finalizar encomenda · {price}",
-    "submitting": "A registar…",
-    "lockNote": "Ligação segura. Os seus dados só servem para a entrega e para confirmar o pagamento.",
+    "lockNote": "Ligação segura. Os seus dados só servem para a entrega.",
     "summary": {
-      "title": "Resumo da encomenda",
-      "quantity": "1 unidade",
+      "title": "Resumo do pedido",
+      "quantity": "1 unidade(s)",
+      "value": "Valor: {price}",
       "subtotal": "Subtotal",
-      "shipping": "Entrega",
-      "shippingValue": "Gerida pela Kandrop",
-      "total": "Total a pagar"
-    }
+      "shipping": "Frete",
+      "total": "Valor Final"
+    },
+    "coupon": {
+      "toggle": "Adicionar cupom",
+      "placeholder": "Digite o código do cupom",
+      "apply": "Aplicar",
+      "applied": "Cupom {code} guardado com o pedido. A equipa Kandrop confirma o desconto, se for válido.",
+      "remove": "Remover"
+    },
+    "trust": {
+      "secure": {
+        "title": "Proteção por criptografia SSL",
+        "body": "Todos os dados recebidos aqui serão protegidos de ponta a ponta."
+      },
+      "fast": {
+        "title": "Entrega rápida e garantida, risco zero",
+        "body": "Você não paga nada até o produto chegar no seu endereço."
+      },
+      "courier": {
+        "title": "Pague apenas para o entregador",
+        "body": "O pagamento é feito diretamente ao entregador, só no momento em que recebe o produto."
+      }
+    },
+    "back": "Voltar ao produto",
+    "secure": "Compra segura",
+    "invalid": "Confirme os seus dados e tente de novo.",
+    "submit": "Finalizar encomenda · {price}",
+    "submitting": "A registar…"
   },
   "Customers": {
     "title": "Clientes",

@@ -31,7 +31,8 @@ export const POST = handle(async (req, ctx: Ctx) => {
   const locale = typeof field === "string" && hasLocale(routing.locales, field) ? field : "pt";
   try {
     const orderId = await placeStorefrontOrder(slug, {
-      name: text("name"), phone: text("phone"), province: text("province"), city: text("city"), street: text("street"), reference: text("reference"),
+      name: text("name"), email: text("email"), phone: text("phone"), province: text("province"), city: text("city"), street: text("street"), reference: text("reference"),
+      deliveryDate: text("deliveryDate"), coupon: text("coupon"),
     });
     return Response.redirect(new URL(`/${locale}/pedido/${orderId}`, req.url), 303);
   } catch (error) {
