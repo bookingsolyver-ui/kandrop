@@ -17,9 +17,15 @@ async function isAdmin(session: Session): Promise<boolean> {
     .split(",")
     .map((email) => email.trim().toLowerCase())
     .filter(Boolean);
-  if (allowed.length === 0) return false;
+  if (allowed.length === 0) {
+    // The usual reason for a 404 on /admin: say so in the server log (never on the page).
+    console.warn("[admin] /admin refused: ADMIN_EMAILS is not set, so nobody is an administrator");
+    return false;
+  }
   const user = await userRepository.findById(session.userId);
-  return !!user && allowed.includes(user.email.toLowerCase());
+  const ok = !!user && allowed.includes(user.email.toLowerCase());
+  if (!ok) console.warn("[admin] /admin refused: the signed-in account's e-mail is not in ADMIN_EMAILS");
+  return ok;
 }
 
 /** For the pages of `/admin` (Server Components): the admin's session, a redirect to sign in, or a 404. */
