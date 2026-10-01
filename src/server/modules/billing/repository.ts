@@ -1,5 +1,16 @@
 import { db, must, rows } from "@/server/db/client";
+import { PLAN_KEYS } from "@/server/modules/plan/limits";
 import type { ChargeRecord, SubscriptionRecord } from "./schema";
+
+/**
+ * A stored plan is untrusted text: trim and lower-case it, and accept only a real plan key. Anything else
+ * (a stray line break, an old name) is `null`, which the rest of the app already handles as "no active plan";
+ * it must never reach `PLANS[plan]` as a key that does not exist.
+ */
+export function normalizePlan(raw: unknown): SubscriptionRecord["plan"] | null {
+  const value = String(raw ?? "").replace(/\s/g, "").toLowerCase();
+  return (PLAN_KEYS as readonly string[]).includes(value) ? (value as SubscriptionRecord["plan"]) : null;
+}
 
 const chargeFromRow = (row: Record<string, unknown>): ChargeRecord => ({
   sessionId: String(row.session_id),
@@ -16,9 +27,13 @@ export const billingRepository = {
       "subscriptions.get",
       await db().from("subscriptions").select("*").eq("store_id", storeId).maybeSingle()
     );
-    return row
-      ? { storeId, plan: row.plan as SubscriptionRecord["plan"], periodEnd: Number(row.period_end) }
-      : null;
+    if (!row) return null;
+    const plan = normalizePlan(row.plan);
+    if (!plan) {
+      console.error("[billing] a subscription has an unknown plan value; treated as no active plan", { storeId, plan: JSON.stringify(String(row.plan)) });
+      return null;
+    }
+    return { storeId, plan, periodEnd: Number(row.period_end) };
   },
 
   async saveSubscription(subscription: SubscriptionRecord): Promise<SubscriptionRecord> {

@@ -19,7 +19,8 @@ export interface PlanUsage {
 export async function getPlan(auth: Session): Promise<PlanUsage> {
   const plan = await planOf(auth.storeId);
   if (!plan) throw new ApiError("payment_required");
-  const limits = PLANS[plan];
+  // `planOf` only returns real plan keys; the fallback is a second line of defence, never a crash.
+  const limits = PLANS[plan] ?? PLANS.starter;
   return {
     plan,
     usage: {

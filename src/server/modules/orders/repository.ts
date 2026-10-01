@@ -220,16 +220,17 @@ async function seedIfDemo(storeId: string) {
     .select("id", { count: "exact", head: true })
     .eq("store_id", storeId);
   if (error || count !== 0) return;
-  // `ignoreDuplicates`: two first requests racing must not fail (unique on store_id, number).
-  must(
-    "orders.seed",
-    await db()
-      .from("orders")
-      .upsert(generateSeedOrders(storeId).map(toRow), {
-        onConflict: "store_id,number",
-        ignoreDuplicates: true,
-      })
-  );
+  // `ignoreDuplicates`: two first requests racing must not fail (unique on store_id, number: the
+  // `orders_store_number_key` index of the 20261006 migration, which ON CONFLICT infers).
+  const { error: seedError } = await db()
+    .from("orders")
+    .upsert(generateSeedOrders(storeId).map(toRow), {
+      onConflict: "store_id,number",
+      ignoreDuplicates: true,
+    });
+  // Sample data is a convenience: if it cannot be written the list is simply empty. It must never turn the
+  // orders page into a 500 (the failure is logged, without row contents).
+  if (seedError) console.error("[db] orders.seed failed (demo data skipped):", seedError.code, seedError.message);
 }
 
 /** Every call takes the `storeId` so tenant scoping cannot be forgotten by a caller. */
