@@ -89,7 +89,7 @@ Node ≥ 20.9. Health check: `GET /api/health` → `{"status":"ok"}`.
 
 ## Opening the site (leaving "coming soon")
 
-Production builds redirect every public page to the waitlist (see `next.config.ts`). To open the site, set
+Production builds redirect every public page of the PUBLIC domain (`kandrop.com`, `www.kandrop.com`: `COMING_SOON_HOSTS`) to the waitlist (see `next.config.ts`). The `*.vercel.app` URLs, previews and localhost are not redirected, so the whole app can be tested there; on the public domain the team can open `/api/preview?key=<COMING_SOON_BYPASS_KEY>` to get a private cookie that shows the real site. To open the site, set
 `COMING_SOON=false` on Vercel (Production) and redeploy: the value is read at build time. Before opening, set on
 Vercel the details the shopper's order page shows (`/pedido/...`; each one is shown only when set and valid):
 `SUPPORT_WHATSAPP` (9-digit number, no +244), `BANK_TRANSFER_IBAN` (Angolan IBAN, check digits verified),
