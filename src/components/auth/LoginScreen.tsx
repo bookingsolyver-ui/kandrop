@@ -62,14 +62,6 @@ export function LoginScreen({ next }: { next?: string }) {
           {t("mobile.create")} <span className="ml-0.5 text-primary">→</span>
         </Link>
       }
-      topLink={
-        <>
-          {t("signupPrompt")}
-          <Link href="/register" className="ml-1 text-primary underline-offset-4 hover:underline">
-            {t("signupLink")}
-          </Link>
-        </>
-      }
       aside={
         <>
           <div className="inline-flex w-fit items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-xs font-medium tracking-wide text-white/80 backdrop-blur">

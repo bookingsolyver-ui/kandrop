@@ -57,8 +57,8 @@ export function AuthSplit({
   mobileTitle: ReactNode;
   /** The short link in the phone hero (e.g. "Create account →"). */
   mobileLink: ReactNode;
-  /** The prompt + link at the top of the white side (e.g. "No account? Sign up"). */
-  topLink: ReactNode;
+  /** An optional prompt + link next to the language selector (sign-in leaves it out: its form already ends with the sign-up link). */
+  topLink?: ReactNode;
   aside: ReactNode;
   children: ReactNode;
 }) {
@@ -86,11 +86,11 @@ export function AuthSplit({
         <div aria-hidden className="pointer-events-none absolute inset-0 hidden opacity-[0.5] lg:block" style={{ backgroundImage: "radial-gradient(circle, rgba(15,15,20,0.08) 1px, transparent 1px)", backgroundSize: "22px 22px", maskImage: "radial-gradient(ellipse at center, black 40%, transparent 80%)" }} />
         <div aria-hidden className="pointer-events-none absolute top-0 left-1/2 -z-0 hidden h-[500px] w-[700px] -translate-x-1/2 opacity-[0.10] lg:block" style={{ background: "radial-gradient(ellipse at top, rgba(255,90,0,0.55) 0%, rgba(255,90,0,0.15) 40%, transparent 70%)", filter: "blur(80px)" }} />
 
-        <header className="relative z-10 hidden items-center justify-between px-6 py-5 sm:px-10 sm:py-6 lg:flex lg:px-14">
+        <header className="relative z-10 mb-8 hidden w-full items-center justify-between px-6 py-5 sm:px-10 sm:py-6 lg:flex lg:px-14">
           <Image src="/logo-kandrop-full.png" alt="Kandrop" width={1024} height={206} priority className="h-9 w-auto" />
           <div className="flex items-center gap-4">
             <LocaleSwitcher className="h-9 cursor-pointer rounded-full border border-border bg-white px-3 text-[13px] font-medium text-foreground" />
-            <span className="hidden text-sm font-medium text-foreground sm:inline-flex">{topLink}</span>
+            {topLink && <span className="hidden text-sm font-medium text-foreground sm:inline-flex">{topLink}</span>}
           </div>
         </header>
 
