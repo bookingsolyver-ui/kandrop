@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
+import { Link } from "@/i18n/navigation";
 
 export const DARK = "linear-gradient(135deg, #000000 0%, #141414 45%, #2e2e2e 100%)";
 const DOTS = "radial-gradient(circle, rgba(255,255,255,0.55) 1px, transparent 1px)";
@@ -72,7 +73,9 @@ export function AuthSplit({
           <div aria-hidden className="pointer-events-none absolute -bottom-32 -left-20 h-[300px] w-[300px] rounded-full" style={{ background: GLOW(0.45, 0.12), filter: "blur(70px)" }} />
           <div className="relative z-10 px-5 pt-7 pb-16 sm:px-8 sm:pt-9 sm:pb-20">
             <div className="flex items-center justify-between">
-              <Image src="/logo-kandrop-full.png" alt="Kandrop" width={1024} height={206} priority className="h-8 w-auto brightness-0 invert" />
+              <Link href="/" aria-label="Kandrop" className="inline-flex transition-opacity hover:opacity-80">
+                <Image src="/logo-kandrop-full.png" alt="Kandrop" width={1024} height={206} priority className="h-8 w-auto brightness-0 invert" />
+              </Link>
               {mobileLink}
             </div>
             <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-[11px] font-medium tracking-wide text-white/85 backdrop-blur">
@@ -87,7 +90,9 @@ export function AuthSplit({
         <div aria-hidden className="pointer-events-none absolute top-0 left-1/2 -z-0 hidden h-[500px] w-[700px] -translate-x-1/2 opacity-[0.10] lg:block" style={{ background: "radial-gradient(ellipse at top, rgba(255,90,0,0.55) 0%, rgba(255,90,0,0.15) 40%, transparent 70%)", filter: "blur(80px)" }} />
 
         <header className="relative z-10 mb-8 hidden w-full items-center justify-between px-6 py-5 sm:px-10 sm:py-6 lg:flex lg:px-14">
-          <Image src="/logo-kandrop-full.png" alt="Kandrop" width={1024} height={206} priority className="h-9 w-auto" />
+          <Link href="/" aria-label="Kandrop" className="inline-flex rounded-md transition-opacity hover:opacity-80">
+            <Image src="/logo-kandrop-full.png" alt="Kandrop" width={1024} height={206} priority className="h-9 w-auto" />
+          </Link>
           <div className="flex items-center gap-4">
             <LocaleSwitcher className="h-9 cursor-pointer rounded-full border border-border bg-white px-3 text-[13px] font-medium text-foreground" />
             {topLink && <span className="hidden text-sm font-medium text-foreground sm:inline-flex">{topLink}</span>}
