@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useRef, useState, type ReactNode } from "react";
+import { ToastProvider } from "@/components/ui/Toast";
 import { KaiHeader } from "@/components/kai/KaiHeader";
 import { KaiSidebar } from "@/components/kai/KaiSidebar";
 import { AlertCircleIcon } from "@/components/kai/icons";
@@ -42,6 +43,7 @@ export function AppShell({
 
   return (
     <PlanProvider>
+      <ToastProvider>
       <div className="workspace kai-shell flex h-screen w-full overflow-hidden bg-[var(--ink-50)]">
         <a
           href="#content"
@@ -84,6 +86,7 @@ export function AppShell({
           </main>
         </div>
       </div>
+      </ToastProvider>
     </PlanProvider>
   );
 }

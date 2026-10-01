@@ -1958,16 +1958,20 @@
     "prev": "Précédent",
     "next": "Suivant",
     "page": "Page {n}",
-    "pagination": "Pagination"
+    "pagination": "Pagination",
+    "toast": {
+      "added": "Produit ajouté à vos produits !",
+      "view": "Voir"
+    }
   },
   "MyProducts": {
     "title": "Mes produits",
-    "subtitle": "Les produits importés de la Vitrine pour vendre, avec votre marge en temps réel.",
-    "explore": "Explorer la Vitrine",
-    "sample": "Données d’exemple : aucun produit réel importé pour l’instant.",
+    "subtitle": "Les produits que vous vendez, avec votre marge en temps réel.",
+    "explore": "Parcourir la vitrine",
+    "sample": "Enregistré dans ce navigateur (version de démonstration). Les produits viennent de la Vitrine.",
     "kpi": {
       "active": "Produits actifs",
-      "total": "Produits dans ma boutique",
+      "total": "Total dans la vitrine",
       "margin": "Marge moyenne"
     },
     "search": "Rechercher dans mes produits…",
@@ -1985,7 +1989,8 @@
       "price": "Prix de vente",
       "margin": "Marge",
       "sales": "Ventes (mois)",
-      "status": "Statut"
+      "status": "Statut",
+      "suggested": "Suggéré"
     },
     "origin": {
       "nacional": "Fournisseur national",
@@ -2026,8 +2031,17 @@
     "pagination": "Pagination",
     "empty": {
       "title": "Vous n’avez pas encore de produits",
-      "body": "Choisissez des produits dans la Vitrine et importez-les dans votre boutique. Ils apparaissent ici, avec votre prix et votre marge.",
+      "body": "Choisissez des produits dans la Vitrine et appuyez sur « Commencer à vendre ». Ils apparaissent ici, avec votre prix et votre marge.",
       "none": "Aucun produit ne correspond à la recherche."
+    },
+    "favorites": "Favoris",
+    "costLine": "Coût {price}",
+    "fav": {
+      "title": "Favoris",
+      "subtitle": "Les produits de la Vitrine marqués d’un cœur.",
+      "back": "Retour à mes produits",
+      "emptyTitle": "Vous n’avez pas encore de favoris",
+      "emptyBody": "Touchez le cœur d’un produit de la Vitrine pour le garder ici."
     }
   }
 }

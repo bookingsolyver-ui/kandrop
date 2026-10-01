@@ -1958,16 +1958,20 @@
     "prev": "Anterior",
     "next": "Seguinte",
     "page": "Página {n}",
-    "pagination": "Paginação"
+    "pagination": "Paginação",
+    "toast": {
+      "added": "Produto adicionado aos seus produtos!",
+      "view": "Ver"
+    }
   },
   "MyProducts": {
     "title": "Os meus produtos",
-    "subtitle": "Os produtos que importou da Vitrine para vender, com a sua margem em tempo real.",
-    "explore": "Explorar Vitrine",
-    "sample": "Dados de exemplo: ainda não há produtos reais importados.",
+    "subtitle": "Os produtos que está a vender, com a sua margem em tempo real.",
+    "explore": "Buscar produtos na vitrine",
+    "sample": "Guardado neste navegador (versão de demonstração). Os produtos vêm da Vitrine.",
     "kpi": {
       "active": "Produtos ativos",
-      "total": "Produtos na minha loja",
+      "total": "Total na vitrine",
       "margin": "Margem média"
     },
     "search": "Procurar nos meus produtos…",
@@ -1976,7 +1980,7 @@
       "all": "Todos",
       "active": "Ativos",
       "paused": "Pausados",
-      "out": "Sem stock"
+      "out": "Stock zerado"
     },
     "tabsLabel": "Estado do produto",
     "cols": {
@@ -1985,7 +1989,8 @@
       "price": "Preço de venda",
       "margin": "Margem",
       "sales": "Vendas (mês)",
-      "status": "Estado"
+      "status": "Status",
+      "suggested": "Sugerido"
     },
     "origin": {
       "nacional": "Fornecedor nacional",
@@ -1999,7 +2004,7 @@
     "status": {
       "active": "Ativo",
       "paused": "Pausado",
-      "out": "Sem stock"
+      "out": "Stock zerado"
     },
     "suggested": "Sugerido: {price}",
     "sort": "Ordenar por {col}",
@@ -2026,8 +2031,17 @@
     "pagination": "Paginação",
     "empty": {
       "title": "Ainda não tem produtos",
-      "body": "Escolha produtos na Vitrine e importe-os para a sua loja. Aparecem aqui, com o seu preço e a sua margem.",
+      "body": "Escolha produtos na Vitrine e clique em “Começar a vender”. Aparecem aqui, com o seu preço e a sua margem.",
       "none": "Nenhum produto corresponde à pesquisa."
+    },
+    "favorites": "Favoritos",
+    "costLine": "Custo {price}",
+    "fav": {
+      "title": "Favoritos",
+      "subtitle": "Os produtos da Vitrine que marcou com o coração.",
+      "back": "Voltar aos meus produtos",
+      "emptyTitle": "Ainda não tem favoritos",
+      "emptyBody": "Toque no coração de um produto na Vitrine para o guardar aqui."
     }
   }
 }

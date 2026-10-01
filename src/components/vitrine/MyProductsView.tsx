@@ -3,13 +3,14 @@
 import { useTranslations } from "next-intl";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { useFormatters } from "@/components/dashboard/useFormatters";
-import { BoxIcon, SearchIcon } from "@/components/kai/icons";
+import { BoxIcon, CartIcon, HeartIcon, SearchIcon } from "@/components/kai/icons";
 import { BrandLink } from "@/components/ui/BrandButton";
 import { Link } from "@/i18n/navigation";
+import { useMyProducts } from "@/lib/vitrine/store";
 import { marginOf, type ImportedProduct } from "@/shared/vitrine/imported";
 
 type Tab = "all" | "active" | "paused" | "out";
-type SortKey = "product" | "cost" | "price" | "margin" | "sales" | "status";
+type SortKey = "product" | "price" | "suggested" | "margin" | "sales" | "status";
 const PER_PAGE = [10, 20, 50] as const;
 const TABS: Tab[] = ["all", "active", "paused", "out"];
 
@@ -159,19 +160,16 @@ function PriceEditor({
 }
 
 /** "Os meus produtos": the Vitrine products the merchant sells, with cost, price, margin and state. */
-export function MyProductsView({ initial }: { initial: ImportedProduct[] }) {
+export function MyProductsView() {
   const t = useTranslations("MyProducts");
   const f = useFormatters();
-  const [items, setItems] = useState(initial);
+  const { items, ready, update, remove } = useMyProducts();
   const [tab, setTab] = useState<Tab>("all");
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<{ key: SortKey; dir: "asc" | "desc" }>({ key: "sales", dir: "desc" });
   const [perPage, setPerPage] = useState<(typeof PER_PAGE)[number]>(10);
   const [page, setPage] = useState(1);
   const [editing, setEditing] = useState<string | null>(null);
-
-  const update = (id: string, patch: Partial<ImportedProduct>) =>
-    setItems((list) => list.map((p) => (p.id === id ? { ...p, ...patch } : p)));
 
   const counts = useMemo(
     () => ({
@@ -182,9 +180,6 @@ export function MyProductsView({ initial }: { initial: ImportedProduct[] }) {
     }),
     [items]
   );
-  const avgMargin = items.length
-    ? items.reduce((sum, p) => sum + marginOf(p).rate, 0) / items.length
-    : 0;
 
   const rows = useMemo(() => {
     const q = fold(query.trim());
@@ -194,8 +189,8 @@ export function MyProductsView({ initial }: { initial: ImportedProduct[] }) {
     const value = (p: ImportedProduct): number | string => {
       switch (sort.key) {
         case "product": return fold(p.title);
-        case "cost": return p.costPrice;
         case "price": return p.salePrice;
+        case "suggested": return p.suggestedPrice;
         case "margin": return marginOf(p).amount;
         case "sales": return p.salesMonth;
         case "status": return stateOf(p);
@@ -246,24 +241,33 @@ export function MyProductsView({ initial }: { initial: ImportedProduct[] }) {
           <h1 className="text-[20px] font-bold tracking-tight text-[var(--ink-900)] sm:text-[26px]">{t("title")}</h1>
           <p className="mt-1 text-[12px] text-[var(--ink-600)] sm:text-[15px]">{t("subtitle")}</p>
         </div>
-        <BrandLink href="/dashboard/vitrine/nacional" size="sm">
-          {t("explore")}
-        </BrandLink>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/dashboard/meus-produtos/favoritos"
+            className="inline-flex h-10 items-center gap-2 rounded-full border border-[var(--ink-200)] bg-white px-4 text-sm font-semibold text-[var(--ink-900)] transition-colors hover:border-[var(--ink-300)]"
+          >
+            <HeartIcon size={16} />
+            {t("favorites")}
+          </Link>
+          <BrandLink href="/dashboard/vitrine/nacional" size="sm">
+            <CartIcon size={16} />
+            {t("explore")}
+          </BrandLink>
+        </div>
       </div>
 
-      <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
+      <div className="mb-6 grid grid-cols-2 gap-3 sm:gap-4">
         {([
-          ["active", String(counts.active)],
-          ["total", String(counts.all)],
-          ["margin", `${Math.round(avgMargin * 100)}%`],
+          ["active", counts.active],
+          ["total", counts.all],
         ] as const).map(([key, value]) => (
-          <div key={key} className={`${card} flex items-center gap-3.5 p-4 transition-all hover:-translate-y-px hover:shadow-[var(--sh-md)]`}>
+          <div key={key} className={`${card} flex items-center gap-2.5 p-3 transition-all hover:-translate-y-px hover:shadow-[var(--sh-md)] sm:gap-3.5 sm:p-4`}>
             <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[var(--kai-orange-50)] text-[var(--kai-orange-600)]">
-              <BoxIcon size={18} />
+              {key === "active" ? <BoxIcon size={18} /> : <CartIcon size={18} />}
             </span>
-            <div className="min-w-0">
-              <p className="text-xs text-[var(--ink-600)]">{t(`kpi.${key}`)}</p>
-              <p className="mono-num text-[22px] leading-tight font-extrabold tracking-tight text-[var(--ink-900)]">{value}</p>
+            <div className="flex min-w-0 flex-col gap-0.5">
+              <span className="text-[10.5px] text-[var(--ink-600)] sm:text-xs">{t(`kpi.${key}`)}</span>
+              <span className="mono-num text-[16px] leading-tight font-extrabold tracking-tight text-[var(--ink-900)] sm:text-[22px]">{value}</span>
             </div>
           </div>
         ))}
@@ -310,7 +314,9 @@ export function MyProductsView({ initial }: { initial: ImportedProduct[] }) {
           </div>
         </div>
 
-        {items.length === 0 ? (
+        {!ready ? (
+          <div className="h-64" aria-hidden />
+        ) : items.length === 0 ? (
           <div className="flex flex-col items-center gap-4 px-6 py-20 text-center">
             <span className="grid size-14 place-items-center rounded-2xl bg-[var(--kai-orange-50)] text-[var(--kai-orange-600)]">
               <BoxIcon size={26} />
@@ -318,6 +324,7 @@ export function MyProductsView({ initial }: { initial: ImportedProduct[] }) {
             <h2 className="text-lg font-bold text-[var(--ink-900)]">{t("empty.title")}</h2>
             <p className="max-w-md text-sm text-[var(--ink-600)]">{t("empty.body")}</p>
             <BrandLink href="/dashboard/vitrine/nacional" size="md">
+              <CartIcon size={16} />
               {t("explore")}
             </BrandLink>
           </div>
@@ -329,8 +336,8 @@ export function MyProductsView({ initial }: { initial: ImportedProduct[] }) {
               <thead className="border-b border-gray-100 bg-[var(--ink-50)]">
                 <tr>
                   {th("product")}
-                  {th("cost", "right")}
                   {th("price", "right")}
+                  {th("suggested", "right")}
                   {th("margin", "right")}
                   {th("sales", "right")}
                   {th("status")}
@@ -351,12 +358,11 @@ export function MyProductsView({ initial }: { initial: ImportedProduct[] }) {
                           <div className="min-w-0">
                             <p className="line-clamp-2 max-w-md text-sm leading-snug font-semibold text-[var(--ink-900)]">{p.title}</p>
                             <p className="mt-0.5 text-[12px] text-[var(--ink-500)]">
-                              {t(`stock.${p.stock}`)} · {t(`origin.${p.kind}`)} · {p.sku}
+                              {t(`stock.${p.stock}`)} · {t(`origin.${p.kind}`)} · {t("costLine", { price: f.money(p.costPrice) })}
                             </p>
                           </div>
                         </div>
                       </td>
-                      <td className="mono-num px-4 py-3 text-right text-[var(--ink-600)]">{f.money(p.costPrice)}</td>
                       <td className="px-4 py-3 text-right">
                         {editing === p.id ? (
                           <div className="flex justify-end">
@@ -377,12 +383,10 @@ export function MyProductsView({ initial }: { initial: ImportedProduct[] }) {
                             className="rounded-lg px-2 py-1 text-right hover:bg-[var(--ink-100)]"
                           >
                             <span className="mono-num block font-extrabold text-[var(--ink-900)]">{f.money(p.salePrice)}</span>
-                            <span className="block text-[11px] text-[var(--ink-500)]">
-                              {t("suggested", { price: f.money(p.suggestedPrice) })}
-                            </span>
                           </button>
                         )}
                       </td>
+                      <td className="mono-num px-4 py-3 text-right text-[var(--ink-600)]">{f.money(p.suggestedPrice)}</td>
                       <td className="px-4 py-3 text-right">
                         <span className={`mono-num block font-bold ${margin.amount < 0 ? "text-down" : "text-[var(--kai-success)]"}`}>
                           {f.money(margin.amount)}
@@ -401,7 +405,7 @@ export function MyProductsView({ initial }: { initial: ImportedProduct[] }) {
                           product={p}
                           onEditPrice={() => setEditing(p.id)}
                           onToggle={() => update(p.id, { status: p.status === "active" ? "paused" : "active" })}
-                          onRemove={() => setItems((list) => list.filter((x) => x.id !== p.id))}
+                          onRemove={() => remove(p.id)}
                         />
                       </td>
                     </tr>

@@ -1958,16 +1958,20 @@
     "prev": "Previous",
     "next": "Next",
     "page": "Page {n}",
-    "pagination": "Pagination"
+    "pagination": "Pagination",
+    "toast": {
+      "added": "Product added to your products!",
+      "view": "View"
+    }
   },
   "MyProducts": {
     "title": "My products",
-    "subtitle": "The products you imported from the Showcase to sell, with your margin in real time.",
-    "explore": "Explore the Showcase",
-    "sample": "Sample data: no real imported products yet.",
+    "subtitle": "The products you are selling, with your margin in real time.",
+    "explore": "Browse the showcase",
+    "sample": "Saved in this browser (demo version). Products come from the Showcase.",
     "kpi": {
       "active": "Active products",
-      "total": "Products in my store",
+      "total": "Total in the showcase",
       "margin": "Average margin"
     },
     "search": "Search my products…",
@@ -1985,7 +1989,8 @@
       "price": "Selling price",
       "margin": "Margin",
       "sales": "Sales (month)",
-      "status": "Status"
+      "status": "Status",
+      "suggested": "Suggested"
     },
     "origin": {
       "nacional": "National supplier",
@@ -2026,8 +2031,17 @@
     "pagination": "Pagination",
     "empty": {
       "title": "You have no products yet",
-      "body": "Pick products in the Showcase and import them into your store. They show up here, with your price and your margin.",
+      "body": "Pick products in the Showcase and press “Start selling”. They show up here, with your price and your margin.",
       "none": "No product matches your search."
+    },
+    "favorites": "Favourites",
+    "costLine": "Cost {price}",
+    "fav": {
+      "title": "Favourites",
+      "subtitle": "The Showcase products you marked with a heart.",
+      "back": "Back to my products",
+      "emptyTitle": "You have no favourites yet",
+      "emptyBody": "Tap the heart on a Showcase product to keep it here."
     }
   }
 }

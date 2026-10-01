@@ -3,6 +3,10 @@
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { useFormatters } from "@/components/dashboard/useFormatters";
+import { useToast } from "@/components/ui/Toast";
+import { useRouter } from "@/i18n/navigation";
+import { useFavorites, useMyProducts } from "@/lib/vitrine/store";
+import { importFromCatalog } from "@/shared/vitrine/imported";
 import { FlameIcon, LayersIcon, SearchIcon, ThermometerIcon } from "@/components/kai/icons";
 import { VITRINE_CATEGORIES, type VitrineProduct } from "@/shared/vitrine/mock";
 import { ProductCard } from "./ProductCard";
@@ -43,6 +47,10 @@ function pageList(current: number, total: number): Array<number | "gap"> {
 export function VitrineView({ products }: { products: VitrineProduct[] }) {
   const t = useTranslations("Vitrine");
   const f = useFormatters();
+  const router = useRouter();
+  const toast = useToast();
+  const favorites = useFavorites();
+  const mine = useMyProducts();
   const [selection, setSelection] = useState<Selection>("all");
   const [query, setQuery] = useState("");
   const [inStock, setInStock] = useState(true);
@@ -50,13 +58,13 @@ export function VitrineView({ products }: { products: VitrineProduct[] }) {
   const [occasion, setOccasion] = useState<"children" | null>(null);
   const [perPage, setPerPage] = useState<(typeof PER_PAGE)[number]>(10);
   const [page, setPage] = useState(1);
-  const [favorites, setFavorites] = useState<Set<string>>(new Set());
-  const [selected, setSelected] = useState<Set<string>>(new Set());
 
-  const toggle = (set: Set<string>, id: string) => {
-    const next = new Set(set);
-    if (!next.delete(id)) next.add(id);
-    return next;
+  /** "Start selling": imports the product into "My products" (or, if it is there already, goes to it). */
+  const start = (p: VitrineProduct) => {
+    const open = () => router.push("/dashboard/meus-produtos");
+    if (mine.has(p.id)) return open();
+    mine.add(importFromCatalog(p));
+    toast({ message: t("toast.added"), action: { label: t("toast.view"), onClick: open } });
   };
   /** Any change of what is shown starts again from the first page. */
   const change = <T,>(setter: (value: T) => void) => (value: T) => {
@@ -227,9 +235,9 @@ export function VitrineView({ products }: { products: VitrineProduct[] }) {
                   product={p}
                   priceLabel={f.money(p.costPrice)}
                   favorite={favorites.has(p.id)}
-                  selected={selected.has(p.id)}
-                  onToggleFavorite={() => setFavorites((s) => toggle(s, p.id))}
-                  onStart={() => setSelected((s) => toggle(s, p.id))}
+                  selected={mine.has(p.id)}
+                  onToggleFavorite={() => favorites.toggle(p.id)}
+                  onStart={() => start(p)}
                 />
               ))}
             </div>

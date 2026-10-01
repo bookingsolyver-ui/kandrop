@@ -101,3 +101,6 @@ export const NATIONAL_PRODUCTS: VitrineProduct[] = build("nacional", "nac", [
   ["Kit de cozinha angolana: funge, jindungo e tempero", "Sabores de Angola", "home", 5_400, "k"],
   ["Lenço de cabeça em wax, vários padrões", "Tecidos de Luanda", "fashion", 3_200, "x"],
 ]);
+
+export const ALL_VITRINE_PRODUCTS: VitrineProduct[] = [...NATIONAL_PRODUCTS, ...INTERNATIONAL_PRODUCTS];
+export const findVitrineProduct = (id: string) => ALL_VITRINE_PRODUCTS.find((p) => p.id === id);
