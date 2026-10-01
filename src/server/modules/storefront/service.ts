@@ -4,6 +4,8 @@ import { userRepository } from "@/server/modules/auth/userRepository";
 import { buildCheckout } from "@/server/modules/checkout/service";
 import { productRepository } from "@/server/modules/products/repository";
 import type { ProductRecord } from "@/server/modules/products/schema";
+import { supplierStockFor } from "@/server/modules/fulfilment/service";
+import { buyerSchema } from "@/shared/fulfilment/schemas";
 import { offerOf, stockState } from "@/shared/products/schemas";
 import type { StorefrontProduct } from "./schema";
 
@@ -56,10 +58,17 @@ export async function recordView(slug: string): Promise<void> {
  * "Buy now": a checkout session for one unit at the price that applies *this second* (taken on
  * the server, never from the browser), or `out_of_stock`. Stock is checked, not reserved.
  */
-export async function createStorefrontCheckout(slug: string): Promise<string> {
+export async function createStorefrontCheckout(slug: string, rawBuyer: unknown): Promise<string> {
+  // Who buys and where it goes: validated here, on the server, whatever the browser did.
+  const buyer = buyerSchema.parse(rawBuyer);
   const p = await publicProduct(slug);
   if (stockState(p.stock) === "out") throw new ApiError("out_of_stock");
+  // A product imported from a supplier is limited by what the supplier has.
+  const supplierStock = await supplierStockFor(p.storeId, p.id);
+  if (supplierStock !== null && supplierStock < 1) throw new ApiError("out_of_stock");
   const session = await buildCheckout({
+    productId: p.id,
+    buyer: { customer: { name: buyer.name, phone: buyer.phone }, address: { street: buyer.street, city: buyer.city, province: buyer.province, reference: buyer.reference } },
     storeId: p.storeId,
     storeName: await storeNameOf(p.storeId),
     storeNif: null,

@@ -12,6 +12,7 @@ export const AUDIT_ACTIONS = [
   "payout.approve",
   "payout.reject",
   "payout.approve_batch",
+  "logistics.update",
   "user.revoke_sessions",
   "user.ban",
   "user.unban",

@@ -1277,7 +1277,18 @@
       "cta": "Comprar agora",
       "methods": "Multicaixa Express · Unitel Money · Cartão",
       "soldOut": "Esgotado",
-      "soldOutNote": "Este produto esgotou. Volte mais tarde."
+      "soldOutNote": "Este produto esgotou. Volte mais tarde.",
+      "fields": {
+        "title": "Dados para entrega",
+        "name": "Nome completo",
+        "phone": "Telemóvel",
+        "province": "Província",
+        "choose": "Escolher…",
+        "city": "Município",
+        "street": "Rua e número",
+        "reference": "Ponto de referência (opcional)",
+        "invalid": "Confirme os seus dados de entrega e tente de novo."
+      }
     },
     "footer": {
       "soldBy": "Vendido por {store}",
@@ -2604,6 +2615,62 @@
         "before": "Antes",
         "after": "Depois"
       }
+    },
+    "logistics": {
+      "title": "Encomendas e logística",
+      "subtitle": "Todas as encomendas de produtos de fornecedores, do armazém ao cliente final.",
+      "search": "Pesquisar por encomenda, loja, fornecedor, produto ou cliente",
+      "empty": "Ainda não há encomendas.",
+      "qty": "{count, plural, one {# unidade} other {# unidades}}",
+      "details": "Detalhes",
+      "advance": "Avançar para: {status}",
+      "filters": {
+        "all": "Todas"
+      },
+      "status": {
+        "pending": "Pendente",
+        "preparing": "Em preparação pelo fornecedor",
+        "picked_up": "Recolhido pela Kandrop",
+        "in_transit": "Em trânsito",
+        "delivered": "Entregue"
+      },
+      "cards": {
+        "toPrepare": "A preparar",
+        "toPrepareNote": "Pendentes ou em preparação",
+        "moving": "A caminho",
+        "movingNote": "Recolhidas e em trânsito",
+        "commission": "Comissão Kandrop",
+        "commissionNote": "Soma das encomendas listadas",
+        "dueSuppliers": "Devido a fornecedores",
+        "dueSuppliersNote": "Preço de custo das encomendas"
+      },
+      "cols": {
+        "order": "Encomenda",
+        "product": "Produto",
+        "supplier": "Fornecedor",
+        "store": "Loja",
+        "sale": "Venda",
+        "commission": "Comissão",
+        "status": "Estado",
+        "actions": "Ações"
+      },
+      "detail": {
+        "deliverTo": "Entregar a",
+        "money": "Valores",
+        "sale": "Venda ao cliente",
+        "supplierDue": "Devido ao fornecedor",
+        "commission": "Comissão Kandrop",
+        "merchantNet": "Margem líquida do lojista",
+        "invoices": "Faturas",
+        "party": {
+          "merchant": "lojista",
+          "supplier": "fornecedor"
+        }
+      },
+      "toast": {
+        "updated": "Estado atualizado: {status}.",
+        "failed": "Não foi possível atualizar o estado."
+      }
     }
   },
   "Supplier": {
@@ -2612,7 +2679,8 @@
       "register": "Registo de fornecedor",
       "dashboard": "Painel do fornecedor",
       "products": "Produtos do fornecedor",
-      "finance": "Financeiro do fornecedor"
+      "finance": "Financeiro do fornecedor",
+      "orders": "Encomendas do fornecedor"
     },
     "auth": {
       "panelTag": "Portal do Fornecedor",
@@ -2704,7 +2772,8 @@
       "label": "Navegação do fornecedor",
       "dashboard": "Painel",
       "products": "Produtos",
-      "finance": "Financeiro"
+      "finance": "Financeiro",
+      "orders": "Encomendas"
     },
     "dashboard": {
       "title": "Olá, {name}",
@@ -2736,7 +2805,9 @@
         "lowShort": "Stock baixo"
       },
       "cta": "Tem um produto novo?",
-      "ctaLink": "Adicione-o em Produtos"
+      "ctaLink": "Adicione-o em Produtos",
+      "toPrepare": "Tem {count, plural, one {# produto vendido para preparar} other {# produtos vendidos para preparar}}.",
+      "toPrepareCta": "Ver encomendas"
     },
     "products": {
       "title": "Os meus produtos",
@@ -2818,7 +2889,8 @@
           "product": "Produto",
           "merchant": "Lojista",
           "amount": "Recebe (preço de custo)",
-          "status": "Estado"
+          "status": "Estado",
+          "invoice": "Nota de remessa"
         },
         "qty": "{count, plural, one {# unidade} other {# unidades}}",
         "status": {
@@ -2865,6 +2937,34 @@
         "saved": "Dados bancários guardados.",
         "failed": "Não foi possível guardar. Tente novamente.",
         "rateLimited": "Demasiadas tentativas. Tente de novo dentro de alguns minutos."
+      }
+    },
+    "orders": {
+      "title": "Encomendas",
+      "subtitle": "O que foi vendido dos seus produtos e o que tem de preparar para a recolha.",
+      "prepare": {
+        "title": "A preparar para recolha",
+        "help": "Prepare e embale estes produtos. A equipa Kandrop recolhe-os no seu armazém e trata da entrega ao cliente. O estado atualiza-se à medida que a encomenda avança.",
+        "empty": "Nada para preparar neste momento."
+      },
+      "history": {
+        "title": "A caminho e entregues",
+        "empty": "Ainda sem encomendas a caminho."
+      },
+      "cols": {
+        "order": "Encomenda",
+        "product": "Produto",
+        "qty": "Qtd.",
+        "due": "A receber",
+        "status": "Estado",
+        "date": "Data"
+      },
+      "status": {
+        "pending": "Pendente",
+        "preparing": "Em preparação pelo fornecedor",
+        "picked_up": "Recolhido pela Kandrop",
+        "in_transit": "Em trânsito",
+        "delivered": "Entregue"
       }
     }
   }

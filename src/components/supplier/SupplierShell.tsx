@@ -10,9 +10,16 @@ import { ToastProvider } from "@/components/ui/Toast";
 import { Link, usePathname } from "@/i18n/navigation";
 import { useCurrentSupplier } from "@/lib/supplier/store";
 
+const TruckIcon = () => (
+  <svg aria-hidden width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M10 17h4V5H2v12h3" /><path d="M14 8h4l4 4v5h-3" /><circle cx="7.5" cy="17.5" r="2.5" /><circle cx="17.5" cy="17.5" r="2.5" />
+  </svg>
+);
+
 const NAV = [
   { key: "dashboard", href: "/fornecedor", icon: <TrendingUpIcon size={18} /> },
   { key: "products", href: "/fornecedor/produtos", icon: <BoxIcon size={18} /> },
+  { key: "orders", href: "/fornecedor/encomendas", icon: <TruckIcon /> },
   { key: "finance", href: "/fornecedor/financeiro", icon: <WalletIcon size={18} /> },
 ] as const;
 

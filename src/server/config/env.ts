@@ -50,6 +50,9 @@ const schema = z.object({
   // AES-256 key (32 random bytes, base64: `openssl rand -base64 32`) for IBANs and tax numbers at rest.
   // Unset = stored unencrypted, with a warning (see `crypto/field.ts`).
   DATA_ENCRYPTION_KEY: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
+  // Kandrop's commission, in basis points of the merchant's gross margin (sale price − the supplier's cost):
+  // 1000 = 10%. A BUSINESS decision: set it deliberately; the default is only a placeholder.
+  COMMISSION_BPS: z.preprocess((v) => (v === "" ? undefined : v), z.coerce.number().int().min(0).max(10_000).default(1000)),
   // `sandbox` simulates every payment. `live` needs a real provider integration (none yet).
   PAYMENTS_MODE: z.enum(["sandbox", "live"]).default("sandbox"),
 });

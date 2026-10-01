@@ -1,7 +1,7 @@
 import { useFormatter, useTranslations } from "next-intl";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import type { StorefrontProduct } from "@/server/modules/storefront/schema";
-import { BuyForm } from "./BuyForm";
+import { BuyButton, BuyForm } from "./BuyForm";
 import { Gallery } from "./Gallery";
 import { OfferTimer } from "./OfferTimer";
 import { Reviews } from "./Reviews";
@@ -38,7 +38,7 @@ function PriceBlock({ p }: { p: StorefrontProduct }) {
   );
 }
 
-export function StorefrontView({ product: p }: { product: StorefrontProduct }) {
+export function StorefrontView({ product: p, invalid = false }: { product: StorefrontProduct; invalid?: boolean }) {
   const t = useTranslations("Storefront");
   const price = useMoney()(p.price);
   const soldOut = p.stock.state === "out";
@@ -78,10 +78,8 @@ export function StorefrontView({ product: p }: { product: StorefrontProduct }) {
             {p.offerEndsAt && <OfferTimer endsAt={p.offerEndsAt} now={p.now} />}
           </div>
 
-          {/* From lg up the buy button sits here; on phones it is the bar pinned below. */}
-          <div className="hidden lg:block">
-            <BuyForm slug={p.slug} soldOut={soldOut} price={price} />
-          </div>
+          {/* The delivery details (and, from lg up, the buy button); on phones the button is the bar pinned below. */}
+          <BuyForm slug={p.slug} soldOut={soldOut} price={price} invalid={invalid} />
 
           <section
             aria-labelledby="pay-title"
@@ -125,7 +123,7 @@ export function StorefrontView({ product: p }: { product: StorefrontProduct }) {
       {/* Phones: the buy button is always in reach, and says what it will charge. */}
       <div className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-surface px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] lg:hidden">
         <div className="mx-auto max-w-md">
-          <BuyForm slug={p.slug} soldOut={soldOut} price={price} />
+          <BuyButton soldOut={soldOut} price={price} />
         </div>
       </div>
     </div>

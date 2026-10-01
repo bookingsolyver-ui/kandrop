@@ -4,6 +4,7 @@ import { ApiError } from "@/server/http/errors";
 import { attemptLimiter } from "@/server/http/rateLimit";
 import { activateSubscription } from "@/server/modules/billing/activation";
 import { issueReceipt } from "@/server/modules/receipts/service";
+import { fulfilPaidCheckout } from "@/server/modules/fulfilment/service";
 import { checkoutRepository } from "@/server/modules/checkout/repository";
 import { statusOf } from "@/server/modules/checkout/service";
 import {
@@ -71,6 +72,9 @@ async function markPaid(p: PaymentRecord) {
     await issueReceipt(p, session);
     // A store paying for its Kandrop plan: switch the plan on (no-op for ordinary sales).
     await activateSubscription(session, p.paidAt);
+    // A paid storefront sale becomes an order (and, for a supplier product, the supplier's line,
+    // Kandrop's commission and the financial records). Never undoes the payment if it fails.
+    await fulfilPaidCheckout(session, p);
   }
 }
 

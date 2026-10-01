@@ -1277,7 +1277,18 @@
       "cta": "Acheter maintenant",
       "methods": "Multicaixa Express · Unitel Money · Carte",
       "soldOut": "Épuisé",
-      "soldOutNote": "Ce produit est épuisé. Revenez plus tard."
+      "soldOutNote": "Ce produit est épuisé. Revenez plus tard.",
+      "fields": {
+        "title": "Informations de livraison",
+        "name": "Nom complet",
+        "phone": "Téléphone mobile",
+        "province": "Province",
+        "choose": "Choisir…",
+        "city": "Municipalité",
+        "street": "Rue et numéro",
+        "reference": "Point de repère (facultatif)",
+        "invalid": "Vérifiez vos informations de livraison et réessayez."
+      }
     },
     "footer": {
       "soldBy": "Vendu par {store}",
@@ -2604,6 +2615,62 @@
         "before": "Avant",
         "after": "Après"
       }
+    },
+    "logistics": {
+      "title": "Commandes et logistique",
+      "subtitle": "Toutes les commandes de produits de fournisseurs, de l’entrepôt au client final.",
+      "search": "Rechercher par commande, boutique, fournisseur, produit ou client",
+      "empty": "Aucune commande pour l’instant.",
+      "qty": "{count, plural, one {# unité} other {# unités}}",
+      "details": "Détails",
+      "advance": "Passer à : {status}",
+      "filters": {
+        "all": "Toutes"
+      },
+      "status": {
+        "pending": "En attente",
+        "preparing": "En préparation chez le fournisseur",
+        "picked_up": "Récupéré par Kandrop",
+        "in_transit": "En transit",
+        "delivered": "Livré"
+      },
+      "cards": {
+        "toPrepare": "À préparer",
+        "toPrepareNote": "En attente ou en préparation",
+        "moving": "En route",
+        "movingNote": "Récupérées et en transit",
+        "commission": "Commission Kandrop",
+        "commissionNote": "Somme des commandes listées",
+        "dueSuppliers": "Dû aux fournisseurs",
+        "dueSuppliersNote": "Prix de revient des commandes"
+      },
+      "cols": {
+        "order": "Commande",
+        "product": "Produit",
+        "supplier": "Fournisseur",
+        "store": "Boutique",
+        "sale": "Vente",
+        "commission": "Commission",
+        "status": "Statut",
+        "actions": "Actions"
+      },
+      "detail": {
+        "deliverTo": "Livrer à",
+        "money": "Montants",
+        "sale": "Vente au client",
+        "supplierDue": "Dû au fournisseur",
+        "commission": "Commission Kandrop",
+        "merchantNet": "Marge nette du marchand",
+        "invoices": "Factures",
+        "party": {
+          "merchant": "marchand",
+          "supplier": "fournisseur"
+        }
+      },
+      "toast": {
+        "updated": "Statut mis à jour : {status}.",
+        "failed": "Impossible de mettre à jour le statut."
+      }
     }
   },
   "Supplier": {
@@ -2612,7 +2679,8 @@
       "register": "Inscription fournisseur",
       "dashboard": "Tableau de bord fournisseur",
       "products": "Produits du fournisseur",
-      "finance": "Finances du fournisseur"
+      "finance": "Finances du fournisseur",
+      "orders": "Commandes du fournisseur"
     },
     "auth": {
       "panelTag": "Portail Fournisseur",
@@ -2704,7 +2772,8 @@
       "label": "Navigation fournisseur",
       "dashboard": "Tableau de bord",
       "products": "Produits",
-      "finance": "Finances"
+      "finance": "Finances",
+      "orders": "Commandes"
     },
     "dashboard": {
       "title": "Bonjour, {name}",
@@ -2736,7 +2805,9 @@
         "lowShort": "Stock bas"
       },
       "cta": "Un nouveau produit ?",
-      "ctaLink": "Ajoutez-le dans Produits"
+      "ctaLink": "Ajoutez-le dans Produits",
+      "toPrepare": "Vous avez {count, plural, one {# produit vendu à préparer} other {# produits vendus à préparer}}.",
+      "toPrepareCta": "Voir les commandes"
     },
     "products": {
       "title": "Mes produits",
@@ -2818,7 +2889,8 @@
           "product": "Produit",
           "merchant": "Marchand",
           "amount": "Vous recevez (prix de revient)",
-          "status": "Statut"
+          "status": "Statut",
+          "invoice": "Bon de remise"
         },
         "qty": "{count, plural, one {# unité} other {# unités}}",
         "status": {
@@ -2865,6 +2937,34 @@
         "saved": "Coordonnées bancaires enregistrées.",
         "failed": "Impossible d’enregistrer. Veuillez réessayer.",
         "rateLimited": "Trop de tentatives. Réessayez dans quelques minutes."
+      }
+    },
+    "orders": {
+      "title": "Commandes",
+      "subtitle": "Ce qui a été vendu de vos produits et ce que vous devez préparer pour l’enlèvement.",
+      "prepare": {
+        "title": "À préparer pour l’enlèvement",
+        "help": "Préparez et emballez ces produits. L’équipe Kandrop les récupère dans votre entrepôt et s’occupe de la livraison au client. Le statut se met à jour à mesure que la commande avance.",
+        "empty": "Rien à préparer pour le moment."
+      },
+      "history": {
+        "title": "En route et livrées",
+        "empty": "Aucune commande en route pour l’instant."
+      },
+      "cols": {
+        "order": "Commande",
+        "product": "Produit",
+        "qty": "Qté",
+        "due": "Vous recevez",
+        "status": "Statut",
+        "date": "Date"
+      },
+      "status": {
+        "pending": "En attente",
+        "preparing": "En préparation chez le fournisseur",
+        "picked_up": "Récupéré par Kandrop",
+        "in_transit": "En transit",
+        "delivered": "Livré"
       }
     }
   }

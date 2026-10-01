@@ -13,7 +13,7 @@ const KZ = 100;
 /** Every checkout session is made here, so the expiry and the total are computed in one place. */
 export async function buildCheckout(
   base: Pick<CheckoutSession, "storeId" | "storeName" | "storeNif" | "items" | "shippingAmount"> &
-    Partial<Pick<CheckoutSession, "subscription">>
+    Partial<Pick<CheckoutSession, "subscription" | "productId" | "buyer">>
 ): Promise<CheckoutSession> {
   const subtotal = base.items.reduce((sum, i) => sum + i.unitAmount * i.quantity, 0);
   const now = Date.now();

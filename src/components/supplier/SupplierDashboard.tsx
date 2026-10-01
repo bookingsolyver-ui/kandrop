@@ -8,11 +8,10 @@ import { useFormatters } from "@/components/dashboard/useFormatters";
 import { BoxIcon, ClockIcon, TrendingUpIcon, WalletIcon } from "@/components/kai/icons";
 import { Link } from "@/i18n/navigation";
 import { useCurrentSupplier } from "@/lib/supplier/store";
-import { salesOfSupplier } from "@/shared/supplier/mock";
+import type { SupplierOrderRow } from "./types";
 import { CRITICAL_STOCK } from "@/shared/admin/mock";
 
 const MONTH = 30 * 86_400_000;
-const NOW = Date.UTC(2026, 9, 1, 12, 0, 0);
 
 /** The supplier's home: four headline numbers, the best sellers and the stock that needs attention. */
 /** What the dashboard needs of the real catalogue (from the server). */
@@ -23,29 +22,30 @@ export interface DashboardProduct {
   status: "in_review" | "approved" | "rejected";
 }
 
-export function SupplierDashboard({ products: catalogue }: { products: DashboardProduct[] }) {
+export function SupplierDashboard({ products: catalogue, orders, now }: { products: DashboardProduct[]; orders: SupplierOrderRow[]; /** The server's clock when the page was built. */ now: number }) {
   const t = useTranslations("Supplier.dashboard");
   const f = useFormatters();
-  const { supplier, seeded } = useCurrentSupplier();
+  const { supplier } = useCurrentSupplier();
 
   const data = useMemo(() => {
     if (!supplier) return null;
     // Products come from the database; sales stay sample data (only the seeded demo suppliers have any).
     const inVitrine = catalogue.filter((p) => p.status === "approved").length;
     const pending = catalogue.filter((p) => p.status === "in_review").length;
-    const sales = seeded ? salesOfSupplier(supplier.id).filter((s) => NOW - s.at <= MONTH) : [];
-    const sold = sales.reduce((n, s) => n + s.quantity, 0);
-    const gross = sales.reduce((n, s) => n + s.amount, 0);
+    const sales = orders.filter((o) => now - o.createdAt <= MONTH);
+    const toPrepare = orders.filter((o) => o.status === "pending" || o.status === "preparing").length;
+    const sold = sales.reduce((n, o) => n + o.quantity, 0);
+    const gross = sales.reduce((n, o) => n + o.costTotal, 0);
     const critical = catalogue.filter((p) => p.status === "approved" && p.stock < CRITICAL_STOCK);
     const bySold = new Map<string, { title: string; qty: number; amount: number }>();
-    for (const s of sales) {
-      const row = bySold.get(s.productId) ?? { title: s.product, qty: 0, amount: 0 };
-      row.qty += s.quantity;
-      row.amount += s.amount;
-      bySold.set(s.productId, row);
+    for (const o of sales) {
+      const row = bySold.get(o.productTitle) ?? { title: o.productTitle, qty: 0, amount: 0 };
+      row.qty += o.quantity;
+      row.amount += o.costTotal;
+      bySold.set(o.productTitle, row);
     }
-    return { inVitrine, sold, gross, critical, top: [...bySold.values()].sort((a, b) => b.qty - a.qty).slice(0, 5), pending };
-  }, [supplier, seeded, catalogue]);
+    return { inVitrine, sold, gross, critical, top: [...bySold.values()].sort((a, b) => b.qty - a.qty).slice(0, 5), pending, toPrepare };
+  }, [supplier, catalogue, orders, now]);
 
   if (!supplier || !data) return null;
 
@@ -58,6 +58,13 @@ export function SupplierDashboard({ products: catalogue }: { products: Dashboard
           <p className="font-bold text-[var(--kai-warn)]">{t("review.title")}</p>
           <p className="mt-1">{t("review.body")}</p>
         </div>
+      )}
+
+      {data.toPrepare > 0 && (
+        <Link href="/fornecedor/encomendas" className="mb-8 flex items-center justify-between gap-4 rounded-2xl border border-[var(--kai-orange-600)]/30 bg-[var(--kai-orange-50)] px-5 py-4 text-sm transition-colors hover:border-[var(--kai-orange-600)]/60">
+          <span className="font-semibold text-[var(--ink-900)]">{t("toPrepare", { count: data.toPrepare })}</span>
+          <span className="font-semibold text-[var(--kai-orange-600)]">{t("toPrepareCta")} →</span>
+        </Link>
       )}
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-4">

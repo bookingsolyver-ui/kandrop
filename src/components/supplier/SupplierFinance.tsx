@@ -13,7 +13,7 @@ import { useRouter } from "@/i18n/navigation";
 import { formatIbanInput } from "@/shared/bank/schemas";
 import { bankDetailsSchema } from "@/shared/supplier/schemas";
 import { useCurrentSupplier, useWithdrawals } from "@/lib/supplier/store";
-import { payoutsOfSupplier, salesOfSupplier } from "@/shared/supplier/mock";
+import type { SupplierOrderRow } from "./types";
 
 const MIN = 500_000; // 5 000 kwz, in minor units
 
@@ -26,12 +26,12 @@ export interface BankView {
   updatedAt: number;
 }
 
-export function SupplierFinance({ bank }: { bank: BankView | null }) {
+export function SupplierFinance({ bank, orders }: { bank: BankView | null; orders: SupplierOrderRow[] }) {
   const t = useTranslations("Supplier.finance");
   const f = useFormatters();
   const locale = useLocale();
   const toast = useToast();
-  const { supplier, seeded } = useCurrentSupplier();
+  const { supplier } = useCurrentSupplier();
   const { withdrawals, request } = useWithdrawals(supplier?.id ?? null);
   const [open, setOpen] = useState(false);
   const [amount, setAmount] = useState("");
@@ -71,12 +71,12 @@ export function SupplierFinance({ bank }: { bank: BankView | null }) {
     });
   };
 
-  const sales = useMemo(() => (supplier && seeded ? salesOfSupplier(supplier.id) : []), [supplier, seeded]);
-  const paid = useMemo(() => (supplier && seeded ? payoutsOfSupplier(supplier.id) : []), [supplier, seeded]);
-  const sum = (list: typeof sales, status: "available" | "pending") => list.filter((s) => s.status === status).reduce((n, s) => n + s.amount, 0);
+  // Every order is worth the supplier's cost price; it becomes AVAILABLE once the parcel is delivered.
+  const sales = useMemo(() => orders.map((o) => ({ ...o, money: o.costTotal, state: o.status === "delivered" ? ("available" as const) : ("pending" as const) })), [orders]);
+  const sum = (state: "available" | "pending") => sales.filter((s) => s.state === state).reduce((n, s) => n + s.money, 0);
   const requested = withdrawals.reduce((n, w) => n + w.amount, 0);
-  const available = Math.max(0, sum(sales, "available") - paid.reduce((n, p) => n + p.amount, 0) - requested);
-  const pending = sum(sales, "pending");
+  const available = Math.max(0, sum("available") - requested);
+  const pending = sum("pending");
   const pager = usePager(sales, 10);
 
   const kz = Number(amount.replace(/\s/g, "").replace(",", "."));
@@ -151,19 +151,19 @@ export function SupplierFinance({ bank }: { bank: BankView | null }) {
               <thead className="border-b border-[var(--ink-200)] bg-[var(--ink-50)]">
                 <tr className="text-left">
                   <th className={`${th}`}>{t("sales.cols.date")}</th><th className={`${th}`}>{t("sales.cols.order")}</th>
-                  <th className={`${th}`}>{t("sales.cols.product")}</th><th className={`${th}`}>{t("sales.cols.merchant")}</th>
+                  <th className={`${th}`}>{t("sales.cols.product")}</th><th className={`${th}`}>{t("sales.cols.invoice")}</th>
                   <th className={`${th} text-right`}>{t("sales.cols.amount")}</th><th className={`${th}`}>{t("sales.cols.status")}</th>
                 </tr>
               </thead>
               <tbody>
                 {pager.slice.map((s) => (
                   <tr key={s.id} className="border-b border-[var(--ink-100)] transition-colors last:border-b-0 hover:bg-[var(--ink-50)]">
-                    <td className="px-5 py-4 whitespace-nowrap text-[var(--ink-600)]">{dateOnly(s.at, locale)}</td>
-                    <td className="mono-num px-4 py-3 font-semibold">#{s.orderNumber}</td>
-                    <td className="px-5 py-4"><span className="line-clamp-1 max-w-xs font-semibold">{s.product}</span><span className="text-[12px] text-[var(--ink-500)]">{t("sales.qty", { count: s.quantity })}</span></td>
-                    <td className="px-5 py-4 text-[var(--ink-600)]">{s.merchant}</td>
-                    <td className="mono-num px-4 py-3 text-right font-bold">{f.money(s.amount)}</td>
-                    <td className="px-5 py-4"><Badge tone={s.status === "available" ? "success" : "warn"}>{t(`sales.status.${s.status}`)}</Badge></td>
+                    <td className="px-5 py-4 whitespace-nowrap text-[var(--ink-600)]">{dateOnly(s.createdAt, locale)}</td>
+                    <td className="mono-num px-5 py-4 font-semibold">#{s.orderNumber}</td>
+                    <td className="px-5 py-4"><span className="line-clamp-1 max-w-xs font-semibold">{s.productTitle}</span><span className="text-[12px] text-[var(--ink-500)]">{t("sales.qty", { count: s.quantity })}</span></td>
+                    <td className="mono-num px-5 py-4 text-[var(--ink-600)]">{s.invoiceNumber ?? "—"}</td>
+                    <td className="mono-num px-5 py-4 text-right font-bold">{f.money(s.money)}</td>
+                    <td className="px-5 py-4"><Badge tone={s.state === "available" ? "success" : "warn"}>{t(`sales.status.${s.state}`)}</Badge></td>
                   </tr>
                 ))}
               </tbody>
@@ -174,12 +174,12 @@ export function SupplierFinance({ bank }: { bank: BankView | null }) {
       </Section>
 
       <Section title={t("history.title")} className="mt-8">
-        {withdrawals.length + paid.length === 0 ? <EmptyState>{t("history.empty")}</EmptyState> : (
+        {withdrawals.length === 0 ? <EmptyState>{t("history.empty")}</EmptyState> : (
           <ul>
-            {[...withdrawals.map((w) => ({ id: w.id, at: w.at, amount: w.amount, status: "pending" as const })), ...paid.map((p) => ({ id: p.id, at: p.at, amount: p.amount, status: "paid" as const }))].map((w) => (
+            {withdrawals.map((w) => ({ id: w.id, at: w.at, amount: w.amount, status: "pending" as const })).map((w) => (
               <li key={w.id} className="flex items-center justify-between gap-4 border-b border-[var(--ink-100)] px-5 py-4 last:border-b-0 sm:px-6">
                 <div><p className="mono-num font-semibold">{w.id}</p><p className="text-[12px] text-[var(--ink-500)]">{dateOnly(w.at, locale)}</p></div>
-                <div className="flex items-center gap-4"><span className="mono-num font-bold">{f.money(w.amount)}</span><Badge tone={w.status === "paid" ? "success" : "warn"}>{t(`history.${w.status}`)}</Badge></div>
+                <div className="flex items-center gap-4"><span className="mono-num font-bold">{f.money(w.amount)}</span><Badge tone="warn">{t("history.pending")}</Badge></div>
               </li>
             ))}
           </ul>

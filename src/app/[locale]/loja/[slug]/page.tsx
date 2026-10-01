@@ -11,7 +11,7 @@ import { getStorefrontProduct } from "@/server/modules/storefront/service";
 // Price, stock and the offer depend on the clock: never prerender.
 export const dynamic = "force-dynamic";
 
-type Props = { params: Promise<{ locale: string; slug: string }> };
+type Props = { params: Promise<{ locale: string; slug: string }>; searchParams: Promise<{ error?: string }> };
 
 /** One lookup per request, shared by the metadata and the page. Missing or inactive → 404. */
 const load = cache(async (slug: string) => {
@@ -37,9 +37,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 /** The public product page: what a shopper sees after clicking an ad or a shared link. */
-export default async function StorefrontPage({ params }: Props) {
+export default async function StorefrontPage({ params, searchParams }: Props) {
   const { locale, slug } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
-  return <StorefrontView product={await load(slug)} />;
+  const invalid = (await searchParams).error === "details";
+  return <StorefrontView product={await load(slug)} invalid={invalid} />;
 }

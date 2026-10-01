@@ -21,6 +21,10 @@ export interface CheckoutSession {
   /** Computed on the server from `items` + `shippingAmount` — never taken from the client. */
   total: number;
   paid: boolean;
+  /** The store product being bought (a storefront "Buy now"), so a paid session can become an order. */
+  productId?: string;
+  /** Who buys and where it goes, taken on the product page. Personal data: never logged. */
+  buyer?: { customer: { name: string; phone: string }; address: { street: string; city: string; province: string; reference?: string } };
   /**
    * Set when this session is a store paying for its Kandrop plan (the money is Kandrop's, not
    * the store's): once paid, `billing/activation` switches that store's plan on.

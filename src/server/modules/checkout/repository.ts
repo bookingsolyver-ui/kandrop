@@ -13,6 +13,8 @@ const toRow = (s: CheckoutSession) => ({
   total: s.total,
   paid: s.paid,
   subscription: s.subscription ?? null,
+  product_id: s.productId ?? null,
+  buyer: s.buyer ?? null,
   created_at: s.createdAt,
   expires_at: s.expiresAt,
 });
@@ -29,6 +31,8 @@ function fromRow(row: Record<string, unknown>): CheckoutSession {
     total: Number(row.total),
     paid: Boolean(row.paid),
     subscription: (row.subscription as CheckoutSession["subscription"]) ?? undefined,
+    productId: row.product_id == null ? undefined : String(row.product_id),
+    buyer: (row.buyer as CheckoutSession["buyer"]) ?? undefined,
     createdAt: Number(row.created_at),
     expiresAt: Number(row.expires_at),
   };

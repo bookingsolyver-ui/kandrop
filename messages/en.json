@@ -1277,7 +1277,18 @@
       "cta": "Buy now",
       "methods": "Multicaixa Express · Unitel Money · Card",
       "soldOut": "Sold out",
-      "soldOutNote": "This product is sold out. Please come back later."
+      "soldOutNote": "This product is sold out. Please come back later.",
+      "fields": {
+        "title": "Delivery details",
+        "name": "Full name",
+        "phone": "Mobile phone",
+        "province": "Province",
+        "choose": "Choose…",
+        "city": "Municipality",
+        "street": "Street and number",
+        "reference": "Landmark (optional)",
+        "invalid": "Please check your delivery details and try again."
+      }
     },
     "footer": {
       "soldBy": "Sold by {store}",
@@ -2604,6 +2615,62 @@
         "before": "Before",
         "after": "After"
       }
+    },
+    "logistics": {
+      "title": "Orders and logistics",
+      "subtitle": "Every supplier-product order, from the warehouse to the final customer.",
+      "search": "Search by order, store, supplier, product or customer",
+      "empty": "No orders yet.",
+      "qty": "{count, plural, one {# unit} other {# units}}",
+      "details": "Details",
+      "advance": "Move to: {status}",
+      "filters": {
+        "all": "All"
+      },
+      "status": {
+        "pending": "Pending",
+        "preparing": "Being prepared by the supplier",
+        "picked_up": "Picked up by Kandrop",
+        "in_transit": "In transit",
+        "delivered": "Delivered"
+      },
+      "cards": {
+        "toPrepare": "To prepare",
+        "toPrepareNote": "Pending or in preparation",
+        "moving": "On the way",
+        "movingNote": "Picked up and in transit",
+        "commission": "Kandrop commission",
+        "commissionNote": "Sum of the listed orders",
+        "dueSuppliers": "Due to suppliers",
+        "dueSuppliersNote": "Cost price of the orders"
+      },
+      "cols": {
+        "order": "Order",
+        "product": "Product",
+        "supplier": "Supplier",
+        "store": "Store",
+        "sale": "Sale",
+        "commission": "Commission",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "detail": {
+        "deliverTo": "Deliver to",
+        "money": "Amounts",
+        "sale": "Sale to customer",
+        "supplierDue": "Due to supplier",
+        "commission": "Kandrop commission",
+        "merchantNet": "Merchant net margin",
+        "invoices": "Invoices",
+        "party": {
+          "merchant": "merchant",
+          "supplier": "supplier"
+        }
+      },
+      "toast": {
+        "updated": "Status updated: {status}.",
+        "failed": "Could not update the status."
+      }
     }
   },
   "Supplier": {
@@ -2612,7 +2679,8 @@
       "register": "Supplier registration",
       "dashboard": "Supplier dashboard",
       "products": "Supplier products",
-      "finance": "Supplier finance"
+      "finance": "Supplier finance",
+      "orders": "Supplier orders"
     },
     "auth": {
       "panelTag": "Supplier Portal",
@@ -2704,7 +2772,8 @@
       "label": "Supplier navigation",
       "dashboard": "Dashboard",
       "products": "Products",
-      "finance": "Finance"
+      "finance": "Finance",
+      "orders": "Orders"
     },
     "dashboard": {
       "title": "Hello, {name}",
@@ -2736,7 +2805,9 @@
         "lowShort": "Low stock"
       },
       "cta": "Got a new product?",
-      "ctaLink": "Add it under Products"
+      "ctaLink": "Add it under Products",
+      "toPrepare": "You have {count, plural, one {# sold product} other {# sold products}} to prepare.",
+      "toPrepareCta": "View orders"
     },
     "products": {
       "title": "My products",
@@ -2818,7 +2889,8 @@
           "product": "Product",
           "merchant": "Merchant",
           "amount": "You receive (cost price)",
-          "status": "Status"
+          "status": "Status",
+          "invoice": "Remittance note"
         },
         "qty": "{count, plural, one {# unit} other {# units}}",
         "status": {
@@ -2865,6 +2937,34 @@
         "saved": "Bank details saved.",
         "failed": "Could not save. Please try again.",
         "rateLimited": "Too many attempts. Try again in a few minutes."
+      }
+    },
+    "orders": {
+      "title": "Orders",
+      "subtitle": "What was sold of your products and what you have to prepare for collection.",
+      "prepare": {
+        "title": "To prepare for collection",
+        "help": "Prepare and pack these products. The Kandrop team collects them at your warehouse and handles delivery to the customer. The status updates as the order moves on.",
+        "empty": "Nothing to prepare right now."
+      },
+      "history": {
+        "title": "On the way and delivered",
+        "empty": "No orders on the way yet."
+      },
+      "cols": {
+        "order": "Order",
+        "product": "Product",
+        "qty": "Qty",
+        "due": "You receive",
+        "status": "Status",
+        "date": "Date"
+      },
+      "status": {
+        "pending": "Pending",
+        "preparing": "Being prepared by the supplier",
+        "picked_up": "Picked up by Kandrop",
+        "in_transit": "In transit",
+        "delivered": "Delivered"
       }
     }
   }
