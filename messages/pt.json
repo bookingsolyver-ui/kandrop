@@ -2043,5 +2043,311 @@
       "emptyTitle": "Ainda não tem favoritos",
       "emptyBody": "Toque no coração de um produto na Vitrine para o guardar aqui."
     }
+  },
+  "Admin": {
+    "console": "Consola de operação",
+    "sampleData": "Dados de exemplo",
+    "backToApp": "Voltar ao painel do lojista",
+    "close": "Fechar",
+    "open": "Abrir menu",
+    "nav": {
+      "label": "Navegação do administrador",
+      "merchants": "Lojistas",
+      "orders": "Encomendas",
+      "finance": "Financeiro",
+      "cashFlow": "Fluxo de caixa",
+      "payouts": "Saques",
+      "showcase": "Vitrine",
+      "catalog": "Catálogo",
+      "inventory": "Inventário"
+    },
+    "table": {
+      "showing": "A mostrar {from}–{to} de {total}",
+      "perPage": "Por página",
+      "prev": "Anterior",
+      "next": "Seguinte",
+      "pagination": "Paginação"
+    },
+    "cash": {
+      "title": "Fluxo de caixa global",
+      "subtitle": "Para onde vai cada kwanza da plataforma: o que entra, o que a Kandrop retém e o que está nas mãos dos lojistas.",
+      "cards": {
+        "gmv": "Volume bruto transacionado (GMV)",
+        "gmvNote": "Tudo o que os clientes finais pagaram",
+        "revenue": "Receita própria Kandrop",
+        "revenueNote": "Taxas sobre a margem + logística",
+        "held": "Saldo retido dos lojistas",
+        "heldNote": "Carteiras e valores a libertar de {count} lojas",
+        "transit": "Dinheiro em trânsito",
+        "transitNote": "Entregas por cobrar"
+      },
+      "chart": {
+        "title": "Últimos 14 dias",
+        "gmv": "GMV",
+        "revenue": "Receita Kandrop",
+        "label": "GMV e receita Kandrop por dia"
+      },
+      "ledger": {
+        "title": "Extrato geral",
+        "live": "Ao vivo",
+        "search": "Procurar por loja, referência ou produto…",
+        "filter": {
+          "all": "Tudo",
+          "in": "Entradas",
+          "out": "Saídas"
+        },
+        "cols": {
+          "time": "Data",
+          "type": "Tipo",
+          "merchant": "Lojista",
+          "ref": "Referência",
+          "amount": "Valor"
+        }
+      },
+      "kind": {
+        "payment_in": "Pagamento recebido",
+        "fee_retained": "Taxa retida",
+        "supplier_payment": "Pagamento a fornecedor",
+        "payout_request": "Pedido de saque",
+        "payout_paid": "Saque pago",
+        "refund": "Reembolso",
+        "adjustment": "Ajuste manual"
+      },
+      "status": {
+        "paid": "pago",
+        "pending": "pendente",
+        "rejected": "recusado"
+      }
+    },
+    "merchants": {
+      "title": "Lojistas",
+      "subtitle": "Todas as lojas da plataforma. Abra uma para ver o perfil completo.",
+      "search": "Procurar por loja, nome, e-mail ou cidade…",
+      "filters": {
+        "all": "Todos",
+        "active": "Ativos",
+        "suspended": "Suspensos",
+        "pending_verification": "Por verificar"
+      },
+      "cols": {
+        "store": "Loja",
+        "city": "Cidade",
+        "plan": "Plano",
+        "status": "Estado",
+        "balance": "Saldo",
+        "orders": "Encomendas",
+        "gmv": "GMV"
+      },
+      "status": {
+        "active": "Ativo",
+        "suspended": "Suspenso",
+        "pending_verification": "Por verificar"
+      },
+      "plan": {
+        "starter": "Starter",
+        "pro": "Pro"
+      },
+      "open": "Abrir",
+      "empty": "Nenhum lojista corresponde à pesquisa.",
+      "origin": {
+        "nacional": "Nacional",
+        "internacional": "Internacional"
+      }
+    },
+    "detail": {
+      "back": "Voltar aos lojistas",
+      "actions": {
+        "products": "Ver produtos ativos",
+        "adjust": "Ajustar saldo",
+        "suspend": "Suspender loja",
+        "reactivate": "Reativar loja"
+      },
+      "kpi": {
+        "balance": "Saldo da carteira",
+        "held": "+ {amount} a libertar",
+        "plan": "Plano atual",
+        "since": "Cliente desde {date}",
+        "pending": "Encomendas pendentes",
+        "total": "{count} encomendas no total",
+        "gmv": "Volume vendido (GMV)"
+      },
+      "payouts": {
+        "title": "Histórico de levantamentos",
+        "empty": "Ainda sem levantamentos.",
+        "status": {
+          "paid": "Pago",
+          "pending": "Pendente",
+          "rejected": "Recusado"
+        }
+      },
+      "adjustments": {
+        "title": "Ajustes manuais (esta sessão)",
+        "empty": "Nenhum ajuste feito."
+      },
+      "orders": {
+        "title": "Encomendas recentes",
+        "empty": "Sem encomendas."
+      },
+      "demoNote": "Simulação: as ações desta página não gravam na base de dados.",
+      "products": {
+        "title": "Produtos ativos de {store}",
+        "empty": "Esta loja ainda não tem produtos."
+      },
+      "close": "Fechar",
+      "cancel": "Cancelar",
+      "adjust": {
+        "title": "Ajustar saldo manualmente",
+        "current": "Saldo atual: {amount}",
+        "amount": "Valor a somar ou subtrair (kwz)",
+        "amountHelp": "Use + para creditar e − para debitar. Máximo 10.000.000.",
+        "reason": "Justificação",
+        "reasonHelp": "Obrigatória (mín. 10 caracteres): fica registada no extrato.",
+        "overdraw": "O saldo não pode ficar negativo.",
+        "after": "Novo saldo: {amount}",
+        "apply": "Aplicar ajuste"
+      },
+      "suspend": {
+        "title": "Suspender loja",
+        "body": "{store} deixa de vender e de levantar saldo até ser reativada. Os pedidos em curso não são afetados.",
+        "reason": "Motivo da suspensão (mín. 10 caracteres)",
+        "confirm": "Suspender loja"
+      },
+      "reactivate": {
+        "title": "Reativar loja",
+        "body": "{store} volta a poder vender e levantar saldo.",
+        "confirm": "Reativar loja"
+      },
+      "toast": {
+        "adjusted": "Saldo ajustado (simulação).",
+        "suspended": "Loja suspensa (simulação).",
+        "reactivated": "Loja reativada (simulação)."
+      }
+    },
+    "orders": {
+      "title": "Encomendas e logística",
+      "subtitle": "Cada encomenda com o seu fluxo financeiro: custo + margem do lojista + taxa de entrega = total cobrado ao cliente.",
+      "search": "Procurar por número, produto, loja ou estafeta…",
+      "empty": "Nenhuma encomenda neste filtro.",
+      "filters": {
+        "all": "Todas",
+        "delayed": "Encomendas atrasadas",
+        "refunds": "Devoluções por reembolsar",
+        "transit": "Em trânsito"
+      },
+      "cols": {
+        "order": "Encomenda",
+        "product": "Produto e loja",
+        "flow": "Fluxo financeiro",
+        "status": "Estado"
+      },
+      "flow": {
+        "cost": "Custo do produto",
+        "margin": "Margem do lojista",
+        "delivery": "Taxa de entrega",
+        "legend": "custo + margem + entrega = total",
+        "fee": "taxa Kandrop {amount}"
+      },
+      "state": {
+        "pending": "Pendente",
+        "processing": "Em preparação",
+        "shipped": "Em trânsito",
+        "delivered": "Entregue",
+        "returned": "Devolvida",
+        "cancelled": "Cancelada"
+      },
+      "delayed": "Atrasada",
+      "refundPending": "Reembolso pendente"
+    },
+    "inventory": {
+      "title": "Inventário e alertas",
+      "subtitle": "A saúde do stock: o que esgotou, o que está quase a esgotar e quanto dinheiro está parado em prateleira.",
+      "cards": {
+        "out": "Produtos sem stock (esgotados)",
+        "outNote": "Ainda visíveis para venda",
+        "critical": "Stock crítico (< {limit} unid.)",
+        "criticalNote": "Reposição urgente",
+        "capital": "Capital imobilizado em stock",
+        "capitalNote": "Quantidade × preço de custo"
+      },
+      "tabs": {
+        "all": "Todos",
+        "out": "Esgotados",
+        "critical": "Crítico",
+        "healthy": "Saudável"
+      },
+      "search": "Procurar por produto, SKU ou fornecedor…",
+      "cols": {
+        "product": "Produto",
+        "sku": "SKU",
+        "quantity": "Qtd. física",
+        "weekly": "Vendas/semana",
+        "status": "Estado"
+      },
+      "stores": "{count, plural, one {# loja vende} other {# lojas vendem}}",
+      "coverage": "cobre {weeks} semanas",
+      "badge": {
+        "out": "Stock out",
+        "critical": "Crítico",
+        "ok": "Saudável"
+      },
+      "disabled": "Vendas desativadas",
+      "disableRow": "Desativar vendas",
+      "autoDisable": {
+        "title": "Proteção de vendas",
+        "body": "{count, plural, one {# produto está a zero} other {# produtos estão a zero}} e continua a poder ser vendido. Desative as vendas em todas as lojas para evitar encomendas que não podem ser cumpridas.",
+        "button": "Desativar vendas automaticamente em todas as lojas",
+        "allDone": "Vendas já desativadas",
+        "done": "{count, plural, one {Vendas desativadas em # produto} other {Vendas desativadas em # produtos}} (simulação).",
+        "confirmTitle": "Desativar vendas em todas as lojas?",
+        "confirmBody": "{count, plural, one {# produto esgotado deixa} other {# produtos esgotados deixam}} de poder ser vendido em todas as lojas até haver stock.",
+        "confirm": "Desativar vendas"
+      },
+      "cancel": "Cancelar",
+      "demoNote": "Simulação: as ações desta página não gravam na base de dados."
+    },
+    "payouts": {
+      "title": "Saques",
+      "subtitle": "Levantamentos pedidos pelos lojistas. Aprove ou recuse os pendentes.",
+      "cards": {
+        "pending": "Saques pendentes",
+        "amount": "Valor a pagar"
+      },
+      "cols": {
+        "date": "Data",
+        "merchant": "Lojista",
+        "bank": "Conta",
+        "amount": "Valor",
+        "status": "Estado"
+      },
+      "status": {
+        "paid": "Pago",
+        "pending": "Pendente",
+        "rejected": "Recusado"
+      },
+      "approve": "Aprovar",
+      "reject": "Recusar",
+      "toast": {
+        "approved": "Saque aprovado (simulação).",
+        "rejected": "Saque recusado (simulação)."
+      }
+    },
+    "catalog": {
+      "title": "Catálogo",
+      "subtitle": "Os produtos da Vitrine: fornecedor, custo e visibilidade para os lojistas.",
+      "search": "Procurar por produto, SKU ou marca…",
+      "cols": {
+        "product": "Produto",
+        "supplier": "Fornecedor",
+        "cost": "Custo",
+        "stores": "Lojas",
+        "visibility": "Visibilidade"
+      },
+      "origin": {
+        "nacional": "Nacional",
+        "internacional": "Internacional"
+      },
+      "visible": "Visível",
+      "hidden": "Oculto"
+    }
   }
 }

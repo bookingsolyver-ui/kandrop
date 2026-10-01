@@ -2043,5 +2043,311 @@
       "emptyTitle": "You have no favourites yet",
       "emptyBody": "Tap the heart on a Showcase product to keep it here."
     }
+  },
+  "Admin": {
+    "console": "Operations console",
+    "sampleData": "Sample data",
+    "backToApp": "Back to the merchant dashboard",
+    "close": "Close",
+    "open": "Open menu",
+    "nav": {
+      "label": "Admin navigation",
+      "merchants": "Merchants",
+      "orders": "Orders",
+      "finance": "Finance",
+      "cashFlow": "Cash flow",
+      "payouts": "Payouts",
+      "showcase": "Showcase",
+      "catalog": "Catalogue",
+      "inventory": "Inventory"
+    },
+    "table": {
+      "showing": "Showing {from}–{to} of {total}",
+      "perPage": "Per page",
+      "prev": "Previous",
+      "next": "Next",
+      "pagination": "Pagination"
+    },
+    "cash": {
+      "title": "Global cash flow",
+      "subtitle": "Where every kwanza of the platform goes: what comes in, what Kandrop keeps and what sits with the merchants.",
+      "cards": {
+        "gmv": "Gross merchandise value (GMV)",
+        "gmvNote": "Everything end customers paid",
+        "revenue": "Kandrop’s own revenue",
+        "revenueNote": "Fees on margin + logistics",
+        "held": "Merchants’ held balance",
+        "heldNote": "Wallets and amounts to release from {count} stores",
+        "transit": "Money in transit",
+        "transitNote": "Deliveries awaiting collection"
+      },
+      "chart": {
+        "title": "Last 14 days",
+        "gmv": "GMV",
+        "revenue": "Kandrop revenue",
+        "label": "GMV and Kandrop revenue per day"
+      },
+      "ledger": {
+        "title": "General statement",
+        "live": "Live",
+        "search": "Search by store, reference or product…",
+        "filter": {
+          "all": "All",
+          "in": "In",
+          "out": "Out"
+        },
+        "cols": {
+          "time": "Date",
+          "type": "Type",
+          "merchant": "Merchant",
+          "ref": "Reference",
+          "amount": "Amount"
+        }
+      },
+      "kind": {
+        "payment_in": "Payment received",
+        "fee_retained": "Fee retained",
+        "supplier_payment": "Supplier payment",
+        "payout_request": "Payout request",
+        "payout_paid": "Payout paid",
+        "refund": "Refund",
+        "adjustment": "Manual adjustment"
+      },
+      "status": {
+        "paid": "paid",
+        "pending": "pending",
+        "rejected": "rejected"
+      }
+    },
+    "merchants": {
+      "title": "Merchants",
+      "subtitle": "Every store on the platform. Open one to see its full profile.",
+      "search": "Search by store, name, e-mail or city…",
+      "filters": {
+        "all": "All",
+        "active": "Active",
+        "suspended": "Suspended",
+        "pending_verification": "To verify"
+      },
+      "cols": {
+        "store": "Store",
+        "city": "City",
+        "plan": "Plan",
+        "status": "Status",
+        "balance": "Balance",
+        "orders": "Orders",
+        "gmv": "GMV"
+      },
+      "status": {
+        "active": "Active",
+        "suspended": "Suspended",
+        "pending_verification": "To verify"
+      },
+      "plan": {
+        "starter": "Starter",
+        "pro": "Pro"
+      },
+      "open": "Open",
+      "empty": "No merchant matches the search.",
+      "origin": {
+        "nacional": "National",
+        "internacional": "International"
+      }
+    },
+    "detail": {
+      "back": "Back to merchants",
+      "actions": {
+        "products": "View active products",
+        "adjust": "Adjust balance",
+        "suspend": "Suspend store",
+        "reactivate": "Reactivate store"
+      },
+      "kpi": {
+        "balance": "Wallet balance",
+        "held": "+ {amount} to be released",
+        "plan": "Current plan",
+        "since": "Customer since {date}",
+        "pending": "Pending orders",
+        "total": "{count} orders in total",
+        "gmv": "Sales volume (GMV)"
+      },
+      "payouts": {
+        "title": "Payout history",
+        "empty": "No payouts yet.",
+        "status": {
+          "paid": "Paid",
+          "pending": "Pending",
+          "rejected": "Rejected"
+        }
+      },
+      "adjustments": {
+        "title": "Manual adjustments (this session)",
+        "empty": "No adjustments made."
+      },
+      "orders": {
+        "title": "Recent orders",
+        "empty": "No orders."
+      },
+      "demoNote": "Simulation: the actions on this page do not write to the database.",
+      "products": {
+        "title": "Active products of {store}",
+        "empty": "This store has no products yet."
+      },
+      "close": "Close",
+      "cancel": "Cancel",
+      "adjust": {
+        "title": "Adjust balance manually",
+        "current": "Current balance: {amount}",
+        "amount": "Amount to add or subtract (kwz)",
+        "amountHelp": "Use + to credit and − to debit. Maximum 10,000,000.",
+        "reason": "Justification",
+        "reasonHelp": "Required (min. 10 characters): it is recorded in the statement.",
+        "overdraw": "The balance cannot go negative.",
+        "after": "New balance: {amount}",
+        "apply": "Apply adjustment"
+      },
+      "suspend": {
+        "title": "Suspend store",
+        "body": "{store} stops selling and withdrawing until it is reactivated. Orders in progress are not affected.",
+        "reason": "Reason for the suspension (min. 10 characters)",
+        "confirm": "Suspend store"
+      },
+      "reactivate": {
+        "title": "Reactivate store",
+        "body": "{store} can sell and withdraw again.",
+        "confirm": "Reactivate store"
+      },
+      "toast": {
+        "adjusted": "Balance adjusted (simulation).",
+        "suspended": "Store suspended (simulation).",
+        "reactivated": "Store reactivated (simulation)."
+      }
+    },
+    "orders": {
+      "title": "Orders and logistics",
+      "subtitle": "Each order with its money flow: cost + merchant margin + delivery fee = total charged to the customer.",
+      "search": "Search by number, product, store or courier…",
+      "empty": "No order in this filter.",
+      "filters": {
+        "all": "All",
+        "delayed": "Delayed orders",
+        "refunds": "Returns awaiting refund",
+        "transit": "In transit"
+      },
+      "cols": {
+        "order": "Order",
+        "product": "Product and store",
+        "flow": "Money flow",
+        "status": "Status"
+      },
+      "flow": {
+        "cost": "Product cost",
+        "margin": "Merchant margin",
+        "delivery": "Delivery fee",
+        "legend": "cost + margin + delivery = total",
+        "fee": "Kandrop fee {amount}"
+      },
+      "state": {
+        "pending": "Pending",
+        "processing": "Preparing",
+        "shipped": "In transit",
+        "delivered": "Delivered",
+        "returned": "Returned",
+        "cancelled": "Cancelled"
+      },
+      "delayed": "Delayed",
+      "refundPending": "Refund pending"
+    },
+    "inventory": {
+      "title": "Inventory and alerts",
+      "subtitle": "Stock health: what sold out, what is about to, and how much money sits on the shelves.",
+      "cards": {
+        "out": "Out-of-stock products",
+        "outNote": "Still visible for sale",
+        "critical": "Critical stock (< {limit} units)",
+        "criticalNote": "Urgent restock",
+        "capital": "Capital tied up in stock",
+        "capitalNote": "Quantity × cost price"
+      },
+      "tabs": {
+        "all": "All",
+        "out": "Sold out",
+        "critical": "Critical",
+        "healthy": "Healthy"
+      },
+      "search": "Search by product, SKU or supplier…",
+      "cols": {
+        "product": "Product",
+        "sku": "SKU",
+        "quantity": "Physical qty",
+        "weekly": "Sales/week",
+        "status": "Status"
+      },
+      "stores": "{count, plural, one {# store sells it} other {# stores sell it}}",
+      "coverage": "covers {weeks} weeks",
+      "badge": {
+        "out": "Stock out",
+        "critical": "Critical",
+        "ok": "Healthy"
+      },
+      "disabled": "Sales disabled",
+      "disableRow": "Disable sales",
+      "autoDisable": {
+        "title": "Sales protection",
+        "body": "{count, plural, one {# product is at zero} other {# products are at zero}} and can still be sold. Disable sales in every store to avoid orders that cannot be fulfilled.",
+        "button": "Automatically disable sales in all stores",
+        "allDone": "Sales already disabled",
+        "done": "{count, plural, one {Sales disabled on # product} other {Sales disabled on # products}} (simulation).",
+        "confirmTitle": "Disable sales in all stores?",
+        "confirmBody": "{count, plural, one {# sold-out product} other {# sold-out products}} can no longer be sold in any store until there is stock.",
+        "confirm": "Disable sales"
+      },
+      "cancel": "Cancel",
+      "demoNote": "Simulation: the actions on this page do not write to the database."
+    },
+    "payouts": {
+      "title": "Payouts",
+      "subtitle": "Withdrawals requested by merchants. Approve or reject the pending ones.",
+      "cards": {
+        "pending": "Pending payouts",
+        "amount": "Amount to pay"
+      },
+      "cols": {
+        "date": "Date",
+        "merchant": "Merchant",
+        "bank": "Account",
+        "amount": "Amount",
+        "status": "Status"
+      },
+      "status": {
+        "paid": "Paid",
+        "pending": "Pending",
+        "rejected": "Rejected"
+      },
+      "approve": "Approve",
+      "reject": "Reject",
+      "toast": {
+        "approved": "Payout approved (simulation).",
+        "rejected": "Payout rejected (simulation)."
+      }
+    },
+    "catalog": {
+      "title": "Catalogue",
+      "subtitle": "The Showcase products: supplier, cost and visibility for merchants.",
+      "search": "Search by product, SKU or brand…",
+      "cols": {
+        "product": "Product",
+        "supplier": "Supplier",
+        "cost": "Cost",
+        "stores": "Stores",
+        "visibility": "Visibility"
+      },
+      "origin": {
+        "nacional": "National",
+        "internacional": "International"
+      },
+      "visible": "Visible",
+      "hidden": "Hidden"
+    }
   }
 }

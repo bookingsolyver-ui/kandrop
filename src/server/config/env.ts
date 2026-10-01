@@ -41,6 +41,9 @@ const schema = z.object({
   // The support inbox shown on the Support page (the WhatsApp number is `SUPPORT_WHATSAPP`, shared with
   // the bank-transfer proofs). Both fall back to the values in `support/contacts.ts`.
   SUPPORT_EMAIL: z.preprocess((v) => (v === "" ? undefined : v), z.email().optional()),
+  // Who may open `/admin`: a comma-separated list of account e-mails. Empty = nobody (the pages answer
+  // 404), so the operator console is never open by default.
+  ADMIN_EMAILS: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
   // Bearer token for `POST /api/admin/transfers/:reference/confirm` (a person at Kandrop confirming
   // a transfer arrived). Unset = that endpoint does not exist.
   ADMIN_API_TOKEN: z.preprocess((v) => (v === "" ? undefined : v), z.string().min(32).optional()),

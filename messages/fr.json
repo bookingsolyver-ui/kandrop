@@ -2043,5 +2043,311 @@
       "emptyTitle": "Vous n’avez pas encore de favoris",
       "emptyBody": "Touchez le cœur d’un produit de la Vitrine pour le garder ici."
     }
+  },
+  "Admin": {
+    "console": "Console d’exploitation",
+    "sampleData": "Données d’exemple",
+    "backToApp": "Retour au tableau de bord commerçant",
+    "close": "Fermer",
+    "open": "Ouvrir le menu",
+    "nav": {
+      "label": "Navigation administrateur",
+      "merchants": "Commerçants",
+      "orders": "Commandes",
+      "finance": "Finance",
+      "cashFlow": "Flux de trésorerie",
+      "payouts": "Retraits",
+      "showcase": "Vitrine",
+      "catalog": "Catalogue",
+      "inventory": "Inventaire"
+    },
+    "table": {
+      "showing": "Affichage de {from}–{to} sur {total}",
+      "perPage": "Par page",
+      "prev": "Précédent",
+      "next": "Suivant",
+      "pagination": "Pagination"
+    },
+    "cash": {
+      "title": "Flux de trésorerie global",
+      "subtitle": "Où va chaque kwanza de la plateforme : ce qui entre, ce que Kandrop retient et ce qui est chez les commerçants.",
+      "cards": {
+        "gmv": "Volume brut transigé (GMV)",
+        "gmvNote": "Tout ce que les clients finaux ont payé",
+        "revenue": "Revenu propre de Kandrop",
+        "revenueNote": "Frais sur la marge + logistique",
+        "held": "Solde retenu des commerçants",
+        "heldNote": "Portefeuilles et montants à libérer de {count} boutiques",
+        "transit": "Argent en transit",
+        "transitNote": "Livraisons à encaisser"
+      },
+      "chart": {
+        "title": "14 derniers jours",
+        "gmv": "GMV",
+        "revenue": "Revenu Kandrop",
+        "label": "GMV et revenu Kandrop par jour"
+      },
+      "ledger": {
+        "title": "Relevé général",
+        "live": "En direct",
+        "search": "Rechercher par boutique, référence ou produit…",
+        "filter": {
+          "all": "Tout",
+          "in": "Entrées",
+          "out": "Sorties"
+        },
+        "cols": {
+          "time": "Date",
+          "type": "Type",
+          "merchant": "Commerçant",
+          "ref": "Référence",
+          "amount": "Montant"
+        }
+      },
+      "kind": {
+        "payment_in": "Paiement reçu",
+        "fee_retained": "Frais retenus",
+        "supplier_payment": "Paiement fournisseur",
+        "payout_request": "Demande de retrait",
+        "payout_paid": "Retrait payé",
+        "refund": "Remboursement",
+        "adjustment": "Ajustement manuel"
+      },
+      "status": {
+        "paid": "payé",
+        "pending": "en attente",
+        "rejected": "refusé"
+      }
+    },
+    "merchants": {
+      "title": "Commerçants",
+      "subtitle": "Toutes les boutiques de la plateforme. Ouvrez-en une pour voir son profil complet.",
+      "search": "Rechercher par boutique, nom, e-mail ou ville…",
+      "filters": {
+        "all": "Tous",
+        "active": "Actifs",
+        "suspended": "Suspendus",
+        "pending_verification": "À vérifier"
+      },
+      "cols": {
+        "store": "Boutique",
+        "city": "Ville",
+        "plan": "Offre",
+        "status": "Statut",
+        "balance": "Solde",
+        "orders": "Commandes",
+        "gmv": "GMV"
+      },
+      "status": {
+        "active": "Actif",
+        "suspended": "Suspendu",
+        "pending_verification": "À vérifier"
+      },
+      "plan": {
+        "starter": "Starter",
+        "pro": "Pro"
+      },
+      "open": "Ouvrir",
+      "empty": "Aucun commerçant ne correspond à la recherche.",
+      "origin": {
+        "nacional": "National",
+        "internacional": "International"
+      }
+    },
+    "detail": {
+      "back": "Retour aux commerçants",
+      "actions": {
+        "products": "Voir les produits actifs",
+        "adjust": "Ajuster le solde",
+        "suspend": "Suspendre la boutique",
+        "reactivate": "Réactiver la boutique"
+      },
+      "kpi": {
+        "balance": "Solde du portefeuille",
+        "held": "+ {amount} à libérer",
+        "plan": "Offre actuelle",
+        "since": "Client depuis le {date}",
+        "pending": "Commandes en attente",
+        "total": "{count} commandes au total",
+        "gmv": "Volume vendu (GMV)"
+      },
+      "payouts": {
+        "title": "Historique des retraits",
+        "empty": "Aucun retrait pour l’instant.",
+        "status": {
+          "paid": "Payé",
+          "pending": "En attente",
+          "rejected": "Refusé"
+        }
+      },
+      "adjustments": {
+        "title": "Ajustements manuels (cette session)",
+        "empty": "Aucun ajustement effectué."
+      },
+      "orders": {
+        "title": "Commandes récentes",
+        "empty": "Aucune commande."
+      },
+      "demoNote": "Simulation : les actions de cette page n’écrivent pas dans la base de données.",
+      "products": {
+        "title": "Produits actifs de {store}",
+        "empty": "Cette boutique n’a pas encore de produits."
+      },
+      "close": "Fermer",
+      "cancel": "Annuler",
+      "adjust": {
+        "title": "Ajuster le solde manuellement",
+        "current": "Solde actuel : {amount}",
+        "amount": "Montant à ajouter ou retirer (kwz)",
+        "amountHelp": "Utilisez + pour créditer et − pour débiter. Maximum 10 000 000.",
+        "reason": "Justification",
+        "reasonHelp": "Obligatoire (min. 10 caractères) : elle est consignée dans le relevé.",
+        "overdraw": "Le solde ne peut pas devenir négatif.",
+        "after": "Nouveau solde : {amount}",
+        "apply": "Appliquer l’ajustement"
+      },
+      "suspend": {
+        "title": "Suspendre la boutique",
+        "body": "{store} cesse de vendre et de retirer jusqu’à sa réactivation. Les commandes en cours ne sont pas affectées.",
+        "reason": "Motif de la suspension (min. 10 caractères)",
+        "confirm": "Suspendre la boutique"
+      },
+      "reactivate": {
+        "title": "Réactiver la boutique",
+        "body": "{store} peut de nouveau vendre et retirer.",
+        "confirm": "Réactiver la boutique"
+      },
+      "toast": {
+        "adjusted": "Solde ajusté (simulation).",
+        "suspended": "Boutique suspendue (simulation).",
+        "reactivated": "Boutique réactivée (simulation)."
+      }
+    },
+    "orders": {
+      "title": "Commandes et logistique",
+      "subtitle": "Chaque commande avec son flux financier : coût + marge du commerçant + frais de livraison = total facturé au client.",
+      "search": "Rechercher par numéro, produit, boutique ou livreur…",
+      "empty": "Aucune commande dans ce filtre.",
+      "filters": {
+        "all": "Toutes",
+        "delayed": "Commandes en retard",
+        "refunds": "Retours à rembourser",
+        "transit": "En transit"
+      },
+      "cols": {
+        "order": "Commande",
+        "product": "Produit et boutique",
+        "flow": "Flux financier",
+        "status": "Statut"
+      },
+      "flow": {
+        "cost": "Coût du produit",
+        "margin": "Marge du commerçant",
+        "delivery": "Frais de livraison",
+        "legend": "coût + marge + livraison = total",
+        "fee": "frais Kandrop {amount}"
+      },
+      "state": {
+        "pending": "En attente",
+        "processing": "En préparation",
+        "shipped": "En transit",
+        "delivered": "Livrée",
+        "returned": "Retournée",
+        "cancelled": "Annulée"
+      },
+      "delayed": "En retard",
+      "refundPending": "Remboursement en attente"
+    },
+    "inventory": {
+      "title": "Inventaire et alertes",
+      "subtitle": "La santé du stock : ce qui est épuisé, ce qui va l’être et combien d’argent dort en rayon.",
+      "cards": {
+        "out": "Produits en rupture de stock",
+        "outNote": "Encore visibles à la vente",
+        "critical": "Stock critique (< {limit} unités)",
+        "criticalNote": "Réapprovisionnement urgent",
+        "capital": "Capital immobilisé en stock",
+        "capitalNote": "Quantité × prix de revient"
+      },
+      "tabs": {
+        "all": "Tous",
+        "out": "Épuisés",
+        "critical": "Critique",
+        "healthy": "Sain"
+      },
+      "search": "Rechercher par produit, SKU ou fournisseur…",
+      "cols": {
+        "product": "Produit",
+        "sku": "SKU",
+        "quantity": "Qté physique",
+        "weekly": "Ventes/semaine",
+        "status": "Statut"
+      },
+      "stores": "{count, plural, one {# boutique le vend} other {# boutiques le vendent}}",
+      "coverage": "couvre {weeks} semaines",
+      "badge": {
+        "out": "Stock out",
+        "critical": "Critique",
+        "ok": "Sain"
+      },
+      "disabled": "Ventes désactivées",
+      "disableRow": "Désactiver les ventes",
+      "autoDisable": {
+        "title": "Protection des ventes",
+        "body": "{count, plural, one {# produit est à zéro} other {# produits sont à zéro}} et peut encore être vendu. Désactivez les ventes dans toutes les boutiques pour éviter des commandes impossibles à honorer.",
+        "button": "Désactiver automatiquement les ventes dans toutes les boutiques",
+        "allDone": "Ventes déjà désactivées",
+        "done": "{count, plural, one {Ventes désactivées sur # produit} other {Ventes désactivées sur # produits}} (simulation).",
+        "confirmTitle": "Désactiver les ventes dans toutes les boutiques ?",
+        "confirmBody": "{count, plural, one {# produit épuisé ne pourra plus} other {# produits épuisés ne pourront plus}} être vendu dans aucune boutique tant qu’il n’y a pas de stock.",
+        "confirm": "Désactiver les ventes"
+      },
+      "cancel": "Annuler",
+      "demoNote": "Simulation : les actions de cette page n’écrivent pas dans la base de données."
+    },
+    "payouts": {
+      "title": "Retraits",
+      "subtitle": "Retraits demandés par les commerçants. Approuvez ou refusez ceux en attente.",
+      "cards": {
+        "pending": "Retraits en attente",
+        "amount": "Montant à payer"
+      },
+      "cols": {
+        "date": "Date",
+        "merchant": "Commerçant",
+        "bank": "Compte",
+        "amount": "Montant",
+        "status": "Statut"
+      },
+      "status": {
+        "paid": "Payé",
+        "pending": "En attente",
+        "rejected": "Refusé"
+      },
+      "approve": "Approuver",
+      "reject": "Refuser",
+      "toast": {
+        "approved": "Retrait approuvé (simulation).",
+        "rejected": "Retrait refusé (simulation)."
+      }
+    },
+    "catalog": {
+      "title": "Catalogue",
+      "subtitle": "Les produits de la Vitrine : fournisseur, coût et visibilité pour les commerçants.",
+      "search": "Rechercher par produit, SKU ou marque…",
+      "cols": {
+        "product": "Produit",
+        "supplier": "Fournisseur",
+        "cost": "Coût",
+        "stores": "Boutiques",
+        "visibility": "Visibilité"
+      },
+      "origin": {
+        "nacional": "National",
+        "internacional": "International"
+      },
+      "visible": "Visible",
+      "hidden": "Masqué"
+    }
   }
 }
