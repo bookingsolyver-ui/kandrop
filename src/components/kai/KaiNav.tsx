@@ -51,11 +51,6 @@ function NavLink({
       <span className={collapsed ? "sr-only" : "min-w-0 flex-1 truncate text-sm leading-tight font-medium"}>
         {label}
       </span>
-      {item.soon && !collapsed && (
-        <span className="ml-auto shrink-0 rounded-[var(--r-pill)] bg-[var(--ink-100)] px-2 py-0.5 text-[10px] leading-4 font-semibold whitespace-nowrap text-[var(--ink-600)]">
-          {t("soon")}
-        </span>
-      )}
     </Link>
   );
 }

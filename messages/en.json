@@ -618,7 +618,6 @@
       "accelerators": "Accelerators",
       "other": "Other"
     },
-    "soon": "Soon",
     "loading": "Loading…",
     "plan": {
       "label": "Current plan",
@@ -808,14 +807,6 @@
       "amount_required": "Enter the amount, in whole Kwanzas.",
       "amount_too_low": "The minimum amount per payout is {min}.",
       "amount_too_high": "The amount exceeds the available balance."
-    }
-  },
-  "ComingSoon": {
-    "note": "We are preparing this area. There is nothing to set up yet.",
-    "features": {
-      "catalog": "Products from selected B2B suppliers, with cost price and stock, ready to sell in your store.",
-      "landingPages": "Conversion-focused sales pages built from your products.",
-      "customers": "All your customers in one place, with the history of their orders."
     }
   },
   "Marketing": {
@@ -3154,6 +3145,50 @@
       "shipping": "Delivery",
       "shippingValue": "Handled by Kandrop",
       "total": "Total to pay"
+    }
+  },
+  "Customers": {
+    "title": "Customers",
+    "subtitle": "Everyone who has bought from your store, based on real orders.",
+    "search": "Search by name, phone or city…",
+    "searchLabel": "Search customers",
+    "kpi": {
+      "total": "Customers",
+      "returning": "Returning customers",
+      "spent": "Total paid and verified"
+    },
+    "cols": {
+      "customer": "Customer",
+      "location": "Location",
+      "orders": "Orders",
+      "spent": "Total paid",
+      "last": "Last purchase"
+    },
+    "empty": {
+      "title": "You have no customers yet",
+      "body": "When someone buys through your sales pages, the customer shows up here automatically.",
+      "cta": "See my products",
+      "none": "No customer matches the search."
+    },
+    "page": "Page {current} of {pages}",
+    "prev": "Previous",
+    "next": "Next"
+  },
+  "LandingPages": {
+    "title": "My landing pages",
+    "subtitle": "A sales page and a direct checkout for each of your products.",
+    "live": "{live} of {total} live",
+    "views": "{count, plural, one {# visit} other {# visits}}",
+    "status": {
+      "live": "Live",
+      "off": "Inactive"
+    },
+    "view": "View page",
+    "activate": "Activate product",
+    "empty": {
+      "title": "You have no sales pages yet",
+      "body": "Every product you add to your store gets a sales page and a direct checkout, ready to promote.",
+      "cta": "Browse the showcase"
     }
   }
 }

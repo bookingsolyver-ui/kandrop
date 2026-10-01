@@ -1,39 +1,14 @@
 import type { DashboardSummary } from "./schema";
 import { reservedAmount } from "@/server/modules/payouts/ledger";
-import { isDemoStore } from "@/server/modules/store/demo";
-import { snapshot } from "./simulator";
-
-const PERIOD_DAYS = 14;
-
-function emptySummary(): DashboardSummary {
-  const zero = { amount: 0, currency: "AOA" as const };
-  return {
-    periodDays: PERIOD_DAYS,
-    grossRevenue: { value: zero, changePct: 0 },
-    netRevenue: { value: zero, changePct: 0, marginRate: 0 },
-    pendingOrders: { count: 0, value: zero },
-    availableBalance: { value: zero, releasing: zero },
-    revenueSeries: [],
-    topProducts: [],
-    extras: {
-      orders: 0,
-      avgTicket: 0,
-      abandonedCarts: 0,
-      refunded: 0,
-      chargebacks: 0,
-      orderStatus: { preparing: 0, shipped: 0, delivered: 0, returned: 0 },
-      paymentMethods: (["multicaixa_express", "unitel_money", "card", "bank_transfer"] as const).map(
-        (method) => ({ method, conversion: 0, sales: 0 })
-      ),
-    },
-    updatedAt: new Date().toISOString(),
-    demo: false,
-  };
-}
+import { getEnv } from "@/server/config/env";
+import { db, must } from "@/server/db/client";
+import { orderRepository } from "@/server/modules/orders/repository";
+import { productRepository } from "@/server/modules/products/repository";
+import { aggregateSummary } from "./aggregate";
 
 /**
- * The simulator keeps one balance for every demo store, so each store's own withdrawals are
- * taken off it here. Used by the snapshot and by the live feed, so both always agree.
+ * Each store's own withdrawals are taken off its available balance here. Used by the snapshot and by the live
+ * feed, so both always agree.
  */
 export async function withPayouts(
   summary: DashboardSummary,
@@ -52,13 +27,21 @@ export async function withPayouts(
 }
 
 /**
- * STUB — until the summary is aggregated from the orders/payments tables, demo mode
- * (`KANDROP_DEMO_EVENTS=true`, on a deployed demo too) serves the simulator's starting numbers and
- * everything else serves an empty (but valid) summary. Demo mode is an explicit opt-in: it is never
- * switched on just because the database is empty, or a real merchant would see made-up revenue. Replace with real aggregations
- * scoped by `storeId`; the return type is the contract.
+ * The dashboard's numbers, aggregated from THIS store's real orders (see `aggregate.ts`): nothing is simulated.
+ * Every query is scoped by `storeId`.
  */
 export async function getDashboardSummary(storeId: string): Promise<DashboardSummary> {
-  const summary = (await isDemoStore(storeId)) ? snapshot() : emptySummary();
+  const [orders, lines, products] = await Promise.all([
+    orderRepository.all(storeId),
+    db().from("supplier_orders").select("order_id,merchant_net").eq("store_id", storeId).then((r) => must("dashboard.lines", r) ?? []),
+    productRepository.all(storeId),
+  ]);
+  const summary = aggregateSummary({
+    orders,
+    lineNets: new Map(lines.map((l) => [String(l.order_id), Number(l.merchant_net)])),
+    costs: new Map(products.map((p) => [p.id, p.costPrice])),
+    commissionBps: getEnv().COMMISSION_BPS,
+    now: Date.now(),
+  });
   return await withPayouts(summary, storeId);
 }

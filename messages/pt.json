@@ -618,7 +618,6 @@
       "accelerators": "Aceleradores",
       "other": "Outros"
     },
-    "soon": "Em breve",
     "loading": "A carregar…",
     "plan": {
       "label": "Plano atual",
@@ -808,14 +807,6 @@
       "amount_required": "Indique o montante, em Kwanzas inteiros.",
       "amount_too_low": "O montante mínimo por levantamento é {min}.",
       "amount_too_high": "O montante excede o saldo disponível."
-    }
-  },
-  "ComingSoon": {
-    "note": "Estamos a preparar esta área. Não há nada para configurar por agora.",
-    "features": {
-      "catalog": "Produtos de fornecedores B2B selecionados, com preço de custo e stock, prontos a vender na sua loja.",
-      "landingPages": "Páginas de venda focadas na conversão, criadas a partir dos seus produtos.",
-      "customers": "Todos os seus clientes num só lugar, com o histórico das respetivas encomendas."
     }
   },
   "Marketing": {
@@ -3154,6 +3145,50 @@
       "shipping": "Entrega",
       "shippingValue": "Gerida pela Kandrop",
       "total": "Total a pagar"
+    }
+  },
+  "Customers": {
+    "title": "Clientes",
+    "subtitle": "Quem já comprou na sua loja, com base nas encomendas reais.",
+    "search": "Procurar por nome, telefone ou cidade…",
+    "searchLabel": "Procurar clientes",
+    "kpi": {
+      "total": "Clientes",
+      "returning": "Clientes recorrentes",
+      "spent": "Total pago e verificado"
+    },
+    "cols": {
+      "customer": "Cliente",
+      "location": "Localização",
+      "orders": "Encomendas",
+      "spent": "Total pago",
+      "last": "Última compra"
+    },
+    "empty": {
+      "title": "Ainda não tem clientes",
+      "body": "Quando alguém comprar através das suas páginas de venda, o cliente aparece aqui automaticamente.",
+      "cta": "Ver os meus produtos",
+      "none": "Nenhum cliente corresponde à pesquisa."
+    },
+    "page": "Página {current} de {pages}",
+    "prev": "Anterior",
+    "next": "Seguinte"
+  },
+  "LandingPages": {
+    "title": "As minhas landing pages",
+    "subtitle": "Uma página de venda e um checkout direto por cada produto seu.",
+    "live": "{live} de {total} no ar",
+    "views": "{count, plural, one {# visita} other {# visitas}}",
+    "status": {
+      "live": "No ar",
+      "off": "Inativa"
+    },
+    "view": "Ver página",
+    "activate": "Ativar produto",
+    "empty": {
+      "title": "Ainda não tem páginas de venda",
+      "body": "Cada produto que adicionar à sua loja ganha uma página de venda e um checkout direto, prontos a divulgar.",
+      "cta": "Buscar produtos na vitrine"
     }
   }
 }

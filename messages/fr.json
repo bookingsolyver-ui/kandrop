@@ -618,7 +618,6 @@
       "accelerators": "Accélérateurs",
       "other": "Autres"
     },
-    "soon": "Bientôt",
     "loading": "Chargement…",
     "plan": {
       "label": "Offre actuelle",
@@ -808,14 +807,6 @@
       "amount_required": "Indiquez le montant, en kwanzas entiers.",
       "amount_too_low": "Le montant minimum par retrait est de {min}.",
       "amount_too_high": "Le montant dépasse le solde disponible."
-    }
-  },
-  "ComingSoon": {
-    "note": "Nous préparons cet espace. Il n’y a rien à configurer pour l’instant.",
-    "features": {
-      "catalog": "Des produits de fournisseurs B2B sélectionnés, avec prix de revient et stock, prêts à vendre dans votre boutique.",
-      "landingPages": "Des pages de vente axées sur la conversion, créées à partir de vos produits.",
-      "customers": "Tous vos clients au même endroit, avec l’historique de leurs commandes."
     }
   },
   "Marketing": {
@@ -3154,6 +3145,50 @@
       "shipping": "Livraison",
       "shippingValue": "Gérée par Kandrop",
       "total": "Total à payer"
+    }
+  },
+  "Customers": {
+    "title": "Clients",
+    "subtitle": "Tous ceux qui ont acheté dans votre boutique, d’après les commandes réelles.",
+    "search": "Rechercher par nom, téléphone ou ville…",
+    "searchLabel": "Rechercher des clients",
+    "kpi": {
+      "total": "Clients",
+      "returning": "Clients récurrents",
+      "spent": "Total payé et vérifié"
+    },
+    "cols": {
+      "customer": "Client",
+      "location": "Localisation",
+      "orders": "Commandes",
+      "spent": "Total payé",
+      "last": "Dernier achat"
+    },
+    "empty": {
+      "title": "Vous n’avez pas encore de clients",
+      "body": "Quand quelqu’un achète via vos pages de vente, le client apparaît ici automatiquement.",
+      "cta": "Voir mes produits",
+      "none": "Aucun client ne correspond à la recherche."
+    },
+    "page": "Page {current} sur {pages}",
+    "prev": "Précédent",
+    "next": "Suivant"
+  },
+  "LandingPages": {
+    "title": "Mes pages de vente",
+    "subtitle": "Une page de vente et un paiement direct pour chacun de vos produits.",
+    "live": "{live} sur {total} en ligne",
+    "views": "{count, plural, one {# visite} other {# visites}}",
+    "status": {
+      "live": "En ligne",
+      "off": "Inactive"
+    },
+    "view": "Voir la page",
+    "activate": "Activer le produit",
+    "empty": {
+      "title": "Vous n’avez pas encore de pages de vente",
+      "body": "Chaque produit ajouté à votre boutique reçoit une page de vente et un paiement direct, prêts à partager.",
+      "cta": "Parcourir la vitrine"
     }
   }
 }

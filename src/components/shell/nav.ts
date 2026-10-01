@@ -39,8 +39,6 @@ export interface NavItem {
   key: NavKey;
   href: string;
   icon: ComponentType<{ size?: number }>;
-  /** Not built yet: the page says so, and the menu marks it "Soon" before you click. */
-  soon?: boolean;
 }
 
 export interface NavGroup {
@@ -63,8 +61,8 @@ export const NAV_GROUPS: NavGroup[] = [
       { key: "vitrineNational", href: "/dashboard/vitrine/nacional", icon: CatalogIcon },
       { key: "vitrineInternational", href: "/dashboard/vitrine/internacional", icon: CatalogIcon },
       { key: "products", href: "/dashboard/meus-produtos", icon: ProductsIcon },
-      { key: "landingPages", href: "/dashboard/landing-pages", icon: LandingPageIcon, soon: true },
-      { key: "customers", href: "/dashboard/customers", icon: CustomersIcon, soon: true },
+      { key: "landingPages", href: "/dashboard/landing-pages", icon: LandingPageIcon },
+      { key: "customers", href: "/dashboard/customers", icon: CustomersIcon },
     ],
   },
   {
@@ -94,15 +92,8 @@ export const PLANS_ITEM: NavItem = {
 
 export const ALL_NAV_ITEMS: NavItem[] = [...NAV_GROUPS.flatMap((g) => g.items), PLANS_ITEM];
 
-/** URL segment of an item (`landing-pages`), used by the breadcrumbs and the "soon" route. */
+/** URL segment of an item (`landing-pages`), used by the breadcrumbs. */
 export const segmentOf = (item: NavItem) => item.href.split("/")[2] ?? "";
-
-/** The areas on the roadmap that have a "coming soon" page (and a sentence in `ComingSoon.features`). */
-export type SoonKey = "landingPages" | "customers";
-
-export const SOON_ITEMS = ALL_NAV_ITEMS.filter(
-  (item): item is NavItem & { key: SoonKey } => item.soon === true
-);
 
 /** `/dashboard` is exact; every other item owns its whole subtree (`/dashboard/products/new`). */
 export const isCurrent = (item: NavItem, pathname: string) =>

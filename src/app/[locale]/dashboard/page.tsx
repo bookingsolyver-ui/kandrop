@@ -5,7 +5,6 @@ import { notFound } from "next/navigation";
 import { KaiDashboard } from "@/components/kai/KaiDashboard";
 import { routing } from "@/i18n/routing";
 import { PageTransition } from "@/components/shell/PageTransition";
-import { DemoDataCard } from "@/components/dashboard/DemoDataCard";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -19,7 +18,6 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
   return (
     <PageTransition>
       <div className="space-y-6">
-        <DemoDataCard />
         <KaiDashboard />
       </div>
     </PageTransition>
