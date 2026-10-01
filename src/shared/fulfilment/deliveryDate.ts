@@ -38,3 +38,8 @@ export function deliveryOptions(now = Date.now(), count = DELIVERY_OPTIONS): str
   for (let day = luandaToday(now); out.length < count; day += DAY) if (!isSunday(day)) out.push(toIsoDay(day));
   return out;
 }
+
+/** What the checkout page needs, from ONE reading of the clock: today and the offered days. */
+export function checkoutDays(now = Date.now()) {
+  return { today: toIsoDay(luandaToday(now)), days: deliveryOptions(now) };
+}

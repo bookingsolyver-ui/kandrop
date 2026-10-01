@@ -7,7 +7,7 @@ import { redirect } from "@/i18n/navigation";
 import { CheckoutView } from "@/components/storefront/CheckoutView";
 import { routing } from "@/i18n/routing";
 import { ApiError } from "@/server/http/errors";
-import { deliveryOptions, toIsoDay, luandaToday } from "@/shared/fulfilment/deliveryDate";
+import { checkoutDays } from "@/shared/fulfilment/deliveryDate";
 import { getStorefrontProduct } from "@/server/modules/storefront/service";
 
 // Price, stock and the offer depend on the clock: never prerender.
@@ -41,6 +41,6 @@ export default async function QuickCheckoutPage({ params, searchParams }: Props)
   if (product.stock.state === "out") return redirect({ href: `/loja/${slug}`, locale });
   const invalid = (await searchParams).error === "details";
   // The four delivery days are worked out on the server (Luanda time), so the page and the check agree.
-  const now = Date.now();
-  return <CheckoutView product={product} invalid={invalid} days={deliveryOptions(now)} today={toIsoDay(luandaToday(now))} />;
+  const { days, today } = checkoutDays();
+  return <CheckoutView product={product} invalid={invalid} days={days} today={today} />;
 }
