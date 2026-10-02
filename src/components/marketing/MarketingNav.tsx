@@ -50,7 +50,7 @@ export function MarketingNav() {
   // On the home page the bar floats transparent over the black hero (white logo and links), then turns into the
   // usual white bar as soon as the page scrolls.
   const [scrolled, setScrolled] = useState(false);
-  const onDark = pathname === "/" && !scrolled;
+  const onDark = (pathname === "/" || pathname === "/afiliados") && !scrolled;
 
   useEffect(() => {
     const update = () => setScrolled(window.scrollY > 24);

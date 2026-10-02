@@ -86,11 +86,12 @@ const BENEFITS = [
   { key: "dashboard", Icon: ChartIcon },
 ] as const;
 
-const card = "rounded-2xl border border-[var(--ink-200)] bg-white p-6 shadow-[var(--sh-xs)]";
+const card = "group rounded-2xl border border-white/10 bg-[#121212] p-6 shadow-2xl transition-all duration-300 hover:-translate-y-1.5 hover:border-brand-orange/50";
 const iconBubble =
-  "grid size-11 place-items-center rounded-xl bg-[var(--kai-orange-50)] text-[var(--kai-orange-600)]";
+  "grid size-11 place-items-center rounded-xl bg-brand-orange/10 text-brand-orange transition-transform duration-300 group-hover:scale-110";
+const eyebrow = "text-[11px] font-bold tracking-[0.18em] text-brand-orange uppercase";
 
-/** The public affiliates page: what the programme is, how it works, why join, and one call to action. */
+/** The public affiliates page: what the programme is, how it works, why join, and one call to action. Dark, like the landing page. */
 export default async function AffiliatesPage({ params }: Props) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
@@ -98,20 +99,21 @@ export default async function AffiliatesPage({ params }: Props) {
   const t = await getTranslations("AffiliatesPage");
 
   return (
-    <main>
+    <main className="bg-brand-black text-brand-white">
       {/* 1 — Hero */}
-      <section aria-labelledby="aff-title" className="relative overflow-hidden">
-        <div aria-hidden className="pointer-events-none absolute -top-40 left-1/2 -z-10 h-[34rem] w-[64rem] -translate-x-1/2 bg-[radial-gradient(closest-side,var(--glow),transparent)]" />
-        <div className="mx-auto grid max-w-7xl gap-14 px-4 pt-14 pb-20 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:gap-12 lg:px-8 lg:pt-24 lg:pb-28">
+      <section aria-labelledby="aff-title" className="relative -mt-16 overflow-hidden bg-brand-black pt-16">
+        <div aria-hidden className="pointer-events-none absolute -top-32 left-1/2 h-[34rem] w-[64rem] -translate-x-1/2 bg-[radial-gradient(closest-side,rgba(255,90,0,0.28),transparent)]" />
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-[linear-gradient(to_top,rgba(255,90,0,0.08),transparent)]" />
+        <div className="relative mx-auto grid max-w-7xl gap-14 px-4 pt-16 pb-20 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:gap-12 lg:px-8 lg:pt-24 lg:pb-28">
           <div>
-            <p className="enter inline-flex items-center gap-2.5 rounded-full border border-[var(--ink-200)] bg-white px-4 py-1.5 text-[13px] font-medium text-[var(--ink-600)]" style={{ "--i": 0 } as React.CSSProperties}>
-              <span aria-hidden className="size-1.5 rounded-full bg-[var(--kai-orange)]" />
+            <p className="enter inline-flex items-center gap-2.5 rounded-full border border-brand-orange/40 bg-brand-orange/10 px-4 py-1.5 text-[13px] font-medium text-brand-orange" style={{ "--i": 0 } as React.CSSProperties}>
+              <span aria-hidden className="size-1.5 animate-pulse rounded-full bg-brand-orange" />
               {t("hero.eyebrow")}
             </p>
-            <h1 id="aff-title" className="enter mt-7 text-[clamp(2.5rem,5.6vw,4.5rem)] leading-[1.02] font-extrabold tracking-[-0.03em] text-balance text-[var(--ink-900)]" style={{ "--i": 1 } as React.CSSProperties}>
-              {t("hero.titleA")} <span className="text-[var(--kai-orange)]">{t("hero.titleB")}</span>
+            <h1 id="aff-title" className="enter mt-7 text-[clamp(2.5rem,5.6vw,4.5rem)] leading-[1.02] font-extrabold tracking-[-0.03em] text-balance text-brand-white" style={{ "--i": 1 } as React.CSSProperties}>
+              {t("hero.titleA")} <span className="text-gradient-orange">{t("hero.titleB")}</span>
             </h1>
-            <p className="enter mt-7 max-w-xl text-lg leading-relaxed text-[var(--ink-600)] sm:text-xl" style={{ "--i": 2 } as React.CSSProperties}>
+            <p className="enter mt-7 max-w-xl text-lg leading-relaxed text-brand-white/70 sm:text-xl" style={{ "--i": 2 } as React.CSSProperties}>
               {t("hero.subtitle")}
             </p>
             <div className="enter mt-10 flex flex-col gap-3 sm:flex-row" style={{ "--i": 3 } as React.CSSProperties}>
@@ -119,43 +121,44 @@ export default async function AffiliatesPage({ params }: Props) {
                 {t("hero.cta")}
                 <ArrowIcon />
               </BrandLink>
-              <a href="#como-funciona" className="inline-flex h-14 items-center justify-center rounded-xl border border-[var(--ink-200)] bg-white px-8 text-base font-semibold text-[var(--ink-900)] transition-colors hover:border-[var(--ink-300)]">
+              <a href="#como-funciona" className="inline-flex h-14 items-center justify-center rounded-xl border border-white/20 bg-white/5 px-8 text-base font-semibold text-brand-white transition-colors hover:border-brand-orange hover:text-brand-orange">
                 {t("hero.secondary")}
               </a>
             </div>
-            <p className="enter mt-5 text-[13px] text-[var(--ink-500)]" style={{ "--i": 4 } as React.CSSProperties}>
+            <p className="enter mt-5 text-[13px] text-brand-white/60" style={{ "--i": 4 } as React.CSSProperties}>
               {t("hero.note")}
             </p>
           </div>
 
           {/* An illustration of the affiliate panel: clearly labelled as an example. */}
           <div className="enter mx-auto w-full max-w-md" style={{ "--i": 4 } as React.CSSProperties}>
-            <div className="rounded-2xl border border-[var(--ink-200)] bg-white p-6 shadow-[var(--sh-md)]">
-              <p className="text-[10.5px] font-bold tracking-[0.08em] text-[var(--ink-500)] uppercase">{t("hero.panel.title")}</p>
-              <div className="mt-3 flex items-center gap-2 rounded-xl border border-[var(--ink-200)] bg-[var(--ink-50)] px-3 py-2.5">
-                <span className="text-[var(--kai-orange-600)]"><LinkIcon /></span>
-                <span className="mono-num min-w-0 truncate text-[13px] text-[var(--ink-700)]">kandrop.com/join?ref=o-seu-nome</span>
+            <div className="rounded-2xl border border-white/10 bg-[#121212] p-6 shadow-2xl">
+              <p className="text-[10.5px] font-bold tracking-[0.08em] text-brand-white/50 uppercase">{t("hero.panel.title")}</p>
+              <div className="mt-3 flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5">
+                <span className="text-brand-orange"><LinkIcon /></span>
+                <span className="mono-num min-w-0 truncate text-[13px] text-brand-white/80">kandrop.com/join?ref=o-seu-nome</span>
               </div>
               <dl className="mt-5 grid grid-cols-3 gap-3 text-center">
                 {(["clicks", "signups", "paying"] as const).map((k) => (
-                  <div key={k} className="rounded-xl bg-[var(--ink-50)] px-2 py-3">
-                    <dt className="text-[11px] text-[var(--ink-500)]">{t(`hero.panel.${k}`)}</dt>
-                    <dd className="mono-num mt-1 text-lg font-extrabold text-[var(--ink-900)]">{t(`hero.panel.${k}Value`)}</dd>
+                  <div key={k} className="rounded-xl border border-white/5 bg-white/[0.03] px-2 py-3">
+                    <dt className="text-[11px] text-brand-white/50">{t(`hero.panel.${k}`)}</dt>
+                    <dd className="mono-num mt-1 text-lg font-extrabold text-brand-orange">{t(`hero.panel.${k}Value`)}</dd>
                   </div>
                 ))}
               </dl>
             </div>
-            <p className="mt-4 text-center text-[13px] text-[var(--ink-500)]">{t("hero.panel.example")}</p>
+            <p className="mt-4 text-center text-[13px] text-brand-white/50">{t("hero.panel.example")}</p>
           </div>
         </div>
       </section>
 
       {/* 2 — How it works */}
-      <section id="como-funciona" aria-labelledby="how-title" className="scroll-mt-20 border-t border-[var(--ink-200)]">
-        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+      <section id="como-funciona" aria-labelledby="how-title" className="relative scroll-mt-20 overflow-hidden border-t border-white/10 bg-brand-black">
+        <div aria-hidden className="pointer-events-none absolute top-1/2 left-1/2 h-[420px] w-[760px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-15 blur-[130px]" style={{ background: "radial-gradient(circle, #FF5A00 0%, transparent 70%)" }} />
+        <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
           <div className="reveal max-w-2xl">
-            <p className="text-[11px] font-bold tracking-[0.16em] text-[var(--kai-orange-600)] uppercase">{t("how.eyebrow")}</p>
-            <h2 id="how-title" className="mt-3 text-[clamp(2rem,4vw,3rem)] leading-[1.05] font-extrabold tracking-[-0.03em] text-[var(--ink-900)]">
+            <p className={eyebrow}>{t("how.eyebrow")}</p>
+            <h2 id="how-title" className="mt-3 text-[clamp(2rem,4vw,3rem)] leading-[1.05] font-extrabold tracking-[-0.03em] text-brand-white">
               {t("how.title")}
             </h2>
           </div>
@@ -164,10 +167,10 @@ export default async function AffiliatesPage({ params }: Props) {
               <li key={key} className={`reveal ${card}`} style={{ "--i": i } as React.CSSProperties}>
                 <div className="flex items-center justify-between">
                   <span className={iconBubble}><Icon /></span>
-                  <span className="mono-num text-sm font-bold text-[var(--ink-300)]">0{i + 1}</span>
+                  <span className="mono-num text-sm font-bold text-white/25">0{i + 1}</span>
                 </div>
-                <h3 className="mt-5 text-[19px] font-bold tracking-[-0.01em] text-[var(--ink-900)]">{t(`how.steps.${key}.title`)}</h3>
-                <p className="mt-2 text-[15px] leading-relaxed text-[var(--ink-600)]">{t(`how.steps.${key}.body`)}</p>
+                <h3 className="mt-5 text-[19px] font-bold tracking-[-0.01em] text-brand-white transition-colors group-hover:text-brand-orange">{t(`how.steps.${key}.title`)}</h3>
+                <p className="mt-2 text-[15px] leading-relaxed text-brand-white/65">{t(`how.steps.${key}.body`)}</p>
               </li>
             ))}
           </ol>
@@ -175,11 +178,11 @@ export default async function AffiliatesPage({ params }: Props) {
       </section>
 
       {/* 3 — Benefits */}
-      <section aria-labelledby="perks-title" className="border-t border-[var(--ink-200)]">
+      <section aria-labelledby="perks-title" className="border-t border-white/10 bg-brand-black">
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
           <div className="reveal max-w-2xl">
-            <p className="text-[11px] font-bold tracking-[0.16em] text-[var(--kai-orange-600)] uppercase">{t("perks.eyebrow")}</p>
-            <h2 id="perks-title" className="mt-3 text-[clamp(2rem,4vw,3rem)] leading-[1.05] font-extrabold tracking-[-0.03em] text-[var(--ink-900)]">
+            <p className={eyebrow}>{t("perks.eyebrow")}</p>
+            <h2 id="perks-title" className="mt-3 text-[clamp(2rem,4vw,3rem)] leading-[1.05] font-extrabold tracking-[-0.03em] text-brand-white">
               {t("perks.title")}
             </h2>
           </div>
@@ -187,8 +190,8 @@ export default async function AffiliatesPage({ params }: Props) {
             {BENEFITS.map(({ key, Icon }, i) => (
               <li key={key} className={`reveal ${card}`} style={{ "--i": i } as React.CSSProperties}>
                 <span className={iconBubble}><Icon /></span>
-                <h3 className="mt-5 text-[19px] font-bold tracking-[-0.01em] text-[var(--ink-900)]">{t(`perks.items.${key}.title`)}</h3>
-                <p className="mt-2 text-[15px] leading-relaxed text-[var(--ink-600)]">{t(`perks.items.${key}.body`)}</p>
+                <h3 className="mt-5 text-[19px] font-bold tracking-[-0.01em] text-brand-white transition-colors group-hover:text-brand-orange">{t(`perks.items.${key}.title`)}</h3>
+                <p className="mt-2 text-[15px] leading-relaxed text-brand-white/65">{t(`perks.items.${key}.body`)}</p>
               </li>
             ))}
           </ul>
@@ -196,17 +199,17 @@ export default async function AffiliatesPage({ params }: Props) {
       </section>
 
       {/* 4 — Final call to action */}
-      <section aria-labelledby="aff-final-title" className="border-t border-[var(--ink-200)]">
+      <section aria-labelledby="aff-final-title" className="border-t border-white/10 bg-brand-black">
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
           <div
-            className="reveal relative overflow-hidden rounded-2xl px-6 py-16 text-center sm:px-12 sm:py-24"
+            className="reveal relative overflow-hidden rounded-2xl border border-white/10 px-6 py-16 text-center sm:px-12 sm:py-24"
             style={{ background: "linear-gradient(135deg, #000000 0%, #141414 45%, #2e2e2e 100%)" }}
           >
             <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.10]" style={{ backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.55) 1px, transparent 1px)", backgroundSize: "26px 26px" }} />
             <div aria-hidden className="pointer-events-none absolute -top-32 -right-32 h-[420px] w-[420px] rounded-full" style={{ background: "radial-gradient(circle, rgba(255, 90, 0, 0.55) 0%, rgba(255, 90, 0, 0.18) 45%, transparent 75%)", filter: "blur(70px)" }} />
             <div aria-hidden className="pointer-events-none absolute -bottom-40 -left-32 h-[380px] w-[380px] rounded-full" style={{ background: "radial-gradient(circle, rgba(255, 90, 0, 0.45) 0%, rgba(255, 90, 0, 0.12) 50%, transparent 75%)", filter: "blur(80px)" }} />
-            <h2 id="aff-final-title" className="relative mx-auto max-w-3xl text-[clamp(2rem,4.6vw,3.5rem)] leading-[1.05] font-extrabold tracking-[-0.03em] text-balance text-white">
-              {t("final.titleA")} <span className="text-[var(--kai-orange)]">{t("final.titleB")}</span>
+            <h2 id="aff-final-title" className="relative mx-auto max-w-3xl text-[clamp(2rem,4.6vw,3.5rem)] leading-[1.05] font-extrabold tracking-[-0.03em] text-balance text-brand-white">
+              {t("final.titleA")} <span className="text-gradient-orange">{t("final.titleB")}</span>
             </h2>
             <p className="relative mx-auto mt-5 max-w-xl text-lg leading-relaxed text-white/70">{t("final.body")}</p>
             <BrandLink href="/register" size="lg" className="mt-10 px-9">
