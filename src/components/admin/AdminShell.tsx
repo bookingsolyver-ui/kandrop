@@ -136,7 +136,6 @@ function AdminNav({ onNavigate }: { onNavigate?: () => void }) {
 const Logo = () => (
   <Link href="/admin" aria-label="Kandrop" className="inline-flex items-center gap-2">
     <Image src="/logo-kandrop-full.png" alt="" width={1024} height={206} priority className="h-7 w-auto object-contain" />
-    <span className="rounded-full bg-brand-black px-2 py-0.5 text-[10px] font-bold tracking-wider text-white uppercase">Admin</span>
   </Link>
 );
 
@@ -154,6 +153,8 @@ export function AdminShell({ user, children }: { user: string; children: ReactNo
         <aside className="hidden w-64 shrink-0 flex-col border-r border-[var(--ink-200)] bg-[var(--ink-0)] lg:flex">
           <div className="border-b border-[var(--ink-200)] p-5">
             <Logo />
+            {/* Same pattern as the supplier portal: the brand, and under it what this area is. */}
+            <p className="mt-3 text-[11px] font-semibold tracking-[0.08em] text-[var(--ink-500)] uppercase">{t("console")}</p>
           </div>
           <div className="min-h-0 flex-1 overflow-y-auto">
             <AdminNav />
@@ -172,7 +173,10 @@ export function AdminShell({ user, children }: { user: string; children: ReactNo
           className="fixed inset-y-0 left-0 m-0 h-dvh max-h-none w-72 max-w-[85vw] overflow-y-auto border-r border-[var(--ink-200)] bg-[var(--ink-0)] p-0 text-[var(--ink-900)] backdrop:bg-black/50 lg:hidden"
         >
           <div className="flex items-center justify-between border-b border-[var(--ink-200)] p-4">
-            <Logo />
+            <div>
+              <Logo />
+              <p className="mt-2 text-[11px] font-semibold tracking-[0.08em] text-[var(--ink-500)] uppercase">{t("console")}</p>
+            </div>
             <button type="button" onClick={() => drawer.current?.close()} aria-label={t("close")} className="grid size-10 place-items-center rounded-full border border-[var(--ink-200)] bg-white">
               <CloseIcon />
             </button>

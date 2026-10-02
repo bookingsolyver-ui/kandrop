@@ -2325,7 +2325,7 @@
     }
   },
   "Admin": {
-    "console": "Consola de operação",
+    "console": "Portal Administrativo",
     "sampleData": "Dados de exemplo",
     "backToApp": "Voltar ao painel do lojista",
     "close": "Fechar",

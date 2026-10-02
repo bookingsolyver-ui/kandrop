@@ -2325,7 +2325,7 @@
     }
   },
   "Admin": {
-    "console": "Operations console",
+    "console": "Admin Portal",
     "sampleData": "Sample data",
     "backToApp": "Back to the merchant dashboard",
     "close": "Close",

@@ -2325,7 +2325,7 @@
     }
   },
   "Admin": {
-    "console": "Console d’exploitation",
+    "console": "Portail Administratif",
     "sampleData": "Données d’exemple",
     "backToApp": "Retour au tableau de bord commerçant",
     "close": "Fermer",
