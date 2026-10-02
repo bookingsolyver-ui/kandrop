@@ -53,13 +53,13 @@ export function KaiHeader({ firstName, onMenu }: { firstName: string; onMenu: ()
         <MenuBarsIcon size={20} />
       </button>
 
-      {/* The same clean full logo as the desktop sidebar: no tile, no frame (the orange app-icon tile was the odd one out). */}
+      {/* The official app icon (the white K on the orange square, public/brand/k-app.png): next to the menu button and the
+          greeting on a phone. The full wordmark lives in the desktop sidebar. */}
       <Link href="/dashboard" aria-label="Kandrop" className="shrink-0 outline-none focus-visible:outline-none lg:hidden">
-        <Image src="/logo-kandrop-full.png" alt="" width={1024} height={206} priority className="h-7 w-auto object-contain" />
+        <Image src="/brand/k-app.png" alt="" width={32} height={32} priority className="size-8 rounded-lg" />
       </Link>
 
-      {/* On a phone the row is for the menu, the logo and the quick actions; the greeting comes back from `sm` up. */}
-      <div className="hidden min-w-0 flex-col leading-tight sm:flex">
+      <div className="flex min-w-0 flex-col leading-tight">
         <span className="text-[11px] font-semibold tracking-[0.08em] text-[var(--ink-500)] uppercase">
           {t("welcome")}
         </span>
