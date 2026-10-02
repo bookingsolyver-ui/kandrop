@@ -74,11 +74,11 @@ export function PushBanner() {
   return (
     <div role="region" aria-label={t("title")} className="flex flex-wrap items-center gap-3 border-b border-[var(--ink-200)] bg-[var(--kai-orange-50)] px-4 py-3 sm:px-8">
       <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-white text-[var(--kai-orange-600)]">{bell}</span>
-      <div className="min-w-0 flex-1">
+      <div className="min-w-[12rem] flex-1 basis-[12rem]">
         <p className="text-sm font-bold text-[var(--ink-900)]">{t("title")}</p>
         <p className="text-[13px] text-[var(--ink-600)]">{t("body")}</p>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex w-full items-center gap-2 sm:w-auto">
         <button type="button" onClick={() => void enable()} disabled={state === "working"} className="h-10 rounded-full bg-brand-orange px-5 text-sm font-bold text-brand-black disabled:opacity-60">{state === "working" ? t("working") : t("enable")}</button>
         <button type="button" onClick={later} className="h-10 rounded-full px-3 text-sm font-semibold text-[var(--ink-600)] hover:text-[var(--ink-900)]">{t("later")}</button>
       </div>
