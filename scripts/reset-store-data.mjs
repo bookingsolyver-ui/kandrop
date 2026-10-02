@@ -6,6 +6,10 @@
  *   node scripts/reset-store-data.mjs --store sto_xxxx --apply    # deletes
  *   node scripts/reset-store-data.mjs --all-stores --apply --confirm RESET   # every store
  *
+ * Add  --catalog  to ALSO wipe the catalogue side: every store's products (+ images), the Vitrine imports, and the suppliers'
+ * products (the Vitrine items and their inventory). Suppliers' ACCOUNTS stay, so a test supplier can add a product from zero.
+ *   node scripts/reset-store-data.mjs --all-stores --apply --confirm RESET --catalog
+ *
  * Deleted (per store): orders, supplier lines (supplier_orders), their invoices, deliveries, payouts (merchant
  * withdrawals), checkout sessions that were product purchases, and the product view counters.
  * Supplier stock that those orders had reserved is GIVEN BACK first, so suppliers' inventory stays right.
@@ -24,6 +28,7 @@ const env = Object.fromEntries(readFileSync(new URL("../.env.local", import.meta
 const db = createClient(env.SUPABASE_URL ?? env.NEXT_PUBLIC_SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
 
 const apply = flag("--apply");
+const catalog = flag("--catalog");
 const all = flag("--all-stores");
 const store = value("--store");
 if (!all && !store) { console.error("Say which store: --store <id> or --all-stores (add --apply to really delete)."); process.exit(1); }
@@ -38,13 +43,17 @@ else {
 
 const count = async (table, id) => (await db.from(table).select("*", { count: "exact", head: true }).eq("store_id", id)).count ?? 0;
 const TABLES = ["order_invoices", "supplier_orders", "deliveries", "orders", "payouts"];
+const CATALOG_TABLES = ["product_images", "supplier_imports", "products"]; // children first
+const total = async (table) => (await db.from(table).select("*", { count: "exact", head: true })).count ?? 0;
 
 for (const s of stores) {
   const counts = Object.fromEntries(await Promise.all(TABLES.map(async (t) => [t, await count(t, s.id)])));
   const { data: lines } = await db.from("supplier_orders").select("supplier_product_id,stock_reserved,stock_restored_at,logistics_status").eq("store_id", s.id);
   const toGiveBack = (lines ?? []).filter((l) => l.supplier_product_id && !l.stock_restored_at && l.logistics_status !== "cancelled" && l.stock_reserved > 0);
+  if (catalog) for (const t of CATALOG_TABLES) counts[t] = await count(t, s.id);
   console.log(`${apply ? "TO DELETE" : "DRY RUN"}  ${s.id}  "${s.name}"  ${JSON.stringify(counts)}  stock units to give back: ${toGiveBack.reduce((n, l) => n + l.stock_reserved, 0)}`);
 }
+if (catalog) console.log(`${apply ? "TO DELETE" : "DRY RUN"}  (all suppliers)  supplier_products: ${await total("supplier_products")}  (suppliers kept: ${await total("suppliers")})`);
 if (!apply) { console.log("\nNothing was deleted (dry run). Add --apply to delete."); process.exit(0); }
 
 // Wiping EVERY store needs an explicit confirmation: `--confirm RESET` (works from `!` / CI, where nothing can be typed),
@@ -74,7 +83,18 @@ for (const s of stores) {
     if (error) console.error(`  ${t}: ${error.message}`);
   }
   await db.from("checkout_sessions").delete().eq("store_id", s.id).not("product_id", "is", null);
-  await db.from("products").update({ views: 0 }).eq("store_id", s.id);
+  if (catalog) {
+    for (const t of CATALOG_TABLES) {
+      const { error } = await db.from(t).delete().eq("store_id", s.id);
+      if (error) console.error(`  ${t}: ${error.message}`);
+    }
+  } else await db.from("products").update({ views: 0 }).eq("store_id", s.id);
   console.log(`  done: ${s.id}`);
+}
+if (catalog) {
+  // The suppliers' products (Vitrine items and their stock). Lines pointing at them were already deleted above.
+  const { error } = await db.from("supplier_products").delete().not("id", "is", null);
+  if (error) console.error(`  supplier_products: ${error.message}`);
+  else console.log("  done: supplier_products (all)");
 }
 console.log("\nFinished. Dashboard totals, the sales chart and the order list are now empty for the cleaned store(s).");
