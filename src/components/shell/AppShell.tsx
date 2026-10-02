@@ -1,5 +1,6 @@
 "use client";
 
+import { PushBanner } from "@/components/notifications/PushBanner";
 import { useTranslations } from "next-intl";
 import { useRef, useState, type ReactNode } from "react";
 import { ToastProvider } from "@/components/ui/Toast";
@@ -75,6 +76,8 @@ export function AppShell({
             firstName={user.name.split(/\s+/)[0] ?? user.name}
             onMenu={() => drawer.current?.showModal()}
           />
+          {/* Sale alerts on this device: only while there is something to do (permission pending or blocked). */}
+          <PushBanner />
           {/* The pages scroll here, independently of the sidebar and the header. */}
           <main
             id="content"

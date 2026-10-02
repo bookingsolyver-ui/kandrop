@@ -1,65 +1,15 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
-import { subscribeToPush } from "@/app/[locale]/dashboard/settings/pushActions";
-
-const PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY?.trim() ?? "";
-
-/** The browser wants the VAPID key as bytes. */
-function keyBytes(base64Url: string): Uint8Array<ArrayBuffer> {
-  const padded = base64Url.padEnd(base64Url.length + ((4 - (base64Url.length % 4)) % 4), "=").replace(/-/g, "+").replace(/_/g, "/");
-  const raw = atob(padded);
-  const out = new Uint8Array(new ArrayBuffer(raw.length));
-  for (let i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i);
-  return out;
-}
-
-type State = "checking" | "unsupported" | "idle" | "working" | "on" | "denied" | "failed";
+import { usePush } from "./usePush";
 
 /**
- * "Ativar Notificações no Dispositivo": asks for permission, registers the service worker, subscribes to push with the
- * public VAPID key and hands the subscription to the server action. Hidden when push is not configured or not supported.
+ * "Ativar Notificações no Dispositivo": the compact/inline control (settings, admin header). Hidden when push is not
+ * configured or not supported. The big dashboard banner is `PushBanner`.
  */
 export function PushToggle({ scope, compact = false }: { scope: "merchant" | "admin"; compact?: boolean }) {
   const t = useTranslations("Notifications.push");
-  const [state, setState] = useState<State>("checking");
-
-  useEffect(() => {
-    let alive = true;
-    (async () => {
-      await Promise.resolve();
-      const supported = !!PUBLIC_KEY && "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
-      let next: State = "unsupported";
-      if (supported) {
-        if (Notification.permission === "denied") next = "denied";
-        else {
-          // Already subscribed on this device?
-          const sub = await navigator.serviceWorker.getRegistration("/sw.js").then((reg) => reg?.pushManager.getSubscription()).catch(() => null);
-          next = sub && Notification.permission === "granted" ? "on" : "idle";
-        }
-      }
-      if (alive) setState(next);
-    })();
-    return () => {
-      alive = false;
-    };
-  }, []);
-
-  async function enable() {
-    setState("working");
-    try {
-      const permission = await Notification.requestPermission();
-      if (permission !== "granted") return setState(permission === "denied" ? "denied" : "idle");
-      const registration = await navigator.serviceWorker.register("/sw.js");
-      await navigator.serviceWorker.ready;
-      const subscription = (await registration.pushManager.getSubscription()) ?? (await registration.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: keyBytes(PUBLIC_KEY) }));
-      const result = await subscribeToPush(subscription.toJSON(), scope);
-      setState(result.ok ? "on" : "failed");
-    } catch {
-      setState("failed");
-    }
-  }
+  const { state, enable } = usePush(scope);
 
   if (state === "checking" || state === "unsupported") return null;
   const button = "inline-flex items-center gap-2 rounded-full font-semibold transition-colors disabled:opacity-60";

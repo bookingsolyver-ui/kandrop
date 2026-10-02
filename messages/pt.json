@@ -3496,7 +3496,18 @@
       "working": "A ativar…",
       "on": "Notificações ativas neste dispositivo",
       "denied": "As notificações estão bloqueadas neste browser. Permita-as nas definições do site.",
-      "failed": "Não foi possível ativar. Tente novamente."
+      "failed": "Não foi possível ativar. Tente novamente.",
+      "banner": {
+        "title": "Ative os alertas de vendas neste dispositivo",
+        "body": "Receba um aviso no browser assim que uma encomenda entrar, mesmo com o painel fechado.",
+        "enable": "Ativar notificações",
+        "working": "A ativar…",
+        "later": "Agora não",
+        "success": "Notificações ativadas com sucesso!",
+        "failed": "Não foi possível ativar as notificações.",
+        "retry": "Tentar novamente",
+        "denied": "As notificações estão bloqueadas neste browser. Permita-as nas definições do site para receber alertas."
+      }
     }
   }
 }

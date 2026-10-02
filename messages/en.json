@@ -3496,7 +3496,18 @@
       "working": "Enabling…",
       "on": "Notifications are on for this device",
       "denied": "Notifications are blocked in this browser. Allow them in the site settings.",
-      "failed": "Could not enable. Please try again."
+      "failed": "Could not enable. Please try again.",
+      "banner": {
+        "title": "Turn on sale alerts on this device",
+        "body": "Get a browser alert as soon as an order comes in, even with the panel closed.",
+        "enable": "Enable notifications",
+        "working": "Enabling…",
+        "later": "Not now",
+        "success": "Notifications enabled successfully!",
+        "failed": "Could not enable notifications.",
+        "retry": "Try again",
+        "denied": "Notifications are blocked in this browser. Allow them in the site settings to receive alerts."
+      }
     }
   }
 }

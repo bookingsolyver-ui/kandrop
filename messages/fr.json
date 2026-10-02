@@ -3496,7 +3496,18 @@
       "working": "Activation…",
       "on": "Notifications actives sur cet appareil",
       "denied": "Les notifications sont bloquées dans ce navigateur. Autorisez-les dans les réglages du site.",
-      "failed": "Activation impossible. Réessayez."
+      "failed": "Activation impossible. Réessayez.",
+      "banner": {
+        "title": "Activez les alertes de ventes sur cet appareil",
+        "body": "Recevez une alerte du navigateur dès qu’une commande arrive, même panneau fermé.",
+        "enable": "Activer les notifications",
+        "working": "Activation…",
+        "later": "Pas maintenant",
+        "success": "Notifications activées avec succès !",
+        "failed": "Impossible d’activer les notifications.",
+        "retry": "Réessayer",
+        "denied": "Les notifications sont bloquées dans ce navigateur. Autorisez-les dans les réglages du site pour recevoir des alertes."
+      }
     }
   }
 }
