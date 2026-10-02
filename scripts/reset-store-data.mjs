@@ -10,6 +10,11 @@
  * products (the Vitrine items and their inventory). Suppliers' ACCOUNTS stay, so a test supplier can add a product from zero.
  *   node scripts/reset-store-data.mjs --all-stores --apply --confirm RESET --catalog
  *
+ * With --all-stores the GLOBAL tables are wiped too (what the Admin console reads), including rows whose store no longer
+ * exists: orders, supplier lines, invoices, deliveries, merchant payouts, supplier withdrawals, plan payments, receipts and
+ * charges, checkout sessions, the audit trail and the numbering counters (order/invoice/payout numbers start again at 1).
+ * Subscriptions are KEPT, so the accounts stay active.
+ *
  * Deleted (per store): orders, supplier lines (supplier_orders), their invoices, deliveries, payouts (merchant
  * withdrawals), checkout sessions that were product purchases, and the product view counters.
  * Supplier stock that those orders had reserved is GIVEN BACK first, so suppliers' inventory stays right.
@@ -43,6 +48,13 @@ else {
 
 const count = async (table, id) => (await db.from(table).select("*", { count: "exact", head: true }).eq("store_id", id)).count ?? 0;
 const TABLES = ["order_invoices", "supplier_orders", "deliveries", "orders", "payouts"];
+// Global tables (read by /admin): wiped by --all-stores, children first. Subscriptions stay.
+const GLOBAL_TABLES = ["order_invoices", "supplier_orders", "deliveries", "orders", "payouts", "supplier_withdrawals", "receipts", "payments", "charges", "checkout_sessions", "audit_logs", "sequences"];
+/** Counts a whole table, or `null` when it does not exist. */
+const globalCount = async (table) => {
+  const r = await db.from(table).select("*", { count: "exact", head: true });
+  return r.error ? null : (r.count ?? 0);
+};
 const CATALOG_TABLES = ["product_images", "supplier_imports", "products"]; // children first
 const total = async (table) => (await db.from(table).select("*", { count: "exact", head: true })).count ?? 0;
 
@@ -52,6 +64,11 @@ for (const s of stores) {
   const toGiveBack = (lines ?? []).filter((l) => l.supplier_product_id && !l.stock_restored_at && l.logistics_status !== "cancelled" && l.stock_reserved > 0);
   if (catalog) for (const t of CATALOG_TABLES) counts[t] = await count(t, s.id);
   console.log(`${apply ? "TO DELETE" : "DRY RUN"}  ${s.id}  "${s.name}"  ${JSON.stringify(counts)}  stock units to give back: ${toGiveBack.reduce((n, l) => n + l.stock_reserved, 0)}`);
+}
+if (all) {
+  const g = {};
+  for (const t of GLOBAL_TABLES) g[t] = await globalCount(t);
+  console.log(`${apply ? "TO DELETE" : "DRY RUN"}  (GLOBAL, incl. orphan rows)  ${JSON.stringify(g)}`);
 }
 if (catalog) console.log(`${apply ? "TO DELETE" : "DRY RUN"}  (all suppliers)  supplier_products: ${await total("supplier_products")}  (suppliers kept: ${await total("suppliers")})`);
 if (!apply) { console.log("\nNothing was deleted (dry run). Add --apply to delete."); process.exit(0); }
@@ -90,6 +107,23 @@ for (const s of stores) {
     }
   } else await db.from("products").update({ views: 0 }).eq("store_id", s.id);
   console.log(`  done: ${s.id}`);
+}
+if (all) {
+  // Whatever is left in the global tables (rows of stores that no longer exist, plan payments, audit trail, counters).
+  // First give back the stock that any remaining supplier line still holds.
+  const { data: rest } = await db.from("supplier_orders").select("supplier_product_id,stock_reserved,stock_restored_at,logistics_status");
+  for (const l of rest ?? []) {
+    if (!l.supplier_product_id || l.stock_restored_at || l.logistics_status === "cancelled" || !(l.stock_reserved > 0)) continue;
+    const { data: p } = await db.from("supplier_products").select("stock").eq("id", l.supplier_product_id).maybeSingle();
+    if (p) await db.from("supplier_products").update({ stock: p.stock + l.stock_reserved, updated_at: Date.now() }).eq("id", l.supplier_product_id);
+  }
+  for (const t of GLOBAL_TABLES) {
+    const probe = await db.from(t).select("*").limit(1);
+    if (probe.error || !probe.data?.length) continue; // missing or already empty
+    const key = Object.keys(probe.data[0])[0];
+    const { error } = await db.from(t).delete().not(key, "is", null);
+    console.log(error ? `  ${t}: ${error.message}` : `  done: ${t} (all rows)`);
+  }
 }
 if (catalog) {
   // The suppliers' products (Vitrine items and their stock). Lines pointing at them were already deleted above.
