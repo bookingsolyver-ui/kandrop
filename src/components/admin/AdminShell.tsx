@@ -10,7 +10,7 @@ import { CloseIcon } from "@/components/shell/icons";
 import { ToastProvider } from "@/components/ui/Toast";
 import { Link, usePathname } from "@/i18n/navigation";
 
-type NavLabel = "merchants" | "orders" | "finance" | "cashFlow" | "reconciliation" | "courierClose" | "adjustments" | "payouts" | "showcase" | "catalog" | "inventory" | "suppliers" | "auditLogs";
+type NavLabel = "merchants" | "orders" | "finance" | "cashFlow" | "reconciliation" | "courierClose" | "adjustments" | "payouts" | "showcase" | "catalog" | "inventory" | "suppliers" | "auditLogs" | "subscriptions";
 type Leaf = { key: NavLabel; href: string };
 type Item =
   | { type: "link"; key: NavLabel; href: string; icon: ReactNode }
@@ -33,6 +33,7 @@ const ShieldIcon = () => (
 
 const NAV: Item[] = [
   { type: "link", key: "merchants", href: "/admin/lojistas", icon: <UsersIcon /> },
+  { type: "link", key: "subscriptions", href: "/admin/subscricoes", icon: <ShieldIcon /> },
   { type: "link", key: "orders", href: "/admin/encomendas", icon: <CartIcon size={18} /> },
   {
     type: "group",

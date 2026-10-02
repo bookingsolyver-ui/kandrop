@@ -22,6 +22,8 @@ export const AUDIT_ACTIONS = [
   "user.revoke_sessions",
   "user.ban",
   "user.unban",
+  "subscription.activate",
+  "subscription.deactivate",
 ] as const;
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];
 

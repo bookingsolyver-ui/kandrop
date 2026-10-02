@@ -2020,6 +2020,14 @@
       "banner": "Conta criada com sucesso. Escolha o seu plano e conclua o pagamento para aceder ao painel.",
       "signedIn": "Sessão iniciada como {email}",
       "logout": "Terminar sessão"
+    },
+    "suspended": {
+      "eyebrow": "Conta desativada",
+      "title": "O acesso ao painel está suspenso",
+      "body": "A conta {email} foi desativada porque a subscrição terminou sem renovação (ou a equipa Kandrop suspendeu-a).",
+      "how": "Para voltar a ter acesso, faça o pagamento da renovação e avise a equipa. A conta fica ativa assim que um administrador a ativar.",
+      "contact": "Falar com a equipa",
+      "logout": "Terminar sessão"
     }
   },
   "Support": {
@@ -2556,7 +2564,8 @@
       "courierClose": "Fecho de estafetas",
       "adjustments": "Ajustes e estornos",
       "suppliers": "Fornecedores",
-      "auditLogs": "Registos de auditoria"
+      "auditLogs": "Registos de auditoria",
+      "subscriptions": "Subscrições"
     },
     "table": {
       "showing": "A mostrar {from}–{to} de {total}",
@@ -3188,6 +3197,62 @@
         "keep": "Manter encomenda",
         "confirm": "Sim, cancelar"
       }
+    },
+    "subscriptions": {
+      "title": "Contas e subscrições",
+      "subtitle": "Plano, prazo e estado de cada loja. Liga ou suspende o acesso de uma conta com um clique.",
+      "tabs": {
+        "accounts": "Contas",
+        "deadlines": "Prazos"
+      },
+      "search": "Procurar por loja, nome ou e-mail…",
+      "filters": {
+        "all": "Todas",
+        "active": "Ativas",
+        "inactive": "Inativas",
+        "pending": "Pendentes"
+      },
+      "cols": {
+        "store": "Loja",
+        "plan": "Plano",
+        "expires": "Expira em",
+        "state": "Estado",
+        "periods": "Períodos pagos"
+      },
+      "plan": {
+        "starter": "Starter",
+        "pro": "Pro"
+      },
+      "state": {
+        "active": "Ativo",
+        "inactive": "Inativo",
+        "pending": "Pendente"
+      },
+      "reason": {
+        "expired": "Prazo terminado",
+        "admin": "Desativada pela equipa"
+      },
+      "activate": "Ativar",
+      "deactivate": "Desativar",
+      "neverPaid": "Nunca pagou",
+      "activated": "{store}: acesso ativado.",
+      "deactivated": "{store}: acesso desativado.",
+      "failed": "Não foi possível alterar a conta.",
+      "empty": "Nenhuma conta corresponde à pesquisa.",
+      "inDays": "daí a {count} dias",
+      "today": "hoje",
+      "daysAgo": "há {count} dias",
+      "noDeadlines": "Ainda não há subscrições com prazo.",
+      "buckets": {
+        "expired": "Terminadas",
+        "soon": "Terminam em 3 dias ou menos",
+        "week": "Terminam em 7 dias",
+        "month": "Terminam em 30 dias",
+        "later": "Mais tarde"
+      },
+      "sinceLine": "cliente desde {date} · {count} períodos pagos",
+      "renewal": "renovação {price}",
+      "reminded": "aviso enviado"
     }
   },
   "Supplier": {

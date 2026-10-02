@@ -2020,6 +2020,14 @@
       "banner": "Compte créé. Choisissez votre offre et finalisez le paiement pour accéder au tableau de bord.",
       "signedIn": "Connecté en tant que {email}",
       "logout": "Se déconnecter"
+    },
+    "suspended": {
+      "eyebrow": "Compte désactivé",
+      "title": "L’accès au tableau de bord est suspendu",
+      "body": "Le compte {email} a été désactivé parce que l’abonnement a pris fin sans renouvellement (ou l’équipe Kandrop l’a suspendu).",
+      "how": "Pour retrouver l’accès, payez le renouvellement et prévenez l’équipe. Le compte redevient actif dès qu’un administrateur l’active.",
+      "contact": "Parler à l’équipe",
+      "logout": "Se déconnecter"
     }
   },
   "Support": {
@@ -2556,7 +2564,8 @@
       "courierClose": "Clôture des livreurs",
       "adjustments": "Ajustements et remboursements",
       "suppliers": "Fournisseurs",
-      "auditLogs": "Journal d’audit"
+      "auditLogs": "Journal d’audit",
+      "subscriptions": "Abonnements"
     },
     "table": {
       "showing": "Affichage de {from}–{to} sur {total}",
@@ -3188,6 +3197,62 @@
         "keep": "Garder la commande",
         "confirm": "Oui, annuler"
       }
+    },
+    "subscriptions": {
+      "title": "Comptes et abonnements",
+      "subtitle": "Offre, échéance et statut de chaque boutique. Activez ou suspendez l’accès d’un compte en un clic.",
+      "tabs": {
+        "accounts": "Comptes",
+        "deadlines": "Échéances"
+      },
+      "search": "Rechercher par boutique, nom ou e-mail…",
+      "filters": {
+        "all": "Tous",
+        "active": "Actifs",
+        "inactive": "Inactifs",
+        "pending": "En attente"
+      },
+      "cols": {
+        "store": "Boutique",
+        "plan": "Offre",
+        "expires": "Expire le",
+        "state": "Statut",
+        "periods": "Périodes payées"
+      },
+      "plan": {
+        "starter": "Starter",
+        "pro": "Pro"
+      },
+      "state": {
+        "active": "Actif",
+        "inactive": "Inactif",
+        "pending": "En attente"
+      },
+      "reason": {
+        "expired": "Période terminée",
+        "admin": "Désactivé par l’équipe"
+      },
+      "activate": "Activer",
+      "deactivate": "Désactiver",
+      "neverPaid": "Jamais payé",
+      "activated": "{store} : accès activé.",
+      "deactivated": "{store} : accès désactivé.",
+      "failed": "Le compte n’a pas pu être modifié.",
+      "empty": "Aucun compte ne correspond à la recherche.",
+      "inDays": "dans {count} jours",
+      "today": "aujourd’hui",
+      "daysAgo": "il y a {count} jours",
+      "noDeadlines": "Aucun abonnement avec échéance pour le moment.",
+      "buckets": {
+        "expired": "Terminés",
+        "soon": "Se terminent dans 3 jours ou moins",
+        "week": "Se terminent sous 7 jours",
+        "month": "Se terminent sous 30 jours",
+        "later": "Plus tard"
+      },
+      "sinceLine": "client depuis le {date} · {count} périodes payées",
+      "renewal": "renouvellement {price}",
+      "reminded": "rappel envoyé"
     }
   },
   "Supplier": {

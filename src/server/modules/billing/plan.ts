@@ -8,9 +8,14 @@ import { billingRepository } from "./repository";
  */
 export async function planOf(storeId: string, now = Date.now()): Promise<PlanKey | null> {
   const sub = await billingRepository.subscription(storeId);
-  return sub && sub.periodEnd > now ? sub.plan : null;
+  return sub && !sub.suspended && sub.periodEnd > now ? sub.plan : null;
 }
 
 /** Whether the store has an active paid period (the payment gate). */
 export const hasActiveSubscription = async (storeId: string, now = Date.now()) =>
   (await planOf(storeId, now)) !== null;
+
+/** Whether an account was switched off (period ran out, or an administrator did it): the gate shows it a notice, not the plans. */
+export async function isSuspended(storeId: string): Promise<boolean> {
+  return (await billingRepository.subscription(storeId))?.suspended === true;
+}

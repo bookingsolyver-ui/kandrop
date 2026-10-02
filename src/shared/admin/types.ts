@@ -77,3 +77,27 @@ export interface ReconRow {
   /** `available`: delivered, so the money is released; `pending`: paid but not delivered yet. */
   status: "pending" | "available";
 }
+
+export type SubscriptionState = "active" | "inactive" | "pending";
+
+/** One store's subscription as the administrator sees it (money in minor units, dates in epoch ms). */
+export interface SubscriptionRow {
+  storeId: string;
+  store: string;
+  owner: string;
+  email: string;
+  plan: "starter" | "pro" | null;
+  /** `inactive` = switched off or period ran out; `pending` = never paid. */
+  state: SubscriptionState;
+  /** Why an inactive account is inactive. */
+  reason: "expired" | "admin" | null;
+  startedAt: number | null;
+  periodsPaid: number;
+  periodEnd: number | null;
+  /** Whole days left until `periodEnd` (negative once it passed), at the time of the request. */
+  daysLeft: number | null;
+  /** The 3-day reminder for the current period was already sent. */
+  reminded: boolean;
+  /** What the next period costs, in minor units. */
+  renewalAmount: number | null;
+}

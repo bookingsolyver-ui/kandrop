@@ -39,6 +39,9 @@ export const billingRepository = {
       periodEnd: Number(row.period_end),
       startedAt: row.started_at == null ? null : Number(row.started_at),
       periodsPaid: Number(row.periods_paid ?? 0),
+      suspended: Boolean(row.suspended),
+      suspendedReason: row.suspended_reason === "expired" || row.suspended_reason === "admin" ? row.suspended_reason : null,
+      renewalNoticeFor: row.renewal_notice_for == null ? null : Number(row.renewal_notice_for),
     };
   },
 
@@ -53,6 +56,47 @@ export const billingRepository = {
       must("subscriptions.save", full);
     }
     return subscription;
+  },
+
+  /** Every subscription row, for the daily job and the administrator's view. */
+  async allSubscriptions(): Promise<SubscriptionRecord[]> {
+    const list = rows("subscriptions.all", await db().from("subscriptions").select("*").limit(10000));
+    return list.flatMap((row) => {
+      const plan = normalizePlan(row.plan);
+      return plan
+        ? [{
+            storeId: String(row.store_id),
+            plan,
+            periodEnd: Number(row.period_end),
+            startedAt: row.started_at == null ? null : Number(row.started_at),
+            periodsPaid: Number(row.periods_paid ?? 0),
+            suspended: Boolean(row.suspended),
+            suspendedReason: row.suspended_reason === "expired" || row.suspended_reason === "admin" ? row.suspended_reason : null,
+            renewalNoticeFor: row.renewal_notice_for == null ? null : Number(row.renewal_notice_for),
+          } satisfies SubscriptionRecord]
+        : [];
+    });
+  },
+
+  /** Switches an account off or on (and, when switching on, may also give it a new period end). */
+  async setSuspension(storeId: string, patch: { suspended: boolean; reason: "expired" | "admin" | null; periodEnd?: number; periodsPaid?: number }): Promise<void> {
+    must(
+      "subscriptions.suspend",
+      await db()
+        .from("subscriptions")
+        .update({
+          suspended: patch.suspended,
+          suspended_reason: patch.suspended ? patch.reason : null,
+          suspended_at: patch.suspended ? Date.now() : null,
+          ...(patch.periodEnd !== undefined ? { period_end: patch.periodEnd } : {}),
+          ...(patch.periodsPaid !== undefined ? { periods_paid: patch.periodsPaid } : {}),
+        })
+        .eq("store_id", storeId)
+    );
+  },
+
+  async markRenewalNotice(storeId: string, periodEnd: number): Promise<void> {
+    must("subscriptions.notice", await db().from("subscriptions").update({ renewal_notice_for: periodEnd }).eq("store_id", storeId));
   },
 
   async charges(storeId: string): Promise<ChargeRecord[]> {

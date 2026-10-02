@@ -34,6 +34,9 @@ export async function activateSubscription(session: CheckoutSession, paidAt: num
       periodEnd: (renewing ? current.periodEnd : paidAt) + PERIOD_DAYS * DAY,
       startedAt: current?.startedAt ?? paidAt,
       periodsPaid,
+      suspended: current?.suspended ?? false,
+      suspendedReason: current?.suspendedReason ?? null,
+      renewalNoticeFor: current?.renewalNoticeFor ?? null,
     });
   } catch (error) {
     await billingRepository.releaseActivation(session.id); // so a retry can still switch it on

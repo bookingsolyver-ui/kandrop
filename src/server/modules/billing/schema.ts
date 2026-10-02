@@ -12,6 +12,11 @@ export interface SubscriptionRecord {
   startedAt: number | null;
   /** 30-day periods paid so far. 1 = still in the launch month; the next one is billed at the regular price. */
   periodsPaid: number;
+  /** Switched off (period ran out, or by an administrator): no access until an administrator switches it on. */
+  suspended: boolean;
+  suspendedReason: "expired" | "admin" | null;
+  /** Period end (epoch ms) the 3-day reminder was already sent for. */
+  renewalNoticeFor: number | null;
 }
 
 /** One attempt to pay for a plan: the checkout session that carries the money. */

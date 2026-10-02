@@ -1,3 +1,6 @@
+import { SuspendedNotice } from "@/components/subscribe/SuspendedNotice";
+import { isSuspended } from "@/server/modules/billing/plan";
+import { orderPaymentInfo } from "@/server/modules/payments/transfer";
 import { introEligible } from "@/server/modules/billing/service";
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
@@ -62,6 +65,12 @@ export default async function CheckoutPage({ params, searchParams }: Props) {
     if (!current) redirect({ href: "/register", locale });
     if (await hasAccess(current!)) redirect({ href: "/dashboard", locale });
     const me = await getMe(current!);
+    if (await isSuspended(current!.storeId)) {
+      const whatsapp = orderPaymentInfo().whatsapp;
+      const email = getEnv().SUPPORT_EMAIL;
+      const href = whatsapp ? `https://wa.me/244${whatsapp}` : email ? `mailto:${email}` : null;
+      return <SuspendedNotice email={me.email} contactHref={href} contactLabel={null} />;
+    }
     return <SubscribeFlow email={me.email} sandbox={sandbox} intro={await introEligible(current!.storeId)} />;
   }
 

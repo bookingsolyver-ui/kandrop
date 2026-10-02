@@ -2020,6 +2020,14 @@
       "banner": "Account created. Choose your plan and complete the payment to access the dashboard.",
       "signedIn": "Signed in as {email}",
       "logout": "Sign out"
+    },
+    "suspended": {
+      "eyebrow": "Account deactivated",
+      "title": "Access to the dashboard is suspended",
+      "body": "The account {email} was deactivated because the subscription ended without renewal (or the Kandrop team suspended it).",
+      "how": "To get access back, pay the renewal and tell the team. The account becomes active as soon as an administrator activates it.",
+      "contact": "Talk to the team",
+      "logout": "Sign out"
     }
   },
   "Support": {
@@ -2556,7 +2564,8 @@
       "courierClose": "Courier closing",
       "adjustments": "Adjustments and refunds",
       "suppliers": "Suppliers",
-      "auditLogs": "Audit logs"
+      "auditLogs": "Audit logs",
+      "subscriptions": "Subscriptions"
     },
     "table": {
       "showing": "Showing {from}–{to} of {total}",
@@ -3188,6 +3197,62 @@
         "keep": "Keep order",
         "confirm": "Yes, cancel"
       }
+    },
+    "subscriptions": {
+      "title": "Accounts and subscriptions",
+      "subtitle": "Each store’s plan, deadline and status. Switch an account’s access on or off with one click.",
+      "tabs": {
+        "accounts": "Accounts",
+        "deadlines": "Deadlines"
+      },
+      "search": "Search by store, name or e-mail…",
+      "filters": {
+        "all": "All",
+        "active": "Active",
+        "inactive": "Inactive",
+        "pending": "Pending"
+      },
+      "cols": {
+        "store": "Store",
+        "plan": "Plan",
+        "expires": "Expires",
+        "state": "Status",
+        "periods": "Periods paid"
+      },
+      "plan": {
+        "starter": "Starter",
+        "pro": "Pro"
+      },
+      "state": {
+        "active": "Active",
+        "inactive": "Inactive",
+        "pending": "Pending"
+      },
+      "reason": {
+        "expired": "Period ended",
+        "admin": "Switched off by the team"
+      },
+      "activate": "Activate",
+      "deactivate": "Deactivate",
+      "neverPaid": "Never paid",
+      "activated": "{store}: access switched on.",
+      "deactivated": "{store}: access switched off.",
+      "failed": "The account could not be changed.",
+      "empty": "No account matches the search.",
+      "inDays": "in {count} days",
+      "today": "today",
+      "daysAgo": "{count} days ago",
+      "noDeadlines": "There are no subscriptions with a deadline yet.",
+      "buckets": {
+        "expired": "Ended",
+        "soon": "End in 3 days or less",
+        "week": "End within 7 days",
+        "month": "End within 30 days",
+        "later": "Later"
+      },
+      "sinceLine": "customer since {date} · {count} periods paid",
+      "renewal": "renewal {price}",
+      "reminded": "reminder sent"
     }
   },
   "Supplier": {
