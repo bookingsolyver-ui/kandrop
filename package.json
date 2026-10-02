@@ -13,7 +13,8 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "i18n:check": "node scripts/check-i18n.mjs",
-    "check": "npm run i18n:check && npm run typecheck && npm run lint"
+    "server-only:check": "node scripts/check-server-only.mjs",
+    "check": "npm run i18n:check && npm run server-only:check && npm run typecheck && npm run lint"
   },
   "dependencies": {
     "@number-flow/react": "^0.6.2",

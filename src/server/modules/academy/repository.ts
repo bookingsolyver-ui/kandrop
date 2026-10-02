@@ -1,3 +1,4 @@
+import "server-only";
 import { isDemoStore } from "@/server/modules/store/demo";
 import { db, must, rows } from "@/server/db/client";
 import { LESSONS } from "@/shared/academy/course";

@@ -1,3 +1,4 @@
+import "server-only";
 import { randomBytes, randomInt } from "node:crypto";
 import type { Session } from "@/server/auth/types";
 import { ApiError } from "@/server/http/errors";

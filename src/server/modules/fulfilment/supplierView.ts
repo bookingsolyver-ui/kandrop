@@ -1,3 +1,4 @@
+import "server-only";
 import { listSupplierOrders } from "./service";
 import type { SupplierOrderRow } from "@/components/supplier/types";
 

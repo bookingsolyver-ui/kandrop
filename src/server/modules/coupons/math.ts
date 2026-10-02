@@ -1,3 +1,4 @@
+import "server-only";
 import { splitSale } from "@/server/modules/fulfilment/split";
 import type { CouponType } from "@/shared/coupons/schemas";
 

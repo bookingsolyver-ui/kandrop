@@ -1,3 +1,4 @@
+import "server-only";
 import { db, must } from "@/server/db/client";
 import { encryptNullable, tryDecryptNullable } from "@/server/crypto/field";
 import type { CheckoutItem, CheckoutSession } from "./schema";

@@ -1,3 +1,4 @@
+import "server-only";
 import type { TransferInfo } from "@/server/modules/payments/transfer";
 import type { PlanKey } from "@/server/modules/plan/limits";
 import type { InvoiceStatus, PaidPlan } from "@/shared/billing/schemas";

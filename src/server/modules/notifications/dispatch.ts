@@ -1,3 +1,4 @@
+import "server-only";
 import { dispatchExternalNotification } from "@/lib/notifications/webhook-dispatcher";
 import { db } from "@/server/db/client";
 import { sendPush } from "./push";

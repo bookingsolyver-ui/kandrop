@@ -1,3 +1,4 @@
+import "server-only";
 import { EventEmitter } from "node:events";
 
 /** Event contract shared by every real-time producer and the SSE transport. */

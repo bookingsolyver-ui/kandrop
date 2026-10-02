@@ -1,3 +1,4 @@
+import "server-only";
 import { hasActiveSubscription } from "@/server/modules/billing/plan";
 import type { Session } from "./types";
 

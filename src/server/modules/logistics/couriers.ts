@@ -1,3 +1,4 @@
+import "server-only";
 import type { Vehicle } from "@/shared/logistics/schemas";
 
 export interface Courier {

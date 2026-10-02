@@ -1,3 +1,4 @@
+import "server-only";
 import { getEnv } from "@/server/config/env";
 import { ApiError } from "@/server/http/errors";
 import { userRepository } from "@/server/modules/auth/userRepository";

@@ -1,3 +1,4 @@
+import "server-only";
 import type { Session } from "@/server/auth/types";
 import { sniffImage } from "@/server/security/imageSniff";
 import { ApiError } from "@/server/http/errors";

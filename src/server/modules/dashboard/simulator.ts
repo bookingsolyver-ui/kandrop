@@ -1,3 +1,4 @@
+import "server-only";
 import type { DashboardSummary, RevenuePoint } from "./schema";
 
 /**

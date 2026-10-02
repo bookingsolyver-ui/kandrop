@@ -1,3 +1,4 @@
+import "server-only";
 import type { ImageMime } from "@/server/modules/products/schema";
 
 /** The most an uploaded image may weigh once decoded (the data URL schema caps the request even lower). */

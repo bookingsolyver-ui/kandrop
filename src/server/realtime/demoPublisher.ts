@@ -1,3 +1,4 @@
+import "server-only";
 import { getEnv } from "../config/env";
 import { withPayouts } from "../modules/dashboard/service";
 import { tick } from "../modules/dashboard/simulator";

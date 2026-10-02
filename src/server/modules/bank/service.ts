@@ -1,3 +1,4 @@
+import "server-only";
 import { verifyPassword } from "@/server/auth/password";
 import type { Session } from "@/server/auth/types";
 import { getEnv } from "@/server/config/env";

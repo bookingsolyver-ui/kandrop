@@ -1,3 +1,4 @@
+import "server-only";
 import { z } from "zod";
 
 /** Money is always integer minor units (cêntimos) + ISO 4217 code. Never floats. */

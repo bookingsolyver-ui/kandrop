@@ -1,3 +1,4 @@
+import "server-only";
 import { db, must } from "@/server/db/client";
 import type { Receipt } from "./schema";
 

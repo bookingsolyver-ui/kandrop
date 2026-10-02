@@ -1,3 +1,4 @@
+import "server-only";
 import { encryptField, tryDecryptField } from "@/server/crypto/field";
 import { db, must } from "@/server/db/client";
 import type { ImageMime } from "@/server/modules/products/schema";

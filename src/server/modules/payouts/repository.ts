@@ -1,3 +1,4 @@
+import "server-only";
 import { randomBytes } from "node:crypto";
 import { isDemoStore } from "@/server/modules/store/demo";
 import { db, isUniqueViolation, must, rows } from "@/server/db/client";

@@ -1,3 +1,4 @@
+import "server-only";
 import { db, isUniqueViolation, must } from "@/server/db/client";
 import type { CouponRow, CouponType } from "@/shared/coupons/schemas";
 

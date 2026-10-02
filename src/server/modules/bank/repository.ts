@@ -1,3 +1,4 @@
+import "server-only";
 import { db, must } from "@/server/db/client";
 import { encryptField, tryDecryptField } from "@/server/crypto/field";
 import type { BankAccountRecord } from "./schema";

@@ -1,3 +1,4 @@
+import "server-only";
 import type { PublicBankAccount } from "@/server/modules/bank/schema";
 import type { PayoutStatus } from "@/shared/payouts/schemas";
 

@@ -1,3 +1,4 @@
+import "server-only";
 import { db, must } from "@/server/db/client";
 import { tryDecryptNullable } from "@/server/crypto/field";
 import type { Store } from "./schema";

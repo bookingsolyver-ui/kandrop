@@ -1,3 +1,4 @@
+import "server-only";
 import type { PlanKey } from "@/server/modules/plan/limits";
 import { billingRepository } from "./repository";
 

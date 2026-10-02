@@ -1,3 +1,4 @@
+import "server-only";
 import { randomBytes, randomUUID } from "node:crypto";
 import { jwtVerify, SignJWT } from "jose";
 import { getEnv } from "../config/env";

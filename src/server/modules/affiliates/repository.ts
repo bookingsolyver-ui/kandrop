@@ -1,3 +1,4 @@
+import "server-only";
 import { randomBytes } from "node:crypto";
 import type { PaymentState, ReferralPlan } from "@/shared/affiliates/schemas";
 import { isDemoStore } from "@/server/modules/store/demo";

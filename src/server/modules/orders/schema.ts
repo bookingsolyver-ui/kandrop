@@ -1,3 +1,4 @@
+import "server-only";
 import type { PaymentMethod } from "@/shared/checkout/schemas";
 import type { OrderStatus } from "@/shared/orders/schemas";
 import type { CASH_ON_DELIVERY, OrderPaymentProvider, OrderPaymentStatus, PaymentEvidence } from "@/shared/payments/orderPayment";

@@ -1,3 +1,4 @@
+import "server-only";
 import { cookies } from "next/headers";
 import { getEnv } from "../config/env";
 import { ApiError } from "../http/errors";

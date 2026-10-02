@@ -1,3 +1,4 @@
+import "server-only";
 import webpush from "web-push";
 import { getEnv } from "@/server/config/env";
 import { db } from "@/server/db/client";

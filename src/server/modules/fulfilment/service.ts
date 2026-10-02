@@ -1,3 +1,4 @@
+import "server-only";
 import { randomBytes } from "node:crypto";
 import { db, isUniqueViolation, must } from "@/server/db/client";
 import { ApiError } from "@/server/http/errors";

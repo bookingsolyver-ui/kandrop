@@ -1,3 +1,4 @@
+import "server-only";
 import { ApiError } from "@/server/http/errors";
 import type { Session } from "@/server/auth/session";
 import { userRepository } from "@/server/modules/auth/userRepository";

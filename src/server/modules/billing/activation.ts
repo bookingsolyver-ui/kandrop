@@ -1,3 +1,4 @@
+import "server-only";
 import type { CheckoutSession } from "@/server/modules/checkout/schema";
 import { PERIOD_DAYS } from "@/shared/billing/schemas";
 import { billingRepository } from "./repository";

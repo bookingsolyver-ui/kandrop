@@ -1,3 +1,4 @@
+import "server-only";
 import { db, must } from "@/server/db/client";
 
 /** Angola is UTC+1 all year: "the month" starts at 00:00 there, which is 23:00 UTC the evening before. */

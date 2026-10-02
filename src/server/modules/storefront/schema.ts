@@ -1,3 +1,4 @@
+import "server-only";
 import type { DeliveryCity } from "@/shared/fulfilment/schemas";
 import type { ShippingBearer, StockState } from "@/shared/products/schemas";
 

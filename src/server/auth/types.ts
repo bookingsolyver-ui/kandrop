@@ -1,3 +1,4 @@
+import "server-only";
 export interface Session {
   userId: string;
   storeId: string;

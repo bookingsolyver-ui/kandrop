@@ -1,3 +1,4 @@
+import "server-only";
 import type { LessonId, LessonState, ModuleId } from "@/shared/academy/course";
 
 export interface PublicLesson {

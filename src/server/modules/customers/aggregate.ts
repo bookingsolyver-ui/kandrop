@@ -1,3 +1,4 @@
+import "server-only";
 import type { OrderRecord } from "@/server/modules/orders/schema";
 import type { CustomerRow } from "@/shared/customers/types";
 

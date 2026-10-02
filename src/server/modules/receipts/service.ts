@@ -1,3 +1,4 @@
+import "server-only";
 import type { CheckoutSession } from "@/server/modules/checkout/schema";
 import type { PaymentRecord } from "@/server/modules/payments/schema";
 import { checkoutRepository } from "@/server/modules/checkout/repository";

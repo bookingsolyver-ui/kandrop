@@ -1,3 +1,4 @@
+import "server-only";
 import { db, must } from "@/server/db/client";
 import { ApiError } from "@/server/http/errors";
 import { bankRepository } from "@/server/modules/bank/repository";

@@ -1,3 +1,4 @@
+import "server-only";
 import { createHash, randomBytes } from "node:crypto";
 import type { ProductCategory, ProductStatus, ShippingBearer } from "@/shared/products/schemas";
 import { isDemoStore } from "@/server/modules/store/demo";

@@ -1,3 +1,4 @@
+import "server-only";
 export interface BankAccountRecord {
   storeId: string;
   holderName: string;

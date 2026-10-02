@@ -1,3 +1,4 @@
+import "server-only";
 import { db, must } from "@/server/db/client";
 import { getEnv } from "@/server/config/env";
 import { orderPaymentInfo } from "@/server/modules/payments/transfer";

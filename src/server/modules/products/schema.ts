@@ -1,3 +1,4 @@
+import "server-only";
 import type { Margin, ProductCategory, ProductStatus, ShippingBearer } from "@/shared/products/schemas";
 
 export type ImageMime = "image/jpeg" | "image/png" | "image/webp";

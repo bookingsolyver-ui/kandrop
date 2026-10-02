@@ -1,3 +1,4 @@
+import "server-only";
 import type { RealtimeMessage } from "./eventBus";
 
 const HEARTBEAT_MS = 15_000;

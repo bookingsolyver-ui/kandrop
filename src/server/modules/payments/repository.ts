@@ -1,3 +1,4 @@
+import "server-only";
 import { db, must, rows } from "@/server/db/client";
 import type { PaymentRecord } from "./schema";
 

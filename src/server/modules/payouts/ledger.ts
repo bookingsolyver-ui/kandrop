@@ -1,3 +1,4 @@
+import "server-only";
 import { payoutRepository } from "./repository";
 
 /**

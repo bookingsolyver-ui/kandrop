@@ -1,3 +1,4 @@
+import "server-only";
 import { render } from "@react-email/components";
 import { Resend } from "resend";
 import { getEnv } from "@/server/config/env";

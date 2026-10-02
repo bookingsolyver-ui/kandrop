@@ -1,3 +1,4 @@
+import "server-only";
 import { splitSale } from "@/server/modules/fulfilment/split";
 import type { OrderRecord } from "@/server/modules/orders/schema";
 import { isPaymentVerified } from "@/shared/payments/orderPayment";

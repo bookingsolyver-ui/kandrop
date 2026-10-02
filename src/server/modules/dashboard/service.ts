@@ -1,3 +1,4 @@
+import "server-only";
 import type { DashboardSummary } from "./schema";
 import { reservedAmount } from "@/server/modules/payouts/ledger";
 import { PLATFORM_COMMISSION_BPS } from "@/shared/products/schemas";

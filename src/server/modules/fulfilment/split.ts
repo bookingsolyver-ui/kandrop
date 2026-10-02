@@ -1,3 +1,4 @@
+import "server-only";
 import { platformCommission } from "@/shared/products/schemas";
 
 /** The money of one supplier order, fixed at the moment of the sale (minor units). */

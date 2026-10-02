@@ -1,3 +1,4 @@
+import "server-only";
 import { db, must } from "@/server/db/client";
 import { winningIds } from "@/server/modules/vitrine/winning";
 import type { CashFlow, CatalogRow, LedgerEntry, MerchantDetail, MerchantRow, ReconRow } from "@/shared/admin/types";

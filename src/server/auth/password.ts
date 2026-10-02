@@ -1,3 +1,4 @@
+import "server-only";
 import { randomBytes, scrypt, timingSafeEqual, type ScryptOptions } from "node:crypto";
 
 /**

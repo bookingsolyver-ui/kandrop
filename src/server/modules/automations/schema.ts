@@ -1,3 +1,4 @@
+import "server-only";
 import type { FlowKey } from "@/shared/automations/schemas";
 
 export type ConnectionStatus = "disconnected" | "pending" | "connected";

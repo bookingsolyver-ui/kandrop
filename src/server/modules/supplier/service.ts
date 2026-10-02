@@ -1,3 +1,4 @@
+import "server-only";
 import { createPasswordCheckClient } from "@/lib/supabase/server";
 import { encryptNullable, tryDecryptNullable } from "@/server/crypto/field";
 import { db, must } from "@/server/db/client";

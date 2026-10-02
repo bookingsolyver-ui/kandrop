@@ -1,3 +1,4 @@
+import "server-only";
 import { randomBytes } from "node:crypto";
 import { DEMO_PRODUCTS, KZ } from "@/server/modules/products/repository";
 import type { PaymentMethod } from "@/shared/checkout/schemas";

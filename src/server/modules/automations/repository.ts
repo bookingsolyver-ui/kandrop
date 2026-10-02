@@ -1,3 +1,4 @@
+import "server-only";
 import { db, must } from "@/server/db/client";
 import { FLOW_KEYS } from "@/shared/automations/schemas";
 import type { AutomationState } from "./schema";

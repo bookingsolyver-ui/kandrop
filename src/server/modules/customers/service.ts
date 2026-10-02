@@ -1,3 +1,4 @@
+import "server-only";
 import { orderRepository } from "@/server/modules/orders/repository";
 import type { CustomerRow } from "@/shared/customers/types";
 import { aggregateCustomers } from "./aggregate";

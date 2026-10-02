@@ -1,3 +1,4 @@
+import "server-only";
 import { randomUUID } from "node:crypto";
 import { ApiError } from "@/server/http/errors";
 import { db, must } from "@/server/db/client";

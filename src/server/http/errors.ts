@@ -1,3 +1,4 @@
+import "server-only";
 /**
  * The API never returns human-readable text. It returns a stable machine `code`
  * and the client translates it via the `Errors.<code>` message namespace.

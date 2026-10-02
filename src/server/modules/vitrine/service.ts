@@ -1,3 +1,4 @@
+import "server-only";
 import { db, isUniqueViolation, must } from "@/server/db/client";
 import { ApiError } from "@/server/http/errors";
 import { createProduct } from "@/server/modules/products/service";

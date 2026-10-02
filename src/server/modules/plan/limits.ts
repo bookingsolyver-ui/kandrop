@@ -1,3 +1,5 @@
+// No `server-only` here on purpose: these are plain, public constants (plan names, limits, prices) that the
+// subscription screens also read in the browser. Nothing secret lives in this file.
 /**
  * Plans: their limits and their price. Plain constants (no imports) so the plan service, the
  * billing module and every module that enforces a limit can read them without depending on

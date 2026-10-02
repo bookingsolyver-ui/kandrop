@@ -1,3 +1,4 @@
+import "server-only";
 import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { getEnv } from "@/server/config/env";

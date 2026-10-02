@@ -1,3 +1,4 @@
+import "server-only";
 import { getEnv } from "@/server/config/env";
 import { createAdminNotification } from "./adminFeed";
 import { sendPush } from "./push";

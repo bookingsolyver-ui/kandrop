@@ -1,3 +1,4 @@
+import "server-only";
 import { createHmac, randomBytes, randomInt, timingSafeEqual } from "node:crypto";
 import { z } from "zod";
 import { getEnv } from "@/server/config/env";

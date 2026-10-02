@@ -1,3 +1,4 @@
+import "server-only";
 import { db, must, rows } from "@/server/db/client";
 import { PLAN_KEYS } from "@/server/modules/plan/limits";
 import type { PaidPlan } from "@/shared/billing/schemas";

@@ -1,3 +1,4 @@
+import "server-only";
 import { getEnv } from "@/server/config/env";
 import { normalizePhone } from "@/shared/checkout/schemas";
 

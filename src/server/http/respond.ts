@@ -1,3 +1,4 @@
+import "server-only";
 import { ZodError } from "zod";
 import { ApiError } from "./errors";
 

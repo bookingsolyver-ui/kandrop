@@ -1,3 +1,4 @@
+import "server-only";
 import type { PaymentRequest } from "@/shared/checkout/schemas";
 import type { FailureCode } from "./schema";
 

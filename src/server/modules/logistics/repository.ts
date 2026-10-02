@@ -1,3 +1,4 @@
+import "server-only";
 import { randomBytes } from "node:crypto";
 import { orderRepository } from "@/server/modules/orders/repository";
 import { COURIERS, couriersFor } from "./couriers";

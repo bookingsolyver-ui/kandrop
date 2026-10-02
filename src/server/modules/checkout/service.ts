@@ -1,3 +1,4 @@
+import "server-only";
 import { randomBytes } from "node:crypto";
 import { getEnv } from "@/server/config/env";
 import type { Session } from "@/server/auth/types";

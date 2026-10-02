@@ -1,3 +1,4 @@
+import "server-only";
 import { db, must } from "@/server/db/client";
 import { billingRepository } from "@/server/modules/billing/repository";
 import { PLAN_PRICES } from "@/server/modules/plan/limits";

@@ -1,3 +1,4 @@
+import "server-only";
 import type { PaymentState, ReferralPlan } from "@/shared/affiliates/schemas";
 
 /** Internal record. The e-mail is the referred person's personal data: never sent as is. */
