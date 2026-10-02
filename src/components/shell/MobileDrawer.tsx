@@ -57,7 +57,8 @@ export function MobileDrawer({
       onClick={(e) => e.target === dialogRef.current && close()}
       className="fixed inset-y-0 left-0 m-0 h-dvh max-h-none w-72 max-w-[85vw] overflow-hidden border-r border-[var(--ink-200)] bg-[var(--ink-0)] p-0 text-[var(--ink-900)] backdrop:bg-black/50 lg:hidden"
     >
-      <div className="flex h-full flex-col">
+      {/* The drawer itself takes the initial focus (autoFocus, no outline): otherwise the browser focuses the first link, the logo, and draws the orange focus ring around it. */}
+      <div tabIndex={-1} autoFocus className="flex h-full flex-col outline-none">
         <div className="flex shrink-0 items-center justify-between border-b border-[var(--ink-200)] p-4">
           <Wordmark onNavigate={close} />
           <button

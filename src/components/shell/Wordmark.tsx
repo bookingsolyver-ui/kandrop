@@ -14,7 +14,7 @@ export function Wordmark({
       href="/dashboard"
       onClick={onNavigate}
       aria-label="Kandrop"
-      className="inline-flex min-h-11 items-center rounded"
+      className="inline-flex min-h-11 items-center rounded outline-none focus:outline-none focus-visible:outline-none"
     >
       {compact ? (
         <Image src="/brand/k-mark.png" alt="" width={32} height={32} className="size-8" />
