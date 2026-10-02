@@ -40,14 +40,15 @@ export default async function QuickCheckoutPage({ params, searchParams }: Props)
   const product = await load(slug);
   // Nothing left: back to the product page, which says so.
   if (product.stock.state === "out") return redirect({ href: `/loja/${slug}`, locale });
-  const invalid = (await searchParams).error === "details";
+  const error = (await searchParams).error;
+  const invalid = error === "details";
   // The four delivery days are worked out on the server (Luanda time), so the page and the check agree.
   const { days, today } = checkoutDays();
   return (
     <>
       {/* Before the form, so the merchant pixel is registered when InitiateCheckout fires. */}
       <StorePixel id={product.metaPixelId} />
-      <CheckoutView product={product} invalid={invalid} days={days} today={today} />
+      <CheckoutView product={product} invalid={invalid} couponRejected={error === "coupon"} days={days} today={today} />
     </>
   );
 }

@@ -97,7 +97,8 @@
     "plan_not_upgradable": "Vous avez déjà une offre supérieure active. Vous pouvez seulement renouveler votre offre ou passer à une offre supérieure.",
     "lesson_locked": "Terminez les leçons précédentes pour débloquer celle-ci.",
     "payment_required": "Un abonnement actif est nécessaire pour continuer. Choisissez une offre et finalisez le paiement.",
-    "payment_unverified": "Le paiement de cette commande n’a pas encore été confirmé par Kandrop : elle ne peut pas être marquée comme livrée."
+    "payment_unverified": "Le paiement de cette commande n’a pas encore été confirmé par Kandrop : elle ne peut pas être marquée comme livrée.",
+    "coupon_unavailable": "Ce coupon n’est pas applicable à cette commande."
   },
   "Auth": {
     "login": {
@@ -597,7 +598,8 @@
       "affiliates": "Affiliés",
       "vitrine": "Vitrine",
       "vitrineNational": "Produits nationaux",
-      "vitrineInternational": "Produits internationaux"
+      "vitrineInternational": "Produits internationaux",
+      "coupons": "Coupons"
     },
     "breadcrumbs": {
       "label": "Fil d’Ariane",
@@ -3271,7 +3273,8 @@
       "date": "Jour de livraison demandé : {date}",
       "note": "L’équipe Kandrop vous contactera pour convenir de la livraison.",
       "greeting": "Merci, {name}. Votre commande part en préparation."
-    }
+    },
+    "coupon": "Coupon {code}"
   },
   "QuickCheckout": {
     "title": "Finaliser l’achat",
@@ -3328,7 +3331,10 @@
       "placeholder": "Saisissez le code du coupon",
       "apply": "Appliquer",
       "applied": "Coupon {code} enregistré avec la commande. L’équipe Kandrop confirme la réduction si elle est valide.",
-      "remove": "Retirer"
+      "remove": "Retirer",
+      "unavailable": "Ce coupon n’est pas applicable à cette commande.",
+      "appliedDiscount": "Coupon {code} appliqué : {amount} de réduction.",
+      "line": "Coupon {code}"
     },
     "trust": {
       "secure": {
@@ -3392,6 +3398,45 @@
       "title": "Vous n’avez pas encore de pages de vente",
       "body": "Chaque produit ajouté à votre boutique reçoit une page de vente et un paiement direct, prêts à partager.",
       "cta": "Parcourir la vitrine"
+    }
+  },
+  "Coupons": {
+    "title": "Coupons de réduction",
+    "subtitle": "Créez des codes de réduction pour vos clients. Chaque code ne fonctionne que dans votre boutique.",
+    "new": {
+      "title": "Nouveau coupon",
+      "code": "Code",
+      "type": "Type de réduction",
+      "valuePercent": "Pourcentage (1 à 99)",
+      "valueFixed": "Montant en kwanzas",
+      "submit": "Créer le coupon",
+      "saving": "Création…",
+      "note": "Note : La réduction accordée au client est déduite exclusivement de votre marge bénéficiaire finale. La commission de la plateforme et le coût du produit restent inchangés."
+    },
+    "types": {
+      "percent": "Pourcentage",
+      "fixed": "Montant fixe"
+    },
+    "cols": {
+      "code": "Code",
+      "discount": "Réduction",
+      "created": "Créé le",
+      "status": "Statut"
+    },
+    "status": {
+      "active": "Actif",
+      "inactive": "Désactivé"
+    },
+    "deactivate": "Désactiver",
+    "activate": "Réactiver",
+    "empty": "Vous n’avez encore créé aucun coupon.",
+    "failed": "Opération impossible. Réessayez.",
+    "validation": {
+      "code_invalid": "Le code comporte 3 à 32 caractères : lettres, chiffres, - ou _.",
+      "type_invalid": "Choisissez le type de réduction.",
+      "percent_invalid": "Le pourcentage va de 1 à 99.",
+      "amount_invalid": "Indiquez un montant entier valide.",
+      "code_taken": "Vous avez déjà un coupon avec ce code."
     }
   }
 }

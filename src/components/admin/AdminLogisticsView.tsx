@@ -193,6 +193,7 @@ function Body({ rows }: { rows: LogisticsRow[] }) {
                                     <div className="flex justify-between gap-4"><dt>{t("detail.sale")}</dt><dd className="mono-num">{f.money(r.line.saleTotal)}</dd></div>
                                     <div className="flex justify-between gap-4"><dt>{t("detail.supplierDue")}</dt><dd className="mono-num">{f.money(r.line.costTotal)}</dd></div>
                                     <div className="flex justify-between gap-4"><dt>{t("detail.commission")}</dt><dd className="mono-num">{f.money(r.line.commission)}</dd></div>
+                                    {r.line.saleTotal - r.line.costTotal - r.line.commission - r.line.merchantNet > 0 && <div className="flex justify-between gap-4"><dt>{t("detail.coupon")}{r.coupon ? ` (${r.coupon})` : ""}</dt><dd className="mono-num">-{f.money(r.line.saleTotal - r.line.costTotal - r.line.commission - r.line.merchantNet)}</dd></div>}
                                     <div className="flex justify-between gap-4 font-bold"><dt>{t("detail.merchantNet")}</dt><dd className="mono-num">{f.money(r.line.merchantNet)}</dd></div>
                                   </dl>
                                 ) : <p className="mt-1 text-[var(--ink-500)]">{t("detail.noSupplier")}</p>}

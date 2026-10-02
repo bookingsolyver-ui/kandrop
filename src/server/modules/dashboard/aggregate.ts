@@ -35,7 +35,8 @@ export function netOf(order: OrderRecord, input: Pick<AggregateInput, "lineNets"
     if (cost === undefined) continue;
     net += splitSale(item.unitAmount, cost, item.quantity, input.commissionBps).merchantNet;
   }
-  return net;
+  // A coupon is paid out of the merchant's margin (the supplier line already has it in its fixed net).
+  return net - (order.payment.coupon?.discount ?? 0);
 }
 
 const pct = (current: number, previous: number) => (previous > 0 ? Math.round(((current - previous) / previous) * 1000) / 10 : 0);

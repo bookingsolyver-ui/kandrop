@@ -97,7 +97,8 @@
     "plan_not_upgradable": "Já tem um plano superior ativo. Só pode renovar o seu plano ou subir para um maior.",
     "lesson_locked": "Conclua as aulas anteriores para desbloquear esta.",
     "payment_required": "É necessária uma subscrição ativa para continuar. Escolha um plano e conclua o pagamento.",
-    "payment_unverified": "O pagamento desta encomenda ainda não foi confirmado pela Kandrop: não pode ser dada como entregue."
+    "payment_unverified": "O pagamento desta encomenda ainda não foi confirmado pela Kandrop: não pode ser dada como entregue.",
+    "coupon_unavailable": "Este cupão não é aplicável a este pedido."
   },
   "Auth": {
     "login": {
@@ -597,7 +598,8 @@
       "affiliates": "Afiliados",
       "vitrine": "Vitrine",
       "vitrineNational": "Produtos Nacionais",
-      "vitrineInternational": "Produtos Internacionais"
+      "vitrineInternational": "Produtos Internacionais",
+      "coupons": "Cupões"
     },
     "breadcrumbs": {
       "label": "Localização",
@@ -3271,7 +3273,8 @@
       "date": "Dia de entrega pedido: {date}",
       "note": "A equipa Kandrop vai contactá-lo para combinar a entrega.",
       "greeting": "Obrigado, {name}. A sua encomenda segue para preparação."
-    }
+    },
+    "coupon": "Cupão {code}"
   },
   "QuickCheckout": {
     "title": "Finalizar compra",
@@ -3328,7 +3331,10 @@
       "placeholder": "Digite o código do cupom",
       "apply": "Aplicar",
       "applied": "Cupom {code} guardado com o pedido. A equipa Kandrop confirma o desconto, se for válido.",
-      "remove": "Remover"
+      "remove": "Remover",
+      "unavailable": "Este cupão não é aplicável a este pedido.",
+      "appliedDiscount": "Cupão {code} aplicado: desconto de {amount}.",
+      "line": "Cupão {code}"
     },
     "trust": {
       "secure": {
@@ -3392,6 +3398,45 @@
       "title": "Ainda não tem páginas de venda",
       "body": "Cada produto que adicionar à sua loja ganha uma página de venda e um checkout direto, prontos a divulgar.",
       "cta": "Buscar produtos na vitrine"
+    }
+  },
+  "Coupons": {
+    "title": "Cupões de desconto",
+    "subtitle": "Crie códigos de desconto para os seus clientes. Cada código só funciona na sua loja.",
+    "new": {
+      "title": "Novo cupão",
+      "code": "Código",
+      "type": "Tipo de desconto",
+      "valuePercent": "Percentagem (1 a 99)",
+      "valueFixed": "Valor em kwanzas",
+      "submit": "Criar cupão",
+      "saving": "A criar…",
+      "note": "Nota: O valor do desconto oferecido ao cliente será subtraído exclusivamente da sua margem de lucro final. A comissão da plataforma e o custo do produto mantêm-se inalterados."
+    },
+    "types": {
+      "percent": "Percentagem",
+      "fixed": "Valor fixo"
+    },
+    "cols": {
+      "code": "Código",
+      "discount": "Desconto",
+      "created": "Criado em",
+      "status": "Estado"
+    },
+    "status": {
+      "active": "Ativo",
+      "inactive": "Desativado"
+    },
+    "deactivate": "Desativar",
+    "activate": "Reativar",
+    "empty": "Ainda não criou nenhum cupão.",
+    "failed": "Não foi possível concluir. Tente novamente.",
+    "validation": {
+      "code_invalid": "O código tem 3 a 32 caracteres: letras, números, - ou _.",
+      "type_invalid": "Escolha o tipo de desconto.",
+      "percent_invalid": "A percentagem vai de 1 a 99.",
+      "amount_invalid": "Indique um valor inteiro válido.",
+      "code_taken": "Já tem um cupão com este código."
     }
   }
 }

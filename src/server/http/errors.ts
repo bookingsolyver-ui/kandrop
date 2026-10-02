@@ -21,6 +21,7 @@ export type ApiErrorCode =
   | "order_not_dispatchable"
   | "delivery_exists"
   | "out_of_stock"
+  | "coupon_unavailable"
   | "plan_not_upgradable"
   | "lesson_locked"
   | "payment_required"
@@ -51,6 +52,7 @@ const STATUS: Record<ApiErrorCode, number> = {
   order_not_dispatchable: 409,
   delivery_exists: 409,
   out_of_stock: 409,
+  coupon_unavailable: 422,
   plan_not_upgradable: 409,
   lesson_locked: 409,
   payment_required: 402,

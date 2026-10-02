@@ -157,3 +157,10 @@ export const CartIcon = ({ size = 20 }: P) => (
     <circle cx="14" cy="15.5" r="1.3" />
   </Icon>
 );
+
+export const CouponIcon = ({ size = 20 }: P) => (
+  <Icon size={size}>
+    <path d="M2.5 6.5a1.5 1.5 0 0 1 1.5-1.5h12a1.5 1.5 0 0 1 1.5 1.5v2a1.5 1.5 0 0 0 0 3v2a1.5 1.5 0 0 1-1.5 1.5H4A1.5 1.5 0 0 1 2.5 13.5v-2a1.5 1.5 0 0 0 0-3Z" />
+    <path d="M12 5v10" strokeDasharray="1.5 2" />
+  </Icon>
+);

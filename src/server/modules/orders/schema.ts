@@ -48,7 +48,7 @@ export interface OrderRecord {
   /** items + shipping, computed on the server. */
   total: number;
   currency: "AOA";
-  payment: { method: PaymentMethod | typeof CASH_ON_DELIVERY; reference: string; paidAt: number; /** A coupon code the shopper typed (recorded only). */ coupon?: string };
+  payment: { method: PaymentMethod | typeof CASH_ON_DELIVERY; reference: string; paidAt: number; /** The coupon applied (its discount is already out of `total`). */ coupon?: { code: string; discount: number } };
   /** Where the money is: see `shared/payments/orderPayment.ts`. */
   paymentStatus: OrderPaymentStatus;
   paymentProvider: OrderPaymentProvider;
@@ -71,7 +71,7 @@ export interface PublicOrder {
   shippingAmount: number;
   total: number;
   currency: "AOA";
-  payment: { method: PaymentMethod | typeof CASH_ON_DELIVERY; reference: string; paidAt: string; coupon?: string };
+  payment: { method: PaymentMethod | typeof CASH_ON_DELIVERY; reference: string; paidAt: string; coupon?: { code: string; discount: number } };
   paymentStatus: OrderPaymentStatus;
   paymentProvider: OrderPaymentProvider;
   trackingCode?: string;

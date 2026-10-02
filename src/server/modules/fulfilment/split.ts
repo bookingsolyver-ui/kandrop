@@ -7,7 +7,9 @@ export interface Split {
   commissionBps: number;
   /** Kandrop's share of the margin (never negative: a sale below cost earns no commission). */
   commission: number;
-  /** What the merchant keeps: margin − commission. */
+  /** A coupon's discount, paid entirely out of the merchant's margin (0 without one). */
+  discount: number;
+  /** What the merchant keeps: margin − commission − discount. */
   merchantNet: number;
 }
 
@@ -15,11 +17,12 @@ export interface Split {
  * THE commission rule, in one place. Kandrop takes `COMMISSION_BPS` of the merchant's gross margin;
  * the supplier is always owed its full cost price. Integer maths (minor units, rounded to the unit).
  */
-export function splitSale(unitPrice: number, unitCost: number, quantity: number, commissionBps: number): Split {
+export function splitSale(unitPrice: number, unitCost: number, quantity: number, commissionBps: number, discount = 0): Split {
   const saleTotal = unitPrice * quantity;
   const costTotal = unitCost * quantity;
   const margin = saleTotal - costTotal;
   const commission = margin > 0 ? Math.round((margin * commissionBps) / 10_000) : 0;
-  return { saleTotal, costTotal, margin, commissionBps, commission, merchantNet: margin - commission };
+  // The commission is ALWAYS on the original price; the discount only reduces what the merchant keeps.
+  return { saleTotal, costTotal, margin, commissionBps, commission, discount, merchantNet: margin - commission - discount };
 }
 

@@ -97,7 +97,8 @@
     "plan_not_upgradable": "You already have a higher plan active. You can only renew your plan or move up to a bigger one.",
     "lesson_locked": "Finish the earlier lessons to unlock this one.",
     "payment_required": "An active subscription is required to continue. Choose a plan and complete the payment.",
-    "payment_unverified": "This order's payment has not been confirmed by Kandrop yet: it cannot be marked as delivered."
+    "payment_unverified": "This order's payment has not been confirmed by Kandrop yet: it cannot be marked as delivered.",
+    "coupon_unavailable": "This coupon cannot be applied to this order."
   },
   "Auth": {
     "login": {
@@ -597,7 +598,8 @@
       "affiliates": "Affiliates",
       "vitrine": "Showcase",
       "vitrineNational": "National products",
-      "vitrineInternational": "International products"
+      "vitrineInternational": "International products",
+      "coupons": "Coupons"
     },
     "breadcrumbs": {
       "label": "Breadcrumb",
@@ -3271,7 +3273,8 @@
       "date": "Requested delivery day: {date}",
       "note": "The Kandrop team will contact you to arrange the delivery.",
       "greeting": "Thank you, {name}. Your order is going into preparation."
-    }
+    },
+    "coupon": "Coupon {code}"
   },
   "QuickCheckout": {
     "title": "Checkout",
@@ -3328,7 +3331,10 @@
       "placeholder": "Enter the coupon code",
       "apply": "Apply",
       "applied": "Coupon {code} saved with the order. The Kandrop team confirms the discount if it is valid.",
-      "remove": "Remove"
+      "remove": "Remove",
+      "unavailable": "This coupon cannot be applied to this order.",
+      "appliedDiscount": "Coupon {code} applied: {amount} off.",
+      "line": "Coupon {code}"
     },
     "trust": {
       "secure": {
@@ -3392,6 +3398,45 @@
       "title": "You have no sales pages yet",
       "body": "Every product you add to your store gets a sales page and a direct checkout, ready to promote.",
       "cta": "Browse the showcase"
+    }
+  },
+  "Coupons": {
+    "title": "Discount coupons",
+    "subtitle": "Create discount codes for your customers. Each code only works in your own store.",
+    "new": {
+      "title": "New coupon",
+      "code": "Code",
+      "type": "Discount type",
+      "valuePercent": "Percentage (1 to 99)",
+      "valueFixed": "Amount in kwanzas",
+      "submit": "Create coupon",
+      "saving": "Creating…",
+      "note": "Note: The discount given to the customer is deducted exclusively from your final profit margin. The platform commission and the product cost remain unchanged."
+    },
+    "types": {
+      "percent": "Percentage",
+      "fixed": "Fixed amount"
+    },
+    "cols": {
+      "code": "Code",
+      "discount": "Discount",
+      "created": "Created",
+      "status": "Status"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Deactivated"
+    },
+    "deactivate": "Deactivate",
+    "activate": "Reactivate",
+    "empty": "You have not created any coupon yet.",
+    "failed": "Could not complete. Please try again.",
+    "validation": {
+      "code_invalid": "The code has 3 to 32 characters: letters, numbers, - or _.",
+      "type_invalid": "Choose the discount type.",
+      "percent_invalid": "The percentage goes from 1 to 99.",
+      "amount_invalid": "Enter a valid whole amount.",
+      "code_taken": "You already have a coupon with this code."
     }
   }
 }

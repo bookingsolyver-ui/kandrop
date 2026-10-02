@@ -25,7 +25,7 @@ const formatPhone = (raw: string) => raw.replace(/\D/g, "").replace(/^244(?=\d{9
  * summary beside it (under it on a phone). The browser validates as you type; the server validates again. The form is
  * a plain POST (it also works without JavaScript) that places the order and sends the shopper to its page.
  */
-export function CheckoutView({ product: p, invalid, days, today }: { product: StorefrontProduct; invalid: boolean; /** The 4 offered delivery days (`YYYY-MM-DD`, never a Sunday). */ days: string[]; today: string }) {
+export function CheckoutView({ product: p, invalid, couponRejected, days, today }: { product: StorefrontProduct; invalid: boolean; couponRejected: boolean; /** The 4 offered delivery days (`YYYY-MM-DD`, never a Sunday). */ days: string[]; today: string }) {
   const t = useTranslations("QuickCheckout");
   const trust = useTranslations("QuickCheckout.trust");
   const locale = useLocale();
@@ -36,6 +36,9 @@ export function CheckoutView({ product: p, invalid, days, today }: { product: St
   const [couponOpen, setCouponOpen] = useState(false);
   const [couponInput, setCouponInput] = useState("");
   const [couponError, setCouponError] = useState(false);
+  const [couponBusy, setCouponBusy] = useState(false);
+  /** What the coupon takes off (minor units), as the server worked it out: the browser never decides this. */
+  const [discount, setDiscount] = useState(0);
 
   const errors = useMemo(() => {
     const parsed = buyerSchema.safeParse(values);
@@ -67,14 +70,28 @@ export function CheckoutView({ product: p, invalid, days, today }: { product: St
     { key: "fast", icon: <TruckIcon /> },
     { key: "courier", icon: <BanknoteIcon /> },
   ] as const;
-  const applyCoupon = () => {
+  const applyCoupon = async () => {
     const code = couponInput.trim().toUpperCase();
     if (!/^[A-Z0-9_-]{3,32}$/.test(code)) return setCouponError(true);
     setCouponError(false);
-    setValues((v) => ({ ...v, coupon: code }));
+    setCouponBusy(true);
+    try {
+      // The server checks the coupon against THIS store and the anti-loss rule; the order checks it again when placed.
+      const res = await fetch(`/api/store/${p.slug}/coupon`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ code }) });
+      const body = (await res.json().catch(() => null)) as { data?: { code: string; discount: number } } | null;
+      if (res.ok && body?.data) {
+        setValues((v) => ({ ...v, coupon: body.data!.code }));
+        setDiscount(body.data.discount);
+      } else setCouponError(true);
+    } catch {
+      setCouponError(true);
+    } finally {
+      setCouponBusy(false);
+    }
   };
-  const removeCoupon = () => { setValues((v) => ({ ...v, coupon: "" })); setCouponInput(""); };
+  const removeCoupon = () => { setValues((v) => ({ ...v, coupon: "" })); setCouponInput(""); setDiscount(0); };
   const price = money(p.price);
+  const finalPrice = money(p.price - discount);
   /** `Hoje` / `Amanhã` / `Sáb`, then `3 out`: the day cards' two lines. Days are UTC calendar days, so server and browser agree. */
   const dayLabel = (iso: string) => {
     const at = Date.parse(`${iso}T00:00:00Z`);
@@ -122,6 +139,7 @@ export function CheckoutView({ product: p, invalid, days, today }: { product: St
             <h1 className="text-[1.6rem] leading-tight font-extrabold tracking-tight sm:text-3xl">{t("title")}</h1>
             <p className="mt-1 text-sm text-ink-2">{t("subtitle")}</p>
           </div>
+          {couponRejected && <p role="alert" className="rounded-xl border border-down/40 bg-down/10 px-4 py-3 text-sm text-down">{t("coupon.unavailable")}</p>}
           {invalid && <p role="alert" className="rounded-xl border border-down/40 bg-down/10 px-4 py-3 text-sm text-down">{t("invalid")}</p>}
 
           <section className="rounded-2xl border border-line bg-surface p-5 sm:p-6">
@@ -211,7 +229,7 @@ export function CheckoutView({ product: p, invalid, days, today }: { product: St
             </div>
             <button type="submit" disabled={submitting} aria-busy={submitting} className="mt-5 hidden h-14 w-full items-center justify-center gap-2 rounded-full bg-action px-6 text-[1.0625rem] font-bold text-on-action shadow-[0_10px_30px_-10px_rgba(255,90,0,0.7)] transition-all duration-150 hover:-translate-y-px hover:shadow-[0_14px_34px_-10px_rgba(255,90,0,0.85)] active:translate-y-0 disabled:cursor-progress disabled:opacity-70 lg:flex">
               <LockIcon width={18} height={18} />
-              {submitting ? t("submitting") : t("submit", { price })}
+              {submitting ? t("submitting") : t("submit", { price: finalPrice })}
             </button>
             <p className="mt-3 flex items-start justify-center gap-1.5 text-center text-[12px] leading-snug text-ink-muted"><LockIcon width={13} height={13} className="mt-0.5 shrink-0" />{t("lockNote")}</p>
           </section>
@@ -237,7 +255,7 @@ export function CheckoutView({ product: p, invalid, days, today }: { product: St
             <div className="mt-4 border-t border-line pt-4">
               {values.coupon ? (
                 <div className="rounded-xl bg-page p-3 text-[13px] leading-snug text-ink-2">
-                  <p>{t("coupon.applied", { code: values.coupon })}</p>
+                  <p>{t("coupon.appliedDiscount", { code: values.coupon, amount: money(discount) })}</p>
                   <button type="button" onClick={removeCoupon} className="mt-1.5 font-semibold text-ink underline underline-offset-4">{t("coupon.remove")}</button>
                 </div>
               ) : (
@@ -246,10 +264,10 @@ export function CheckoutView({ product: p, invalid, days, today }: { product: St
                   {couponOpen && (
                     <div id="coupon-panel" className="mt-3">
                       <div className="flex gap-2">
-                        <input value={couponInput} onChange={(e) => { setCouponInput(e.target.value); setCouponError(false); }} onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); applyCoupon(); } }} aria-label={t("coupon.placeholder")} placeholder={t("coupon.placeholder")} maxLength={32} autoComplete="off" aria-invalid={couponError} className="h-11 min-w-0 flex-1 rounded-xl border border-field bg-surface px-3.5 text-sm text-ink uppercase outline-none placeholder:text-ink-muted/70 placeholder:normal-case focus-visible:border-action focus-visible:ring-4 focus-visible:ring-action/20" />
-                        <button type="button" onClick={applyCoupon} className="h-11 shrink-0 rounded-xl bg-ink px-4 text-sm font-bold text-surface transition-opacity hover:opacity-90">{t("coupon.apply")}</button>
+                        <input value={couponInput} onChange={(e) => { setCouponInput(e.target.value); setCouponError(false); }} onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); void applyCoupon(); } }} aria-label={t("coupon.placeholder")} placeholder={t("coupon.placeholder")} maxLength={32} autoComplete="off" aria-invalid={couponError} className="h-11 min-w-0 flex-1 rounded-xl border border-field bg-surface px-3.5 text-sm text-ink uppercase outline-none placeholder:text-ink-muted/70 placeholder:normal-case focus-visible:border-action focus-visible:ring-4 focus-visible:ring-action/20" />
+                        <button type="button" onClick={() => void applyCoupon()} disabled={couponBusy} className="h-11 shrink-0 rounded-xl bg-ink px-4 text-sm font-bold text-surface transition-opacity hover:opacity-90">{t("coupon.apply")}</button>
                       </div>
-                      {couponError && <p role="alert" className="mt-1.5 text-[13px] text-down">{t("validation.coupon_invalid")}</p>}
+                      {couponError && <p role="alert" className="mt-1.5 text-[13px] text-down">{t("coupon.unavailable")}</p>}
                     </div>
                   )}
                 </>
@@ -258,8 +276,9 @@ export function CheckoutView({ product: p, invalid, days, today }: { product: St
 
             <dl className="mt-4 space-y-2 border-t border-line pt-4 text-sm">
               <div className="flex justify-between gap-4"><dt className="text-ink-2">{t("summary.subtotal")}</dt><dd className="tabular-nums">{price}</dd></div>
+              {discount > 0 && <div className="flex justify-between gap-4"><dt className="text-ink-2">{t("coupon.line", { code: values.coupon })}</dt><dd className="tabular-nums text-up">-{money(discount)}</dd></div>}
               <div className="flex justify-between gap-4"><dt className="text-ink-2">{t("summary.shipping")}</dt><dd className="tabular-nums">{money(0)}</dd></div>
-              <div className="flex justify-between gap-4 border-t border-line pt-3 text-base font-extrabold"><dt>{t("summary.total")}</dt><dd className="tabular-nums">{price}</dd></div>
+              <div className="flex justify-between gap-4 border-t border-line pt-3 text-base font-extrabold"><dt>{t("summary.total")}</dt><dd className="tabular-nums">{finalPrice}</dd></div>
             </dl>
           </section>
           <ul className="space-y-3 rounded-2xl border border-line bg-surface p-5">
@@ -278,7 +297,7 @@ export function CheckoutView({ product: p, invalid, days, today }: { product: St
         <div className="mx-auto max-w-md">
           <button type="submit" form="checkout-form" disabled={submitting} aria-busy={submitting} className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-action px-6 text-[1.0625rem] font-bold text-on-action shadow-[0_10px_30px_-10px_rgba(255,90,0,0.7)] transition-all disabled:cursor-progress disabled:opacity-70">
             <LockIcon width={18} height={18} />
-            {submitting ? t("submitting") : t("submit", { price })}
+            {submitting ? t("submitting") : t("submit", { price: finalPrice })}
           </button>
         </div>
       </div>

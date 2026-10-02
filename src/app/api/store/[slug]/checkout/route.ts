@@ -39,6 +39,10 @@ export const POST = handle(async (req, ctx: Ctx) => {
     if (error instanceof ApiError && error.code === "out_of_stock") {
       return Response.redirect(new URL(`/${locale}/loja/${slug}`, req.url), 303);
     }
+    // The coupon stopped being valid (or never was): back to the form with the plain message, nothing is created.
+    if (error instanceof ApiError && error.code === "coupon_unavailable") {
+      return Response.redirect(new URL(`/${locale}/checkout/${slug}?error=coupon`, req.url), 303);
+    }
     // The details were not valid (the browser's own checks were bypassed or are not supported): back to the page.
     if (error instanceof ZodError) {
       return Response.redirect(new URL(`/${locale}/checkout/${slug}?error=details`, req.url), 303);

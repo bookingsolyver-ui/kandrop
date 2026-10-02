@@ -3,6 +3,7 @@ import {
   AcademyIcon,
   AffiliatesIcon,
   CatalogIcon,
+  CouponIcon,
   CustomersIcon,
   LandingPageIcon,
   LogisticsIcon,
@@ -25,6 +26,7 @@ export type NavKey =
   | "products"
   | "landingPages"
   | "customers"
+  | "coupons"
   | "whatsapp"
   | "logistics"
   | "affiliates"
@@ -63,6 +65,7 @@ export const NAV_GROUPS: NavGroup[] = [
       { key: "products", href: "/dashboard/meus-produtos", icon: ProductsIcon },
       { key: "landingPages", href: "/dashboard/landing-pages", icon: LandingPageIcon },
       { key: "customers", href: "/dashboard/customers", icon: CustomersIcon },
+      { key: "coupons", href: "/dashboard/coupons", icon: CouponIcon },
     ],
   },
   {

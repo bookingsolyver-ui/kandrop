@@ -79,7 +79,7 @@ export interface Invoice {
   party: "merchant" | "supplier";
   supplierOrderId: string;
   orderNumber: number;
-  lines: Array<{ kind: "sale" | "supplier_cost" | "commission" | "due"; description: string; quantity?: number; amount: number }>;
+  lines: Array<{ kind: "sale" | "supplier_cost" | "commission" | "discount" | "due"; description: string; quantity?: number; amount: number }>;
   saleTotal: number;
   costTotal: number;
   commission: number;
@@ -126,8 +126,8 @@ export interface PlaceOrderInput {
   item: { name: string; quantity: number; unitAmount: number };
   shippingAmount: number;
   buyer: { customer: { name: string; phone: string; email?: string }; address: { street: string; city: string; province: string; reference?: string; deliveryDate?: string } };
-  /** A coupon code typed by the shopper: recorded with the order (there is no coupon system yet). */
-  coupon?: string;
+  /** An ALREADY VALIDATED coupon (see `coupons/service.ts`): its discount comes out of the merchant's margin only. */
+  coupon?: { code: string; discount: number };
   /** Who will verify the payment. */
   provider: OrderPaymentProvider;
   method: PaymentMethod | typeof CASH_ON_DELIVERY;
@@ -164,9 +164,9 @@ export async function placeOrder(input: PlaceOrderInput): Promise<{ order: Order
       address: { street: input.buyer.address.street, city: input.buyer.address.city, province: input.buyer.address.province, reference: input.buyer.address.reference, deliveryDate: input.buyer.address.deliveryDate },
       items: [{ name: input.item.name, productId: input.productId, quantity: input.item.quantity, unitAmount: input.item.unitAmount }],
       shippingAmount: input.shippingAmount,
-      total: subtotal + input.shippingAmount,
+      total: subtotal - (input.coupon?.discount ?? 0) + input.shippingAmount,
       currency: "AOA",
-      payment: { method: input.method, reference, paidAt: 0, ...(input.coupon ? { coupon: input.coupon } : {}) },
+      payment: { method: input.method, reference, paidAt: 0, ...(input.coupon ? { coupon: { code: input.coupon.code, discount: input.coupon.discount } } : {}) },
       paymentStatus: "pending_payment",
       paymentProvider: input.provider,
       history: [{ status: "pending", at: now }],
@@ -191,7 +191,7 @@ export async function placeOrder(input: PlaceOrderInput): Promise<{ order: Order
   const sp = must("supplier_products.forOrder", await db().from("supplier_products").select("id,supplier_id,name,cost_price").eq("id", link.supplier_product_id).maybeSingle());
   if (!sp) return { order, line: null };
 
-  const split = splitSale(input.item.unitAmount, Number(sp.cost_price), input.item.quantity, getEnv().COMMISSION_BPS);
+  const split = splitSale(input.item.unitAmount, Number(sp.cost_price), input.item.quantity, getEnv().COMMISSION_BPS, input.coupon?.discount ?? 0);
   const { data: lineRow, error } = await db().from("supplier_orders").insert({
     order_id: order.id, order_number: order.number, store_id: input.storeId, store_name: input.storeName,
     supplier_id: sp.supplier_id, supplier_product_id: sp.id, product_title: input.item.name,
@@ -221,6 +221,7 @@ export async function placeOrder(input: PlaceOrderInput): Promise<{ order: Order
     { kind: "sale", description: input.item.name, quantity: input.item.quantity, amount: split.saleTotal },
     { kind: "supplier_cost", description: input.item.name, quantity: input.item.quantity, amount: -split.costTotal },
     { kind: "commission", description: `${split.commissionBps / 100}%`, amount: -split.commission },
+    ...(split.discount > 0 ? [{ kind: "discount" as const, description: input.coupon?.code ?? "", amount: -split.discount }] : []),
   ];
   const supplierLines: Invoice["lines"] = [{ kind: "due", description: input.item.name, quantity: input.item.quantity, amount: split.costTotal }];
   must("invoices.insert", await db().from("order_invoices").insert([
@@ -384,7 +385,7 @@ export async function listAllLogistics(limit = 300): Promise<AdminOrderRow[]> {
       customer: (o.customer as AdminOrderRow["customer"]) ?? null,
       address: (o.address as AdminOrderRow["address"]) ?? null,
       cashOnDelivery: isCashOnDelivery(o.payment as { method?: unknown } | null),
-      coupon: (o.payment as { coupon?: string } | null)?.coupon ?? null,
+      coupon: (o.payment as { coupon?: { code?: string } } | null)?.coupon?.code ?? null,
       productTitle: line?.productTitle ?? items[0]?.name ?? "—",
       line: line ? { ...line, invoices: invoices.filter((i) => String(i.supplier_order_id) === line.id).map((i) => ({ party: i.party as "merchant" | "supplier", number: String(i.number) })) } : null,
     };
@@ -458,6 +459,14 @@ export async function advanceLogistics(id: string, to: LogisticsStatus): Promise
   return { before: row.status, row: toSupplierOrder(updated) };
 }
 
+/** What one unit costs the merchant: the supplier's cost when the product was imported, else the product's own cost. */
+export async function unitCostFor(storeId: string, productId: string, ownCost: number): Promise<number> {
+  const link = must("imports.cost", await db().from("supplier_imports").select("supplier_product_id").eq("store_id", storeId).eq("product_id", productId).maybeSingle());
+  if (!link) return ownCost;
+  const sp = must("supplier_products.cost", await db().from("supplier_products").select("cost_price").eq("id", link.supplier_product_id).maybeSingle());
+  return sp ? Number(sp.cost_price) : ownCost;
+}
+
 /** A product's stock must cover a new sale (checked when the checkout is created; the RPC is the final word). */
 export async function supplierStockFor(storeId: string, productId: string): Promise<number | null> {
   const link = must("imports.stock", await db().from("supplier_imports").select("supplier_product_id").eq("store_id", storeId).eq("product_id", productId).maybeSingle());
@@ -482,6 +491,9 @@ export interface ShopperOrder {
   metaPixelId: string | null;
   /** The product's public slug (or its id): what the ad pixel reports as `content_ids`. */
   productKey: string | null;
+  /** The coupon applied and what it took off (already out of `total`). */
+  couponCode: string | null;
+  discount: number;
   justPlaced: boolean;
   /** Pay the courier on arrival: no transfer to make. */
   cashOnDelivery: boolean;
@@ -510,6 +522,8 @@ export async function getShopperOrder(id: string): Promise<ShopperOrder | null> 
     metaPixelId: (() => { const v = ((store?.settings ?? {}) as { meta_pixel_id?: unknown }).meta_pixel_id; return typeof v === "string" && /^\d{6,20}$/.test(v) ? v : null; })(),
     productKey: product?.slug ? String(product.slug) : (item?.productId ?? null),
     // Just placed (within 30 minutes): only then is the order reported to the ad pixel, never when the link is reopened later.
+    couponCode: ((o.payment as { coupon?: { code?: string } } | null)?.coupon?.code) ?? null,
+    discount: Number(((o.payment as { coupon?: { discount?: number } } | null)?.coupon?.discount) ?? 0),
     justPlaced: Date.now() - Number(o.created_at) < 30 * 60_000,
     cashOnDelivery: isCashOnDelivery(o.payment as { method?: unknown } | null),
     deliveryDate: ((o.address as { deliveryDate?: string } | null)?.deliveryDate) ?? null,
