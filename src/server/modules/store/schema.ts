@@ -11,6 +11,8 @@ export const storeSchema = z.object({
   municipality: z.string().nullable(),
   /** The merchant's own Meta Pixel id (saved in `settings.meta_pixel_id`), or `null`. */
   metaPixelId: z.string().nullable(),
+  /** The merchant's WhatsApp number for sale alerts (`settings.notify_whatsapp`), or `null`. */
+  notifyWhatsapp: z.string().nullable(),
   currency: z.literal("AOA"),
   status: z.enum(["pending_verification", "active", "suspended"]),
 });

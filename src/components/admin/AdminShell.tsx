@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { PushToggle } from "@/components/notifications/PushToggle";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { BoxIcon, CartIcon, ChevronDownIcon, MenuBarsIcon, WalletIcon } from "@/components/kai/icons";
 import { CloseIcon } from "@/components/shell/icons";
@@ -189,7 +190,7 @@ export function AdminShell({ user, children }: { user: string; children: ReactNo
               <p className="truncate text-[15px] font-bold text-[var(--ink-900)]">{user}</p>
             </div>
             <div className="ml-auto flex items-center gap-2">
-              <span className="hidden rounded-full bg-[var(--kai-warn-bg)] px-3 py-1 text-[11px] font-bold text-[var(--kai-warn)] sm:inline">{t("sampleData")}</span>
+              <PushToggle scope="admin" compact />
               <LocaleSwitcher className="h-9 cursor-pointer rounded-full border border-[var(--ink-200)] bg-white px-3 text-[13px] font-medium text-[var(--ink-700)]" />
             </div>
           </header>

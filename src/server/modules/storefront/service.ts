@@ -4,6 +4,7 @@ import { userRepository } from "@/server/modules/auth/userRepository";
 import { storeRepository } from "@/server/modules/store/repository";
 import { productRepository } from "@/server/modules/products/repository";
 import type { ProductRecord } from "@/server/modules/products/schema";
+import { notifyNewSale } from "@/server/modules/notifications/dispatch";
 import { sendOrderConfirmation } from "@/server/modules/notifications/orderEmail";
 import { couponRepository } from "@/server/modules/coupons/repository";
 import { evaluateCoupon } from "@/server/modules/coupons/math";
@@ -125,6 +126,12 @@ export async function placeStorefrontOrder(slug: string, rawBuyer: unknown): Pro
     });
   } catch (err) {
     console.error("[email] could not prepare the order confirmation", err instanceof Error ? err.message : err);
+  }
+  // Push and external alerts: a separate, isolated block (it never throws and cannot touch the saved order).
+  try {
+    await notifyNewSale({ storeId: p.storeId, storeName: await storeNameOf(p.storeId), total: order.total, locale: "pt" });
+  } catch (err) {
+    console.error("[notify] could not notify the sale", err instanceof Error ? err.message : err);
   }
   return order.id;
 }

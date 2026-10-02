@@ -50,6 +50,16 @@ const schema = z.object({
   RESEND_API_KEY: z.preprocess((v) => (typeof v === "string" && v.trim() === "" ? undefined : v), z.string().optional()),
   // The sender, on a domain verified in Resend, e.g. `Kandrop <encomendas@kandrop.com>`. Unset = Resend's test sender.
   EMAIL_FROM: z.preprocess((v) => (typeof v === "string" && v.trim() === "" ? undefined : v), z.string().max(200).optional()),
+  // Web Push (browser notifications). Generate the pair with `npx web-push generate-vapid-keys`. Without the pair the
+  // feature is simply off. NEXT_PUBLIC_VAPID_PUBLIC_KEY is the same public key, for the browser.
+  VAPID_PUBLIC_KEY: z.preprocess((v) => (typeof v === "string" && v.trim() === "" ? undefined : v), z.string().optional()),
+  VAPID_PRIVATE_KEY: z.preprocess((v) => (typeof v === "string" && v.trim() === "" ? undefined : v), z.string().optional()),
+  VAPID_SUBJECT: z.preprocess((v) => (typeof v === "string" && v.trim() === "" ? undefined : v), z.string().optional()),
+  // External alerts. Both are optional and independent; each is a URL that accepts a JSON POST.
+  ADMIN_TELEGRAM_WEBHOOK: z.preprocess((v) => (typeof v === "string" && v.trim() === "" ? undefined : v), z.url().optional()),
+  ADMIN_TELEGRAM_CHAT_ID: z.preprocess((v) => (typeof v === "string" && v.trim() === "" ? undefined : v), z.string().optional()),
+  WHATSAPP_API_URL: z.preprocess((v) => (typeof v === "string" && v.trim() === "" ? undefined : v), z.url().optional()),
+  WHATSAPP_API_TOKEN: z.preprocess((v) => (typeof v === "string" && v.trim() === "" ? undefined : v), z.string().optional()),
   // Who may open `/admin`: a comma-separated list of account e-mails. Empty = nobody (the pages answer
   // 404), so the operator console is never open by default.
   ADMIN_EMAILS: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),

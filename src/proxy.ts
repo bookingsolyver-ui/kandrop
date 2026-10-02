@@ -41,6 +41,8 @@ function contentSecurityPolicy(nonce: string, pathname: string) {
     "font-src 'self'",
     `connect-src 'self'${isDev ? " ws: wss:" : ""}${pixel ? " https://www.facebook.com https://connect.facebook.net" : ""}`,
     "media-src 'self'",
+    // `script-src` carries 'strict-dynamic' (which ignores 'self'), so the Web Push service worker needs its own rule.
+    "worker-src 'self'",
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",

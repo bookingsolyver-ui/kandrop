@@ -7,7 +7,7 @@ import type { Store } from "./schema";
  * number and the verification status live in `settings`, which has room for them.
  */
 const fromRow = (row: Record<string, unknown>): Store => {
-  const settings = (row.settings ?? {}) as { nif?: string | null; status?: Store["status"]; profile?: { province?: string; municipality?: string }; meta_pixel_id?: string };
+  const settings = (row.settings ?? {}) as { nif?: string | null; status?: Store["status"]; profile?: { province?: string; municipality?: string }; meta_pixel_id?: string; notify_whatsapp?: string };
   return {
     id: String(row.id),
     name: String(row.name),
@@ -15,6 +15,7 @@ const fromRow = (row: Record<string, unknown>): Store => {
     province: settings.profile?.province ?? null,
     municipality: settings.profile?.municipality ?? null,
     metaPixelId: settings.meta_pixel_id ?? null,
+    notifyWhatsapp: settings.notify_whatsapp ?? null,
     currency: "AOA",
     status: settings.status ?? "pending_verification",
   };
@@ -73,7 +74,7 @@ export const storeRepository = {
         )
     );
     return (
-      (await this.get(id)) ?? { id, name, nif: null, province: null, municipality: null, metaPixelId: null, currency: "AOA", status: "pending_verification" }
+      (await this.get(id)) ?? { id, name, nif: null, province: null, municipality: null, metaPixelId: null, notifyWhatsapp: null, currency: "AOA", status: "pending_verification" }
     );
   },
 };

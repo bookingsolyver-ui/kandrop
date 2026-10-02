@@ -743,6 +743,23 @@
       "validation": {
         "pixel_invalid": "O ID do Pixel tem entre 6 e 20 dígitos, só números."
       }
+    },
+    "notifications": {
+      "title": "Alertas de vendas",
+      "subtitle": "Seja avisado assim que uma encomenda entra.",
+      "device": {
+        "title": "Neste dispositivo",
+        "body": "Receba um aviso do browser a cada nova venda, mesmo com o painel fechado."
+      },
+      "whatsapp": {
+        "label": "WhatsApp para alertas (opcional)",
+        "hint": "Número angolano com 9 dígitos. Recebe uma mensagem a cada nova venda, se o envio por WhatsApp estiver ativo na plataforma.",
+        "invalid": "Indique um número angolano com 9 dígitos (começa por 9).",
+        "save": "Guardar número",
+        "saving": "A guardar…",
+        "saved": "Número guardado.",
+        "failed": "Não foi possível guardar. Tente novamente."
+      }
     }
   },
   "Receipt": {
@@ -3454,6 +3471,13 @@
     "sale": "Nova Venda Realizada! {amount}.",
     "supply": "Novo Pedido de Fornecimento Pendente.",
     "platform": "Nova transação processada na Kandrop: {amount}.",
-    "close": "Fechar notificação"
+    "close": "Fechar notificação",
+    "push": {
+      "enable": "Ativar Notificações no Dispositivo",
+      "working": "A ativar…",
+      "on": "Notificações ativas neste dispositivo",
+      "denied": "As notificações estão bloqueadas neste browser. Permita-as nas definições do site.",
+      "failed": "Não foi possível ativar. Tente novamente."
+    }
   }
 }

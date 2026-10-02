@@ -4,6 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 import { Panel } from "@/components/dashboard/Panel";
+import { NotificationsForm } from "@/components/settings/NotificationsForm";
 import { MetaPixelForm } from "@/components/settings/MetaPixelForm";
 import { StoreLocationForm } from "@/components/settings/StoreLocationForm";
 import { BankAccountForm } from "@/components/settings/BankAccountForm";
@@ -123,6 +124,11 @@ export default async function SettingsPage({ params, searchParams }: Props) {
                 <Panel title={t("integrations.title")} subtitle={t("integrations.subtitle")}>
                   <MetaPixelForm initial={store.metaPixelId} canEdit={session!.role === "owner"} />
                 </Panel>
+                <div className="mt-6">
+                  <Panel title={t("notifications.title")} subtitle={t("notifications.subtitle")}>
+                    <NotificationsForm initialWhatsapp={store.notifyWhatsapp} canEdit={session!.role === "owner"} />
+                  </Panel>
+                </div>
               </div>
             ),
             bank: (
