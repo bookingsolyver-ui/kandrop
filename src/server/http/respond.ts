@@ -7,26 +7,37 @@ export function json<T>(data: T, init?: ResponseInit): Response {
   return Response.json({ data }, init);
 }
 
+/**
+ * No API answer may ever be stored by a shared cache (the CDN, a proxy) or reused by another person: most of them depend
+ * on WHO is asking. Routes that WANT caching (public images) set their own Cache-Control and are left alone.
+ */
+function noStore(res: Response): Response {
+  if (!res.headers.has("Cache-Control")) {
+    try {
+      res.headers.set("Cache-Control", "private, no-store");
+    } catch {
+      /* immutable headers (a redirect): those carry no personal data */
+    }
+  }
+  return res;
+}
+
 /** Wraps a route handler: maps thrown errors to `{ error: { code } }` responses. */
 export function handle<C = unknown>(fn: Handler<C>): Handler<C> {
   return async (req, ctx) => {
     try {
-      return await fn(req, ctx);
+      return noStore(await fn(req, ctx));
     } catch (err) {
       if (err instanceof ApiError) {
-        return Response.json(
-          { error: { code: err.code, details: err.details } },
-          { status: err.status, headers: err.headers }
+        return noStore(
+          Response.json({ error: { code: err.code, details: err.details } }, { status: err.status, headers: err.headers })
         );
       }
       if (err instanceof ZodError) {
-        return Response.json(
-          { error: { code: "validation_failed", details: err.issues } },
-          { status: 422 }
-        );
+        return noStore(Response.json({ error: { code: "validation_failed", details: err.issues } }, { status: 422 }));
       }
       console.error("[api] unhandled error", err);
-      return Response.json({ error: { code: "internal" } }, { status: 500 });
+      return noStore(Response.json({ error: { code: "internal" } }, { status: 500 }));
     }
   };
 }

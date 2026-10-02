@@ -34,7 +34,9 @@ const BYPASS = process.env.COMING_SOON_BYPASS_KEY ? createHash("sha256").update(
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   // A product image (at most 2 MB, checked on the server) travels inside the Server Action's form data.
-  experimental: { serverActions: { bodySizeLimit: "3mb" } },
+  // `staleTimes` 0: the browser's Router Cache never reuses a page between navigations, so one person's dashboard (store
+  // name, balances) is never replayed to the next person who signs in on the same browser.
+  experimental: { serverActions: { bodySizeLimit: "3mb" }, staleTimes: { dynamic: 0, static: 0 } },
   // Pin the project root: a stray lockfile in a parent folder must never change what is bundled.
   turbopack: { root: fileURLToPath(new URL(".", import.meta.url)) },
   async redirects() {
@@ -64,6 +66,15 @@ const nextConfig: NextConfig = {
           { key: "X-Frame-Options", value: "DENY" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+        ],
+      },
+      {
+        // Every page that depends on who is signed in (merchant, admin, supplier, the shopper's own order): never stored by
+        // a shared cache, and always keyed by the session cookie.
+        source: "/:locale/(dashboard|admin|fornecedor|pedido)/:path*",
+        headers: [
+          { key: "Cache-Control", value: "private, no-store, max-age=0, must-revalidate" },
+          { key: "Vary", value: "Cookie" },
         ],
       },
       {
