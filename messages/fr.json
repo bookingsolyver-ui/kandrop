@@ -3449,5 +3449,11 @@
       "amount_invalid": "Indiquez un montant entier valide.",
       "code_taken": "Vous avez déjà un coupon avec ce code."
     }
+  },
+  "Notifications": {
+    "sale": "Nouvelle vente réalisée ! {amount}.",
+    "supply": "Nouvelle commande d’approvisionnement en attente.",
+    "platform": "Nouvelle transaction traitée sur Kandrop : {amount}.",
+    "close": "Fermer la notification"
   }
 }

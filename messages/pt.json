@@ -3449,5 +3449,11 @@
       "amount_invalid": "Indique um valor inteiro válido.",
       "code_taken": "Já tem um cupão com este código."
     }
+  },
+  "Notifications": {
+    "sale": "Nova Venda Realizada! {amount}.",
+    "supply": "Novo Pedido de Fornecimento Pendente.",
+    "platform": "Nova transação processada na Kandrop: {amount}.",
+    "close": "Fechar notificação"
   }
 }

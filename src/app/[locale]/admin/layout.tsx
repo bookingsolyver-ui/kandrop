@@ -2,6 +2,7 @@ import { hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
+import { RealtimeNotifications } from "@/components/notifications/RealtimeNotifications";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { routing } from "@/i18n/routing";
 import { AdminRestricted } from "@/components/admin/AdminRestricted";
@@ -22,5 +23,10 @@ export default async function AdminLayout({ children, params }: { children: Reac
   if (!session) return redirect({ href: { pathname: "/login", query: { next: "/admin" } }, locale });
   if (!(await isAdmin(session))) return <AdminRestricted />;
   const user = await userRepository.findById(session.userId);
-  return <AdminShell user={user?.fullName ?? "Admin"}>{children}</AdminShell>;
+  return (
+    <>
+      <RealtimeNotifications scope="admin" />
+      <AdminShell user={user?.fullName ?? "Admin"}>{children}</AdminShell>
+    </>
+  );
 }

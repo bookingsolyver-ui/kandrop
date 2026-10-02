@@ -68,6 +68,14 @@ export async function requireSession(
   return session;
 }
 
+/** For the few API routes made FOR suppliers (a supplier session, and only that): anything else is refused. */
+export async function requireSupplierSession(req: Request): Promise<Session> {
+  const session = await resolveSession(tokenFromRequest(req));
+  if (!session) throw new ApiError("unauthenticated");
+  if (session.role !== "supplier") throw new ApiError("forbidden");
+  return session;
+}
+
 /** For Server Components / layouts (reads the cookie store instead of a Request). */
 export async function readSession(): Promise<Session | null> {
   const store = await cookies();

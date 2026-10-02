@@ -3,6 +3,7 @@ import { setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
+import { RealtimeNotifications } from "@/components/notifications/RealtimeNotifications";
 import { LiveProvider } from "@/components/dashboard/LiveProvider";
 import { AppShell } from "@/components/shell/AppShell";
 import { SIDEBAR_COOKIE } from "@/components/shell/constants";
@@ -36,6 +37,7 @@ export default async function DashboardLayout({
 
   return (
     <LiveProvider>
+      <RealtimeNotifications scope="merchant" />
       <AppShell
         user={{ name: me.fullName, email: me.email }}
         storeName={store.name}

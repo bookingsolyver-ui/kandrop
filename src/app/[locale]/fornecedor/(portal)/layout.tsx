@@ -3,6 +3,7 @@ import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 import { SupplierProvider } from "@/components/supplier/SupplierProvider";
+import { RealtimeNotifications } from "@/components/notifications/RealtimeNotifications";
 import { SupplierShell } from "@/components/supplier/SupplierShell";
 import { routing } from "@/i18n/routing";
 import { requireSupplier } from "@/server/auth/supplierGate";
@@ -37,6 +38,7 @@ export default async function SupplierPortalLayout({ children, params }: { child
   };
   return (
     <SupplierProvider supplier={supplier}>
+      <RealtimeNotifications scope="supplier" />
       <SupplierShell>{children}</SupplierShell>
     </SupplierProvider>
   );
