@@ -917,23 +917,23 @@
       "eyebrow": "Offres",
       "title": "Une offre pour chaque étape de votre activité",
       "subtitle": "Commencez petit et évoluez quand les ventes le demandent.",
-      "period": "/ 1 mois",
+      "period": "30 jours",
       "recommended": "Le plus vendu",
       "soon": "Bientôt",
       "cta": "Commencer avec {plan}",
-      "note": "Prix en Kwanzas (AOA), pour 1 mois. Elite : prix sur devis.",
+      "note": "Prix en Kwanzas (AOA), pour 30 jours. Elite : prix sur devis.",
       "plans": {
         "starter": {
           "name": "Starter",
-          "tagline": "Pour commencer à vendre sans acheter de stock."
+          "tagline": "La façon la plus simple de démarrer dans le dropshipping national et de lancer votre première activité sans acheter de stock."
         },
         "pro": {
           "name": "Pro",
-          "tagline": "Pour ceux qui vendent sérieusement et veulent grandir."
+          "tagline": "La structure complète pour vendre plus, tester de nouveaux produits et bâtir une activité solide avec Kandrop."
         },
         "elite": {
           "name": "Elite",
-          "tagline": "Pour les grandes marques et opérations."
+          "tagline": "Infrastructure premium pour les grandes entreprises et une montée en charge professionnelle accompagnée."
         }
       },
       "features": {
@@ -964,7 +964,10 @@
       },
       "onRequest": "Sur devis",
       "contact": "Parler à l’équipe",
-      "contactText": "Bonjour ! Je voudrais en savoir plus sur le plan Elite de Kandrop."
+      "contactText": "Bonjour ! Je voudrais en savoir plus sur le plan Elite de Kandrop.",
+      "business": "Entreprise",
+      "payoutPriority": "Paiement prioritaire",
+      "payoutFast": "Paiement en 24 heures"
     },
     "final": {
       "title": "Commencez à vendre sans stock dès aujourd’hui.",

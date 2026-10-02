@@ -917,23 +917,23 @@
       "eyebrow": "Pricing",
       "title": "A plan for every stage of your business",
       "subtitle": "Start small and grow when sales ask for it.",
-      "period": "/ 1 month",
+      "period": "30 days",
       "recommended": "Best seller",
       "soon": "Soon",
       "cta": "Start with {plan}",
-      "note": "Prices in Kwanzas (AOA), for 1 month. Elite: price on request.",
+      "note": "Prices in Kwanzas (AOA), for 30 days. Elite: price on request.",
       "plans": {
         "starter": {
           "name": "Starter",
-          "tagline": "To start selling without buying stock."
+          "tagline": "The simplest way to start in national dropshipping and get your first operation running without buying stock."
         },
         "pro": {
           "name": "Pro",
-          "tagline": "For those who sell seriously and want to grow."
+          "tagline": "The complete structure for those who want to sell more, test new products and build a solid business with Kandrop."
         },
         "elite": {
           "name": "Elite",
-          "tagline": "For bigger brands and operations."
+          "tagline": "Premium infrastructure for large businesses and assisted professional scale."
         }
       },
       "features": {
@@ -964,7 +964,10 @@
       },
       "onRequest": "On request",
       "contact": "Talk to the team",
-      "contactText": "Hello! I would like to know more about Kandrop's Elite plan."
+      "contactText": "Hello! I would like to know more about Kandrop's Elite plan.",
+      "business": "Business",
+      "payoutPriority": "Priority payout",
+      "payoutFast": "Payout in 24 hours"
     },
     "final": {
       "title": "Start selling without stock today.",

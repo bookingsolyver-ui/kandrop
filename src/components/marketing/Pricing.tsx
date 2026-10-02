@@ -1,10 +1,17 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import { formatKwz } from "@/lib/money";
-import { BrandLink } from "@/components/ui/BrandButton";
 import { Link } from "@/i18n/navigation";
 import { getEnv } from "@/server/config/env";
 import { orderPaymentInfo } from "@/server/modules/payments/transfer";
-import { CheckIcon } from "./icons";
+import { ArrowIcon, CheckIcon } from "./icons";
+
+/** A clock, drawn as a plain SVG like the rest of the icons. */
+const ClockIcon = () => (
+  <svg aria-hidden width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="9" />
+    <path d="M12 7v5l3 2" />
+  </svg>
+);
 import { TIERS } from "./tiers";
 
 /** The three plans (Starter, Pro, Elite), priced in Kwanzas from the same constants the billing uses. Elite talks to the team. */
@@ -33,68 +40,77 @@ export async function Pricing() {
           <p className="mt-5 text-lg leading-relaxed text-ink-2">{t("subtitle")}</p>
         </div>
 
-        <ul className="mx-auto mt-14 grid max-w-6xl items-stretch gap-5 md:grid-cols-2 lg:grid-cols-3">
+        <ul className="mx-auto mt-14 grid max-w-6xl items-stretch gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-5">
           {TIERS.map((tier, i) => {
             const name = t(`plans.${tier.key}.name`);
+            const pro = tier.featured === true;
+            const elite = tier.key === "elite";
+            // The middle card is filled with the brand orange (black text for contrast) and lifted above its neighbours.
+            const muted = pro ? "text-black/70" : "text-ink-muted";
+            const action = "relative mt-8 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl px-6 text-sm font-bold transition-all";
             return (
               <li
                 key={tier.key}
-                className={`reveal relative flex flex-col overflow-hidden rounded-2xl border p-7 sm:p-8 ${
-                  tier.featured ? "border-accent bg-surface" : "border-line bg-surface"
+                className={`reveal relative flex flex-col rounded-2xl border p-7 sm:p-8 ${
+                  pro
+                    ? "border-action bg-action text-black shadow-[0_30px_80px_-30px_rgba(255,90,0,0.75)] ring-4 ring-action/25 md:col-span-2 lg:col-span-1 lg:-my-4 lg:py-11"
+                    : "border-line bg-surface text-ink"
                 }`}
                 style={{ "--i": i } as React.CSSProperties}
               >
-                {tier.featured && (
-                  <div
-                    aria-hidden
-                    className="pointer-events-none absolute inset-x-0 top-0 h-48 bg-[radial-gradient(60%_100%_at_50%_0%,var(--glow),transparent)]"
-                  />
-                )}
-                <div className="relative flex items-center justify-between gap-3">
-                  <h3 className="font-serif text-[1.625rem] leading-none tracking-tight">{name}</h3>
-                  {tier.featured && (
-                    <span className="rounded-full bg-accent px-3 py-1 text-[11px] font-semibold tracking-[0.1em] text-on-action uppercase">
-                      {t("recommended")}
-                    </span>
-                  )}
-                </div>
-                <p className="relative mt-3 text-ink-2">{t(`plans.${tier.key}.tagline`)}</p>
-
-                <p className="relative mt-8 flex items-baseline gap-2">
-                  <span className="font-serif text-[2.5rem] leading-none font-extrabold tracking-[-0.03em] tabular-nums">
-                    {tier.price === null ? t("onRequest") : price(tier.price)}
+                {(pro || elite) && (
+                  <span
+                    className={`absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full px-4 py-1 text-[11px] font-bold tracking-[0.14em] whitespace-nowrap uppercase ${
+                      pro ? "bg-black text-white" : "border border-line bg-surface text-ink-2"
+                    }`}
+                  >
+                    {pro ? t("recommended") : t("business")}
                   </span>
-                  {tier.price !== null && <span className="text-ink-muted">{t("period")}</span>}
-                </p>
+                )}
 
-                {tier.key === "elite" ? (
+                <h3 className="font-serif text-[1.75rem] leading-none tracking-tight">{name}</h3>
+                <p className={`mt-3 text-sm leading-relaxed ${pro ? "text-black/75" : "text-ink-muted"}`}>{t(`plans.${tier.key}.tagline`)}</p>
+
+                <div className="mt-8">
+                  <p className={`font-serif leading-none font-extrabold tracking-[-0.03em] tabular-nums ${tier.price === null ? "text-[clamp(1.75rem,2.6vw,2.25rem)] py-[0.55rem]" : "text-[clamp(2.5rem,4vw,3.25rem)]"}`}>
+                    {tier.price === null ? t("onRequest") : price(tier.price)}
+                  </p>
+                  {tier.price !== null && <p className={`mt-1.5 text-sm ${muted}`}>{t("period")}</p>}
+                </div>
+
+                {(pro || elite) && (
+                  <p className={`mt-5 inline-flex w-fit items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-bold tracking-[0.1em] uppercase ${pro ? "bg-black/15 text-black" : "bg-accent/10 text-accent"}`}>
+                    <ClockIcon />
+                    {t(pro ? "payoutPriority" : "payoutFast")}
+                  </p>
+                )}
+
+                {elite ? (
                   <a
                     href={contact ?? "mailto:"}
                     {...(contact?.startsWith("https") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                    className="relative mt-8 inline-flex h-12 w-full items-center justify-center rounded-xl border border-[var(--ink-200)] bg-white px-6 text-sm font-semibold text-[var(--ink-900)] transition-colors hover:border-[var(--ink-300)]"
+                    className={`${action} border border-[var(--ink-200)] bg-white text-[var(--ink-900)] hover:border-[var(--ink-300)]`}
                   >
                     {t("contact")}
+                    <ArrowIcon size={16} />
                   </a>
-                ) : tier.featured ? (
-                  <BrandLink href="/register" size="md" className="mt-8 w-full">
+                ) : pro ? (
+                  <Link href="/register" className={`${action} bg-black text-white hover:bg-black/85`}>
                     {t("cta", { plan: name })}
-                  </BrandLink>
+                  </Link>
                 ) : (
-                  <Link
-                    href="/register"
-                    className="relative mt-8 inline-flex h-12 w-full items-center justify-center rounded-xl border border-[var(--ink-200)] bg-white px-6 text-sm font-semibold text-[var(--ink-900)] transition-colors hover:border-[var(--ink-300)]"
-                  >
+                  <Link href="/register" className={`${action} border border-[var(--ink-200)] bg-white text-[var(--ink-900)] hover:border-[var(--ink-300)]`}>
                     {t("cta", { plan: name })}
                   </Link>
                 )}
 
-                <ul className="relative mt-8 space-y-3.5 border-t border-line pt-8 text-[0.9375rem]">
+                <ul className={`relative mt-8 space-y-3.5 border-t pt-8 text-[0.9375rem] ${pro ? "border-black/20" : "border-line"}`}>
                   {tier.features.map((feature) => (
                     <li key={feature.key} className="flex items-start gap-3">
-                      <span className="mt-0.5 text-accent">
-                        <CheckIcon />
+                      <span className={`mt-0.5 grid size-5 shrink-0 place-items-center rounded-full ${pro ? "bg-black text-accent" : "bg-accent/10 text-accent"}`}>
+                        <CheckIcon size={13} />
                       </span>
-                      <span className={feature.lead ? "font-semibold text-ink" : "text-ink-2"}>
+                      <span className={feature.lead ? "font-semibold" : pro ? "text-black/85" : "text-ink-2"}>
                         {t(`features.${feature.key}`, { count: feature.count ?? 0 })}
                       </span>
                     </li>
