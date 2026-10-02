@@ -84,13 +84,29 @@ export type Env = z.infer<typeof schema>;
 let cached: Env | undefined;
 
 /**
+ * One malformed OPTIONAL variable (a placeholder like `<TOKEN>` left in a URL, a typo in an e-mail) must never take the
+ * whole site down: it used to throw on the first request of EVERY page, which the browser shows as a React 441 crash.
+ * Invalid values are ignored (so the feature they configure stays off or on its default) and their NAMES are logged
+ * loudly (never the values). A missing or invalid REQUIRED value still fails: the checks below the parse enforce those.
+ */
+function parseTolerant(source: NodeJS.ProcessEnv): Env {
+  const first = schema.safeParse(source);
+  if (first.success) return first.data;
+  const bad = [...new Set(first.error.issues.map((issue) => String(issue.path[0] ?? "")))].filter(Boolean);
+  console.error(`[env] IGNORING invalid environment variables (fix them in the host settings): ${bad.join(", ")}`);
+  const cleaned: NodeJS.ProcessEnv = { ...source };
+  for (const key of bad) delete cleaned[key];
+  return schema.parse(cleaned);
+}
+
+/**
  * Validated lazily (first request, not module import) so `next build` — which loads route
  * modules without runtime secrets — does not fail. Production misconfiguration still fails
  * fast on the first request.
  */
 export function getEnv(): Env {
   if (cached) return cached;
-  const parsed = schema.parse(process.env);
+  const parsed = parseTolerant(process.env);
   if (parsed.NODE_ENV === "production") {
     if (!parsed.SESSION_SECRET) throw new Error("SESSION_SECRET is required in production");
     if (parsed.AUTH_DEV_BYPASS) throw new Error("AUTH_DEV_BYPASS must be off in production");
