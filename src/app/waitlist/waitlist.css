@@ -1,0 +1,114 @@
+@import "tailwindcss";
+
+/*
+ * Tokens de cor — PRD secção 3.1
+ * brand-orange  #FF5A00  acções e destaques
+ * brand-black   #000000  texto principal, secção "O problema", CTA final, rodapé
+ * brand-gray    #F9F9F9  fundo principal, secções alternadas, campos
+ * brand-white   #FFFFFF  cartões sobre #F9F9F9, texto sobre fundo escuro
+ */
+@theme {
+  --color-brand-orange: #ff5a00;
+  --color-brand-orange-mid: #ff8a3d;
+  --color-brand-orange-light: #ffa366;
+  --color-brand-black: #000000;
+  --color-brand-gray: #f9f9f9;
+  --color-brand-white: #ffffff;
+
+  --font-sans: var(--font-jakarta), system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: clip;
+}
+
+body {
+  background: var(--color-brand-black);
+  color: var(--color-brand-white);
+  font-family: var(--font-sans);
+  overflow-x: clip;
+}
+
+/* Foco visível em todos os elementos interactivos — PRD 3.2 */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-brand-orange);
+  outline-offset: 2px;
+}
+
+/* Palavra-chave do título em gradiente laranja — PRD 3.6 */
+.text-gradient-orange {
+  background: linear-gradient(90deg, var(--color-brand-orange), var(--color-brand-orange-light));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Cartão de vidro escuro — PRD 3.6 (só no formulário; o modal de sucesso será o 2.º) */
+.glass {
+  background: rgb(255 255 255 / 0.04);
+  border: 1px solid rgb(255 255 255 / 0.08);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Linhas finas em cruz, muito ténues — PRD 3.6 */
+.cross-lines {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.05) 1px, transparent 1px);
+  background-size: 220px 220px;
+  mask-image: radial-gradient(ellipse at center, black 25%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 25%, transparent 78%);
+}
+
+/* Riscos de luz que deslizam — só transform e opacity (GPU) */
+.streak {
+  position: absolute;
+  height: 1px;
+  width: 55%;
+  background: linear-gradient(90deg, transparent, rgb(255 90 0 / 0.55), transparent);
+  opacity: 0;
+  will-change: transform, opacity;
+  animation: streak-slide 16s linear infinite;
+}
+.streak-1 { top: 20%; left: -10%; animation-duration: 14s; }
+.streak-2 { top: 47%; right: -10%; animation-duration: 19s; animation-delay: 5s; }
+.streak-3 { top: 74%; left: -10%; animation-duration: 23s; animation-delay: 9s; }
+
+@keyframes streak-slide {
+  0% { transform: translateX(-35%); opacity: 0; }
+  12% { opacity: 0.9; }
+  88% { opacity: 0.9; }
+  100% { transform: translateX(135%); opacity: 0; }
+}
+
+/* Anéis concêntricos a pulsar atrás do logótipo — PRD 3.6 */
+.ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  border-radius: 9999px;
+  border: 1px solid rgb(255 90 0 / 0.22);
+  will-change: transform, opacity;
+  animation: ring-pulse 7s ease-in-out infinite;
+}
+@keyframes ring-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.4; }
+  50% { transform: scale(1.14); opacity: 0.1; }
+}
+
+/* Versão totalmente estática — PRD 3.6 (prefers-reduced-motion) */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .streak { animation: none; opacity: 0; }
+  .ring { animation: none; opacity: 0.25; }
+}
+
+/* Ripple do KandropButton */
+@keyframes ripple {
+  0%   { transform: translate(-50%, -50%) scale(0);  opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(12); opacity: 0; }
+}
+

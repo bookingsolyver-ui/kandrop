@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="557" height="557" viewBox="0 0 557 557">
+  <!-- Fundo transparente — versão para fundos escuros -->
+  <!-- Símbolo K em laranja da marca (#FF5A00) -->
+  <path d="M0,0 L67,0 L67,85 L-49,86 L-55,92 L-62,106 L-61,111 L-51,124 L-38,140 L-31,149 L-20,163 L-7,179 L4,193 L16,208 L27,222 L40,238 L48,248 L59,262 L71,277 L79,287 L80,290 L-20,290 L-31,277 L-42,263 L-53,250 L-64,236 L-72,227 L-80,217 L-93,201 L-99,189 L-102,181 L-103,175 L-103,159 L-101,151 L-95,137 L-87,122 L-79,106 L-56,60 L-48,45 L-40,29 L-34,20 L-25,11 L-11,3 Z" fill="#FF5A00" transform="translate(363,134)"/>
+  <path d="M0,0 L85,0 L85,291 L0,291 Z" fill="#FF5A00" transform="translate(150,133)"/>
+</svg>

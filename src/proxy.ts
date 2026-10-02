@@ -1,4 +1,5 @@
 import createMiddleware from "next-intl/middleware";
+import { createHash } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { routing } from "./i18n/routing";
 import { isPrivatePath } from "./lib/meta-pixel";
@@ -64,7 +65,59 @@ export default async function proxy(original: NextRequest) {
   return response;
 }
 
+/**
+ * THE WAITLIST SWITCH (`NEXT_PUBLIC_WAITLIST_MODE`). `true`: the public pages of the site (the home page and the marketing pages) show the waitlist
+ * (`/waitlist`); `false`: they show the official site, and `/waitlist` itself goes back to the home page. Unset: the old `COMING_SOON` rule
+ * (on in production unless `COMING_SOON=false`), so a deploy never flips the state by surprise. Read at build time: change it and redeploy.
+ * Never touched, in either mode: `/api`, the sign-in and sign-up pages, `/admin`, `/dashboard`, `/checkout`, `/fornecedor`, the stores (`/loja`)
+ * and the order pages, so the team can run and test the whole platform while the waitlist is the face of the site.
+ * A team member who opened `/api/preview?key=<COMING_SOON_BYPASS_KEY>` (cookie `kandrop_preview`) sees the real site even in waitlist mode.
+ */
+const MARKETING = new Set(["afiliados", "entregas", "privacidade", "termos", "sobre"]);
+const LOCALE_PREFIX = new RegExp(`^/(${routing.locales.join("|")})(?=/|$)`);
+
+function waitlistMode() {
+  const flag = process.env.NEXT_PUBLIC_WAITLIST_MODE?.trim().toLowerCase();
+  if (flag === "true") return true;
+  if (flag === "false") return false;
+  return process.env.COMING_SOON === "true" || (process.env.NODE_ENV === "production" && process.env.COMING_SOON !== "false");
+}
+
+function bypassed(request: NextRequest) {
+  const key = process.env.COMING_SOON_BYPASS_KEY;
+  if (!key) return false;
+  return request.cookies.get("kandrop_preview")?.value === createHash("sha256").update(`kandrop-preview:${key}`).digest("hex");
+}
+
+/** The waitlist's answer for this request, or `null` to carry on with the site as usual. */
+function waitlist(request: NextRequest): NextResponse | null {
+  const { pathname } = request.nextUrl;
+  const on = waitlistMode();
+  if (/^\/waitlist(\/|$)/.test(pathname)) {
+    if (on || bypassed(request)) return NextResponse.next({ request: { headers: request.headers } }); // its own root layout: no language prefix
+    const home = request.nextUrl.clone();
+    home.pathname = "/";
+    return NextResponse.redirect(home); // launched: the waitlist is gone
+  }
+  if (!on || bypassed(request)) return null;
+  const rest = pathname.replace(LOCALE_PREFIX, "").replace(/^\/+|\/+$/g, "");
+  if (rest === "") {
+    const url = request.nextUrl.clone();
+    url.pathname = "/waitlist";
+    return NextResponse.rewrite(url, { request: { headers: request.headers } }); // the address stays `/`
+  }
+  if (MARKETING.has(rest.split("/")[0] ?? "")) {
+    const home = request.nextUrl.clone();
+    home.pathname = "/";
+    home.search = "";
+    return NextResponse.redirect(home);
+  }
+  return null;
+}
+
 async function route(request: NextRequest) {
+  const gate = waitlist(request);
+  if (gate) return gate;
   const match = DASHBOARD.exec(request.nextUrl.pathname);
   if (match) {
     const session = await resolveSession(request.cookies.get(SESSION_COOKIE)?.value);
