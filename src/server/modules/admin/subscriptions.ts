@@ -16,11 +16,15 @@ export async function subscriptionsOverview(now = Date.now()): Promise<Subscript
     const storeId = String(u.store_id);
     const s = subOf.get(storeId);
     const base = { storeId, store: String(u.store_name), owner: String(u.full_name), email: String(u.email) };
-    if (!s) return { ...base, plan: null, state: "pending", reason: null, startedAt: null, periodsPaid: 0, periodEnd: null, daysLeft: null, reminded: false, renewalAmount: null };
+    if (!s) return { ...base, plan: null, requestedPlan: null, requestedAt: null, state: "pending", reason: null, startedAt: null, periodsPaid: 0, periodEnd: null, daysLeft: null, reminded: false, renewalAmount: null };
+    // A request still waiting for the payment: it has a plan asked for but no period yet.
+    if (s.pending) return { ...base, plan: null, requestedPlan: s.plan, requestedAt: s.requestedAt, state: "pending", reason: null, startedAt: null, periodsPaid: 0, periodEnd: null, daysLeft: null, reminded: false, renewalAmount: null };
     const expired = s.periodEnd <= now;
     return {
       ...base,
       plan: s.plan,
+      requestedPlan: null,
+      requestedAt: null,
       state: s.suspended || expired ? "inactive" : "active",
       reason: s.suspended ? s.suspendedReason ?? "admin" : expired ? "expired" : null,
       startedAt: s.startedAt,

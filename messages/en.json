@@ -2029,6 +2029,28 @@
       "how": "To get access back, pay the renewal and tell the team. The account becomes active as soon as an administrator activates it.",
       "contact": "Talk to the team",
       "logout": "Sign out"
+    },
+    "request": {
+      "intro": "You are requesting the {plan} plan. The request stays pending until our team confirms the payment: make the transfer and send the proof.",
+      "note": "After you submit, this page shows the status of the request. The team activates the account as soon as the payment is confirmed.",
+      "submit": "Submit request for the {plan} plan",
+      "submitting": "Submitting…",
+      "error": "The request could not be submitted. Please try again."
+    },
+    "pending": {
+      "eyebrow": "Pending request",
+      "title": "Request for the {plan} plan submitted",
+      "body": "Your request for the {plan} plan has been submitted. Please send the proof of payment. Your account will be activated shortly by our team.",
+      "sendProof": "Send proof of payment",
+      "logout": "Sign out",
+      "signedIn": "Signed in as {email}"
+    },
+    "bank": {
+      "title": "Payment details",
+      "bank": "Bank",
+      "holder": "Account holder",
+      "iban": "IBAN",
+      "example": "Example details (test mode): do not use them to transfer money."
     }
   },
   "Support": {
@@ -3204,7 +3226,8 @@
       "subtitle": "Each store’s plan, deadline and status. Switch an account’s access on or off with one click.",
       "tabs": {
         "accounts": "Accounts",
-        "deadlines": "Deadlines"
+        "deadlines": "Deadlines",
+        "approvals": "Pending approvals"
       },
       "search": "Search by store, name or e-mail…",
       "filters": {
@@ -3218,7 +3241,9 @@
         "plan": "Plan",
         "expires": "Expires",
         "state": "Status",
-        "periods": "Periods paid"
+        "periods": "Periods paid",
+        "requestedPlan": "Plan requested",
+        "requestedAt": "Requested on"
       },
       "plan": {
         "starter": "Starter",
@@ -3293,8 +3318,15 @@
         "noteActivate": "Account whose period ended: a new 30-day period starts now. If it still had time left, it is only switched on.",
         "noteRenew": "Adds 30 days to the current end of the period (or from now, if it already ended).",
         "cancel": "Cancel",
-        "confirm": "Confirm and send e-mail"
-      }
+        "confirm": "Confirm and send e-mail",
+        "titleApprove": "Approve the request of {store}",
+        "noteApprove": "The account becomes active on the chosen plan for 30 days from now, and the merchant gets the payment-confirmed e-mail.",
+        "confirmApprove": "Approve, Activate Account and Send E-mail",
+        "planApprove": "Plan paid (the request is pre-selected)"
+      },
+      "approve": "Approve / Confirm Payment",
+      "requested": "Asked for {plan}",
+      "noApprovals": "There are no requests waiting for approval."
     }
   },
   "Supplier": {

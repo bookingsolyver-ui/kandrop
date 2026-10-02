@@ -40,6 +40,8 @@ export const billingRepository = {
       periodEnd: Number(row.period_end),
       startedAt: row.started_at == null ? null : Number(row.started_at),
       periodsPaid: Number(row.periods_paid ?? 0),
+      pending: Boolean(row.pending),
+      requestedAt: row.requested_at == null ? null : Number(row.requested_at),
       suspended: Boolean(row.suspended),
       suspendedReason: row.suspended_reason === "expired" || row.suspended_reason === "admin" ? row.suspended_reason : null,
       renewalNoticeFor: row.renewal_notice_for == null ? null : Number(row.renewal_notice_for),
@@ -48,10 +50,12 @@ export const billingRepository = {
 
   async saveSubscription(subscription: SubscriptionRecord): Promise<SubscriptionRecord> {
     const base = { store_id: subscription.storeId, plan: subscription.plan, period_end: subscription.periodEnd };
-    const full = await db().from("subscriptions").upsert({ ...base, started_at: subscription.startedAt, periods_paid: subscription.periodsPaid });
+    const full = await db().from("subscriptions").upsert({ ...base, started_at: subscription.startedAt, periods_paid: subscription.periodsPaid, pending: subscription.pending, requested_at: subscription.requestedAt });
     // Until the cycle migration is applied the columns do not exist: keep billing alive and say so (the price rule reads the charges, not these columns).
-    if (full.error && /started_at|periods_paid/.test(full.error.message)) {
-      console.error("[billing] subscription cycle columns are missing; apply supabase/migrations/20261012000000_subscription_cycle.sql");
+    if (full.error && /started_at|periods_paid|pending|requested_at/.test(full.error.message)) {
+      // A pending request cannot be stored without its columns (it would become a plain expired row): refuse instead of degrading.
+      if (subscription.pending) must("subscriptions.save", full);
+      console.error("[billing] subscription columns are missing; apply the pending supabase/migrations");
       must("subscriptions.save", await db().from("subscriptions").upsert(base));
     } else {
       must("subscriptions.save", full);
@@ -77,6 +81,8 @@ export const billingRepository = {
             periodEnd: Number(row.period_end),
             startedAt: row.started_at == null ? null : Number(row.started_at),
             periodsPaid: Number(row.periods_paid ?? 0),
+            pending: Boolean(row.pending),
+            requestedAt: row.requested_at == null ? null : Number(row.requested_at),
             suspended: Boolean(row.suspended),
             suspendedReason: row.suspended_reason === "expired" || row.suspended_reason === "admin" ? row.suspended_reason : null,
             renewalNoticeFor: row.renewal_notice_for == null ? null : Number(row.renewal_notice_for),

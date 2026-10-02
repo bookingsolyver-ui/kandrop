@@ -2,36 +2,31 @@
 
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
-import { PlanPayment } from "@/components/billing/PlanPayment";
 import { useLogout } from "@/components/auth/useLogout";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { KandropLogo } from "@/components/receipt/KandropLogo";
 import { useRouter } from "@/i18n/navigation";
 import type { PlanKey } from "@/server/modules/plan/limits";
+import type { BankDetailsData } from "./BankDetails";
 import { OrderSummary } from "./OrderSummary";
 import { PlanStep } from "./PlanStep";
+import { RequestStep } from "./RequestStep";
 import { Stepper, type StepId } from "./Stepper";
 
 const H1 =
   "font-serif text-[clamp(1.875rem,4vw,2.75rem)] leading-[1.08] font-normal tracking-[-0.02em] outline-none";
 
-/** How long the confirmation stays on screen before the dashboard opens by itself. */
-const REDIRECT_MS = 2200;
-
 /**
- * THE PAYMENT GATE'S DOOR. Where an account with nothing paid lands (after sign-up, after a sign-in,
- * or when it tries to open the dashboard): choose a plan, pay, and the dashboard opens. Two steps,
- * all in state (no page reloads). The payment is the real (sandbox) one — the same as the
- * billing page — so confirming it activates the plan on the server and lifts the gate.
+ * THE PAYMENT GATE'S DOOR. Where an account with nothing paid lands (after sign-up, after a sign-in, or when it tries to open the
+ * dashboard): choose a plan and submit the request. Two steps, all in state. The request is saved as PENDING; the page then shows
+ * the "waiting for approval" screen until the team confirms the payment and approves it.
  */
-export function SubscribeFlow({ email, sandbox, intro }: { email: string; sandbox: boolean; intro: boolean }) {
+export function SubscribeFlow({ email, intro, transfer }: { email: string; intro: boolean; transfer: BankDetailsData | null }) {
   const t = useTranslations("Subscribe");
-  const names = useTranslations("Shell.plan.names");
   const router = useRouter();
   const { logout, pending: leaving } = useLogout();
   const [step, setStep] = useState<StepId>("plan");
   const [plan, setPlan] = useState<PlanKey | null>(null);
-  const [paid, setPaid] = useState(false);
   const heading = useRef<HTMLHeadingElement>(null);
   const shown = useRef<StepId>(step);
 
@@ -42,21 +37,6 @@ export function SubscribeFlow({ email, sandbox, intro }: { email: string; sandbo
     heading.current?.focus();
     heading.current?.scrollIntoView({ block: "start", behavior: "auto" });
   }, [step]);
-
-  // Paid: the gate is open now. Give the confirmation a moment, then go in.
-  useEffect(() => {
-    if (!paid) return;
-    const timer = setTimeout(() => {
-      router.replace("/dashboard");
-      router.refresh();
-    }, REDIRECT_MS);
-    return () => clearTimeout(timer);
-  }, [paid, router]);
-
-  const goToDashboard = () => {
-    router.replace("/dashboard");
-    router.refresh();
-  };
 
   return (
     <div className="marketing min-h-screen bg-page text-ink">
@@ -91,40 +71,7 @@ export function SubscribeFlow({ email, sandbox, intro }: { email: string; sandbo
       </header>
 
       <main id="conteudo" className="mx-auto max-w-5xl px-4 pt-8 pb-24 sm:px-6 sm:pt-10">
-        {paid && plan ? (
-          <section className="mx-auto max-w-xl rounded-lg border border-line bg-surface p-8 text-center sm:p-10">
-            <span
-              aria-hidden
-              className="mx-auto mb-5 grid size-14 place-items-center rounded-full border border-accent text-accent"
-            >
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M6 12.5l4 4 8-9" />
-              </svg>
-            </span>
-            <div role="status">
-              <h1 className="font-serif text-[1.75rem] leading-tight">{t("success.title")}</h1>
-              <p className="mx-auto mt-3 max-w-sm text-ink-2">
-                {t("success.body", { plan: names(plan) })}
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={goToDashboard}
-              className="mt-7 h-12 rounded-md bg-action px-8 text-[0.9375rem] font-semibold text-on-action hover:opacity-90"
-            >
-              {t("success.go")}
-            </button>
-          </section>
-        ) : (
+        {(
           <>
             <Stepper current={step} reachable={plan ? "payment" : "plan"} onGo={setStep} />
 
@@ -155,12 +102,7 @@ export function SubscribeFlow({ email, sandbox, intro }: { email: string; sandbo
                     <h1 id="pay-title" ref={heading} tabIndex={-1} className={H1}>
                       {t("pay.title")}
                     </h1>
-                    <PlanPayment
-                      key={plan}
-                      plan={plan}
-                      sandbox={sandbox}
-                      onPaid={() => setPaid(true)}
-                    />
+                    <RequestStep plan={plan} transfer={transfer} onSubmitted={() => router.refresh()} />
                     <button
                       type="button"
                       onClick={() => setStep("plan")}

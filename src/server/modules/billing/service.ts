@@ -149,3 +149,36 @@ export async function startUpgrade(auth: Session, input: UpgradeInput): Promise<
   });
   return { sessionId: session.id, plan, amount, renewalAmount: PLAN_PRICES[plan] * KZ, intro, transfer: transferInfo() };
 }
+
+/** The plan a store asked for and has not paid yet, or `null`. */
+export async function pendingRequestOf(storeId: string): Promise<{ plan: PlanKey; requestedAt: number } | null> {
+  const sub = await billingRepository.subscription(storeId);
+  return sub?.pending ? { plan: sub.plan, requestedAt: sub.requestedAt ?? 0 } : null;
+}
+
+/**
+ * The merchant chose a plan: the request is saved as a PENDING subscription (no access yet) with the plan asked for, and an
+ * administrator approves it once the payment arrived (`changeAccount`'s `approve`). Asking again replaces the plan asked for.
+ * Not allowed while a plan is active, or for an account that was switched off (only the team reactivates those). Owner only.
+ */
+export async function requestPlan(auth: Session, input: UpgradeInput): Promise<{ plan: PlanKey; requestedAt: number }> {
+  requireOwner(auth);
+  const { plan } = upgradeSchema.parse(input);
+  const current = await billingRepository.subscription(auth.storeId);
+  if (current?.suspended) throw new ApiError("forbidden");
+  if (await planOf(auth.storeId)) throw new ApiError("invalid_transition");
+  const requestedAt = Date.now();
+  await billingRepository.saveSubscription({
+    storeId: auth.storeId,
+    plan,
+    periodEnd: current?.periodEnd ?? 0,
+    startedAt: current?.startedAt ?? null,
+    periodsPaid: current?.periodsPaid ?? 0,
+    pending: true,
+    requestedAt,
+    suspended: false,
+    suspendedReason: null,
+    renewalNoticeFor: current?.renewalNoticeFor ?? null,
+  });
+  return { plan, requestedAt };
+}

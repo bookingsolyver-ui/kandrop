@@ -12,6 +12,10 @@ export interface SubscriptionRecord {
   startedAt: number | null;
   /** 30-day periods paid so far. 1 = still in the launch month; the next one is billed at the regular price. */
   periodsPaid: number;
+  /** The merchant asked for `plan` and has not paid: no access until an administrator approves it (`periodEnd` is 0). */
+  pending: boolean;
+  /** Epoch ms of the request. */
+  requestedAt: number | null;
   /** Switched off (period ran out, or by an administrator): no access until an administrator switches it on. */
   suspended: boolean;
   suspendedReason: "expired" | "admin" | null;

@@ -30,8 +30,8 @@ export interface SweepResult {
 
 /** Who needs a reminder and who has to be switched off, at `now`. Pure: reads the rows, changes nothing. */
 export function classify(subs: SubscriptionRecord[], now: number) {
-  const remind = subs.filter((s) => !s.suspended && s.periodEnd > now && s.periodEnd - now <= REMINDER_DAYS * DAY && s.renewalNoticeFor !== s.periodEnd);
-  const expire = subs.filter((s) => !s.suspended && s.periodEnd <= now);
+  const remind = subs.filter((s) => !s.pending && !s.suspended && s.periodEnd > now && s.periodEnd - now <= REMINDER_DAYS * DAY && s.renewalNoticeFor !== s.periodEnd);
+  const expire = subs.filter((s) => !s.pending && !s.suspended && s.periodEnd <= now);
   return { remind, expire };
 }
 
@@ -114,4 +114,30 @@ export async function changeAccount(storeId: string, action: "activate" | "deact
   const periodsPaid = extended ? sub.periodsPaid + 1 : sub.periodsPaid;
   await billingRepository.setSuspension(storeId, { suspended: false, reason: null, plan: target, ...(extended ? { periodEnd, periodsPaid } : {}) });
   return { suspended: false, periodEnd, periodsPaid, plan: target, extended };
+}
+
+/**
+ * Approves a merchant's request (or an account that has none) once the payment arrived: the subscription becomes active on `plan`
+ * for 30 days from now, the start date is recorded, one paid period is counted and the pending flag is cleared. Only for accounts
+ * that are pending or have no subscription yet; an account that is already active, or was switched off, has `activate` / `renew`.
+ */
+export async function approveRequest(storeId: string, plan: SubscriptionRecord["plan"], now = Date.now()): Promise<AccountChange | null> {
+  const current = await billingRepository.subscription(storeId);
+  if (current && !current.pending && !current.suspended && current.periodEnd > now) return null; // already active
+  if (current?.suspended) return null; // only `activate` / `renew` bring those back
+  const periodEnd = now + PERIOD_DAYS * DAY;
+  const periodsPaid = (current?.periodsPaid ?? 0) + 1;
+  await billingRepository.saveSubscription({
+    storeId,
+    plan,
+    periodEnd,
+    startedAt: current?.startedAt ?? now,
+    periodsPaid,
+    pending: false,
+    requestedAt: null,
+    suspended: false,
+    suspendedReason: null,
+    renewalNoticeFor: null,
+  });
+  return { suspended: false, periodEnd, periodsPaid, plan, extended: true };
 }

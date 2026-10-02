@@ -25,6 +25,7 @@ export const AUDIT_ACTIONS = [
   "subscription.activate",
   "subscription.deactivate",
   "subscription.renew",
+  "subscription.approve",
   "notification.maintenance",
 ] as const;
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];

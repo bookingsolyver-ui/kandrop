@@ -2029,6 +2029,28 @@
       "how": "Pour retrouver l’accès, payez le renouvellement et prévenez l’équipe. Le compte redevient actif dès qu’un administrateur l’active.",
       "contact": "Parler à l’équipe",
       "logout": "Se déconnecter"
+    },
+    "request": {
+      "intro": "Vous demandez l’offre {plan}. La demande reste en attente jusqu’à ce que notre équipe confirme le paiement : effectuez le virement et envoyez le justificatif.",
+      "note": "Après l’envoi, cette page affiche l’état de la demande. L’équipe active le compte dès que le paiement est confirmé.",
+      "submit": "Soumettre la demande de l’offre {plan}",
+      "submitting": "Envoi…",
+      "error": "La demande n’a pas pu être soumise. Réessayez."
+    },
+    "pending": {
+      "eyebrow": "Demande en attente",
+      "title": "Demande de l’offre {plan} soumise",
+      "body": "Votre demande pour l’offre {plan} a été soumise. Veuillez envoyer le justificatif de paiement. Votre compte sera activé sous peu par notre équipe.",
+      "sendProof": "Envoyer le justificatif",
+      "logout": "Se déconnecter",
+      "signedIn": "Connecté en tant que {email}"
+    },
+    "bank": {
+      "title": "Coordonnées de paiement",
+      "bank": "Banque",
+      "holder": "Titulaire",
+      "iban": "IBAN",
+      "example": "Coordonnées d’exemple (mode test) : ne les utilisez pas pour envoyer de l’argent."
     }
   },
   "Support": {
@@ -3204,7 +3226,8 @@
       "subtitle": "Offre, échéance et statut de chaque boutique. Activez ou suspendez l’accès d’un compte en un clic.",
       "tabs": {
         "accounts": "Comptes",
-        "deadlines": "Échéances"
+        "deadlines": "Échéances",
+        "approvals": "Approbations en attente"
       },
       "search": "Rechercher par boutique, nom ou e-mail…",
       "filters": {
@@ -3218,7 +3241,9 @@
         "plan": "Offre",
         "expires": "Expire le",
         "state": "Statut",
-        "periods": "Périodes payées"
+        "periods": "Périodes payées",
+        "requestedPlan": "Offre demandée",
+        "requestedAt": "Demandée le"
       },
       "plan": {
         "starter": "Starter",
@@ -3293,8 +3318,15 @@
         "noteActivate": "Compte dont la période est terminée : une nouvelle période de 30 jours commence maintenant. S’il lui restait du temps, il est seulement activé.",
         "noteRenew": "Ajoute 30 jours à la fin actuelle de la période (ou à partir de maintenant si elle est déjà terminée).",
         "cancel": "Annuler",
-        "confirm": "Confirmer et envoyer l’e-mail"
-      }
+        "confirm": "Confirmer et envoyer l’e-mail",
+        "titleApprove": "Approuver la demande de {store}",
+        "noteApprove": "Le compte devient actif sur l’offre choisie pendant 30 jours à partir de maintenant, et le marchand reçoit l’e-mail de paiement confirmé.",
+        "confirmApprove": "Approuver, activer le compte et envoyer l’e-mail",
+        "planApprove": "Offre payée (la demande est présélectionnée)"
+      },
+      "approve": "Approuver / Confirmer le paiement",
+      "requested": "A demandé {plan}",
+      "noApprovals": "Aucune demande en attente d’approbation."
     }
   },
   "Supplier": {

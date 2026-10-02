@@ -2029,6 +2029,28 @@
       "how": "Para voltar a ter acesso, faça o pagamento da renovação e avise a equipa. A conta fica ativa assim que um administrador a ativar.",
       "contact": "Falar com a equipa",
       "logout": "Terminar sessão"
+    },
+    "request": {
+      "intro": "Vai pedir o Plano {plan}. O pedido fica pendente até a nossa equipa confirmar o pagamento: faça a transferência e envie o comprovativo.",
+      "note": "Depois de submeter, vê aqui o estado do pedido. A conta é ativada pela equipa assim que o pagamento for confirmado.",
+      "submit": "Submeter pedido do Plano {plan}",
+      "submitting": "A submeter…",
+      "error": "Não foi possível submeter o pedido. Tente outra vez."
+    },
+    "pending": {
+      "eyebrow": "Pedido pendente",
+      "title": "Pedido do Plano {plan} submetido",
+      "body": "O seu pedido para o Plano {plan} foi submetido. Por favor, envie o comprovativo de pagamento. A sua conta será ativada brevemente pela nossa equipa.",
+      "sendProof": "Enviar comprovativo",
+      "logout": "Terminar sessão",
+      "signedIn": "Sessão iniciada como {email}"
+    },
+    "bank": {
+      "title": "Dados para o pagamento",
+      "bank": "Banco",
+      "holder": "Titular",
+      "iban": "IBAN",
+      "example": "Dados de exemplo (modo de teste): não os use para transferir dinheiro."
     }
   },
   "Support": {
@@ -3204,7 +3226,8 @@
       "subtitle": "Plano, prazo e estado de cada loja. Liga ou suspende o acesso de uma conta com um clique.",
       "tabs": {
         "accounts": "Contas",
-        "deadlines": "Prazos"
+        "deadlines": "Prazos",
+        "approvals": "Aprovações pendentes"
       },
       "search": "Procurar por loja, nome ou e-mail…",
       "filters": {
@@ -3218,7 +3241,9 @@
         "plan": "Plano",
         "expires": "Expira em",
         "state": "Estado",
-        "periods": "Períodos pagos"
+        "periods": "Períodos pagos",
+        "requestedPlan": "Plano pedido",
+        "requestedAt": "Pedido em"
       },
       "plan": {
         "starter": "Starter",
@@ -3293,8 +3318,15 @@
         "noteActivate": "Conta com prazo terminado: abre um novo período de 30 dias a partir de agora. Se ainda tinha tempo, apenas é ligada.",
         "noteRenew": "Acrescenta 30 dias ao fim atual do prazo (ou a partir de agora, se já terminou).",
         "cancel": "Cancelar",
-        "confirm": "Confirmar e enviar e-mail"
-      }
+        "confirm": "Confirmar e enviar e-mail",
+        "titleApprove": "Aprovar pedido de {store}",
+        "noteApprove": "A conta fica ativa no plano escolhido durante 30 dias a partir de agora, e o lojista recebe o e-mail de pagamento confirmado.",
+        "confirmApprove": "Aprovar, Ativar Conta e Enviar E-mail",
+        "planApprove": "Plano pago (o pedido vem pré-selecionado)"
+      },
+      "approve": "Aprovar / Confirmar Pagamento",
+      "requested": "Pediu {plan}",
+      "noApprovals": "Não há pedidos à espera de aprovação."
     }
   },
   "Supplier": {

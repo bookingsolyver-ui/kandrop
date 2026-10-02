@@ -87,6 +87,9 @@ export interface SubscriptionRow {
   owner: string;
   email: string;
   plan: "starter" | "pro" | null;
+  /** The plan a merchant asked for and has not paid (waiting for approval), and when. */
+  requestedPlan: "starter" | "pro" | null;
+  requestedAt: number | null;
   /** `inactive` = switched off or period ran out; `pending` = never paid. */
   state: SubscriptionState;
   /** Why an inactive account is inactive. */

@@ -1,7 +1,8 @@
+import { PendingApproval } from "@/components/subscribe/PendingApproval";
 import { SuspendedNotice } from "@/components/subscribe/SuspendedNotice";
 import { isSuspended } from "@/server/modules/billing/plan";
-import { orderPaymentInfo } from "@/server/modules/payments/transfer";
-import { introEligible } from "@/server/modules/billing/service";
+import { orderPaymentInfo, transferInfo } from "@/server/modules/payments/transfer";
+import { introEligible, pendingRequestOf } from "@/server/modules/billing/service";
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -71,7 +72,13 @@ export default async function CheckoutPage({ params, searchParams }: Props) {
       const href = whatsapp ? `https://wa.me/244${whatsapp}` : email ? `mailto:${email}` : null;
       return <SuspendedNotice email={me.email} contactHref={href} contactLabel={null} />;
     }
-    return <SubscribeFlow email={me.email} sandbox={sandbox} intro={await introEligible(current!.storeId)} />;
+    const transfer = transferInfo();
+    const request = await pendingRequestOf(current!.storeId);
+    if (request) {
+      const href = transfer ? `https://wa.me/244${transfer.whatsapp}` : getEnv().SUPPORT_EMAIL ? `mailto:${getEnv().SUPPORT_EMAIL}` : null;
+      return <PendingApproval email={me.email} plan={request.plan} transfer={transfer} contactHref={href} />;
+    }
+    return <SubscribeFlow email={me.email} intro={await introEligible(current!.storeId)} transfer={transfer} />;
   }
 
   if (!session) {
