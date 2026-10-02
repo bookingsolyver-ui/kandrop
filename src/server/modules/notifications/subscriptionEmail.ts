@@ -83,12 +83,14 @@ export interface PaymentSuccessData {
   to: string;
   storeName: string;
   planName: string;
+  /** Minor units: what the confirmed period costs. */
+  amount: number;
   /** Epoch ms of the new end of the paid period. */
   newPeriodEnd: number;
 }
 
 export async function renderPaymentSuccessEmail(d: PaymentSuccessData) {
-  const element = KandropPaymentSuccessEmail({ shopName: d.storeName, planName: d.planName, newExpirationDate: dayOf(d.newPeriodEnd) });
+  const element = KandropPaymentSuccessEmail({ shopName: d.storeName, planName: d.planName, amount: kz(d.amount), newExpirationDate: dayOf(d.newPeriodEnd) });
   const [html, text] = await Promise.all([render(element), render(element, { plainText: true })]);
   return { subject: "Pagamento confirmado: a sua conta Kandrop está ativa", html, text };
 }

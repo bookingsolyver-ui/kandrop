@@ -3283,6 +3283,17 @@
         "reportBanned": "{count} conta(s) banida(s) não foram incluídas.",
         "reportFailures": "Endereços que falharam (motivo):",
         "close": "Fechar"
+      },
+      "confirm": {
+        "titleActivate": "Confirmar pagamento de {store}",
+        "titleRenew": "Registar renovação de {store}",
+        "intro": "Escolhe o plano que o lojista pagou. A conta passa para esse plano e o lojista recebe o e-mail de confirmação.",
+        "plan": "Plano pago",
+        "perMonth": "{price} / mês",
+        "noteActivate": "Conta com prazo terminado: abre um novo período de 30 dias a partir de agora. Se ainda tinha tempo, apenas é ligada.",
+        "noteRenew": "Acrescenta 30 dias ao fim atual do prazo (ou a partir de agora, se já terminou).",
+        "cancel": "Cancelar",
+        "confirm": "Confirmar e enviar e-mail"
       }
     }
   },

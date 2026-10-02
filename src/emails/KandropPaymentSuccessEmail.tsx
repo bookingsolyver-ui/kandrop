@@ -4,6 +4,8 @@ import { DarkModeStyles, EMAIL_TAILWIND, EmailLogo } from "./parts";
 export interface KandropPaymentSuccessEmailProps {
   shopName: string;
   planName: string;
+  /** Already formatted, e.g. "8 799 Kz": the value of the confirmed period. */
+  amount: string;
   /** Already formatted for the reader, e.g. "4 de novembro de 2026". */
   newExpirationDate: string;
   /** Where the button goes: the dashboard (through the login). */
@@ -11,7 +13,7 @@ export interface KandropPaymentSuccessEmailProps {
 }
 
 /** Sent the moment an administrator confirms a payment and activates (or renews) an account. */
-export function KandropPaymentSuccessEmail({ shopName, planName, newExpirationDate, ctaUrl = "https://kandrop.com/login" }: KandropPaymentSuccessEmailProps) {
+export function KandropPaymentSuccessEmail({ shopName, planName, amount, newExpirationDate, ctaUrl = "https://kandrop.com/login" }: KandropPaymentSuccessEmailProps) {
   return (
     <Html lang="pt">
       <Head>
@@ -36,6 +38,7 @@ export function KandropPaymentSuccessEmail({ shopName, planName, newExpirationDa
               <Section className="mb-5 dm-box rounded-xl bg-[#fff0e6] px-6 py-5 text-center">
                 <Text className="m-0 text-[11px] font-bold tracking-[0.18em] text-brand-orange uppercase">Pagamento confirmado com sucesso</Text>
                 <Text className="dm-title m-0 mt-1 text-[22px] leading-tight font-extrabold text-brand-black">Plano {planName}</Text>
+                <Text className="dm-text m-0 mt-1 text-[14px] text-[#333333]">Valor: {amount}</Text>
                 <Text className="m-0 mt-3 text-[11px] font-bold tracking-[0.18em] text-brand-orange uppercase">Ativo até</Text>
                 <Text className="dm-title m-0 mt-1 text-[20px] font-extrabold text-brand-black">{newExpirationDate}</Text>
               </Section>
@@ -66,6 +69,7 @@ export function KandropPaymentSuccessEmail({ shopName, planName, newExpirationDa
 KandropPaymentSuccessEmail.PreviewProps = {
   shopName: "Loja Exemplo",
   planName: "Starter",
+  amount: "8 799 Kz",
   newExpirationDate: "4 de novembro de 2026",
 } satisfies KandropPaymentSuccessEmailProps;
 

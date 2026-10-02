@@ -3283,6 +3283,17 @@
         "reportBanned": "{count} compte(s) banni(s) non inclus.",
         "reportFailures": "Adresses en échec (motif) :",
         "close": "Fermer"
+      },
+      "confirm": {
+        "titleActivate": "Confirmer le paiement de {store}",
+        "titleRenew": "Enregistrer le renouvellement de {store}",
+        "intro": "Choisissez l’offre payée par le marchand. Le compte passe à cette offre et le marchand reçoit l’e-mail de confirmation.",
+        "plan": "Offre payée",
+        "perMonth": "{price} / mois",
+        "noteActivate": "Compte dont la période est terminée : une nouvelle période de 30 jours commence maintenant. S’il lui restait du temps, il est seulement activé.",
+        "noteRenew": "Ajoute 30 jours à la fin actuelle de la période (ou à partir de maintenant si elle est déjà terminée).",
+        "cancel": "Annuler",
+        "confirm": "Confirmer et envoyer l’e-mail"
       }
     }
   },

@@ -1,5 +1,6 @@
 import { db, must, rows } from "@/server/db/client";
 import { PLAN_KEYS } from "@/server/modules/plan/limits";
+import type { PaidPlan } from "@/shared/billing/schemas";
 import type { ChargeRecord, SubscriptionRecord } from "./schema";
 
 /**
@@ -85,7 +86,7 @@ export const billingRepository = {
   },
 
   /** Switches an account off or on (and, when switching on, may also give it a new period end). */
-  async setSuspension(storeId: string, patch: { suspended: boolean; reason: "expired" | "admin" | null; periodEnd?: number; periodsPaid?: number }): Promise<void> {
+  async setSuspension(storeId: string, patch: { suspended: boolean; reason: "expired" | "admin" | null; periodEnd?: number; periodsPaid?: number; plan?: PaidPlan }): Promise<void> {
     must(
       "subscriptions.suspend",
       await db()
@@ -96,6 +97,7 @@ export const billingRepository = {
           suspended_at: patch.suspended ? Date.now() : null,
           ...(patch.periodEnd !== undefined ? { period_end: patch.periodEnd } : {}),
           ...(patch.periodsPaid !== undefined ? { periods_paid: patch.periodsPaid } : {}),
+          ...(patch.plan !== undefined ? { plan: patch.plan } : {}),
         })
         .eq("store_id", storeId)
     );

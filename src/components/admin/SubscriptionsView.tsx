@@ -8,7 +8,8 @@ import { ToastProvider, useToast } from "@/components/ui/Toast";
 import { useRouter } from "@/i18n/navigation";
 import type { SubscriptionRow, SubscriptionState } from "@/shared/admin/types";
 import { MaintenanceNotice } from "./MaintenanceNotice";
-import { Badge, Pager, PageHeader, card, fold, usePager } from "./ui";
+import { PLAN_KEYS, PLAN_PRICES, type PlanKey } from "@/server/modules/plan/limits";
+import { Badge, Modal, Pager, PageHeader, card, fold, usePager } from "./ui";
 
 const TONE = { active: "success", inactive: "danger", pending: "warn" } as const;
 const FILTERS: Array<"all" | SubscriptionState> = ["all", "active", "inactive", "pending"];
@@ -24,7 +25,7 @@ type Bucket = (typeof BUCKETS)[number];
 const bucketOf = (days: number): Bucket => (days <= 0 ? "expired" : days <= 3 ? "soon" : days <= 7 ? "week" : days <= 30 ? "month" : "later");
 const BUCKET_TONE = { expired: "danger", soon: "danger", week: "warn", month: "brand", later: "neutral" } as const;
 
-interface ChangeResult { suspended: boolean; periodEnd: number; periodsPaid: number; extended: boolean; emailSent: boolean }
+interface ChangeResult { plan: PlanKey; suspended: boolean; periodEnd: number; periodsPaid: number; extended: boolean; emailSent: boolean }
 
 function Body({ rows: fetched }: { rows: SubscriptionRow[] }) {
   const t = useTranslations("Admin.subscriptions");
@@ -36,6 +37,9 @@ function Body({ rows: fetched }: { rows: SubscriptionRow[] }) {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>("all");
   const [busy, setBusy] = useState<string | null>(null);
+  // The dialog that confirms a payment: which account, which action, and the plan it paid for.
+  const [confirming, setConfirming] = useState<{ row: SubscriptionRow; action: "activate" | "renew" } | null>(null);
+  const [chosenPlan, setChosenPlan] = useState<PlanKey>("starter");
   // What the administrator just changed, applied over the fetched rows at once (the refresh below then makes it official).
   const [changed, setChanged] = useState<Record<string, Partial<SubscriptionRow>>>({});
   const rows = useMemo(() => fetched.map((r) => (changed[r.storeId] ? { ...r, ...changed[r.storeId] } : r)), [fetched, changed]);
@@ -52,16 +56,17 @@ function Body({ rows: fetched }: { rows: SubscriptionRow[] }) {
     [withDeadline],
   );
 
-  const act = async (row: SubscriptionRow, action: "activate" | "deactivate" | "renew") => {
+  const act = async (row: SubscriptionRow, action: "activate" | "deactivate" | "renew", plan?: PlanKey) => {
     setBusy(row.storeId);
     try {
-      const res = await fetch(`/api/admin/subscriptions/${row.storeId}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action }) });
+      const res = await fetch(`/api/admin/subscriptions/${row.storeId}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action, ...(plan ? { plan } : {}) }) });
       if (!res.ok) return void toast({ message: t("failed") });
       const out = ((await res.json()) as { data: ChangeResult }).data;
       const daysLeft = Math.ceil((out.periodEnd - Date.now()) / 86_400_000);
       setChanged((prev) => ({
         ...prev,
         [row.storeId]: {
+          plan: out.plan,
           state: out.suspended || daysLeft <= 0 ? "inactive" : "active",
           reason: out.suspended ? "admin" : daysLeft <= 0 ? "expired" : null,
           periodEnd: out.periodEnd,
@@ -80,7 +85,13 @@ function Body({ rows: fetched }: { rows: SubscriptionRow[] }) {
       router.refresh();
     } finally {
       setBusy(null);
+      setConfirming(null);
     }
+  };
+
+  const askPayment = (row: SubscriptionRow, action: "activate" | "renew") => {
+    setChosenPlan(row.plan ?? "starter");
+    setConfirming({ row, action });
   };
 
   const daysText = (d: number) => (d < 0 ? t("daysAgo", { count: -d }) : d === 0 ? t("today") : t("inDays", { count: d }));
@@ -156,13 +167,13 @@ function Body({ rows: fetched }: { rows: SubscriptionRow[] }) {
                           <span className="text-[12px] text-[var(--ink-500)]">{t("neverPaid")}</span>
                         ) : r.state === "active" ? (
                           <div className="flex justify-end gap-2">
-                            <button type="button" disabled={busy === r.storeId} onClick={() => act(r, "renew")}
+                            <button type="button" disabled={busy === r.storeId} onClick={() => askPayment(r, "renew")}
                               className="inline-flex h-9 items-center rounded-full border border-[var(--ink-200)] bg-white px-4 text-[13px] font-semibold text-[var(--ink-900)] hover:border-[var(--ink-300)] disabled:opacity-50">{busy === r.storeId ? t("processing") : t("renew")}</button>
                             <button type="button" disabled={busy === r.storeId} onClick={() => act(r, "deactivate")}
                               className="inline-flex h-9 items-center rounded-full border border-[var(--ink-200)] bg-white px-4 text-[13px] font-semibold text-[var(--kai-danger)] hover:border-[var(--kai-danger)] disabled:opacity-50">{t("deactivate")}</button>
                           </div>
                         ) : (
-                          <button type="button" disabled={busy === r.storeId} onClick={() => act(r, "activate")}
+                          <button type="button" disabled={busy === r.storeId} onClick={() => askPayment(r, "activate")}
                             className="inline-flex h-9 items-center rounded-full bg-[var(--ink-900)] px-4 text-[13px] font-semibold text-white hover:opacity-90 disabled:opacity-50">{busy === r.storeId ? t("processing") : t("activate")}</button>
                         )}
                       </td>
@@ -206,6 +217,29 @@ function Body({ rows: fetched }: { rows: SubscriptionRow[] }) {
           ))}
         </div>
       )}
+      <Modal open={confirming !== null} onClose={() => !busy && setConfirming(null)} title={confirming ? t(confirming.action === "renew" ? "confirm.titleRenew" : "confirm.titleActivate", { store: confirming.row.store }) : ""}>
+        {confirming && (
+          <div>
+            <p className="text-[13px] text-[var(--ink-600)]">{t("confirm.intro")}</p>
+            <label className="mt-4 block text-[13px] font-semibold">
+              {t("confirm.plan")}
+              <select value={chosenPlan} onChange={(e) => setChosenPlan(e.target.value as PlanKey)} disabled={busy !== null}
+                className="mt-1.5 h-11 w-full rounded-xl border border-border bg-white px-3 text-sm outline-none focus-visible:border-primary/40 focus-visible:ring-2 focus-visible:ring-primary/20">
+                {PLAN_KEYS.map((p) => (
+                  <option key={p} value={p}>{t(`plan.${p}`)} · {t("confirm.perMonth", { price: f.money(PLAN_PRICES[p] * 100) })}</option>
+                ))}
+              </select>
+            </label>
+            <p className="mt-3 rounded-xl bg-[var(--ink-50)] px-3.5 py-2.5 text-[13px] text-[var(--ink-700)]">{t(confirming.action === "renew" ? "confirm.noteRenew" : "confirm.noteActivate")}</p>
+            <div className="mt-5 flex justify-end gap-2">
+              <button type="button" disabled={busy !== null} onClick={() => setConfirming(null)} className="inline-flex h-10 items-center rounded-full border border-[var(--ink-200)] bg-white px-4 text-[13px] font-semibold disabled:opacity-50">{t("confirm.cancel")}</button>
+              <button type="button" disabled={busy !== null} onClick={() => act(confirming.row, confirming.action, chosenPlan)} className="inline-flex h-10 items-center rounded-full bg-[var(--ink-900)] px-5 text-[13px] font-semibold text-white hover:opacity-90 disabled:opacity-50">
+                {busy !== null ? t("processing") : t("confirm.confirm")}
+              </button>
+            </div>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 }

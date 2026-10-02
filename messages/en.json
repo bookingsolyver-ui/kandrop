@@ -3283,6 +3283,17 @@
         "reportBanned": "{count} banned account(s) were not included.",
         "reportFailures": "Addresses that failed (reason):",
         "close": "Close"
+      },
+      "confirm": {
+        "titleActivate": "Confirm payment for {store}",
+        "titleRenew": "Record renewal for {store}",
+        "intro": "Choose the plan the merchant paid for. The account moves to that plan and the merchant gets the confirmation e-mail.",
+        "plan": "Plan paid",
+        "perMonth": "{price} / month",
+        "noteActivate": "Account whose period ended: a new 30-day period starts now. If it still had time left, it is only switched on.",
+        "noteRenew": "Adds 30 days to the current end of the period (or from now, if it already ended).",
+        "cancel": "Cancel",
+        "confirm": "Confirm and send e-mail"
       }
     }
   },

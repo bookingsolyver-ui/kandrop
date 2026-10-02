@@ -96,20 +96,22 @@ export interface AccountChange {
  *  - `deactivate`: the account loses the dashboard at its next request.
  *  - `activate`: the account is back. If its paid period had already ended, a new 30-day period starts now (the administrator
  *    confirms the payment arrived), counted as one more paid period; if time was left (it was switched off by hand) nothing is added.
+ *  - Both take the plan the administrator picked in the dialog; the account is moved to it.
  *  - `renew`: the administrator confirms a renewal payment: 30 days are added after the current end (or from now when it already ended)
  *    and the account is switched on.
  */
-export async function changeAccount(storeId: string, action: "activate" | "deactivate" | "renew", now = Date.now()): Promise<AccountChange | null> {
+export async function changeAccount(storeId: string, action: "activate" | "deactivate" | "renew", plan?: SubscriptionRecord["plan"], now = Date.now()): Promise<AccountChange | null> {
   const sub = await billingRepository.subscription(storeId);
   if (!sub) return null; // never paid: nothing to switch
   if (action === "deactivate") {
     await billingRepository.setSuspension(storeId, { suspended: true, reason: "admin" });
     return { suspended: true, periodEnd: sub.periodEnd, periodsPaid: sub.periodsPaid, plan: sub.plan, extended: false };
   }
+  const target = plan ?? sub.plan; // the plan the administrator picked (the one the merchant paid for), else the one it was on
   const lapsed = sub.periodEnd <= now;
   const extended = action === "renew" || lapsed;
   const periodEnd = extended ? Math.max(sub.periodEnd, now) + PERIOD_DAYS * DAY : sub.periodEnd;
   const periodsPaid = extended ? sub.periodsPaid + 1 : sub.periodsPaid;
-  await billingRepository.setSuspension(storeId, { suspended: false, reason: null, ...(extended ? { periodEnd, periodsPaid } : {}) });
-  return { suspended: false, periodEnd, periodsPaid, plan: sub.plan, extended };
+  await billingRepository.setSuspension(storeId, { suspended: false, reason: null, plan: target, ...(extended ? { periodEnd, periodsPaid } : {}) });
+  return { suspended: false, periodEnd, periodsPaid, plan: target, extended };
 }
