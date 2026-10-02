@@ -4,6 +4,11 @@ import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { useFormatters } from "@/components/dashboard/useFormatters";
 import {
+  DEFAULT_DELIVERY_CITY,
+  DELIVERY_CITIES,
+  SHIPPING_RATES,
+} from "@/shared/fulfilment/schemas";
+import {
   SHIPPING_BEARERS,
   breakEvenPrice,
   computeMargin,
@@ -40,7 +45,17 @@ export function PricingPanel({
       : null;
   const loss = margin !== null && margin.amount < 0;
   const merchantPays = shippingBearer === "merchant";
-  const breakEven = cost !== null ? breakEvenPrice(cost, shippingBearer) : null;
+  // What is shown is the Luanda case (the common one); with the freight on the merchant each province has
+  // its own cost and break-even, and the warning follows the worst of them.
+  const worstCity = DELIVERY_CITIES.reduce((a, b) =>
+    SHIPPING_RATES[b] > SHIPPING_RATES[a] ? b : a
+  );
+  const belowBreakEven =
+    merchantPays &&
+    cost !== null &&
+    price !== null &&
+    price > 0 &&
+    price < breakEvenPrice(cost, shippingBearer, worstCity);
 
   return (
     <section
@@ -112,15 +127,25 @@ export function PricingPanel({
             {merchantPays && (
               <>
                 <dt className="mt-4 text-[13px] text-ink-muted">{t("shippingCost")}</dt>
-                <dd className="font-medium tabular-nums">
-                  −{f.money(merchantShippingCost(shippingBearer))}
-                </dd>
+                {DELIVERY_CITIES.map((city) => (
+                  <dd key={city} className="flex justify-between gap-4 font-medium tabular-nums">
+                    <span className="text-ink-muted">{city}</span>
+                    <span>−{f.money(merchantShippingCost(shippingBearer, city))}</span>
+                  </dd>
+                ))}
               </>
             )}
-            {breakEven !== null && (
+            {cost !== null && (
               <>
                 <dt className="mt-4 text-[13px] text-ink-muted">{t("breakEven")}</dt>
-                <dd className="font-medium tabular-nums">{f.money(breakEven)}</dd>
+                {(merchantPays ? DELIVERY_CITIES : ([DEFAULT_DELIVERY_CITY] as const)).map(
+                  (city) => (
+                    <dd key={city} className="flex justify-between gap-4 font-medium tabular-nums">
+                      {merchantPays && <span className="text-ink-muted">{city}</span>}
+                      <span>{f.money(breakEvenPrice(cost, shippingBearer, city))}</span>
+                    </dd>
+                  )
+                )}
               </>
             )}
           </dl>
@@ -128,7 +153,7 @@ export function PricingPanel({
           <p className="text-[13px] leading-snug text-ink-muted">{t("empty")}</p>
         )}
 
-        {loss && (
+        {(loss || belowBreakEven) && (
           <p
             role="status"
             className="mt-4 flex items-start gap-2 text-[13px] leading-snug text-down"
@@ -137,7 +162,10 @@ export function PricingPanel({
               <AlertIcon />
             </span>
             {merchantPays && cost !== null
-              ? t("negativeShipping", { price: f.money(breakEvenPrice(cost, shippingBearer)) })
+              ? t("negativeShipping", {
+                  price: f.money(breakEvenPrice(cost, shippingBearer, worstCity)),
+                  city: worstCity,
+                })
               : t("negative")}
           </p>
         )}

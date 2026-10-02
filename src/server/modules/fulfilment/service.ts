@@ -125,7 +125,10 @@ export interface PlaceOrderInput {
   /** The store product that is sold. */
   productId: string;
   item: { name: string; quantity: number; unitAmount: number };
+  /** What the SHOPPER pays for delivery (0 when the merchant bears it). */
   shippingAmount: number;
+  /** Delivery the MERCHANT absorbs: it comes out of their share, not the shopper's total. */
+  merchantShipping?: number;
   buyer: { customer: { name: string; phone: string; email?: string }; address: { street: string; city: string; province: string; reference?: string; deliveryDate?: string } };
   /** An ALREADY VALIDATED coupon (see `coupons/service.ts`): its discount comes out of the merchant's margin only. */
   coupon?: { code: string; discount: number };
@@ -192,7 +195,7 @@ export async function placeOrder(input: PlaceOrderInput): Promise<{ order: Order
   const sp = must("supplier_products.forOrder", await db().from("supplier_products").select("id,supplier_id,name,cost_price").eq("id", link.supplier_product_id).maybeSingle());
   if (!sp) return { order, line: null };
 
-  const split = splitSale(input.item.unitAmount, Number(sp.cost_price), input.item.quantity, getEnv().COMMISSION_BPS, input.coupon?.discount ?? 0);
+  const split = splitSale(input.item.unitAmount, Number(sp.cost_price), input.item.quantity, getEnv().COMMISSION_BPS, input.coupon?.discount ?? 0, input.merchantShipping ?? 0);
   const { data: lineRow, error } = await db().from("supplier_orders").insert({
     order_id: order.id, order_number: order.number, store_id: input.storeId, store_name: input.storeName,
     supplier_id: sp.supplier_id, supplier_product_id: sp.id, product_title: input.item.name,

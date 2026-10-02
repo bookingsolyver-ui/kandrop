@@ -10,8 +10,8 @@ import { couponRepository } from "@/server/modules/coupons/repository";
 import { evaluateCoupon } from "@/server/modules/coupons/math";
 import { placeOrder, supplierStockFor, unitCostFor } from "@/server/modules/fulfilment/service";
 import { CASH_ON_DELIVERY, DEFAULT_ORDER_PAYMENT_PROVIDER } from "@/shared/payments/orderPayment";
-import { buyerSchema } from "@/shared/fulfilment/schemas";
-import { offerOf, stockState } from "@/shared/products/schemas";
+import { SHIPPING_RATES, buyerSchema } from "@/shared/fulfilment/schemas";
+import { merchantShippingCost, offerOf, stockState } from "@/shared/products/schemas";
 import type { StorefrontProduct } from "./schema";
 
 /** A product is public only while it is active: drafts and archived ones are "not found". */
@@ -37,6 +37,7 @@ export async function getStorefrontProduct(slug: string): Promise<StorefrontProd
     description: p.description,
     storeName: await storeNameOf(p.storeId),
     metaPixelId: await storeRepository.metaPixelOf(p.storeId),
+    shipping: { bearer: p.shippingBearer, rates: SHIPPING_RATES },
     support: await storeRepository.supportOf(p.storeId),
     currency: "AOA",
     images: p.images.map((image) => ({
@@ -101,8 +102,9 @@ export async function placeStorefrontOrder(slug: string, rawBuyer: unknown): Pro
     storeId: p.storeId,
     storeName: await storeNameOf(p.storeId),
     productId: p.id,
-    // The store has no shipping rates yet, so none is added (see docs/ARCHITECTURE.md).
-    shippingAmount: 0,
+    // The fee follows the province the shopper picked (validated above): theirs to pay, or absorbed by the merchant.
+    shippingAmount: p.shippingBearer === "customer" ? SHIPPING_RATES[buyer.province] : 0,
+    merchantShipping: merchantShippingCost(p.shippingBearer, buyer.province),
     item: { name: p.title, quantity: 1, unitAmount: offerOf(p, Date.now()).price },
     buyer: { customer: { name: buyer.name, phone: buyer.phone, email: buyer.email }, address: { street: buyer.street, city: buyer.city, province: buyer.province, reference: buyer.reference, deliveryDate: buyer.deliveryDate } },
     coupon: coupon ? { code: coupon.code, discount: coupon.discount } : undefined,

@@ -91,7 +91,10 @@ export function CheckoutView({ product: p, invalid, couponRejected, days, today 
   };
   const removeCoupon = () => { setValues((v) => ({ ...v, coupon: "" })); setCouponInput(""); setDiscount(0); };
   const price = money(p.price);
-  const finalPrice = money(p.price - discount);
+  /** The fee for the chosen province, when the shopper pays it; the server charges the same table. */
+  const province = DELIVERY_CITIES.find((c) => c === values.province);
+  const shippingFee = p.shipping.bearer === "customer" && province ? p.shipping.rates[province] : 0;
+  const finalPrice = money(p.price - discount + shippingFee);
   /** `Hoje` / `Amanhã` / `Sáb`, then `3 out`: the day cards' two lines. Days are UTC calendar days, so server and browser agree. */
   const dayLabel = (iso: string) => {
     const at = Date.parse(`${iso}T00:00:00Z`);
@@ -277,7 +280,7 @@ export function CheckoutView({ product: p, invalid, couponRejected, days, today 
             <dl className="mt-4 space-y-2 border-t border-line pt-4 text-sm">
               <div className="flex justify-between gap-4"><dt className="text-ink-2">{t("summary.subtotal")}</dt><dd className="tabular-nums">{price}</dd></div>
               {discount > 0 && <div className="flex justify-between gap-4"><dt className="text-ink-2">{t("coupon.line", { code: values.coupon })}</dt><dd className="tabular-nums text-up">-{money(discount)}</dd></div>}
-              <div className="flex justify-between gap-4"><dt className="text-ink-2">{t("summary.shipping")}</dt><dd className="tabular-nums">{money(0)}</dd></div>
+              <div className="flex justify-between gap-4"><dt className="text-ink-2">{t("summary.shipping")}</dt><dd className="tabular-nums">{p.shipping.bearer === "merchant" ? t("summary.shippingFree") : province ? money(shippingFee) : t("summary.shippingPending")}</dd></div>
               <div className="flex justify-between gap-4 border-t border-line pt-3 text-base font-extrabold"><dt>{t("summary.total")}</dt><dd className="tabular-nums">{finalPrice}</dd></div>
             </dl>
           </section>

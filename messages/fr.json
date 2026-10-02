@@ -409,7 +409,7 @@
         "negative": "Le prix de vente est inférieur au coût : chaque vente est à perte.",
         "shippingCost": "Livraison à votre charge (estimée)",
         "breakEven": "Seuil de rentabilité",
-        "negativeShipping": "Avec la livraison à votre charge, vendre sous {price} est à perte : le prix de vente ne couvre pas le coût et la livraison.",
+        "negativeShipping": "Avec la livraison à votre charge, vendre sous {price} est à perte à {city} : le prix de vente ne couvre pas le coût et la livraison.",
         "shipping": {
           "title": "Qui paie la livraison ?",
           "hint": "Choisissez comment la livraison à Luanda est payée. La marge ci-dessous se met à jour selon votre choix.",
@@ -3751,7 +3751,9 @@
       "value": "Prix : {price}",
       "subtotal": "Sous-total",
       "shipping": "Livraison",
-      "total": "Montant final"
+      "total": "Montant final",
+      "shippingFree": "Gratuite",
+      "shippingPending": "Choisissez la province"
     },
     "coupon": {
       "toggle": "Ajouter un coupon",

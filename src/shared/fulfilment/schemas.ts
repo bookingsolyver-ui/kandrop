@@ -19,6 +19,12 @@ export const canAdvanceLogistics = (from: LogisticsStatus, to: LogisticsStatus) 
 
 /** First phase of the operation: Kandrop delivers ONLY in these two places (the "Cidade" of the checkout). */
 export const DELIVERY_CITIES = ["Luanda", "Bengo"] as const;
+export type DeliveryCity = (typeof DELIVERY_CITIES)[number];
+
+/** THE delivery fee per province, minor units (Luanda 3 000 Kz, Bengo 5 000 Kz). The server charges it; the screens only show it. */
+export const SHIPPING_RATES: Record<DeliveryCity, number> = { Luanda: 300_000, Bengo: 500_000 };
+/** The province used to estimate a merchant's margin before any buyer has chosen one: the most common. */
+export const DEFAULT_DELIVERY_CITY: DeliveryCity = "Luanda";
 
 /** What the buyer types on the product page. Messages are codes: `Storefront.buy.validation.<code>`. */
 const digits = (s: string) => s.replace(/[\s.-]/g, "");

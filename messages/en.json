@@ -409,7 +409,7 @@
         "negative": "The sale price is below cost: every sale makes a loss.",
         "shippingCost": "Shipping you cover (estimated)",
         "breakEven": "Break-even price",
-        "negativeShipping": "With shipping on you, selling below {price} makes a loss: the sale price does not cover the cost and the shipping.",
+        "negativeShipping": "With shipping on you, selling below {price} makes a loss in {city}: the sale price does not cover the cost and the shipping.",
         "shipping": {
           "title": "Who pays for shipping?",
           "hint": "Choose how delivery in Luanda is paid. The margin below updates with your choice.",
@@ -3751,7 +3751,9 @@
       "value": "Price: {price}",
       "subtotal": "Subtotal",
       "shipping": "Shipping",
-      "total": "Final amount"
+      "total": "Final amount",
+      "shippingFree": "Free",
+      "shippingPending": "Choose the province"
     },
     "coupon": {
       "toggle": "Add coupon",

@@ -409,7 +409,7 @@
         "negative": "O preço de venda está abaixo do custo: cada venda dá prejuízo.",
         "shippingCost": "Frete a seu cargo (estimado)",
         "breakEven": "Preço mínimo (break-even)",
-        "negativeShipping": "Com o frete por sua conta, vender abaixo de {price} dá prejuízo: o preço de venda não cobre o custo e o frete.",
+        "negativeShipping": "Com o frete por sua conta, vender abaixo de {price} dá prejuízo em {city}: o preço de venda não cobre o custo e o frete.",
         "shipping": {
           "title": "Quem paga o frete?",
           "hint": "Escolha como a entrega em Luanda é paga. A margem abaixo atualiza-se com a sua escolha.",
@@ -3751,7 +3751,9 @@
       "value": "Valor: {price}",
       "subtotal": "Subtotal",
       "shipping": "Frete",
-      "total": "Valor Final"
+      "total": "Valor Final",
+      "shippingFree": "Grátis",
+      "shippingPending": "Escolha a província"
     },
     "coupon": {
       "toggle": "Adicionar cupom",

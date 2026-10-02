@@ -1,4 +1,9 @@
 import { z } from "zod";
+import {
+  DEFAULT_DELIVERY_CITY,
+  SHIPPING_RATES,
+  type DeliveryCity,
+} from "@/shared/fulfilment/schemas";
 
 /**
  * Product validation shared by the browser (instant feedback) and the API (the real gate).
@@ -43,13 +48,13 @@ export type ProductSort = (typeof PRODUCT_SORTS)[number];
 export const SHIPPING_BEARERS = ["customer", "merchant"] as const;
 export type ShippingBearer = (typeof SHIPPING_BEARERS)[number];
 /**
- * What a delivery in Luanda is estimated to cost the merchant who takes it on, minor units (2 500 Kz,
- * the platform's standard fee). Only used to estimate the margin: the real fee depends on the zone.
+ * The delivery cost the merchant bears for a product delivered to `city`: nothing when the customer pays
+ * the freight, the province's fee (see `SHIPPING_RATES`) when the merchant does.
  */
-export const ESTIMATED_SHIPPING_COST = 250_000;
-/** The delivery cost the merchant bears for a product: nothing when the customer pays the freight. */
-export const merchantShippingCost = (bearer: ShippingBearer): number =>
-  bearer === "merchant" ? ESTIMATED_SHIPPING_COST : 0;
+export const merchantShippingCost = (
+  bearer: ShippingBearer,
+  city: DeliveryCity = DEFAULT_DELIVERY_CITY
+): number => (bearer === "merchant" ? SHIPPING_RATES[city] : 0);
 
 export const MAX_IMAGES = 5;
 export const MAX_STOCK = 1_000_000;
@@ -174,15 +179,19 @@ export interface Margin {
 export function computeMargin(
   costPrice: number,
   salePrice: number,
-  shippingBearer: ShippingBearer = "customer"
+  shippingBearer: ShippingBearer = "customer",
+  city: DeliveryCity = DEFAULT_DELIVERY_CITY
 ): Margin {
-  const amount = salePrice - costPrice - merchantShippingCost(shippingBearer);
+  const amount = salePrice - costPrice - merchantShippingCost(shippingBearer, city);
   return { amount, rate: salePrice > 0 ? amount / salePrice : null };
 }
 
 /** The lowest sale price at which the product does not lose money (margin 0), minor units. */
-export const breakEvenPrice = (costPrice: number, shippingBearer: ShippingBearer): number =>
-  costPrice + merchantShippingCost(shippingBearer);
+export const breakEvenPrice = (
+  costPrice: number,
+  shippingBearer: ShippingBearer,
+  city: DeliveryCity = DEFAULT_DELIVERY_CITY
+): number => costPrice + merchantShippingCost(shippingBearer, city);
 
 // ── Offer and stock ───────────────────────────────────────────────────────────────────────
 

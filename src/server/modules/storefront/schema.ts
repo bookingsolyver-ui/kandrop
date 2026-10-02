@@ -1,4 +1,5 @@
-import type { StockState } from "@/shared/products/schemas";
+import type { DeliveryCity } from "@/shared/fulfilment/schemas";
+import type { ShippingBearer, StockState } from "@/shared/products/schemas";
 
 /** What a shopper's browser may know about a product: nothing about costs, margins or the store id. */
 export interface StorefrontProduct {
@@ -21,6 +22,8 @@ export interface StorefrontProduct {
     /** Only given when few are left: the exact stock of a well-stocked product is not public. */
     remaining?: number;
   };
+  /** Who pays the delivery, and the fee per province the shopper pays when it is them (minor units). */
+  shipping: { bearer: ShippingBearer; rates: Record<DeliveryCity, number> };
   /** The STORE's own support contacts (never the platform's), or nulls. */
   support: { whatsapp: string | null; email: string | null };
   /** The merchant's own Meta Pixel id (public by nature: it is in the page of any store that uses it), or `null`. */
