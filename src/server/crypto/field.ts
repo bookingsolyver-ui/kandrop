@@ -15,7 +15,7 @@ import { getEnv } from "@/server/config/env";
  * Losing the key loses the data: back it up apart from the database.
  */
 const PREFIX = "enc:v1:";
-const g = globalThis as unknown as { __kandropWarnedNoKey?: boolean };
+const g = globalThis as unknown as { __kandropWarnedNoKey?: boolean; __kandropUndecryptable?: Set<string> };
 
 function key(): Buffer | null {
   const raw = getEnv().DATA_ENCRYPTION_KEY;
@@ -69,7 +69,13 @@ export function tryDecryptField(stored: string, context: string): string | null 
   try {
     return decryptField(stored, context);
   } catch (err) {
-    console.error("[crypto] could not decrypt a stored value (wrong or changed DATA_ENCRYPTION_KEY?)", { context: context.split(":")[0] }, err instanceof Error ? err.message : err);
+    // Once per value (per process), not once per read: a supplier page reads the same row many times a minute,
+    // and a stale value would otherwise bury the log. The context names a row, never the value.
+    const seen = (g.__kandropUndecryptable ??= new Set<string>());
+    if (!seen.has(context)) {
+      seen.add(context);
+      console.error("[crypto] could not decrypt a stored value (wrong or changed DATA_ENCRYPTION_KEY?)", { context: context.split(":")[0] }, err instanceof Error ? err.message : err);
+    }
     return null;
   }
 }
