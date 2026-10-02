@@ -111,7 +111,7 @@ export async function HomeSteps() {
   const t = await getTranslations("Marketing.home.steps");
   const price = `${String(PLAN_PRICES.starter).replace(/\B(?=(\d{3})+(?!\d))/g, ".")} Kz`;
   return (
-    <section id="como-funciona" aria-labelledby="steps-title" className="bg-brand-gray">
+    <section id="como-funciona" aria-labelledby="steps-title" className="scroll-mt-20 bg-brand-gray">
       <div className="mx-auto w-full max-w-6xl px-6 py-20 sm:py-28">
         <div className="reveal mx-auto max-w-2xl text-center">
           <p className={`${eyebrow} text-brand-orange`}>{t("eyebrow")}</p>
@@ -155,17 +155,17 @@ const FEATURED: FeaturedProduct[] = [
 export async function HomeCatalog() {
   const t = await getTranslations("Marketing.home.catalog");
   return (
-    <section id="catalogo" className="relative overflow-hidden bg-brand-black py-20 sm:py-28">
+    <section id="catalogo" className="relative scroll-mt-20 overflow-hidden bg-brand-black pt-28 pb-20 sm:pt-36 sm:pb-28">
       <div aria-hidden className="pointer-events-none absolute top-1/2 left-1/2 h-[500px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-20 blur-[130px]" style={{ background: "radial-gradient(circle, #FF5A00 0%, transparent 70%)" }} />
       <div className="relative mx-auto w-full max-w-6xl px-6">
         <div className="reveal mx-auto max-w-3xl text-center">
           <p className="text-xs font-bold tracking-[0.2em] text-brand-orange uppercase">{t("eyebrow")}</p>
-          <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-brand-white sm:text-4xl md:text-5xl">
+          <h2 className="mt-4 text-3xl leading-[1.15] font-extrabold tracking-tight text-brand-white sm:text-4xl md:text-5xl">
             {t("title1")} <span className="text-gradient-orange">{t("accent")}</span> {t("title2")}
           </h2>
-          <p className="mt-4 text-base leading-relaxed text-brand-white/70 sm:text-lg">{t("body")}</p>
+          <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-brand-white/70 sm:text-lg">{t("body")}</p>
         </div>
-        <div className="mt-12">
+        <div className="mt-14 sm:mt-16">
           <FeaturedCarousel products={FEATURED} />
         </div>
         <div className="mt-6 flex flex-col items-center justify-center gap-3 text-center sm:flex-row">
