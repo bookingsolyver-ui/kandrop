@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useFormatters } from "@/components/dashboard/useFormatters";
-import { PLAN_PRICES, type PlanKey } from "@/server/modules/plan/limits";
+import { PLAN_INTRO_PRICES, PLAN_PRICES, type PlanKey } from "@/server/modules/plan/limits";
 import { PLAN_FEATURES } from "./plans";
 
 const Tick = () => (
@@ -27,7 +27,7 @@ const Tick = () => (
  * the payment from `lg`; on phones the list is left out (the payment is what matters there) and
  * only the plan and total show, above it.
  */
-export function OrderSummary({ plan, onChange }: { plan: PlanKey; onChange?: () => void }) {
+export function OrderSummary({ plan, onChange, intro }: { plan: PlanKey; onChange?: () => void; intro: boolean }) {
   const t = useTranslations("Subscribe");
   const features = useTranslations("Marketing.pricing");
   const names = useTranslations("Shell.plan.names");
@@ -76,9 +76,10 @@ export function OrderSummary({ plan, onChange }: { plan: PlanKey; onChange?: () 
       <div className="mt-5 flex items-baseline justify-between gap-4 border-t border-line pt-4">
         <p className="text-sm font-semibold">{t("summary.total")}</p>
         <p className="text-[1.5rem] leading-none font-semibold tracking-tight tabular-nums">
-          {f.money(PLAN_PRICES[plan] * 100)}
+          {f.money((intro ? PLAN_INTRO_PRICES : PLAN_PRICES)[plan] * 100)}
         </p>
       </div>
+      {intro && <p className="mt-2 text-[13px] text-ink-muted">{t("plan.thenShort", { price: f.money(PLAN_PRICES[plan] * 100) })}</p>}
     </aside>
   );
 }

@@ -24,7 +24,7 @@ const REDIRECT_MS = 2200;
  * all in state (no page reloads). The payment is the real (sandbox) one — the same as the
  * billing page — so confirming it activates the plan on the server and lifts the gate.
  */
-export function SubscribeFlow({ email, sandbox }: { email: string; sandbox: boolean }) {
+export function SubscribeFlow({ email, sandbox, intro }: { email: string; sandbox: boolean; intro: boolean }) {
   const t = useTranslations("Subscribe");
   const names = useTranslations("Shell.plan.names");
   const router = useRouter();
@@ -136,6 +136,7 @@ export function SubscribeFlow({ email, sandbox }: { email: string; sandbox: bool
                   </h1>
                   <p className="mt-3 mb-8 text-lg text-ink-2">{t("plan.subtitle")}</p>
                   <PlanStep
+                    intro={intro}
                     selected={plan}
                     onChoose={(chosen) => {
                       setPlan(chosen);
@@ -148,7 +149,7 @@ export function SubscribeFlow({ email, sandbox }: { email: string; sandbox: bool
               {step === "payment" && plan && (
                 <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-12">
                   <div className="order-first lg:order-none lg:col-start-2 lg:row-start-1">
-                    <OrderSummary plan={plan} onChange={() => setStep("plan")} />
+                    <OrderSummary intro={intro} plan={plan} onChange={() => setStep("plan")} />
                   </div>
                   <section aria-labelledby="pay-title" className="lg:col-start-1 lg:row-start-1">
                     <h1 id="pay-title" ref={heading} tabIndex={-1} className={H1}>

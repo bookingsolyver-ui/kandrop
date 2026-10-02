@@ -1,8 +1,8 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useFormatters } from "@/components/dashboard/useFormatters";
-import { PLAN_KEYS, PLAN_PRICES, type PlanKey } from "@/server/modules/plan/limits";
+import { introDiscountPct, PLAN_INTRO_PRICES, PLAN_KEYS, PLAN_PRICES, type PlanKey } from "@/server/modules/plan/limits";
 import { PLAN_FEATURES } from "./plans";
 
 const HIGHLIGHT: PlanKey = "pro";
@@ -28,7 +28,9 @@ const Tick = () => (
 export function PlanStep({
   selected,
   onChoose,
+  intro,
 }: {
+  intro: boolean;
   selected: PlanKey | null;
   onChoose: (plan: PlanKey) => void;
 }) {
@@ -36,6 +38,7 @@ export function PlanStep({
   const features = useTranslations("Marketing.pricing");
   const names = useTranslations("Shell.plan.names");
   const f = useFormatters();
+  const locale = useLocale();
 
   return (
     <ul className="grid gap-5 md:grid-cols-2">
@@ -60,10 +63,15 @@ export function PlanStep({
             </div>
             <p className="mt-5 flex items-baseline gap-2 tabular-nums">
               <span className="text-[2.5rem] leading-none font-semibold tracking-tight">
-                {f.money(PLAN_PRICES[plan] * 100)}
+                {f.money((intro ? PLAN_INTRO_PRICES : PLAN_PRICES)[plan] * 100)}
               </span>
-              <span className="text-sm text-ink-muted">{t("plan.perMonth")}</span>
+              <span className="text-sm text-ink-muted">{intro ? t("plan.firstMonth") : t("plan.perMonth")}</span>
             </p>
+            {intro && (
+              <p className="mt-2 text-sm text-ink-muted">
+                {t("plan.then", { price: f.money(PLAN_PRICES[plan] * 100), pct: String(introDiscountPct(plan)).replace(".", locale === "en" ? "." : ",") })}
+              </p>
+            )}
 
             <ul className="mt-7 flex-1 space-y-3 text-[15px]">
               {PLAN_FEATURES[plan].map((feature) => (

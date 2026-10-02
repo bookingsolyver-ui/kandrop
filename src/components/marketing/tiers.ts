@@ -1,9 +1,9 @@
-import { PLANS, PLAN_PRICES } from "@/server/modules/plan/limits";
+import { PLANS, PLAN_INTRO_PRICES, PLAN_PRICES } from "@/server/modules/plan/limits";
 
 /** One line of a plan card: a key of `Marketing.pricing.features`. */
 export type FeatureKey =
   | `s${1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9}`
-  | `p${0 | 1 | 2 | 3 | 4 | 5 | 6 | 7}`
+  | `p${0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8}`
   | `e${0 | 1 | 2 | 3 | 4 | 5 | 6}`;
 
 export interface Feature {
@@ -16,8 +16,10 @@ export interface Feature {
 
 export interface Tier {
   key: "starter" | "pro" | "elite";
-  /** Whole Kwanzas per month; `null` = "on request" (Elite is sold through the team, not through the checkout). */
+  /** Regular price in whole Kwanzas per month (the first month is `PLAN_INTRO_PRICES`); `null` = "on request" (Elite is sold through the team, not through the checkout). */
   price: number | null;
+  /** Launch price of the first month (`null` for Elite). */
+  intro?: number;
   featured?: boolean;
   features: Feature[];
 }
@@ -31,6 +33,7 @@ export const TIERS: Tier[] = [
   {
     key: "starter",
     price: PLAN_PRICES.starter,
+    intro: PLAN_INTRO_PRICES.starter,
     features: [
       { key: "s1" },
       { key: "s2" },
@@ -46,10 +49,12 @@ export const TIERS: Tier[] = [
   {
     key: "pro",
     price: PLAN_PRICES.pro,
+    intro: PLAN_INTRO_PRICES.pro,
     featured: true,
     features: [
       { key: "p0", lead: true },
-      { key: "p1", count: PLANS.pro.landingPages },
+      { key: "p1" }, // unlimited landing pages
+      { key: "p8" }, // 24h delivery in Luanda
       { key: "p2" },
       { key: "p3" },
       { key: "p4" },

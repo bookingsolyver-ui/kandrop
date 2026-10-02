@@ -8,6 +8,7 @@ import { transferInfo } from "@/server/modules/payments/transfer";
 import { paymentRepository } from "@/server/modules/payments/repository";
 import {
   PLANS,
+  PLAN_INTRO_PRICES,
   PLAN_KEYS,
   PLAN_PRICES,
   planRank,
@@ -30,6 +31,13 @@ const KZ = 100;
 /** Sessions that carry a plan payment belong to the platform, never to the store paying. */
 const PLATFORM_STORE_ID = "sto_kandrop";
 const PLAN_NAMES: Record<PlanKey, string> = { starter: "Starter", pro: "Pro" };
+
+/** The launch price is for the first paid month only: a store that has never had a payment activate a plan. */
+export async function introEligible(storeId: string): Promise<boolean> {
+  return !(await billingRepository.charges(storeId)).some((charge) => charge.activated);
+}
+
+const priceOf = (plan: PlanKey, intro: boolean) => (intro ? PLAN_INTRO_PRICES : PLAN_PRICES)[plan] * KZ;
 
 function requireOwner(auth: Session) {
   if (auth.role !== "owner") throw new ApiError("forbidden");
@@ -71,6 +79,7 @@ export async function getBilling(auth: Session): Promise<BillingOverview> {
   // The payment gate keeps unpaid stores out of here; this is the same rule, in the service.
   if (!plan || !sub) throw new ApiError("payment_required");
   const usage = (await getPlan(auth)).usage;
+  const intro = await introEligible(auth.storeId);
 
   return {
     plan,
@@ -78,7 +87,7 @@ export async function getBilling(auth: Session): Promise<BillingOverview> {
     usage,
     plans: PLAN_KEYS.map((key) => ({
       key,
-      price: PLAN_PRICES[key] * KZ,
+      price: priceOf(key, intro),
       limits: PLANS[key],
       action: action(key, plan),
     })),
@@ -98,7 +107,7 @@ export async function startUpgrade(auth: Session, input: UpgradeInput): Promise<
   const current = await planOf(auth.storeId);
   if (current && planRank(plan) < planRank(current)) throw new ApiError("plan_not_upgradable");
 
-  const amount = PLAN_PRICES[plan] * KZ;
+  const amount = priceOf(plan, await introEligible(auth.storeId));
 
   // Coming back to the payment step (a reload, or after leaving with a bank transfer still waiting)
   // picks up the checkout that is still open instead of piling up new ones, so a pending transfer

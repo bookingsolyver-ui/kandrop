@@ -956,7 +956,7 @@
       "recommended": "Mais vendido",
       "soon": "Em breve",
       "cta": "Começar com {plan}",
-      "note": "Valores em Kwanzas (AOA), por 30 dias. Elite: preço sob consulta.",
+      "note": "Valores em Kwanzas (AOA). Elite: preço sob consulta.",
       "plans": {
         "starter": {
           "name": "Starter",
@@ -975,14 +975,14 @@
         "s1": "Acesso ao catálogo KanDrop",
         "s2": "Vende sem comprar stock",
         "s3": "Até {count} landing pages por mês",
-        "s4": "Entrega em 24h em Luanda",
+        "s4": "Entrega em 48h em Luanda",
         "s5": "Pagamento na entrega e Multicaixa Express",
         "s6": "Scripts de venda prontos",
         "s7": "Formação inicial de dropshipping",
         "s8": "Suporte por WhatsApp",
         "s9": "Acompanhamento dos pedidos e das vendas",
         "p0": "Tudo do Starter, mais:",
-        "p1": "Até {count} landing pages por mês",
+        "p1": "Landing pages ilimitadas",
         "p2": "Pedes produtos novos para o catálogo e vendes sem stock",
         "p3": "Acesso aos produtos mais vendidos",
         "p4": "Ajuda a montar e gerir a tua loja",
@@ -995,14 +995,19 @@
         "e3": "Relatórios detalhados",
         "e4": "Integração por API",
         "e5": "Comissão reduzida",
-        "e6": "Acompanhamento no arranque"
+        "e6": "Acompanhamento no arranque",
+        "p8": "Entrega em 24h em Luanda"
       },
       "onRequest": "Sob consulta",
       "contact": "Falar com a equipa",
       "contactText": "Olá! Quero saber mais sobre o plano Elite da Kandrop.",
       "business": "Empresarial",
       "payoutPriority": "Payout prioritário",
-      "payoutFast": "Payout em 24 horas"
+      "payoutFast": "Payout em 24 horas",
+      "introLabel": "no 1.º mês",
+      "then": "depois {price}/mês",
+      "discount": "-{pct}% no 1.º mês",
+      "launchNote": "Preço de lançamento válido apenas no primeiro mês. A partir do 2.º mês, aplica-se o preço normal. Cancelas quando quiseres."
     },
     "final": {
       "title": "Comece a vender sem stock hoje.",
@@ -1094,7 +1099,7 @@
         "s1": {
           "tag": "Acesso à Dashboard",
           "title": "Cria a conta e escolhe o teu plano",
-          "body": "Regista-te e seleciona o teu plano de acesso (a partir de {price}/mês) para desbloquear a dashboard completa e as ferramentas de venda.",
+          "body": "Regista-te e seleciona o teu plano de acesso (a partir de {price} no 1.º mês) para desbloquear a dashboard completa e as ferramentas de venda.",
           "alt": "Empreendedor angolano a criar conta e a aceder à dashboard na plataforma"
         },
         "s2": {
@@ -1109,7 +1114,7 @@
           "body": "O teu cliente compra e recebe no dia seguinte em Luanda. Pede o levantamento dos teus ganhos diretamente para a tua conta bancária.",
           "alt": "Estafeta em Luanda a realizar entrega rápida de encomenda em 24h"
         },
-        "note": "<strong>Transparência:</strong> A inscrição na lista de espera hoje é 100% gratuita. No lançamento oficial, quem estiver na lista terá prioridade para escolher o seu plano de acesso (a partir de {price}/mês no plano Starter) e aceder de imediato à dashboard. A data oficial de abertura será revelada no nosso Instagram @kandrop.ecom."
+        "note": "<strong>Transparência:</strong> A inscrição na lista de espera hoje é 100% gratuita. No lançamento oficial, quem estiver na lista terá prioridade para escolher o seu plano de acesso (a partir de {price} no 1.º mês do plano Starter) e aceder de imediato à dashboard. A data oficial de abertura será revelada no nosso Instagram @kandrop.ecom."
       },
       "compare": {
         "eyebrow": "Comparativo direto",
@@ -1148,7 +1153,7 @@
         "title": "Perguntas frequentes",
         "q1": {
           "q": "Quanto custa começar?",
-          "a": "Escolhes um plano mensal: o Starter custa {starter} por 30 dias e o Pro {pro} por 30 dias. Não compras stock."
+          "a": "Escolhes um plano mensal: no 1.º mês o Starter custa {starter} (depois {starterRegular}/mês) e o Pro {pro} (depois {proRegular}/mês). Cancelas quando quiseres. Não compras stock."
         },
         "q2": {
           "q": "Preciso de investir em stock?",
@@ -1910,7 +1915,10 @@
         "starter": "Starter",
         "pro": "Pro"
       },
-      "soon": "Em breve"
+      "soon": "Em breve",
+      "firstMonth": "no 1.º mês",
+      "then": "depois {price}/mês (-{pct}% no 1.º mês)",
+      "thenShort": "Preço de lançamento do 1.º mês. Depois {price}/mês."
     },
     "details": {
       "title": "Os seus dados",

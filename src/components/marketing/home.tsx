@@ -2,7 +2,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import Image from "next/image";
 import { formatKwz } from "@/lib/money";
 import { Link } from "@/i18n/navigation";
-import { PLAN_PRICES } from "@/server/modules/plan/limits";
+import { PLAN_INTRO_PRICES, PLAN_PRICES } from "@/server/modules/plan/limits";
 import { FeaturedCarousel, type FeaturedProduct } from "./FeaturedCarousel";
 import { ArrowIcon, CheckIcon } from "./icons";
 
@@ -109,7 +109,7 @@ export async function HomeSolution() {
 /** Grey: three numbered steps. The first one carries the real entry price of the Starter plan. */
 export async function HomeSteps() {
   const t = await getTranslations("Marketing.home.steps");
-  const price = `${String(PLAN_PRICES.starter).replace(/\B(?=(\d{3})+(?!\d))/g, ".")} Kz`;
+  const price = `${String(PLAN_INTRO_PRICES.starter).replace(/\B(?=(\d{3})+(?!\d))/g, ".")} Kz`;
   return (
     <section id="como-funciona" aria-labelledby="steps-title" className="scroll-mt-20 bg-brand-gray">
       <div className="mx-auto w-full max-w-6xl px-6 py-20 sm:py-28">
@@ -221,7 +221,12 @@ export async function HomeCompare() {
 export async function HomeFaq() {
   const t = await getTranslations("Marketing.home.faq");
   const locale = await getLocale();
-  const prices = { starter: formatKwz(PLAN_PRICES.starter * 100, locale), pro: formatKwz(PLAN_PRICES.pro * 100, locale) };
+  const prices = {
+    starter: formatKwz(PLAN_INTRO_PRICES.starter * 100, locale),
+    pro: formatKwz(PLAN_INTRO_PRICES.pro * 100, locale),
+    starterRegular: formatKwz(PLAN_PRICES.starter * 100, locale),
+    proRegular: formatKwz(PLAN_PRICES.pro * 100, locale),
+  };
   const who = await getTranslations("Marketing.home.who");
   return (
     <>

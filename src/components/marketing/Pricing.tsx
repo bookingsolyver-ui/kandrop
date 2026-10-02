@@ -12,6 +12,7 @@ const ClockIcon = () => (
     <path d="M12 7v5l3 2" />
   </svg>
 );
+import { introDiscountPct } from "@/server/modules/plan/limits";
 import { TIERS } from "./tiers";
 
 /** The three plans (Starter, Pro, Elite), priced in Kwanzas from the same constants the billing uses. Elite talks to the team. */
@@ -73,9 +74,16 @@ export async function Pricing() {
 
                 <div className="mt-8">
                   <p className={`font-serif leading-none font-extrabold tracking-[-0.03em] tabular-nums ${tier.price === null ? "text-[clamp(1.75rem,2.6vw,2.25rem)] py-[0.55rem]" : "text-[clamp(2.5rem,4vw,3.25rem)]"}`}>
-                    {tier.price === null ? t("onRequest") : price(tier.price)}
+                    {tier.price === null ? t("onRequest") : price(tier.intro ?? tier.price)}
                   </p>
-                  {tier.price !== null && <p className={`mt-1.5 text-sm ${muted}`}>{t("period")}</p>}
+                  {tier.price !== null && tier.intro !== undefined && tier.key !== "elite" && (
+                    <>
+                      <p className={`mt-1.5 text-sm ${muted}`}>{t("introLabel")} · {t("then", { price: price(tier.price) })}</p>
+                      <p className={`mt-3 inline-flex w-fit rounded-md px-2 py-0.5 text-[11px] font-bold tracking-wider uppercase ${pro ? "bg-black/15 text-black" : "bg-accent/10 text-accent"}`}>
+                        {t("discount", { pct: String(introDiscountPct(tier.key)).replace(".", locale === "en" ? "." : ",") })}
+                      </p>
+                    </>
+                  )}
                 </div>
 
                 {(pro || elite) && (
@@ -121,7 +129,8 @@ export async function Pricing() {
           })}
         </ul>
 
-        <p className="mt-8 text-center text-sm text-ink-muted">{t("note")}</p>
+        <p className="mx-auto mt-8 max-w-2xl text-center text-sm font-medium text-ink-2">{t("launchNote")}</p>
+        <p className="mt-2 text-center text-sm text-ink-muted">{t("note")}</p>
       </div>
     </section>
   );

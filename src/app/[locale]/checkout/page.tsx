@@ -1,3 +1,4 @@
+import { introEligible } from "@/server/modules/billing/service";
 import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -61,7 +62,7 @@ export default async function CheckoutPage({ params, searchParams }: Props) {
     if (!current) redirect({ href: "/register", locale });
     if (await hasAccess(current!)) redirect({ href: "/dashboard", locale });
     const me = await getMe(current!);
-    return <SubscribeFlow email={me.email} sandbox={sandbox} />;
+    return <SubscribeFlow email={me.email} sandbox={sandbox} intro={await introEligible(current!.storeId)} />;
   }
 
   if (!session) {

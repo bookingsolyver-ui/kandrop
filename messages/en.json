@@ -956,7 +956,7 @@
       "recommended": "Best seller",
       "soon": "Soon",
       "cta": "Start with {plan}",
-      "note": "Prices in Kwanzas (AOA), for 30 days. Elite: price on request.",
+      "note": "Amounts in Kwanzas (AOA). Elite: price on request.",
       "plans": {
         "starter": {
           "name": "Starter",
@@ -975,14 +975,14 @@
         "s1": "Access to the KanDrop catalogue",
         "s2": "Sell without buying stock",
         "s3": "Up to {count} landing pages per month",
-        "s4": "24h delivery in Luanda",
+        "s4": "48h delivery in Luanda",
         "s5": "Pay on delivery and Multicaixa Express",
         "s6": "Ready-made sales scripts",
         "s7": "Starter dropshipping training",
         "s8": "WhatsApp support",
         "s9": "Tracking of orders and sales",
         "p0": "Everything in Starter, plus:",
-        "p1": "Up to {count} landing pages per month",
+        "p1": "Unlimited landing pages",
         "p2": "Request new products for the catalogue and sell with no stock",
         "p3": "Access to the best-selling products",
         "p4": "Help setting up and running your store",
@@ -995,14 +995,19 @@
         "e3": "Detailed reports",
         "e4": "API integration",
         "e5": "Reduced commission",
-        "e6": "Support during the launch"
+        "e6": "Support during the launch",
+        "p8": "24h delivery in Luanda"
       },
       "onRequest": "On request",
       "contact": "Talk to the team",
       "contactText": "Hello! I would like to know more about Kandrop's Elite plan.",
       "business": "Business",
       "payoutPriority": "Priority payout",
-      "payoutFast": "Payout in 24 hours"
+      "payoutFast": "Payout in 24 hours",
+      "introLabel": "for the 1st month",
+      "then": "then {price}/month",
+      "discount": "-{pct}% in the 1st month",
+      "launchNote": "Launch price valid for the first month only. From the 2nd month the regular price applies. Cancel whenever you like."
     },
     "final": {
       "title": "Start selling without stock today.",
@@ -1094,7 +1099,7 @@
         "s1": {
           "tag": "Dashboard access",
           "title": "Create your account and choose your plan",
-          "body": "Sign up and pick your access plan (from {price}/month) to unlock the full dashboard and the selling tools.",
+          "body": "Sign up and pick your access plan (from {price} in the 1st month) to unlock the full dashboard and the selling tools.",
           "alt": "Angolan entrepreneur creating an account and opening the dashboard on the platform"
         },
         "s2": {
@@ -1109,7 +1114,7 @@
           "body": "Your customer buys and receives the next day in Luanda. Request a payout of your earnings straight to your bank account.",
           "alt": "Courier in Luanda making a fast 24h delivery of an order"
         },
-        "note": "<strong>Transparency:</strong> Joining the waiting list today is 100% free. At the official launch, anyone on the list gets priority to choose their access plan (from {price}/month on the Starter plan) and reach the dashboard immediately. The official opening date will be revealed on our Instagram @kandrop.ecom."
+        "note": "<strong>Transparency:</strong> Joining the waiting list today is 100% free. At the official launch, anyone on the list gets priority to choose their access plan (from {price} in the 1st month of the Starter plan) and reach the dashboard immediately. The official opening date will be revealed on our Instagram @kandrop.ecom."
       },
       "compare": {
         "eyebrow": "Direct comparison",
@@ -1148,7 +1153,7 @@
         "title": "Frequently asked questions",
         "q1": {
           "q": "How much does it cost to start?",
-          "a": "You pick a monthly plan: Starter costs {starter} per 30 days and Pro {pro} per 30 days. You buy no stock."
+          "a": "You pick a monthly plan: in the 1st month Starter costs {starter} (then {starterRegular}/month) and Pro {pro} (then {proRegular}/month). Cancel whenever you like. You buy no stock."
         },
         "q2": {
           "q": "Do I need to invest in stock?",
@@ -1910,7 +1915,10 @@
         "starter": "Starter",
         "pro": "Pro"
       },
-      "soon": "Soon"
+      "soon": "Soon",
+      "firstMonth": "for the 1st month",
+      "then": "then {price}/month (-{pct}% in the 1st month)",
+      "thenShort": "Launch price for the 1st month. Then {price}/month."
     },
     "details": {
       "title": "Your details",

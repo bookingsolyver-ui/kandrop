@@ -956,7 +956,7 @@
       "recommended": "Le plus vendu",
       "soon": "Bientôt",
       "cta": "Commencer avec {plan}",
-      "note": "Prix en Kwanzas (AOA), pour 30 jours. Elite : prix sur devis.",
+      "note": "Montants en Kwanzas (AOA). Elite : prix sur demande.",
       "plans": {
         "starter": {
           "name": "Starter",
@@ -975,14 +975,14 @@
         "s1": "Accès au catalogue KanDrop",
         "s2": "Vendez sans acheter de stock",
         "s3": "Jusqu’à {count} landing pages par mois",
-        "s4": "Livraison en 24 h à Luanda",
+        "s4": "Livraison en 48h à Luanda",
         "s5": "Paiement à la livraison et Multicaixa Express",
         "s6": "Scripts de vente prêts à l’emploi",
         "s7": "Formation de base au dropshipping",
         "s8": "Support par WhatsApp",
         "s9": "Suivi des commandes et des ventes",
         "p0": "Tout Starter, plus :",
-        "p1": "Jusqu’à {count} landing pages par mois",
+        "p1": "Pages de vente illimitées",
         "p2": "Demandez de nouveaux produits au catalogue et vendez sans stock",
         "p3": "Accès aux produits les plus vendus",
         "p4": "Aide pour monter et gérer votre boutique",
@@ -995,14 +995,19 @@
         "e3": "Rapports détaillés",
         "e4": "Intégration par API",
         "e5": "Commission réduite",
-        "e6": "Accompagnement au lancement"
+        "e6": "Accompagnement au lancement",
+        "p8": "Livraison en 24h à Luanda"
       },
       "onRequest": "Sur devis",
       "contact": "Parler à l’équipe",
       "contactText": "Bonjour ! Je voudrais en savoir plus sur le plan Elite de Kandrop.",
       "business": "Entreprise",
       "payoutPriority": "Paiement prioritaire",
-      "payoutFast": "Paiement en 24 heures"
+      "payoutFast": "Paiement en 24 heures",
+      "introLabel": "le 1er mois",
+      "then": "puis {price}/mois",
+      "discount": "-{pct} % le 1er mois",
+      "launchNote": "Prix de lancement valable uniquement le premier mois. À partir du 2e mois, le prix normal s’applique. Résiliez quand vous voulez."
     },
     "final": {
       "title": "Commencez à vendre sans stock dès aujourd’hui.",
@@ -1094,7 +1099,7 @@
         "s1": {
           "tag": "Accès au tableau de bord",
           "title": "Créez votre compte et choisissez votre offre",
-          "body": "Inscrivez-vous et choisissez votre offre d’accès (à partir de {price}/mois) pour débloquer le tableau de bord complet et les outils de vente.",
+          "body": "Inscrivez-vous et choisissez votre offre d’accès (à partir de {price} le 1er mois) pour débloquer le tableau de bord complet et les outils de vente.",
           "alt": "Entrepreneur angolais créant un compte et accédant au tableau de bord de la plateforme"
         },
         "s2": {
@@ -1109,7 +1114,7 @@
           "body": "Votre client achète et reçoit le lendemain à Luanda. Demandez le retrait de vos gains directement sur votre compte bancaire.",
           "alt": "Livreur à Luanda effectuant une livraison rapide en 24h"
         },
-        "note": "<strong>Transparence :</strong> L’inscription sur la liste d’attente est aujourd’hui 100 % gratuite. Au lancement officiel, les inscrits auront la priorité pour choisir leur offre d’accès (à partir de {price}/mois avec l’offre Starter) et accéder immédiatement au tableau de bord. La date d’ouverture officielle sera annoncée sur notre Instagram @kandrop.ecom."
+        "note": "<strong>Transparence :</strong> L’inscription sur la liste d’attente est aujourd’hui 100 % gratuite. Au lancement officiel, les inscrits auront la priorité pour choisir leur offre d’accès (à partir de {price} le 1er mois de l’offre Starter) et accéder immédiatement au tableau de bord. La date d’ouverture officielle sera annoncée sur notre Instagram @kandrop.ecom."
       },
       "compare": {
         "eyebrow": "Comparatif direct",
@@ -1148,7 +1153,7 @@
         "title": "Questions fréquentes",
         "q1": {
           "q": "Combien coûte le démarrage ?",
-          "a": "Vous choisissez un plan mensuel : Starter coûte {starter} pour 30 jours et Pro {pro} pour 30 jours. Vous n’achetez pas de stock."
+          "a": "Vous choisissez un plan mensuel : le 1er mois, Starter coûte {starter} (puis {starterRegular}/mois) et Pro {pro} (puis {proRegular}/mois). Résiliez quand vous voulez. Vous n’achetez pas de stock."
         },
         "q2": {
           "q": "Dois-je investir dans du stock ?",
@@ -1910,7 +1915,10 @@
         "starter": "Starter",
         "pro": "Pro"
       },
-      "soon": "Bientôt"
+      "soon": "Bientôt",
+      "firstMonth": "le 1er mois",
+      "then": "puis {price}/mois (-{pct} % le 1er mois)",
+      "thenShort": "Prix de lancement du 1er mois. Ensuite {price}/mois."
     },
     "details": {
       "title": "Vos informations",
