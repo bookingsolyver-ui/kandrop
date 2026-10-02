@@ -423,7 +423,9 @@
             "badge": "+ conversion",
             "description": "Vous prenez en charge la livraison pour augmenter la conversion. Le coût estimé de la livraison est déduit de votre marge."
           }
-        }
+        },
+        "simulate": "Simuler le prix de vente",
+        "region": "Région de livraison (simulation)"
       },
       "save": "Enregistrer le produit",
       "saving": "Enregistrement…",

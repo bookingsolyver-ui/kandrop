@@ -423,7 +423,9 @@
             "badge": "+ conversão",
             "description": "Assume o custo do envio para aumentar a conversão. O custo estimado do frete sai da sua margem."
           }
-        }
+        },
+        "simulate": "Simular preço de venda",
+        "region": "Região da entrega (simulação)"
       },
       "save": "Guardar produto",
       "saving": "A guardar…",

@@ -1,12 +1,13 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { useFormatters } from "@/components/dashboard/useFormatters";
 import {
   DEFAULT_DELIVERY_CITY,
   DELIVERY_CITIES,
   SHIPPING_RATES,
+  type DeliveryCity,
 } from "@/shared/fulfilment/schemas";
 import {
   SHIPPING_BEARERS,
@@ -18,35 +19,42 @@ import {
 import { AlertIcon } from "@/components/data/icons";
 
 /**
- * The two price inputs and, right under them, the margin they imply. The margin is the same
- * `computeMargin` the API uses for the table, so what is shown here is what will be listed.
+ * The two price inputs and, right under them, the simulator: margin %, net profit per unit and the
+ * break-even price for the chosen delivery region. The numbers are the same `computeMargin` /
+ * `breakEvenPrice` the API uses for the table, so what is simulated is what will be listed.
  * `cost` / `price` are minor units, or `null` while the field is empty. The freight choice sits
  * between the inputs and the result because it changes the result: when the merchant pays the
- * delivery, its estimated cost comes off the margin and moves the break-even price up.
+ * delivery, the fee of the region comes off the profit and moves the break-even price up.
+ * The region only drives the simulation; the shopper's real province is chosen at checkout.
  */
 export function PricingPanel({
   cost,
   price,
   shippingBearer,
   onShippingBearerChange,
+  onPriceChange,
   children,
 }: {
   cost: number | null;
   price: number | null;
   shippingBearer: ShippingBearer;
   onShippingBearerChange: (bearer: ShippingBearer) => void;
+  /** The slider moves the price, in whole Kwanzas, exactly as typing it would. */
+  onPriceChange: (kwanza: number) => void;
   children: ReactNode;
 }) {
   const t = useTranslations("Catalog.form.pricing");
   const f = useFormatters();
+  const [city, setCity] = useState<DeliveryCity>(DEFAULT_DELIVERY_CITY);
+
+  const merchantPays = shippingBearer === "merchant";
   const margin =
     cost !== null && price !== null && price > 0
-      ? computeMargin(cost, price, shippingBearer)
+      ? computeMargin(cost, price, shippingBearer, city)
       : null;
   const loss = margin !== null && margin.amount < 0;
-  const merchantPays = shippingBearer === "merchant";
-  // What is shown is the Luanda case (the common one); with the freight on the merchant each province has
-  // its own cost and break-even, and the warning follows the worst of them.
+  const breakEven = cost !== null ? breakEvenPrice(cost, shippingBearer, city) : null;
+  // The warning follows the worst region, so a price that only loses money in Bengo is still flagged.
   const worstCity = DELIVERY_CITIES.reduce((a, b) =>
     SHIPPING_RATES[b] > SHIPPING_RATES[a] ? b : a
   );
@@ -56,6 +64,13 @@ export function PricingPanel({
     price !== null &&
     price > 0 &&
     price < breakEvenPrice(cost, shippingBearer, worstCity);
+
+  // Slider range in whole Kwanzas: from the break-even to well above it (or the price, if higher).
+  const costKz = Math.round((cost ?? 0) / 100);
+  const priceKz = Math.round((price ?? 0) / 100);
+  const lowKz = Math.max(1, Math.floor(costKz / 2));
+  const highKz = Math.max(costKz * 3 + 10_000, priceKz, 1_000);
+  const STEP_KZ = 50;
 
   return (
     <section
@@ -108,6 +123,47 @@ export function PricingPanel({
       </fieldset>
 
       <div className="mt-6 border-t border-line pt-5">
+        <label
+          htmlFor="pricing-simulator"
+          className="text-[11px] font-medium tracking-[0.14em] text-ink-muted uppercase"
+        >
+          {t("simulate")}
+        </label>
+        <input
+          id="pricing-simulator"
+          type="range"
+          min={lowKz}
+          max={highKz}
+          step={STEP_KZ}
+          value={Math.min(Math.max(priceKz, lowKz), highKz)}
+          onChange={(e) => onPriceChange(Number(e.target.value))}
+          className="mt-2 h-11 w-full accent-[currentColor]"
+        />
+        <div className="flex justify-between text-[12px] text-ink-muted tabular-nums">
+          <span>{f.money(lowKz * 100)}</span>
+          <span>{f.money(highKz * 100)}</span>
+        </div>
+
+        <div className="mt-4">
+          <label htmlFor="pricing-region" className="text-[13px] text-ink-muted">
+            {t("region")}
+          </label>
+          <select
+            id="pricing-region"
+            value={city}
+            onChange={(e) => setCity(e.target.value as DeliveryCity)}
+            className="mt-1 h-11 w-full rounded-md border border-field bg-surface px-3 text-[15px]"
+          >
+            {DELIVERY_CITIES.map((c) => (
+              <option key={c} value={c}>
+                {c} · {f.money(SHIPPING_RATES[c])}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <div className="mt-6 border-t border-line pt-5" aria-live="polite">
         {margin ? (
           <dl>
             <dt className="text-[11px] font-medium tracking-[0.14em] text-ink-muted uppercase">
@@ -127,25 +183,15 @@ export function PricingPanel({
             {merchantPays && (
               <>
                 <dt className="mt-4 text-[13px] text-ink-muted">{t("shippingCost")}</dt>
-                {DELIVERY_CITIES.map((city) => (
-                  <dd key={city} className="flex justify-between gap-4 font-medium tabular-nums">
-                    <span className="text-ink-muted">{city}</span>
-                    <span>−{f.money(merchantShippingCost(shippingBearer, city))}</span>
-                  </dd>
-                ))}
+                <dd className="font-medium tabular-nums">
+                  −{f.money(merchantShippingCost(shippingBearer, city))}
+                </dd>
               </>
             )}
-            {cost !== null && (
+            {breakEven !== null && (
               <>
                 <dt className="mt-4 text-[13px] text-ink-muted">{t("breakEven")}</dt>
-                {(merchantPays ? DELIVERY_CITIES : ([DEFAULT_DELIVERY_CITY] as const)).map(
-                  (city) => (
-                    <dd key={city} className="flex justify-between gap-4 font-medium tabular-nums">
-                      {merchantPays && <span className="text-ink-muted">{city}</span>}
-                      <span>{f.money(breakEvenPrice(cost, shippingBearer, city))}</span>
-                    </dd>
-                  )
-                )}
+                <dd className="font-medium tabular-nums">{f.money(breakEven)}</dd>
               </>
             )}
           </dl>

@@ -294,6 +294,9 @@ export function ProductForm({ product }: { product?: PublicProduct }) {
             onShippingBearerChange={(bearer) =>
               form.bind("shippingBearer").onChange({ target: { value: bearer } })
             }
+            onPriceChange={(kwanza) =>
+              form.bind("salePrice", formatKwanza).onChange({ target: { value: String(kwanza) } })
+            }
           >
             <TextField
               {...form.bind("costPrice", formatKwanza)}

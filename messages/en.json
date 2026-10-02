@@ -423,7 +423,9 @@
             "badge": "+ conversion",
             "description": "You cover the delivery cost to boost conversion. The estimated shipping cost comes out of your margin."
           }
-        }
+        },
+        "simulate": "Simulate sale price",
+        "region": "Delivery region (simulation)"
       },
       "save": "Save product",
       "saving": "Saving…",
