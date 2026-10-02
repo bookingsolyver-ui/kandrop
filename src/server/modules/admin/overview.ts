@@ -1,4 +1,5 @@
 import { db, must } from "@/server/db/client";
+import { winningIds } from "@/server/modules/vitrine/winning";
 import type { CashFlow, CatalogRow, LedgerEntry, MerchantDetail, MerchantRow, ReconRow } from "@/shared/admin/types";
 
 /**
@@ -102,10 +103,11 @@ export async function merchantDetail(storeId: string, now = Date.now()): Promise
 
 /** The supplier catalogue in every status, with how many stores sell each product and its weekly sales. */
 export async function catalogOverview(now = Date.now()): Promise<CatalogRow[]> {
-  const [products, imports, lines] = await Promise.all([
+  const [products, imports, lines, winning] = await Promise.all([
     db().from("supplier_products").select("id,name,category,cost_price,stock,status,suppliers(company_name)").order("created_at", { ascending: false }).limit(LIMIT),
     db().from("supplier_imports").select("supplier_product_id").limit(LIMIT),
     allLines(),
+    winningIds(),
   ]);
   const stores = new Map<string, number>();
   for (const i of must("admin.imports.count", imports) ?? []) stores.set(String(i.supplier_product_id), (stores.get(String(i.supplier_product_id)) ?? 0) + 1);
@@ -117,6 +119,7 @@ export async function catalogOverview(now = Date.now()): Promise<CatalogRow[]> {
     status: (["in_review", "approved", "rejected"].includes(String(p.status)) ? p.status : "in_review") as CatalogRow["status"],
     stores: stores.get(String(p.id)) ?? 0,
     weeklySales: Math.round(((sold.get(String(p.id)) ?? 0) / 4) * 10) / 10,
+    isWinning: winning.has(String(p.id)),
   }));
 }
 

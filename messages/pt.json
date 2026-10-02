@@ -2926,7 +2926,8 @@
         "supplier": "Fornecedor",
         "cost": "Custo",
         "stores": "Lojas",
-        "visibility": "Visibilidade"
+        "visibility": "Visibilidade",
+        "winning": "Destaque"
       },
       "origin": {
         "nacional": "Nacional",
@@ -2939,7 +2940,14 @@
         "in_review": "Em análise",
         "rejected": "Recusado"
       },
-      "empty": "Ainda não há produtos de fornecedores."
+      "empty": "Ainda não há produtos de fornecedores.",
+      "winningOn": "★ Vencedor",
+      "winningOff": "Destacar",
+      "toast": {
+        "winningOn": "Produto destacado como Vencedor.",
+        "winningOff": "Destaque removido.",
+        "failed": "Não foi possível atualizar."
+      }
     },
     "recon": {
       "title": "Conciliação e distribuição",
@@ -3554,7 +3562,8 @@
         "submit": "Enviar para análise",
         "titleEdit": "Editar produto",
         "save": "Guardar alterações",
-        "saving": "A guardar…"
+        "saving": "A guardar…",
+        "submitAnother": "Guardar e adicionar outro"
       },
       "edit": "Editar",
       "delete": "Remover",
@@ -3903,6 +3912,28 @@
         "retry": "Tentar novamente",
         "denied": "As notificações estão bloqueadas neste browser. Permita-as nas definições do site para receber alertas."
       }
+    }
+  },
+  "Highlights": {
+    "winning": {
+      "eyebrow": "Em destaque",
+      "title": "Produtos Vencedores",
+      "subtitle": "Selecionados pela equipa Kandrop: os que mais prometem vender agora.",
+      "all": "Ver toda a vitrine",
+      "badge": "Vencedor",
+      "cost": "Custo: {price}",
+      "suggested": "Sugerido: {price}"
+    },
+    "ranking": {
+      "eyebrow": "Ranking de {month}",
+      "title": "Top Lojistas do Mês",
+      "yourPosition": "A sua posição",
+      "ofStores": "de {count} lojistas com vendas",
+      "volume": "{amount} em vendas",
+      "orders": "{count} encomendas",
+      "noSales": "Ainda não tem vendas este mês. A primeira venda coloca-o no ranking.",
+      "empty": "Ainda ninguém vendeu este mês. Seja o primeiro!",
+      "you": "Você"
     }
   }
 }

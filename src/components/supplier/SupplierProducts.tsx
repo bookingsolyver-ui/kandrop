@@ -74,7 +74,8 @@ export function SupplierProducts({ products }: { products: ProductRow[] }) {
     } else setFormError(t(r.error === "unauthorized" ? "errors.unauthorized" : r.error === "not_found" ? "errors.notFound" : "errors.generic"));
   };
 
-  const submit = () => {
+  /** `again`: after saving, stay in the form with the category kept, ready for the next product (quick stock entry). */
+  const submit = (again = false) => {
     setFormError(null);
     const parsed = productInputSchema.safeParse({ ...form, id: form.id || undefined });
     const chosen = file.current?.files?.[0];
@@ -91,7 +92,12 @@ export function SupplierProducts({ products }: { products: ProductRow[] }) {
       const result = await saveProductAction(data);
       if (!result.ok) return failure(result);
       toast({ message: t(form.id ? "toast.updated" : "toast.submitted") });
-      close();
+      if (again && !form.id) {
+        setForm({ ...EMPTY, category: form.category });
+        setErrors({});
+        setPreview(null);
+        if (file.current) file.current.value = "";
+      } else close();
       router.refresh();
     });
   };
@@ -169,7 +175,7 @@ export function SupplierProducts({ products }: { products: ProductRow[] }) {
       </div>
 
       <Modal open={open} onClose={close} title={t(form.id ? "modal.titleEdit" : "modal.title")}>
-        <form onSubmit={(e) => { e.preventDefault(); submit(); }} noValidate className="space-y-5">
+        <form onSubmit={(e) => { e.preventDefault(); submit(false); }} noValidate className="space-y-5">
           {formError && <div role="alert" className="rounded-xl border border-down px-3.5 py-3 text-[13px] text-down">{formError}</div>}
           {box("name", t("modal.name"), <input value={form.name} onChange={set("name")} maxLength={140} className={`${input} mt-1.5`} />)}
           {box("category", t("modal.category"), (
@@ -196,6 +202,7 @@ export function SupplierProducts({ products }: { products: ProductRow[] }) {
           <p className="text-[12px] text-[var(--ink-500)]">{t("modal.reviewNote")}</p>
           <div className="flex justify-end gap-3 border-t border-[var(--ink-100)] pt-5">
             <button type="button" onClick={close} className="inline-flex h-10 items-center rounded-full border border-[var(--ink-200)] bg-white px-4 text-sm font-semibold">{t("modal.cancel")}</button>
+            {!form.id && <button type="button" disabled={pending} onClick={() => submit(true)} className="inline-flex h-10 items-center rounded-full border border-[var(--ink-200)] bg-white px-4 text-sm font-semibold disabled:opacity-60">{t("modal.submitAnother")}</button>}
             <button type="submit" disabled={pending} className={`${BRAND_BUTTON_CLASS} h-10 px-5 text-sm`}>{pending ? t("modal.saving") : t(form.id ? "modal.save" : "modal.submit")}</button>
           </div>
         </form>

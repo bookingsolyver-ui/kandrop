@@ -2,13 +2,18 @@
 
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
+import { ToastProvider, useToast } from "@/components/ui/Toast";
+import { useRouter } from "@/i18n/navigation";
 import { useFormatters } from "@/components/dashboard/useFormatters";
 import type { CatalogRow } from "@/shared/admin/types";
 import { Badge, Pager, PageHeader, card, fold, usePager } from "./ui";
 
 /** The catalogue as the operator sees it: cost, supplier, how many stores sell it, and whether it is visible. */
-export function AdminCatalogView({ rows: all }: { rows: CatalogRow[] }) {
+function Body({ rows: all }: { rows: CatalogRow[] }) {
   const t = useTranslations("Admin.catalog");
+  const toast = useToast();
+  const router = useRouter();
+  const [busy, setBusy] = useState<string | null>(null);
   const f = useFormatters();
   const [query, setQuery] = useState("");
 
@@ -17,6 +22,20 @@ export function AdminCatalogView({ rows: all }: { rows: CatalogRow[] }) {
     return all.filter((p) => !q || fold(`${p.name} ${p.supplierName} ${p.category}`).includes(q));
   }, [all, query]);
   const pager = usePager(rows, 10);
+
+  /** Highlights or un-highlights a product as a "Winning Product" (the server checks the admin and audits it). */
+  const toggleWinning = async (id: string, winning: boolean) => {
+    setBusy(id);
+    try {
+      const res = await fetch(`/api/admin/supplier-products/${id}/winning`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ winning }) });
+      if (res.ok) {
+        toast({ message: t(winning ? "toast.winningOn" : "toast.winningOff") });
+        router.refresh();
+      } else toast({ message: t("toast.failed") });
+    } finally {
+      setBusy(null);
+    }
+  };
 
   return (
     <div>
@@ -35,6 +54,7 @@ export function AdminCatalogView({ rows: all }: { rows: CatalogRow[] }) {
                 <th className="px-4 py-3 text-right">{t("cols.cost")}</th>
                 <th className="px-4 py-3 text-right">{t("cols.stores")}</th>
                 <th className="px-4 py-3">{t("cols.visibility")}</th>
+                <th className="px-4 py-3">{t("cols.winning")}</th>
               </tr>
             </thead>
             <tbody>
@@ -45,6 +65,12 @@ export function AdminCatalogView({ rows: all }: { rows: CatalogRow[] }) {
                   <td className="mono-num px-4 py-3 text-right font-bold">{f.money(p.costPrice)}</td>
                   <td className="mono-num px-4 py-3 text-right text-[var(--ink-600)]">{p.stores}</td>
                   <td className="px-4 py-3"><Badge tone={p.status === "approved" ? "success" : p.status === "rejected" ? "danger" : "warn"}>{t(`status.${p.status}`)}</Badge></td>
+                  <td className="px-4 py-3">
+                    <button type="button" aria-pressed={p.isWinning} disabled={busy === p.id || p.status !== "approved"} onClick={() => void toggleWinning(p.id, !p.isWinning)}
+                      className={`h-9 rounded-full px-3.5 text-[12px] font-bold whitespace-nowrap disabled:opacity-40 ${p.isWinning ? "bg-brand-orange text-brand-black" : "border border-[var(--ink-200)] bg-white font-semibold text-[var(--ink-700)]"}`}>
+                      {p.isWinning ? t("winningOn") : t("winningOff")}
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -54,5 +80,13 @@ export function AdminCatalogView({ rows: all }: { rows: CatalogRow[] }) {
         <Pager pager={pager} />
       </div>
     </div>
+  );
+}
+
+export function AdminCatalogView(props: { rows: CatalogRow[] }) {
+  return (
+    <ToastProvider>
+      <Body {...props} />
+    </ToastProvider>
   );
 }

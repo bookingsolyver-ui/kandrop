@@ -24,7 +24,8 @@ export type SupplierRegisterInput = z.input<typeof supplierRegisterSchema>;
 export const addProductSchema = z.object({
   title: z.string().trim().min(5, "title_required").max(140, "title_required"),
   category: z.enum(["beauty", "toys", "fashion", "home", "jewelry", "health", "tech", "pets"], "category_required"),
-  description: z.string().trim().min(20, "description_short").max(1500, "description_short"),
+  // Optional for a quick submission; when given it must say something useful (20+ characters).
+  description: z.string().trim().max(1500, "description_short").refine((v) => v === "" || v.length >= 20, "description_short"),
   weightKg: z.coerce.number().positive("weight_invalid").max(100, "weight_invalid"),
   costPrice: z.coerce.number().int().positive("price_invalid").max(10_000_000, "price_invalid"),
   suggestedPrice: z.coerce.number().int().positive("price_invalid").max(10_000_000, "price_invalid"),

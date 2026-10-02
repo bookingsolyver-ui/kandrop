@@ -43,6 +43,8 @@ export interface CatalogRow {
   stores: number;
   /** Units sold in the last 28 days, per week. */
   weeklySales: number;
+  /** Highlighted to merchants as a "Winning Product". */
+  isWinning: boolean;
 }
 
 export type LedgerKind = "payment_in" | "fee_retained" | "supplier_payment" | "payout_paid" | "payout_request";

@@ -23,9 +23,9 @@ export interface CatalogProduct {
   updatedAt: number;
 }
 
-const COLUMNS = "id,supplier_id,name,description,category,cost_price,stock,image_mime,created_at,updated_at,suppliers!inner(company_name,status)";
+export const COLUMNS = "id,supplier_id,name,description,category,cost_price,stock,image_mime,created_at,updated_at,suppliers!inner(company_name,status)";
 
-function fromRow(row: Record<string, unknown>): CatalogProduct {
+export function fromRow(row: Record<string, unknown>): CatalogProduct {
   const supplier = row.suppliers as { company_name?: string } | null;
   return {
     id: String(row.id),

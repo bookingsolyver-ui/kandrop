@@ -2926,7 +2926,8 @@
         "supplier": "Fournisseur",
         "cost": "Coût",
         "stores": "Boutiques",
-        "visibility": "Visibilité"
+        "visibility": "Visibilité",
+        "winning": "Mise en avant"
       },
       "origin": {
         "nacional": "National",
@@ -2939,7 +2940,14 @@
         "in_review": "En examen",
         "rejected": "Refusé"
       },
-      "empty": "Il n’y a pas encore de produits de fournisseurs."
+      "empty": "Il n’y a pas encore de produits de fournisseurs.",
+      "winningOn": "★ Gagnant",
+      "winningOff": "Mettre en avant",
+      "toast": {
+        "winningOn": "Produit mis en avant comme gagnant.",
+        "winningOff": "Mise en avant retirée.",
+        "failed": "Mise à jour impossible."
+      }
     },
     "recon": {
       "title": "Rapprochement et répartition",
@@ -3554,7 +3562,8 @@
         "submit": "Envoyer pour examen",
         "titleEdit": "Modifier le produit",
         "save": "Enregistrer",
-        "saving": "Enregistrement…"
+        "saving": "Enregistrement…",
+        "submitAnother": "Enregistrer et en ajouter un autre"
       },
       "edit": "Modifier",
       "delete": "Supprimer",
@@ -3903,6 +3912,28 @@
         "retry": "Réessayer",
         "denied": "Les notifications sont bloquées dans ce navigateur. Autorisez-les dans les réglages du site pour recevoir des alertes."
       }
+    }
+  },
+  "Highlights": {
+    "winning": {
+      "eyebrow": "À la une",
+      "title": "Produits gagnants",
+      "subtitle": "Choisis par l’équipe Kandrop : ceux qui ont le plus de chances de se vendre maintenant.",
+      "all": "Voir toute la vitrine",
+      "badge": "Gagnant",
+      "cost": "Coût : {price}",
+      "suggested": "Suggéré : {price}"
+    },
+    "ranking": {
+      "eyebrow": "Classement de {month}",
+      "title": "Top marchands du mois",
+      "yourPosition": "Votre position",
+      "ofStores": "sur {count} marchands avec des ventes",
+      "volume": "{amount} de ventes",
+      "orders": "{count} commandes",
+      "noSales": "Pas encore de vente ce mois-ci. Votre première vente vous place dans le classement.",
+      "empty": "Personne n’a encore vendu ce mois-ci. Soyez le premier !",
+      "you": "Vous"
     }
   }
 }

@@ -2926,7 +2926,8 @@
         "supplier": "Supplier",
         "cost": "Cost",
         "stores": "Stores",
-        "visibility": "Visibility"
+        "visibility": "Visibility",
+        "winning": "Highlight"
       },
       "origin": {
         "nacional": "National",
@@ -2939,7 +2940,14 @@
         "in_review": "Under review",
         "rejected": "Rejected"
       },
-      "empty": "There are no supplier products yet."
+      "empty": "There are no supplier products yet.",
+      "winningOn": "★ Winner",
+      "winningOff": "Highlight",
+      "toast": {
+        "winningOn": "Product highlighted as a Winner.",
+        "winningOff": "Highlight removed.",
+        "failed": "Could not update."
+      }
     },
     "recon": {
       "title": "Reconciliation and distribution",
@@ -3554,7 +3562,8 @@
         "submit": "Send for review",
         "titleEdit": "Edit product",
         "save": "Save changes",
-        "saving": "Saving…"
+        "saving": "Saving…",
+        "submitAnother": "Save and add another"
       },
       "edit": "Edit",
       "delete": "Remove",
@@ -3903,6 +3912,28 @@
         "retry": "Try again",
         "denied": "Notifications are blocked in this browser. Allow them in the site settings to receive alerts."
       }
+    }
+  },
+  "Highlights": {
+    "winning": {
+      "eyebrow": "Featured",
+      "title": "Winning Products",
+      "subtitle": "Picked by the Kandrop team: the ones most likely to sell right now.",
+      "all": "See the whole showcase",
+      "badge": "Winner",
+      "cost": "Cost: {price}",
+      "suggested": "Suggested: {price}"
+    },
+    "ranking": {
+      "eyebrow": "{month} ranking",
+      "title": "Top Merchants of the Month",
+      "yourPosition": "Your position",
+      "ofStores": "of {count} merchants with sales",
+      "volume": "{amount} in sales",
+      "orders": "{count} orders",
+      "noSales": "No sales yet this month. Your first sale puts you in the ranking.",
+      "empty": "Nobody has sold this month yet. Be the first!",
+      "you": "You"
     }
   }
 }

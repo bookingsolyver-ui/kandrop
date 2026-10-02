@@ -5,6 +5,8 @@ import { db } from "@/server/db/client";
 export const AUDIT_ACTIONS = [
   "supplier_product.approve",
   "supplier_product.reject",
+  "supplier_product.winning_on",
+  "supplier_product.winning_off",
   "supplier.approve",
   "supplier.reject",
   "supplier.hold",
