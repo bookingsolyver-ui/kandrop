@@ -3269,7 +3269,6 @@
         "clock": "Heure de Luanda. Indiquez au moins le début ou la durée.",
         "duration": "Durée estimée (facultatif)",
         "durationPlaceholder": "environ 2 heures",
-        "includeInactive": "Inclure aussi les comptes inactifs et en attente (par défaut, seuls les comptes avec un abonnement actif sont prévenus).",
         "warning": "L’e-mail part immédiatement vers tous les destinataires et ne peut pas être annulé.",
         "cancel": "Annuler",
         "send": "Envoyer l’avis",
@@ -3278,7 +3277,12 @@
         "donePartial": "Avis envoyé à {sent} marchands sur {total}. Certains e-mails ont échoué.",
         "nobody": "Aucun marchand à qui envoyer.",
         "notConfigured": "L’envoi d’e-mails n’est pas configuré (RESEND_API_KEY). Rien n’a été envoyé.",
-        "failed": "L’avis n’a pas pu être envoyé."
+        "failed": "L’avis n’a pas pu être envoyé.",
+        "onlyActive": "Envoyer uniquement aux comptes avec un abonnement actif (par défaut, tous les comptes inscrits sont inclus).",
+        "reportTotals": "Envoyés : {sent} sur {total}. Échecs : {failed}.",
+        "reportBanned": "{count} compte(s) banni(s) non inclus.",
+        "reportFailures": "Adresses en échec (motif) :",
+        "close": "Fermer"
       }
     }
   },

@@ -47,22 +47,26 @@ export async function renderSubscriptionEmail(kind: SubscriptionEmailKind, d: Su
   return { subject, html, text };
 }
 
-/** Hands one rendered message to Resend. Returns whether the provider accepted it; NEVER throws, never waits long. Without `RESEND_API_KEY` nothing is sent. */
-async function deliver(label: string, to: string, message: { subject: string; html: string; text: string }): Promise<boolean> {
+export interface DeliveryResult { ok: boolean; error?: string }
+
+/** Hands one rendered message to Resend. NEVER throws and never waits long; `error` says why it was not accepted. Without `RESEND_API_KEY` nothing is sent. */
+async function deliverDetailed(label: string, to: string, message: { subject: string; html: string; text: string }): Promise<DeliveryResult> {
   const env = getEnv();
-  if (!env.RESEND_API_KEY) return false;
+  if (!env.RESEND_API_KEY) return { ok: false, error: "not_configured" };
   try {
     const resend = new Resend(env.RESEND_API_KEY);
     const send = resend.emails.send({ from: env.EMAIL_FROM ?? "Kandrop <onboarding@resend.dev>", to, ...message });
-    const result = await Promise.race([send, new Promise<null>((resolve) => setTimeout(() => resolve(null), 5000))]);
-    if (!result) { console.error(`[email] ${label} e-mail timed out`); return false; }
-    if ("error" in result && result.error) { console.error(`[email] ${label} e-mail was refused:`, result.error.name, result.error.message); return false; }
-    return true;
+    const result = await Promise.race([send, new Promise<null>((resolve) => setTimeout(() => resolve(null), 10_000))]);
+    if (!result) { console.error(`[email] ${label} e-mail timed out`); return { ok: false, error: "timeout" }; }
+    if ("error" in result && result.error) { console.error(`[email] ${label} e-mail was refused:`, result.error.name, result.error.message); return { ok: false, error: result.error.name }; }
+    return { ok: true };
   } catch (err) {
     console.error(`[email] ${label} e-mail failed`, err instanceof Error ? err.message : err);
-    return false;
+    return { ok: false, error: err instanceof Error ? err.name : "unknown" };
   }
 }
+
+const deliver = async (label: string, to: string, message: { subject: string; html: string; text: string }) => (await deliverDetailed(label, to, message)).ok;
 
 /** Sends the 3-day reminder or the deactivation notice. */
 export async function sendSubscriptionEmail(kind: SubscriptionEmailKind, data: SubscriptionEmailData): Promise<boolean> {
@@ -137,46 +141,56 @@ export async function sendMaintenanceEmail(notice: MaintenanceNotice, recipient:
   }
 }
 
-const BATCH = 50;
+export interface MaintenanceReport {
+  /** Recipients the send was attempted for. */
+  total: number;
+  sent: number;
+  failed: number;
+  /** One entry per failure: the address and why (so the administrator can follow up by hand). */
+  failures: Array<{ to: string; error: string }>;
+}
+
+const CONCURRENCY = 4;
+const RETRIES = 3;
+const TIME_BUDGET_MS = 240_000;
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 /**
- * Sends the notice to many merchants. Messages go to Resend in batches of 50 (one request each, well inside its rate limit); if a
- * batch is refused, its messages are retried ONE BY ONE so a single bad address never costs the others their e-mail. Never throws:
- * the result says how many were accepted and how many were not.
+ * Sends the notice to EVERY recipient, one e-mail each, in a loop of a few parallel workers. Each send has its own try/catch: a
+ * failure (bad address, refused, timeout, a render error) is recorded and the loop goes on with the next merchant. A provider rate
+ * limit is retried with a pause. Nothing is skipped silently: whoever was not reached (including when the time budget of the request
+ * runs out) is in `failures` with the reason. Never throws.
  */
-export async function sendMaintenanceEmails(notice: MaintenanceNotice, recipients: MaintenanceRecipient[]): Promise<{ sent: number; failed: number }> {
-  const env = getEnv();
-  if (!env.RESEND_API_KEY || recipients.length === 0) return { sent: 0, failed: recipients.length };
-  const resend = new Resend(env.RESEND_API_KEY);
-  const from = env.EMAIL_FROM ?? "Kandrop <onboarding@resend.dev>";
-  let sent = 0;
-  for (let i = 0; i < recipients.length; i += BATCH) {
-    const chunk = recipients.slice(i, i + BATCH);
-    const messages = (
-      await Promise.all(
-        chunk.map(async (r) => {
-          try {
-            return { to: r.to, ...(await renderMaintenanceEmail(notice, r.storeName)) };
-          } catch (err) {
-            console.error("[email] maintenance e-mail could not be rendered", err instanceof Error ? err.message : err);
-            return null;
-          }
-        }),
-      )
-    ).filter((m): m is NonNullable<typeof m> => m !== null);
-    let accepted = false;
-    try {
-      const result = await Promise.race([
-        resend.batch.send(messages.map((m) => ({ from, to: m.to, subject: m.subject, html: m.html, text: m.text }))),
-        new Promise<null>((resolve) => setTimeout(() => resolve(null), 15_000)),
-      ]);
-      accepted = !!result && !result.error;
-      if (!accepted) console.error("[email] maintenance batch was not accepted; retrying one by one", result?.error?.message ?? "timeout");
-    } catch (err) {
-      console.error("[email] maintenance batch failed; retrying one by one", err instanceof Error ? err.message : err);
-    }
-    if (accepted) sent += messages.length;
-    else for (const m of messages) if (await deliver("maintenance", m.to, m)) sent += 1;
+export async function sendMaintenanceEmails(notice: MaintenanceNotice, recipients: MaintenanceRecipient[]): Promise<MaintenanceReport> {
+  const report: MaintenanceReport = { total: recipients.length, sent: 0, failed: 0, failures: [] };
+  const fail = (to: string, error: string) => { report.failed += 1; report.failures.push({ to, error }); };
+  if (!getEnv().RESEND_API_KEY) {
+    for (const r of recipients) fail(r.to, "not_configured");
+    return report;
   }
-  return { sent, failed: recipients.length - sent };
+  const started = Date.now();
+  let next = 0;
+  const worker = async () => {
+    for (;;) {
+      const index = next++;
+      const recipient = recipients[index];
+      if (!recipient) return;
+      if (Date.now() - started > TIME_BUDGET_MS) { fail(recipient.to, "time_limit"); continue; }
+      try {
+        const message = await renderMaintenanceEmail(notice, recipient.storeName);
+        let outcome = await deliverDetailed("maintenance", recipient.to, message);
+        for (let attempt = 1; !outcome.ok && outcome.error === "rate_limit_exceeded" && attempt <= RETRIES; attempt += 1) {
+          await sleep(500 * attempt);
+          outcome = await deliverDetailed("maintenance", recipient.to, message);
+        }
+        if (outcome.ok) report.sent += 1;
+        else fail(recipient.to, outcome.error ?? "unknown");
+      } catch (err) {
+        console.error("[email] maintenance send failed", err instanceof Error ? err.message : err);
+        fail(recipient.to, err instanceof Error ? err.name : "unknown");
+      }
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(CONCURRENCY, recipients.length) }, worker));
+  return report;
 }

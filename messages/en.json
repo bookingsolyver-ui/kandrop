@@ -3269,7 +3269,6 @@
         "clock": "Luanda time. Give at least the start or the duration.",
         "duration": "Estimated duration (optional)",
         "durationPlaceholder": "about 2 hours",
-        "includeInactive": "Also include inactive and pending accounts (by default only accounts with an active subscription are notified).",
         "warning": "The e-mail goes out immediately to every recipient and cannot be undone.",
         "cancel": "Cancel",
         "send": "Send notice",
@@ -3278,7 +3277,12 @@
         "donePartial": "Notice sent to {sent} of {total} merchants. Some e-mails failed.",
         "nobody": "There are no merchants to send to.",
         "notConfigured": "E-mail sending is not configured (RESEND_API_KEY). Nothing was sent.",
-        "failed": "The notice could not be sent."
+        "failed": "The notice could not be sent.",
+        "onlyActive": "Send only to accounts with an active subscription (by default it goes to every registered account).",
+        "reportTotals": "Sent: {sent} of {total}. Failed: {failed}.",
+        "reportBanned": "{count} banned account(s) were not included.",
+        "reportFailures": "Addresses that failed (reason):",
+        "close": "Close"
       }
     }
   },

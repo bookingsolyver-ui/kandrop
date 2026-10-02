@@ -3269,7 +3269,6 @@
         "clock": "Hora de Luanda. Indica pelo menos o início ou a duração.",
         "duration": "Duração estimada (opcional)",
         "durationPlaceholder": "cerca de 2 horas",
-        "includeInactive": "Incluir também contas inativas e pendentes (por omissão só vão contas com subscrição ativa).",
         "warning": "O e-mail sai de imediato para todos os destinatários e não pode ser desfeito.",
         "cancel": "Cancelar",
         "send": "Enviar aviso",
@@ -3278,7 +3277,12 @@
         "donePartial": "Aviso enviado a {sent} de {total} lojistas. Alguns e-mails falharam.",
         "nobody": "Não há lojistas a quem enviar.",
         "notConfigured": "O envio de e-mail não está configurado (RESEND_API_KEY). Nada foi enviado.",
-        "failed": "Não foi possível enviar o aviso."
+        "failed": "Não foi possível enviar o aviso.",
+        "onlyActive": "Enviar só a contas com subscrição ativa (por omissão vai a todas as contas registadas).",
+        "reportTotals": "Enviados: {sent} de {total}. Falhas: {failed}.",
+        "reportBanned": "{count} conta(s) banida(s) não foram incluídas.",
+        "reportFailures": "Endereços que falharam (motivo):",
+        "close": "Fechar"
       }
     }
   },

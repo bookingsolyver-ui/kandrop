@@ -60,7 +60,13 @@ export const billingRepository = {
 
   /** Every subscription row, for the daily job and the administrator's view. */
   async allSubscriptions(): Promise<SubscriptionRecord[]> {
-    const list = rows("subscriptions.all", await db().from("subscriptions").select("*").limit(10000));
+    // Page by page: the API returns at most 1000 rows per request.
+    const list: Array<Record<string, unknown>> = [];
+    for (let from = 0; ; from += 1000) {
+      const page = rows("subscriptions.all", await db().from("subscriptions").select("*").order("store_id").range(from, from + 999));
+      list.push(...page);
+      if (page.length < 1000) break;
+    }
     return list.flatMap((row) => {
       const plan = normalizePlan(row.plan);
       return plan
