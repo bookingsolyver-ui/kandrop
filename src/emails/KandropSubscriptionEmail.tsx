@@ -1,4 +1,5 @@
-import { Body, Button, Container, Head, Heading, Hr, Html, Img, Preview, Section, Tailwind, Text } from "@react-email/components";
+import { Body, Button, Container, Head, Heading, Hr, Html, Preview, Section, Tailwind, Text } from "@react-email/components";
+import { DarkModeStyles, EMAIL_TAILWIND, EmailLogo } from "./parts";
 
 export type SubscriptionEmailKind = "reminder" | "deactivated";
 
@@ -45,28 +46,32 @@ export function KandropSubscriptionEmail(props: KandropSubscriptionEmailProps) {
 
   return (
     <Html lang="pt">
-      <Head />
+      <Head>
+        <meta name="color-scheme" content="light dark" />
+        <meta name="supported-color-schemes" content="light dark" />
+        <DarkModeStyles />
+      </Head>
       <Preview>{copy.preview(props)}</Preview>
-      <Tailwind config={{ theme: { extend: { colors: { brand: { orange: "#ff5a00", black: "#000000" } } } } }}>
-        <Body className="m-0 bg-[#f6f6f6] py-6 font-sans">
-          <Container className="mx-auto max-w-[560px] overflow-hidden rounded-2xl bg-white">
+      <Tailwind config={EMAIL_TAILWIND}>
+        <Body className="dm-page m-0 bg-[#f6f6f6] py-6 font-sans">
+          <Container className="dm-card mx-auto max-w-[560px] overflow-hidden rounded-2xl bg-white">
             <Section className="px-8 pt-8 pb-2 text-center">
-              <Img src="https://kandrop.com/images/kandrop-logo.png" width="140" alt="Kandrop" className="mx-auto" />
+              <EmailLogo />
             </Section>
 
             <Section className="px-8 pt-4 pb-8">
-              <Heading as="h1" className="m-0 mb-3 text-[22px] leading-tight font-bold text-brand-black">
+              <Heading as="h1" className="dm-title m-0 mb-3 text-[22px] leading-tight font-bold text-brand-black">
                 {copy.title}
               </Heading>
-              <Text className="m-0 mb-5 text-[15px] leading-relaxed text-[#333333]">Olá, equipa de {shopName}.</Text>
+              <Text className="dm-text m-0 mb-5 text-[15px] leading-relaxed text-[#333333]">Olá, equipa de {shopName}.</Text>
 
-              <Section className="mb-5 rounded-xl bg-[#fff0e6] px-6 py-5 text-center">
+              <Section className="mb-5 dm-box rounded-xl bg-[#fff0e6] px-6 py-5 text-center">
                 <Text className="m-0 text-[11px] font-bold tracking-[0.18em] text-brand-orange uppercase">{copy.boxLabel}</Text>
-                {countdown && <Text className="m-0 mt-1 text-[34px] leading-tight font-extrabold text-brand-black">{countdown}</Text>}
-                <Text className={`m-0 ${countdown ? "mt-1 text-[15px] font-semibold" : "mt-1 text-[26px] font-extrabold"} text-brand-black`}>{expirationDate}</Text>
+                {countdown && <Text className="dm-title m-0 mt-1 text-[34px] leading-tight font-extrabold text-brand-black">{countdown}</Text>}
+                <Text className={`dm-title m-0 ${countdown ? "mt-1 text-[15px] font-semibold" : "mt-1 text-[26px] font-extrabold"} text-brand-black`}>{expirationDate}</Text>
               </Section>
 
-              <Text className="m-0 mb-6 text-[15px] leading-relaxed text-[#333333]">{copy.message(props)}</Text>
+              <Text className="dm-text m-0 mb-6 text-[15px] leading-relaxed text-[#333333]">{copy.message(props)}</Text>
 
               <Section className="text-center">
                 <Button href={ctaUrl} className="rounded-xl bg-brand-orange px-8 py-4 text-[15px] font-bold text-brand-black no-underline">
@@ -75,7 +80,7 @@ export function KandropSubscriptionEmail(props: KandropSubscriptionEmailProps) {
               </Section>
             </Section>
 
-            <Hr className="m-0 border-[#e6e6e6]" />
+            <Hr className="dm-hr m-0 border-[#e6e6e6]" />
             <Section className="px-8 py-5 text-center">
               <Text className="m-0 text-[12px] leading-relaxed text-[#8a8a8a]">Kandrop © 2026. Recebeu este e-mail porque tem uma loja na Kandrop.</Text>
             </Section>
