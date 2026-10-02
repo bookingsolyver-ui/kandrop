@@ -53,10 +53,10 @@ export function KaiHeader({ firstName, onMenu }: { firstName: string; onMenu: ()
         <MenuBarsIcon size={20} />
       </button>
 
-      {/* The official app icon (the white K on the orange square, public/brand/k-app.png): next to the menu button and the
+      {/* The official icon from KANDROP_VISUAL (1k.png: the white K on the orange square, public/brand/k-ok.png): next to the menu button and the
           greeting on a phone. The full wordmark lives in the desktop sidebar. */}
       <Link href="/dashboard" aria-label="Kandrop" className="shrink-0 outline-none focus-visible:outline-none lg:hidden">
-        <Image src="/brand/k-app.png" alt="" width={32} height={32} priority className="size-8 rounded-lg" />
+        <Image src="/brand/k-ok.png" alt="" width={32} height={32} priority className="size-8 rounded-md" />
       </Link>
 
       <div className="flex min-w-0 flex-col leading-tight">
