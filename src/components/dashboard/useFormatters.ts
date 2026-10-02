@@ -9,7 +9,7 @@ export function useFormatters() {
   const locale = useLocale();
 
   return {
-    /** `22.500 kwz` */
+    /** `22.500 Kz` */
     money: (minor: number) => formatKwz(minor, locale),
     compact: (minor: number) =>
       format.number(minor / 100, {

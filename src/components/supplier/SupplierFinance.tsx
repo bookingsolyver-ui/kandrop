@@ -16,7 +16,7 @@ import { useCurrentSupplier } from "@/components/supplier/SupplierProvider";
 import type { SupplierOrderRow } from "./types";
 import type { Withdrawal } from "@/server/modules/supplier/withdrawals";
 
-const MIN = 500_000; // 5 000 kwz, in minor units (the database enforces the same minimum)
+const MIN = 500_000; // 5 000 Kz, in minor units (the database enforces the same minimum)
 
 /** What the supplier earns (the cost price of each product a merchant sells) and the withdrawals. */
 /** The payout account as the server sends it: the IBAN is already masked, the full number never leaves the server. */

@@ -9,7 +9,7 @@ export function OrderPlacedView({ order, pay, orderId, trackPurchase }: { order:
   const t = useTranslations("OrderPlaced");
   const f = useFormatter();
   const locale = useLocale();
-  const total = `${f.number(Math.round(order.total / 100))} kwz`;
+  const total = `${f.number(Math.round(order.total / 100))} Kz`;
   const text = t("whatsappText", { number: order.number, reference: order.reference, total });
   const link = pay.whatsapp ? `https://wa.me/244${pay.whatsapp}?text=${encodeURIComponent(text)}` : null;
   // Each detail is shown only when it exists; with no IBAN the block is replaced by a plain note.
@@ -42,7 +42,7 @@ export function OrderPlacedView({ order, pay, orderId, trackPurchase }: { order:
         <section className="rounded-lg border border-line bg-surface p-4">
           <dl className="space-y-2 text-sm">
             <div className="flex justify-between gap-4"><dt className="text-ink-muted">{t("product")}</dt><dd className="text-right font-medium">{order.productTitle} × {order.quantity}</dd></div>
-            {order.discount > 0 && <div className="flex justify-between gap-4"><dt className="text-ink-muted">{t("coupon", { code: order.couponCode ?? "" })}</dt><dd className="tabular-nums text-up">-{`${f.number(Math.round(order.discount / 100))} kwz`}</dd></div>}
+            {order.discount > 0 && <div className="flex justify-between gap-4"><dt className="text-ink-muted">{t("coupon", { code: order.couponCode ?? "" })}</dt><dd className="tabular-nums text-up">-{`${f.number(Math.round(order.discount / 100))} Kz`}</dd></div>}
             <div className="flex justify-between gap-4 text-base font-semibold"><dt>{t("total")}</dt><dd className="tabular-nums">{total}</dd></div>
             <div className="flex justify-between gap-4"><dt className="text-ink-muted">{t("reference")}</dt><dd className="font-mono font-semibold tabular-nums">{order.reference}</dd></div>
             <div className="flex justify-between gap-4"><dt className="text-ink-muted">{t("status.label")}</dt><dd className="text-right font-medium">{cod && !verified ? t("cod.status") : t(`status.${order.paymentStatus}`)}</dd></div>

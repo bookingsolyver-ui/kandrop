@@ -5,7 +5,7 @@ import { formatAmount, KWZ } from "@/lib/money";
 
 /**
  * Display-size money: the unit is set smaller and quieter than the amount, the way statements and
- * private-banking screens do it. Always `amount kwz`.
+ * private-banking screens do it. Always `amount Kz`.
  */
 export function Money({ minor }: { minor: number }) {
   const amount = formatAmount(minor, useLocale());

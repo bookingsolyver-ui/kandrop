@@ -38,7 +38,7 @@ export const GET = handle(async (req) => {
       return [p.reference, p.storeName, bank?.holderName ?? p.holderName, "", bank?.iban ?? "", Math.round(p.amount / 100), new Date(p.createdAt).toISOString().slice(0, 10)].map(cell).join(";");
     })
   );
-  const head = ["referencia", "fornecedor", "titular", "banco", "iban", "valor_kwz", "data"].join(";");
+  const head = ["referencia", "fornecedor", "titular", "banco", "iban", "valor_kz", "data"].join(";");
 
   const actor = await userRepository.findById(session.userId);
   await recordAudit({ actorId: session.userId, actorEmail: actor?.email ?? null, action: "withdrawal.export", target: `${pending.length + merchantPending.length} transfers`, before: {}, after: { suppliers: pending.length, merchants: merchantPending.length }, ip: clientIp(req) });

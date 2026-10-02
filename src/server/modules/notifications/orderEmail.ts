@@ -20,8 +20,8 @@ export interface OrderEmailData {
 }
 
 const esc = (value: string) => value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
-/** `13 500 kwz`: always grouped by thousands (pt-PT alone would not group 4-digit numbers). */
-const kwz = (minor: number) => `${String(Math.round(minor / 100)).replace(/\B(?=(\d{3})+(?!\d))/g, " ")} kwz`;
+/** `13 500 Kz`: always grouped by thousands (pt-PT alone would not group 4-digit numbers). */
+const kz = (minor: number) => `${String(Math.round(minor / 100)).replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Kz`;
 const day = (iso: string) => {
   const at = Date.parse(`${iso}T00:00:00Z`);
   return Number.isNaN(at) ? iso : new Intl.DateTimeFormat("pt-PT", { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" }).format(at);
@@ -32,9 +32,9 @@ export function renderOrderEmail(d: OrderEmailData): { subject: string; html: st
   const first = d.customerName.split(" ")[0] ?? d.customerName;
   const rows: Array<[string, string]> = [
     ["Produto", `${d.productTitle} x ${d.quantity}`],
-    ["Preço", kwz(d.unitAmount * d.quantity)],
-    ...(d.discount > 0 ? ([[`Cupão${d.couponCode ? ` ${d.couponCode}` : ""}`, `-${kwz(d.discount)}`]] as Array<[string, string]>) : []),
-    ["Total a pagar na entrega", kwz(d.total)],
+    ["Preço", kz(d.unitAmount * d.quantity)],
+    ...(d.discount > 0 ? ([[`Cupão${d.couponCode ? ` ${d.couponCode}` : ""}`, `-${kz(d.discount)}`]] as Array<[string, string]>) : []),
+    ["Total a pagar na entrega", kz(d.total)],
     ...(d.deliveryDate ? ([["Dia de entrega pedido", day(d.deliveryDate)]] as Array<[string, string]>) : []),
   ];
   // Questions go to the STORE that sold the product, with ITS contacts only.

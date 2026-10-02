@@ -33,7 +33,7 @@ export const addProductSchema = z.object({
 
 const CATEGORIES = ["beauty", "toys", "fashion", "home", "jewelry", "health", "tech", "pets"] as const;
 
-/** A catalogue product as the supplier submits it. Price in whole kwz; the server stores minor units. */
+/** A catalogue product as the supplier submits it. Price in whole Kz; the server stores minor units. */
 export const productInputSchema = z.object({
   /** Present when editing. */
   id: z.uuid().optional(),

@@ -14,7 +14,7 @@ export interface Withdrawal {
   processedAt: number | null;
 }
 
-/** The smallest withdrawal: 5 000 kwz, in minor units. */
+/** The smallest withdrawal: 5 000 Kz, in minor units. */
 export const MIN_WITHDRAWAL = 500_000;
 
 const toWithdrawal = (r: Record<string, unknown>): Withdrawal => ({
