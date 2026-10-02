@@ -292,6 +292,14 @@ export function CheckoutView({ product: p, invalid, couponRejected, days, today 
         </aside>
       </main>
 
+      <footer className="mx-auto mt-10 max-w-6xl px-4 text-[12px] text-ink-muted sm:px-6">
+        <nav aria-label={t("legal")} className="flex flex-wrap gap-x-5 gap-y-1">
+          <Link href="/termos" className="underline-offset-4 hover:text-ink hover:underline">{t("termsLink")}</Link>
+          <Link href="/privacidade" className="underline-offset-4 hover:text-ink hover:underline">{t("privacyLink")}</Link>
+          <Link href="/entregas" className="underline-offset-4 hover:text-ink hover:underline">{t("deliveriesLink")}</Link>
+        </nav>
+      </footer>
+
       {/* Phones: the finish button is pinned and says the amount. */}
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface/95 px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur-md lg:hidden">
         <div className="mx-auto max-w-md">

@@ -980,7 +980,10 @@
       "label": "Pied de page",
       "tagline": "Le dropshipping pensé pour l’Angola.",
       "register": "Créer un compte",
-      "copyright": "© {year} Kandrop. Tous droits réservés."
+      "copyright": "© {year} Kandrop. Tous droits réservés.",
+      "terms": "Conditions Générales",
+      "privacy": "Politique de Confidentialité",
+      "deliveries": "Garantie et Livraison"
     },
     "pages": {
       "soon": "Bientôt",
@@ -1362,7 +1365,11 @@
     },
     "footer": {
       "soldBy": "Vendu par {store}",
-      "payments": "Paiements Kandrop"
+      "payments": "Paiements Kandrop",
+      "legal": "Informations légales",
+      "terms": "Conditions Générales",
+      "privacy": "Politique de Confidentialité",
+      "deliveries": "Garantie et Livraison"
     },
     "landing": {
       "secureBadge": "Achat sécurisé",
@@ -3354,7 +3361,11 @@
     "secure": "Achat sécurisé",
     "invalid": "Vérifiez vos informations et réessayez.",
     "submit": "Valider la commande · {price}",
-    "submitting": "Enregistrement…"
+    "submitting": "Enregistrement…",
+    "legal": "Informations légales",
+    "termsLink": "Conditions Générales",
+    "privacyLink": "Politique de Confidentialité",
+    "deliveriesLink": "Garantie et Livraison"
   },
   "Customers": {
     "title": "Clients",

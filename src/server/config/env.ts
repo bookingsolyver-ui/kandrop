@@ -46,6 +46,10 @@ const schema = z.object({
   // The support inbox shown on the Support page (the WhatsApp number is `SUPPORT_WHATSAPP`, shared with
   // the bank-transfer proofs). Both fall back to the values in `support/contacts.ts`.
   SUPPORT_EMAIL: z.preprocess((v) => (v === "" ? undefined : v), z.email().optional()),
+  // Transactional e-mail (order confirmation to the customer). Unset RESEND_API_KEY = no e-mail is sent, nothing else changes.
+  RESEND_API_KEY: z.preprocess((v) => (typeof v === "string" && v.trim() === "" ? undefined : v), z.string().optional()),
+  // The sender, on a domain verified in Resend, e.g. `Kandrop <encomendas@kandrop.com>`. Unset = Resend's test sender.
+  EMAIL_FROM: z.preprocess((v) => (typeof v === "string" && v.trim() === "" ? undefined : v), z.string().max(200).optional()),
   // Who may open `/admin`: a comma-separated list of account e-mails. Empty = nobody (the pages answer
   // 404), so the operator console is never open by default.
   ADMIN_EMAILS: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),

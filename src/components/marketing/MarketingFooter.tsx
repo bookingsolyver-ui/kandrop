@@ -38,6 +38,21 @@ export async function MarketingFooter() {
           </ul>
           <ul>
             <li>
+              <Link href="/termos" className={link}>
+                {t("terms")}
+              </Link>
+            </li>
+            <li>
+              <Link href="/privacidade" className={link}>
+                {t("privacy")}
+              </Link>
+            </li>
+            <li>
+              <Link href="/entregas" className={link}>
+                {t("deliveries")}
+              </Link>
+            </li>
+            <li>
               <Link href="/login" className={link}>
                 {nav("login")}
               </Link>

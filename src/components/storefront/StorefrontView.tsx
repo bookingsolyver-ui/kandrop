@@ -1,5 +1,6 @@
 import { useFormatter, useTranslations } from "next-intl";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
+import { Link } from "@/i18n/navigation";
 import type { StorefrontProduct } from "@/server/modules/storefront/schema";
 import { DeliveryCutoff } from "./DeliveryCutoff";
 import { BuyActions } from "./BuyActions";
@@ -178,6 +179,11 @@ export function StorefrontView({ product: p, whatsapp }: { product: StorefrontPr
 
       <footer className="mx-auto mt-14 max-w-6xl px-4 text-[13px] text-ink-muted sm:px-6">
         <p>{t("footer.soldBy", { store: p.storeName })} · {t("footer.payments")}</p>
+        <nav aria-label={t("footer.legal")} className="mt-3 flex flex-wrap gap-x-5 gap-y-1">
+          <Link href="/termos" className="underline-offset-4 hover:text-ink hover:underline">{t("footer.terms")}</Link>
+          <Link href="/privacidade" className="underline-offset-4 hover:text-ink hover:underline">{t("footer.privacy")}</Link>
+          <Link href="/entregas" className="underline-offset-4 hover:text-ink hover:underline">{t("footer.deliveries")}</Link>
+        </nav>
       </footer>
     </div>
   );

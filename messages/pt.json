@@ -980,7 +980,10 @@
       "label": "Rodapé",
       "tagline": "Dropshipping pensado para Angola.",
       "register": "Criar conta",
-      "copyright": "© {year} Kandrop. Todos os direitos reservados."
+      "copyright": "© {year} Kandrop. Todos os direitos reservados.",
+      "terms": "Termos e Condições",
+      "privacy": "Política de Privacidade",
+      "deliveries": "Garantia e Entregas"
     },
     "pages": {
       "soon": "Em breve",
@@ -1362,7 +1365,11 @@
     },
     "footer": {
       "soldBy": "Vendido por {store}",
-      "payments": "Pagamentos Kandrop"
+      "payments": "Pagamentos Kandrop",
+      "legal": "Informação legal",
+      "terms": "Termos e Condições",
+      "privacy": "Política de Privacidade",
+      "deliveries": "Garantia e Entregas"
     },
     "landing": {
       "secureBadge": "Compra segura",
@@ -3354,7 +3361,11 @@
     "secure": "Compra segura",
     "invalid": "Confirme os seus dados e tente de novo.",
     "submit": "Finalizar encomenda · {price}",
-    "submitting": "A registar…"
+    "submitting": "A registar…",
+    "legal": "Informação legal",
+    "termsLink": "Termos e Condições",
+    "privacyLink": "Política de Privacidade",
+    "deliveriesLink": "Garantia e Entregas"
   },
   "Customers": {
     "title": "Clientes",

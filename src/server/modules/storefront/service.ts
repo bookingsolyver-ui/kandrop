@@ -4,6 +4,7 @@ import { userRepository } from "@/server/modules/auth/userRepository";
 import { storeRepository } from "@/server/modules/store/repository";
 import { productRepository } from "@/server/modules/products/repository";
 import type { ProductRecord } from "@/server/modules/products/schema";
+import { sendOrderConfirmation } from "@/server/modules/notifications/orderEmail";
 import { couponRepository } from "@/server/modules/coupons/repository";
 import { evaluateCoupon } from "@/server/modules/coupons/math";
 import { placeOrder, supplierStockFor, unitCostFor } from "@/server/modules/fulfilment/service";
@@ -107,6 +108,24 @@ export async function placeStorefrontOrder(slug: string, rawBuyer: unknown): Pro
     provider: DEFAULT_ORDER_PAYMENT_PROVIDER,
     method: CASH_ON_DELIVERY,
   });
+  // The order is saved. The confirmation e-mail is best effort: it can never undo or fail the order.
+  try {
+    await sendOrderConfirmation({
+      to: buyer.email,
+      customerName: buyer.name,
+      orderNumber: order.number,
+      storeName: await storeNameOf(p.storeId),
+      productTitle: p.title,
+      quantity: 1,
+      unitAmount: order.items[0]?.unitAmount ?? 0,
+      discount: coupon?.discount ?? 0,
+      total: order.total,
+      couponCode: coupon?.code,
+      deliveryDate: buyer.deliveryDate,
+    });
+  } catch (err) {
+    console.error("[email] could not prepare the order confirmation", err instanceof Error ? err.message : err);
+  }
   return order.id;
 }
 

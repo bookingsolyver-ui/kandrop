@@ -980,7 +980,10 @@
       "label": "Footer",
       "tagline": "Dropshipping built for Angola.",
       "register": "Create account",
-      "copyright": "© {year} Kandrop. All rights reserved."
+      "copyright": "© {year} Kandrop. All rights reserved.",
+      "terms": "Terms and Conditions",
+      "privacy": "Privacy Policy",
+      "deliveries": "Warranty and Delivery"
     },
     "pages": {
       "soon": "Soon",
@@ -1362,7 +1365,11 @@
     },
     "footer": {
       "soldBy": "Sold by {store}",
-      "payments": "Payments by Kandrop"
+      "payments": "Payments by Kandrop",
+      "legal": "Legal information",
+      "terms": "Terms and Conditions",
+      "privacy": "Privacy Policy",
+      "deliveries": "Warranty and Delivery"
     },
     "landing": {
       "secureBadge": "Secure purchase",
@@ -3354,7 +3361,11 @@
     "secure": "Secure purchase",
     "invalid": "Check your details and try again.",
     "submit": "Place order · {price}",
-    "submitting": "Placing order…"
+    "submitting": "Placing order…",
+    "legal": "Legal information",
+    "termsLink": "Terms and Conditions",
+    "privacyLink": "Privacy Policy",
+    "deliveriesLink": "Warranty and Delivery"
   },
   "Customers": {
     "title": "Customers",
