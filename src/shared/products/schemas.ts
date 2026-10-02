@@ -20,7 +20,8 @@ export type ProductValidationCode =
   | "stock_invalid"
   | "compare_price_invalid"
   | "offer_end_invalid"
-  | "offer_needs_price";
+  | "offer_needs_price"
+  | "shipping_bearer_invalid";
 
 export const PRODUCT_CATEGORIES = [
   "fashion",
@@ -37,6 +38,18 @@ export type ProductStatus = (typeof PRODUCT_STATUSES)[number];
 
 export const PRODUCT_SORTS = ["updated", "title", "price", "margin"] as const;
 export type ProductSort = (typeof PRODUCT_SORTS)[number];
+
+/** Who pays the delivery: the buyer (worked out at checkout from the zone in Luanda) or the merchant. */
+export const SHIPPING_BEARERS = ["customer", "merchant"] as const;
+export type ShippingBearer = (typeof SHIPPING_BEARERS)[number];
+/**
+ * What a delivery in Luanda is estimated to cost the merchant who takes it on, minor units (2 500 Kz,
+ * the platform's standard fee). Only used to estimate the margin: the real fee depends on the zone.
+ */
+export const ESTIMATED_SHIPPING_COST = 250_000;
+/** The delivery cost the merchant bears for a product: nothing when the customer pays the freight. */
+export const merchantShippingCost = (bearer: ShippingBearer): number =>
+  bearer === "merchant" ? ESTIMATED_SHIPPING_COST : 0;
 
 export const MAX_IMAGES = 5;
 export const MAX_STOCK = 1_000_000;
@@ -74,6 +87,7 @@ const fields = z.object({
   description: z.string().trim().max(2000, c("description_too_long")),
   category: z.enum(PRODUCT_CATEGORIES, c("category_invalid")),
   status: z.enum(PRODUCT_STATUSES, c("status_invalid")),
+  shippingBearer: z.enum(SHIPPING_BEARERS, c("shipping_bearer_invalid")),
   costPrice: z
     .number(c("cost_required"))
     .int(c("cost_required"))
@@ -111,6 +125,7 @@ const fields = z.object({
 export const createProductSchema = fields.extend({
   description: fields.shape.description.default(""),
   status: fields.shape.status.default("active"),
+  shippingBearer: fields.shape.shippingBearer.default("customer"),
   images: fields.shape.images.default([]),
   stock: fields.shape.stock.default(null),
   compareAtPrice: fields.shape.compareAtPrice.default(null),
@@ -156,12 +171,18 @@ export interface Margin {
 }
 
 /** One definition for the form, the table and the API, so the three can never disagree. */
-export function computeMargin(costPrice: number, salePrice: number): Margin {
-  return {
-    amount: salePrice - costPrice,
-    rate: salePrice > 0 ? (salePrice - costPrice) / salePrice : null,
-  };
+export function computeMargin(
+  costPrice: number,
+  salePrice: number,
+  shippingBearer: ShippingBearer = "customer"
+): Margin {
+  const amount = salePrice - costPrice - merchantShippingCost(shippingBearer);
+  return { amount, rate: salePrice > 0 ? amount / salePrice : null };
 }
+
+/** The lowest sale price at which the product does not lose money (margin 0), minor units. */
+export const breakEvenPrice = (costPrice: number, shippingBearer: ShippingBearer): number =>
+  costPrice + merchantShippingCost(shippingBearer);
 
 // ── Offer and stock ───────────────────────────────────────────────────────────────────────
 

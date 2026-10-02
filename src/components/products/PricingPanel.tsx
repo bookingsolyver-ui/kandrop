@@ -3,27 +3,44 @@
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { useFormatters } from "@/components/dashboard/useFormatters";
-import { computeMargin } from "@/shared/products/schemas";
+import {
+  SHIPPING_BEARERS,
+  breakEvenPrice,
+  computeMargin,
+  merchantShippingCost,
+  type ShippingBearer,
+} from "@/shared/products/schemas";
 import { AlertIcon } from "@/components/data/icons";
 
 /**
  * The two price inputs and, right under them, the margin they imply. The margin is the same
  * `computeMargin` the API uses for the table, so what is shown here is what will be listed.
- * `cost` / `price` are minor units, or `null` while the field is empty.
+ * `cost` / `price` are minor units, or `null` while the field is empty. The freight choice sits
+ * between the inputs and the result because it changes the result: when the merchant pays the
+ * delivery, its estimated cost comes off the margin and moves the break-even price up.
  */
 export function PricingPanel({
   cost,
   price,
+  shippingBearer,
+  onShippingBearerChange,
   children,
 }: {
   cost: number | null;
   price: number | null;
+  shippingBearer: ShippingBearer;
+  onShippingBearerChange: (bearer: ShippingBearer) => void;
   children: ReactNode;
 }) {
   const t = useTranslations("Catalog.form.pricing");
   const f = useFormatters();
-  const margin = cost !== null && price !== null && price > 0 ? computeMargin(cost, price) : null;
+  const margin =
+    cost !== null && price !== null && price > 0
+      ? computeMargin(cost, price, shippingBearer)
+      : null;
   const loss = margin !== null && margin.amount < 0;
+  const merchantPays = shippingBearer === "merchant";
+  const breakEven = cost !== null ? breakEvenPrice(cost, shippingBearer) : null;
 
   return (
     <section
@@ -37,6 +54,43 @@ export function PricingPanel({
         {t("title")}
       </h2>
       <div className="space-y-5">{children}</div>
+
+      <fieldset className="mt-6 border-t border-line pt-5">
+        <legend className="mb-1 text-[11px] font-medium tracking-[0.14em] text-ink-muted uppercase">
+          {t("shipping.title")}
+        </legend>
+        <p className="mb-3 text-[13px] leading-snug text-ink-muted">{t("shipping.hint")}</p>
+        <div className="space-y-2">
+          {SHIPPING_BEARERS.map((bearer) => (
+            <label
+              key={bearer}
+              className={`flex min-h-11 cursor-pointer items-start gap-3 rounded-md border p-3 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 ${
+                shippingBearer === bearer ? "border-ink bg-page" : "border-line"
+              }`}
+            >
+              <input
+                type="radio"
+                name="shippingBearer"
+                value={bearer}
+                checked={shippingBearer === bearer}
+                onChange={() => onShippingBearerChange(bearer)}
+                className="mt-1 size-4 accent-[currentColor]"
+              />
+              <span className="min-w-0">
+                <span className="flex flex-wrap items-center gap-x-2 text-[15px] font-medium">
+                  {t(`shipping.${bearer}.label`)}
+                  <span className="text-[11px] font-medium tracking-wide text-ink-muted uppercase">
+                    {t(`shipping.${bearer}.badge`)}
+                  </span>
+                </span>
+                <span className="mt-0.5 block text-[13px] leading-snug text-ink-muted">
+                  {t(`shipping.${bearer}.description`)}
+                </span>
+              </span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
 
       <div className="mt-6 border-t border-line pt-5">
         {margin ? (
@@ -55,6 +109,20 @@ export function PricingPanel({
             <dd className={`font-medium tabular-nums ${loss ? "text-down" : ""}`}>
               {f.money(margin.amount)}
             </dd>
+            {merchantPays && (
+              <>
+                <dt className="mt-4 text-[13px] text-ink-muted">{t("shippingCost")}</dt>
+                <dd className="font-medium tabular-nums">
+                  −{f.money(merchantShippingCost(shippingBearer))}
+                </dd>
+              </>
+            )}
+            {breakEven !== null && (
+              <>
+                <dt className="mt-4 text-[13px] text-ink-muted">{t("breakEven")}</dt>
+                <dd className="font-medium tabular-nums">{f.money(breakEven)}</dd>
+              </>
+            )}
           </dl>
         ) : (
           <p className="text-[13px] leading-snug text-ink-muted">{t("empty")}</p>
@@ -68,7 +136,9 @@ export function PricingPanel({
             <span className="mt-px">
               <AlertIcon />
             </span>
-            {t("negative")}
+            {merchantPays && cost !== null
+              ? t("negativeShipping", { price: f.money(breakEvenPrice(cost, shippingBearer)) })
+              : t("negative")}
           </p>
         )}
       </div>

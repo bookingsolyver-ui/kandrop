@@ -59,10 +59,11 @@ export function toPublic(p: ProductRecord): PublicProduct {
     description: p.description,
     category: p.category,
     status: p.status,
+    shippingBearer: p.shippingBearer,
     costPrice: p.costPrice,
     salePrice: p.salePrice,
     currency: "AOA",
-    margin: computeMargin(p.costPrice, p.salePrice),
+    margin: computeMargin(p.costPrice, p.salePrice, p.shippingBearer),
     images: p.images.map((image) => ({
       id: image.id,
       url: `/api/products/${p.id}/images/${image.id}`,
@@ -102,7 +103,8 @@ export async function listProducts(
   const key = (p: ProductRecord): number | string => {
     if (query.sort === "title") return fold(p.title);
     if (query.sort === "price") return p.salePrice;
-    if (query.sort === "margin") return computeMargin(p.costPrice, p.salePrice).rate ?? -Infinity;
+    if (query.sort === "margin")
+      return computeMargin(p.costPrice, p.salePrice, p.shippingBearer).rate ?? -Infinity;
     return p.updatedAt;
   };
   matching.sort((a, b) => {

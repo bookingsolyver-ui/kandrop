@@ -406,7 +406,24 @@
         "margin": "Margem",
         "amount": "Lucro por unidade",
         "empty": "Indique o custo e o preço de venda para ver a margem.",
-        "negative": "O preço de venda está abaixo do custo: cada venda dá prejuízo."
+        "negative": "O preço de venda está abaixo do custo: cada venda dá prejuízo.",
+        "shippingCost": "Frete a seu cargo (estimado)",
+        "breakEven": "Preço mínimo (break-even)",
+        "negativeShipping": "Com o frete por sua conta, vender abaixo de {price} dá prejuízo: o preço de venda não cobre o custo e o frete.",
+        "shipping": {
+          "title": "Quem paga o frete?",
+          "hint": "Escolha como a entrega em Luanda é paga. A margem abaixo atualiza-se com a sua escolha.",
+          "customer": {
+            "label": "Cliente paga o frete",
+            "badge": "Mais comum",
+            "description": "O valor da entrega é calculado no checkout consoante a zona/morada em Luanda, sem custo para si."
+          },
+          "merchant": {
+            "label": "Frete por sua conta",
+            "badge": "+ conversão",
+            "description": "Assume o custo do envio para aumentar a conversão. O custo estimado do frete sai da sua margem."
+          }
+        }
       },
       "save": "Guardar produto",
       "saving": "A guardar…",
@@ -455,7 +472,8 @@
       "stock_invalid": "Indique um número inteiro de unidades, de 0 a 1 000 000.",
       "compare_price_invalid": "O preço original tem de ser superior ao preço de venda.",
       "offer_end_invalid": "Escolha uma data e hora no futuro.",
-      "offer_needs_price": "Para definir um prazo, indique primeiro o preço original."
+      "offer_needs_price": "Para definir um prazo, indique primeiro o preço original.",
+      "shipping_bearer_invalid": "Escolha quem paga o frete."
     }
   },
   "Orders": {

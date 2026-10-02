@@ -406,7 +406,24 @@
         "margin": "Marge",
         "amount": "Bénéfice par unité",
         "empty": "Indiquez le coût et le prix de vente pour voir la marge.",
-        "negative": "Le prix de vente est inférieur au coût : chaque vente est à perte."
+        "negative": "Le prix de vente est inférieur au coût : chaque vente est à perte.",
+        "shippingCost": "Livraison à votre charge (estimée)",
+        "breakEven": "Seuil de rentabilité",
+        "negativeShipping": "Avec la livraison à votre charge, vendre sous {price} est à perte : le prix de vente ne couvre pas le coût et la livraison.",
+        "shipping": {
+          "title": "Qui paie la livraison ?",
+          "hint": "Choisissez comment la livraison à Luanda est payée. La marge ci-dessous se met à jour selon votre choix.",
+          "customer": {
+            "label": "Le client paie la livraison",
+            "badge": "Le plus courant",
+            "description": "Les frais de livraison sont calculés au paiement selon la zone/adresse à Luanda, sans coût pour vous."
+          },
+          "merchant": {
+            "label": "Livraison à votre charge",
+            "badge": "+ conversion",
+            "description": "Vous prenez en charge la livraison pour augmenter la conversion. Le coût estimé de la livraison est déduit de votre marge."
+          }
+        }
       },
       "save": "Enregistrer le produit",
       "saving": "Enregistrement…",
@@ -455,7 +472,8 @@
       "stock_invalid": "Indiquez un nombre entier d’unités, de 0 à 1 000 000.",
       "compare_price_invalid": "Le prix d’origine doit être supérieur au prix de vente.",
       "offer_end_invalid": "Choisissez une date et une heure dans le futur.",
-      "offer_needs_price": "Pour fixer une échéance, indiquez d’abord le prix d’origine."
+      "offer_needs_price": "Pour fixer une échéance, indiquez d’abord le prix d’origine.",
+      "shipping_bearer_invalid": "Choisissez qui paie la livraison."
     }
   },
   "Orders": {

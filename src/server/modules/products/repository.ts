@@ -1,5 +1,5 @@
 import { createHash, randomBytes } from "node:crypto";
-import type { ProductCategory, ProductStatus } from "@/shared/products/schemas";
+import type { ProductCategory, ProductStatus, ShippingBearer } from "@/shared/products/schemas";
 import { isDemoStore } from "@/server/modules/store/demo";
 import { db, isUniqueViolation, must, rows } from "@/server/db/client";
 import type { LoadedImage, ProductRecord } from "./schema";
@@ -61,6 +61,7 @@ const toRow = (p: ProductRecord) => ({
   description: p.description,
   category: p.category,
   status: p.status,
+  shipping_bearer: p.shippingBearer,
   cost_price: p.costPrice,
   sale_price: p.salePrice,
   images: p.images.map((image) => ({ id: image.id, mime: image.mime })),
@@ -81,6 +82,7 @@ function fromRow(row: Record<string, unknown>): ProductRecord {
     description: String(row.description ?? ""),
     category: row.category as ProductCategory,
     status: row.status as ProductStatus,
+    shippingBearer: (row.shipping_bearer as ShippingBearer | null) ?? "customer",
     costPrice: Number(row.cost_price),
     salePrice: Number(row.sale_price),
     images: (row.images as ProductRecord["images"]) ?? [],
@@ -123,6 +125,7 @@ async function seedDemo(storeId: string) {
       description: "",
       category,
       status,
+      shippingBearer: "customer",
       costPrice: cost * KZ,
       salePrice: sale * KZ,
       images: [],

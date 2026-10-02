@@ -16,6 +16,7 @@ import {
   type ProductCategory,
   type ProductStatus,
   type ProductValidationCode,
+  type ShippingBearer,
   type UpdateProductInput,
 } from "@/shared/products/schemas";
 import { DeleteProductDialog } from "./DeleteProductDialog";
@@ -30,6 +31,7 @@ type Field =
   | "description"
   | "category"
   | "status"
+  | "shippingBearer"
   | "costPrice"
   | "salePrice"
   | "stock"
@@ -41,6 +43,7 @@ const FIELD_ORDER: Field[] = [
   "title",
   "category",
   "status",
+  "shippingBearer",
   "description",
   "costPrice",
   "salePrice",
@@ -73,6 +76,7 @@ function initialValues(product?: PublicProduct): Values {
     description: product?.description ?? "",
     category: product?.category ?? "",
     status: product?.status ?? "active",
+    shippingBearer: product?.shippingBearer ?? "customer",
     costPrice: product ? String(Math.round(product.costPrice / 100)) : "",
     salePrice: product ? String(Math.round(product.salePrice / 100)) : "",
     stock: product?.stock == null ? "" : String(product.stock),
@@ -87,6 +91,7 @@ function candidate(values: Values) {
     description: values.description,
     category: values.category,
     status: values.status,
+    shippingBearer: values.shippingBearer,
     costPrice: toMinor(values.costPrice),
     salePrice: toMinor(values.salePrice),
     stock: values.stock === "" ? null : Number(values.stock),
@@ -158,6 +163,9 @@ export function ProductForm({ product }: { product?: PublicProduct }) {
       patch.category = form.values.category as ProductCategory;
     }
     if (form.values.status !== base.status) patch.status = form.values.status as ProductStatus;
+    if (form.values.shippingBearer !== base.shippingBearer) {
+      patch.shippingBearer = form.values.shippingBearer as ShippingBearer;
+    }
     if (form.values.costPrice !== base.costPrice) patch.costPrice = next.costPrice;
     if (form.values.salePrice !== base.salePrice) patch.salePrice = next.salePrice;
     if (form.values.stock !== base.stock) patch.stock = next.stock;
@@ -279,7 +287,14 @@ export function ProductForm({ product }: { product?: PublicProduct }) {
         </section>
 
         <aside className="lg:sticky lg:top-8 lg:col-start-2 lg:row-span-3 lg:row-start-1 lg:self-start">
-          <PricingPanel cost={cost} price={price}>
+          <PricingPanel
+            cost={cost}
+            price={price}
+            shippingBearer={form.values.shippingBearer as ShippingBearer}
+            onShippingBearerChange={(bearer) =>
+              form.bind("shippingBearer").onChange({ target: { value: bearer } })
+            }
+          >
             <TextField
               {...form.bind("costPrice", formatKwanza)}
               label={t("form.fields.cost")}

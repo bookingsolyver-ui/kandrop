@@ -1,4 +1,4 @@
-import type { Margin, ProductCategory, ProductStatus } from "@/shared/products/schemas";
+import type { Margin, ProductCategory, ProductStatus, ShippingBearer } from "@/shared/products/schemas";
 
 export type ImageMime = "image/jpeg" | "image/png" | "image/webp";
 
@@ -21,6 +21,8 @@ export interface ProductRecord {
   description: string;
   category: ProductCategory;
   status: ProductStatus;
+  /** Who pays the delivery. */
+  shippingBearer: ShippingBearer;
   /** Minor units. */
   costPrice: number;
   salePrice: number;
@@ -45,6 +47,7 @@ export interface PublicProduct {
   description: string;
   category: ProductCategory;
   status: ProductStatus;
+  shippingBearer: ShippingBearer;
   costPrice: number;
   salePrice: number;
   currency: "AOA";

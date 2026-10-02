@@ -406,7 +406,24 @@
         "margin": "Margin",
         "amount": "Profit per unit",
         "empty": "Enter the cost and sale price to see the margin.",
-        "negative": "The sale price is below cost: every sale makes a loss."
+        "negative": "The sale price is below cost: every sale makes a loss.",
+        "shippingCost": "Shipping you cover (estimated)",
+        "breakEven": "Break-even price",
+        "negativeShipping": "With shipping on you, selling below {price} makes a loss: the sale price does not cover the cost and the shipping.",
+        "shipping": {
+          "title": "Who pays for shipping?",
+          "hint": "Choose how delivery in Luanda is paid. The margin below updates with your choice.",
+          "customer": {
+            "label": "Customer pays shipping",
+            "badge": "Most common",
+            "description": "The delivery fee is calculated at checkout from the zone/address in Luanda, at no cost to you."
+          },
+          "merchant": {
+            "label": "Shipping on you",
+            "badge": "+ conversion",
+            "description": "You cover the delivery cost to boost conversion. The estimated shipping cost comes out of your margin."
+          }
+        }
       },
       "save": "Save product",
       "saving": "Saving…",
@@ -455,7 +472,8 @@
       "stock_invalid": "Enter a whole number of units, from 0 to 1,000,000.",
       "compare_price_invalid": "The original price must be higher than the sale price.",
       "offer_end_invalid": "Choose a date and time in the future.",
-      "offer_needs_price": "To set a deadline, enter the original price first."
+      "offer_needs_price": "To set a deadline, enter the original price first.",
+      "shipping_bearer_invalid": "Choose who pays for shipping."
     }
   },
   "Orders": {
