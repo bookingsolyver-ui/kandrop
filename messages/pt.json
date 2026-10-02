@@ -1090,22 +1090,26 @@
       "steps": {
         "eyebrow": "Simples e transparente",
         "title": "Como funciona",
-        "subtitle": "Três etapas para pores a tua loja a vender produtos físicos com entrega em 24h.",
+        "subtitle": "Três etapas para colocares a tua loja a faturar com produtos físicos, catálogo chinês e entrega em 24h em Luanda.",
         "s1": {
-          "tag": "Acesso à plataforma",
+          "tag": "Acesso à Dashboard",
           "title": "Cria a conta e escolhe o teu plano",
-          "body": "Regista-te e escolhe o plano (a partir de {price} / 30 dias) para desbloqueares o painel e as ferramentas de venda."
+          "body": "Regista-te e seleciona o teu plano de acesso (a partir de {price}/mês) para desbloquear a dashboard completa e as ferramentas de venda.",
+          "alt": "Empreendedor angolano a criar conta e a aceder à dashboard na plataforma"
         },
         "s2": {
-          "tag": "Catálogo",
+          "tag": "Catálogo B2B",
           "title": "Escolhe os produtos no catálogo",
-          "body": "Importa os produtos para a tua loja, define o preço de venda e partilha a tua página de venda e o checkout."
+          "body": "Importa artigos com preço de fábrica chinês já em Luanda, com margem calculada e landing pages prontas a converter.",
+          "alt": "Produtos físicos de dropshipping prontos para envio"
         },
         "s3": {
-          "tag": "Ganhos",
+          "tag": "Levantamentos em 24h",
           "title": "Vende e recebe os teus lucros",
-          "body": "O cliente compra, recebe e paga ao estafeta. A tua margem fica na carteira e pedes o levantamento."
-        }
+          "body": "O teu cliente compra e recebe no dia seguinte em Luanda. Pede o levantamento dos teus ganhos diretamente para a tua conta bancária.",
+          "alt": "Estafeta em Luanda a realizar entrega rápida de encomenda em 24h"
+        },
+        "note": "<strong>Transparência:</strong> A inscrição na lista de espera hoje é 100% gratuita. No lançamento oficial, quem estiver na lista terá prioridade para escolher o seu plano de acesso (a partir de {price}/mês no plano Starter) e aceder de imediato à dashboard. A data oficial de abertura será revelada no nosso Instagram @kandrop.ecom."
       },
       "compare": {
         "eyebrow": "Comparativo direto",

@@ -1090,22 +1090,26 @@
       "steps": {
         "eyebrow": "Simple et transparent",
         "title": "Comment ça marche",
-        "subtitle": "Trois étapes pour que votre boutique vende des produits physiques avec livraison en 24 h.",
+        "subtitle": "Trois étapes pour faire facturer votre boutique avec des produits physiques, un catalogue chinois et une livraison en 24h à Luanda.",
         "s1": {
-          "tag": "Accès à la plateforme",
-          "title": "Créez votre compte et choisissez votre plan",
-          "body": "Inscrivez-vous et choisissez un plan (à partir de {price} / 30 jours) pour débloquer le tableau de bord et les outils de vente."
+          "tag": "Accès au tableau de bord",
+          "title": "Créez votre compte et choisissez votre offre",
+          "body": "Inscrivez-vous et choisissez votre offre d’accès (à partir de {price}/mois) pour débloquer le tableau de bord complet et les outils de vente.",
+          "alt": "Entrepreneur angolais créant un compte et accédant au tableau de bord de la plateforme"
         },
         "s2": {
-          "tag": "Catalogue",
-          "title": "Choisissez vos produits dans le catalogue",
-          "body": "Importez les produits dans votre boutique, fixez votre prix de vente et partagez votre page de vente et le paiement."
+          "tag": "Catalogue B2B",
+          "title": "Choisissez les produits du catalogue",
+          "body": "Importez des articles au prix d’usine chinois déjà à Luanda, avec la marge calculée et des pages de vente prêtes à convertir.",
+          "alt": "Produits physiques de dropshipping prêts à l’expédition"
         },
         "s3": {
-          "tag": "Gains",
+          "tag": "Retraits en 24h",
           "title": "Vendez et recevez vos bénéfices",
-          "body": "Le client achète, reçoit et paie le livreur. Votre marge arrive dans le portefeuille et vous demandez le retrait."
-        }
+          "body": "Votre client achète et reçoit le lendemain à Luanda. Demandez le retrait de vos gains directement sur votre compte bancaire.",
+          "alt": "Livreur à Luanda effectuant une livraison rapide en 24h"
+        },
+        "note": "<strong>Transparence :</strong> L’inscription sur la liste d’attente est aujourd’hui 100 % gratuite. Au lancement officiel, les inscrits auront la priorité pour choisir leur offre d’accès (à partir de {price}/mois avec l’offre Starter) et accéder immédiatement au tableau de bord. La date d’ouverture officielle sera annoncée sur notre Instagram @kandrop.ecom."
       },
       "compare": {
         "eyebrow": "Comparatif direct",

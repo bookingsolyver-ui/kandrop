@@ -33,7 +33,7 @@ const SOLUTION_ICONS = {
  * project or in KANDROP_VISUAL yet, so none is shown and nothing is invented: put the real files in `public/images/steps/`
  * and list their paths here, e.g. "/images/steps/step1-conta.jpg".
  */
-const STEP_PHOTOS: Array<string | null> = [null, null, null];
+const STEP_PHOTOS = { s1: "/images/steps/step1-conta.jpg", s2: "/images/steps/step2-produtos.jpg", s3: "/images/steps/step3-entrega.jpg" } as const;
 
 /** Black hero: eyebrow, the headline with the orange word, the promise, two calls to action and a glass card of what you get. */
 export async function HomeHero() {
@@ -109,33 +109,34 @@ export async function HomeSolution() {
 /** Grey: three numbered steps. The first one carries the real entry price of the Starter plan. */
 export async function HomeSteps() {
   const t = await getTranslations("Marketing.home.steps");
-  const locale = await getLocale();
-  const price = formatKwz(PLAN_PRICES.starter * 100, locale);
+  const price = `${String(PLAN_PRICES.starter).replace(/\B(?=(\d{3})+(?!\d))/g, ".")} Kz`;
   return (
-    <section id="como-funciona" aria-labelledby="steps-title" className="bg-brand-gray pb-20 sm:pb-28">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="reveal text-center">
+    <section id="como-funciona" aria-labelledby="steps-title" className="bg-brand-gray">
+      <div className="mx-auto w-full max-w-6xl px-6 py-20 sm:py-28">
+        <div className="reveal mx-auto max-w-2xl text-center">
           <p className={`${eyebrow} text-brand-orange`}>{t("eyebrow")}</p>
           <h2 id="steps-title" className="mt-2 text-3xl font-extrabold tracking-tight text-brand-black sm:text-4xl">{t("title")}</h2>
-          <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-black/65 sm:text-lg">{t("subtitle")}</p>
+          <p className="mt-3 text-base text-brand-black/60">{t("subtitle")}</p>
         </div>
-        <ol className="mt-12 grid gap-5 md:grid-cols-3">
+        <ol className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {(["s1", "s2", "s3"] as const).map((k, i) => (
-            <li key={k} className="reveal group overflow-hidden rounded-2xl border border-black/10 bg-brand-white transition-all duration-300 hover:-translate-y-1.5 hover:border-brand-orange hover:shadow-xl" style={{ "--i": i } as React.CSSProperties}>
-              {STEP_PHOTOS[i] && (
-                <div className="relative aspect-[4/3] overflow-hidden">
-                  <Image src={STEP_PHOTOS[i]!} alt={t(`${k}.title`)} fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover transition-transform duration-500 group-hover:scale-105" />
-                </div>
-              )}
-              <div className="p-8">
-              <span className="grid size-12 place-items-center rounded-full bg-brand-orange text-lg font-extrabold text-brand-black transition-transform duration-300 group-hover:scale-110">{i + 1}</span>
-              <p className={`mt-5 ${eyebrow} text-black/50`}>{t(`${k}.tag`)}</p>
-              <h3 className="mt-1 text-xl font-bold tracking-tight text-brand-black transition-colors group-hover:text-brand-orange">{t(`${k}.title`)}</h3>
-              <p className="mt-3 text-[15px] leading-relaxed text-black/65">{t(`${k}.body`, { price })}</p>
+            <li key={k} className="reveal group relative flex flex-col overflow-hidden rounded-2xl border border-black/10 bg-brand-white shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl" style={{ "--i": i } as React.CSSProperties}>
+              <div className="relative h-56 w-full overflow-hidden bg-brand-black/5 sm:h-60">
+                <Image src={STEP_PHOTOS[k]} alt={t(`${k}.alt`)} fill sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" className="object-cover transition-transform duration-500 group-hover:scale-105" />
+                <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60" />
+                <span className="absolute top-4 left-4 flex size-9 items-center justify-center rounded-xl bg-brand-orange text-sm font-black text-brand-black shadow-lg">{`0${i + 1}`}</span>
+              </div>
+              <div className="flex flex-1 flex-col p-6">
+                <span className="mb-2 inline-flex w-fit items-center rounded-md bg-brand-orange/10 px-2 py-0.5 text-[11px] font-bold tracking-wider text-brand-orange uppercase">{t(`${k}.tag`)}</span>
+                <h3 className="text-xl font-bold tracking-tight text-brand-black transition-colors group-hover:text-brand-orange">{t(`${k}.title`)}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-brand-black/70">{t(`${k}.body`, { price })}</p>
               </div>
             </li>
           ))}
         </ol>
+        <div className="reveal mt-12 rounded-2xl border border-black/10 bg-brand-white p-5 text-center shadow-xs sm:p-6">
+          <p className="text-sm leading-relaxed font-medium text-brand-black/80">{t.rich("note", { price, strong: (c) => <strong className="font-bold text-brand-black">{c}</strong> })}</p>
+        </div>
       </div>
     </section>
   );
