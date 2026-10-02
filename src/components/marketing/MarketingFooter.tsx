@@ -2,6 +2,15 @@ import { getTranslations } from "next-intl/server";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 
+/** The Instagram glyph, drawn like the lucide icons (24px grid, 2px round stroke): `lucide-react` no longer ships brand icons. */
+const InstagramIcon = () => (
+  <svg aria-hidden xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+    <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+  </svg>
+);
+
 export async function MarketingFooter() {
   const t = await getTranslations("Marketing.footer");
   const nav = await getTranslations("Marketing.nav");
@@ -12,6 +21,17 @@ export async function MarketingFooter() {
         <div className="max-w-xs">
           <Image src="/logo-kandrop-full.png" alt="Kandrop" width={1024} height={206} className="h-8 w-auto object-contain" />
           <p className="mt-3 text-sm leading-relaxed text-ink-muted">{t("tagline")}</p>
+          <p className="mt-5 text-sm leading-relaxed text-ink-2">{t("social.message")}</p>
+          <a
+            href="https://www.instagram.com/kandrop.ecom/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={t("social.label")}
+            className="mt-3 inline-flex min-h-10 items-center gap-2 rounded-full border border-line px-4 text-sm font-semibold text-ink transition-colors hover:border-accent hover:text-accent"
+          >
+            <InstagramIcon />
+            @kandrop.ecom
+          </a>
         </div>
         <nav aria-label={t("label")} className="grid grid-cols-2 gap-x-16 gap-y-2 sm:gap-x-24">
           <ul>

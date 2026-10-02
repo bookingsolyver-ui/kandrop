@@ -1021,7 +1021,11 @@
       "copyright": "© {year} Kandrop. Tous droits réservés.",
       "terms": "Conditions Générales",
       "privacy": "Politique de Confidentialité",
-      "deliveries": "Garantie et Livraison"
+      "deliveries": "Garantie et Livraison",
+      "social": {
+        "message": "Suivez-nous sur les réseaux sociaux pour ne rien manquer des nouveautés et des conseils e-commerce.",
+        "label": "Kandrop sur Instagram (s’ouvre dans un nouvel onglet)"
+      }
     },
     "pages": {
       "soon": "Bientôt",

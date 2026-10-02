@@ -1021,7 +1021,11 @@
       "copyright": "© {year} Kandrop. All rights reserved.",
       "terms": "Terms and Conditions",
       "privacy": "Privacy Policy",
-      "deliveries": "Warranty and Delivery"
+      "deliveries": "Warranty and Delivery",
+      "social": {
+        "message": "Follow us on social media to stay up to date with all the news and e-commerce tips.",
+        "label": "Kandrop on Instagram (opens in a new tab)"
+      }
     },
     "pages": {
       "soon": "Soon",
