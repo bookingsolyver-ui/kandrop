@@ -9,7 +9,6 @@ import { StorefrontView } from "@/components/storefront/StorefrontView";
 import { routing } from "@/i18n/routing";
 import { getEnv } from "@/server/config/env";
 import { ApiError } from "@/server/http/errors";
-import { orderPaymentInfo } from "@/server/modules/payments/transfer";
 import { getStorefrontProduct } from "@/server/modules/storefront/service";
 
 // Price, stock and the offer depend on the clock: never prerender.
@@ -62,7 +61,7 @@ export default async function StorefrontPage({ params }: Props) {
   return (
     <>
       <StorePixel id={product.metaPixelId} />
-      <StorefrontView product={product} whatsapp={orderPaymentInfo().whatsapp ?? null} />
+      <StorefrontView product={product} />
     </>
   );
 }

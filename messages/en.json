@@ -760,6 +760,22 @@
         "saved": "Number saved.",
         "failed": "Could not save. Please try again."
       }
+    },
+    "support": {
+      "title": "Store support contacts",
+      "subtitle": "These are the contacts your customers are sent to: product page, checkout, confirmation and order e-mail.",
+      "whatsapp": "Support WhatsApp",
+      "email": "Support e-mail",
+      "hint": "Your store's customers contact only you, never Kandrop. With no contacts, none is shown.",
+      "save": "Save contacts",
+      "saving": "Saving…",
+      "saved": "Contacts saved.",
+      "failed": "Could not save. Please try again.",
+      "ownerOnly": "Only the store owner can change the contacts.",
+      "validation": {
+        "whatsapp_invalid": "Enter an Angolan number with 9 digits (starts with 9).",
+        "email_invalid": "Enter a valid e-mail."
+      }
     }
   },
   "Receipt": {
@@ -1386,7 +1402,8 @@
       "legal": "Legal information",
       "terms": "Terms and Conditions",
       "privacy": "Privacy Policy",
-      "deliveries": "Warranty and Delivery"
+      "deliveries": "Warranty and Delivery",
+      "contactWhatsapp": "Contact the store on WhatsApp"
     },
     "landing": {
       "secureBadge": "Secure purchase",
@@ -3296,7 +3313,8 @@
       "body": "Pay {total} to the courier when you receive the order. No bank transfer needed.",
       "date": "Requested delivery day: {date}",
       "note": "The Kandrop team will contact you to arrange the delivery.",
-      "greeting": "Thank you, {name}. Your order is going into preparation."
+      "greeting": "Thank you, {name}. Your order is going into preparation.",
+      "help": "Questions? Talk to the store:"
     },
     "coupon": "Coupon {code}"
   },
@@ -3382,7 +3400,8 @@
     "legal": "Legal information",
     "termsLink": "Terms and Conditions",
     "privacyLink": "Privacy Policy",
-    "deliveriesLink": "Warranty and Delivery"
+    "deliveriesLink": "Warranty and Delivery",
+    "contactWhatsapp": "Contact the store on WhatsApp"
   },
   "Customers": {
     "title": "Customers",

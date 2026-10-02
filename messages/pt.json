@@ -760,6 +760,22 @@
         "saved": "Número guardado.",
         "failed": "Não foi possível guardar. Tente novamente."
       }
+    },
+    "support": {
+      "title": "Contactos de suporte da loja",
+      "subtitle": "É para estes contactos que os seus clientes são encaminhados: página de produto, checkout, confirmação e e-mail da encomenda.",
+      "whatsapp": "WhatsApp de Suporte",
+      "email": "E-mail de Suporte",
+      "hint": "Os clientes da sua loja contactam apenas si, nunca a Kandrop. Sem contactos, nenhum aparece.",
+      "save": "Guardar contactos",
+      "saving": "A guardar…",
+      "saved": "Contactos guardados.",
+      "failed": "Não foi possível guardar. Tente novamente.",
+      "ownerOnly": "Só o proprietário da loja pode alterar os contactos.",
+      "validation": {
+        "whatsapp_invalid": "Indique um número angolano com 9 dígitos (começa por 9).",
+        "email_invalid": "Indique um e-mail válido."
+      }
     }
   },
   "Receipt": {
@@ -1386,7 +1402,8 @@
       "legal": "Informação legal",
       "terms": "Termos e Condições",
       "privacy": "Política de Privacidade",
-      "deliveries": "Garantia e Entregas"
+      "deliveries": "Garantia e Entregas",
+      "contactWhatsapp": "Contactar a loja no WhatsApp"
     },
     "landing": {
       "secureBadge": "Compra segura",
@@ -3296,7 +3313,8 @@
       "body": "Pague {total} ao entregador quando receber a encomenda. Não precisa de fazer nenhuma transferência.",
       "date": "Dia de entrega pedido: {date}",
       "note": "A equipa Kandrop vai contactá-lo para combinar a entrega.",
-      "greeting": "Obrigado, {name}. A sua encomenda segue para preparação."
+      "greeting": "Obrigado, {name}. A sua encomenda segue para preparação.",
+      "help": "Dúvidas? Fale com a loja:"
     },
     "coupon": "Cupão {code}"
   },
@@ -3382,7 +3400,8 @@
     "legal": "Informação legal",
     "termsLink": "Termos e Condições",
     "privacyLink": "Política de Privacidade",
-    "deliveriesLink": "Garantia e Entregas"
+    "deliveriesLink": "Garantia e Entregas",
+    "contactWhatsapp": "Contactar a loja no WhatsApp"
   },
   "Customers": {
     "title": "Clientes",

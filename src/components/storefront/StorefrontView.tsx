@@ -57,7 +57,9 @@ function Accordion({ title, children }: { title: string; children: React.ReactNo
  * is out of sight. Everything shown is real (product data, stock, offer); nothing is invented. The only exception is the
  * rating line, which is example content and therefore appears in test mode only (there is no review system yet).
  */
-export function StorefrontView({ product: p, whatsapp }: { product: StorefrontProduct; whatsapp: string | null }) {
+export function StorefrontView({ product: p }: { product: StorefrontProduct }) {
+  // Only THIS store's own contacts: a customer of a store talks to that store's owner, never to the platform.
+  const whatsapp = p.support.whatsapp;
   const t = useTranslations("Storefront");
   const price = useMoney()(p.price);
   const soldOut = p.stock.state === "out";
@@ -179,6 +181,12 @@ export function StorefrontView({ product: p, whatsapp }: { product: StorefrontPr
 
       <footer className="mx-auto mt-14 max-w-6xl px-4 text-[13px] text-ink-muted sm:px-6">
         <p>{t("footer.soldBy", { store: p.storeName })} · {t("footer.payments")}</p>
+        {(p.support.whatsapp || p.support.email) && (
+          <p className="mt-3 flex flex-wrap gap-x-5 gap-y-1">
+            {p.support.whatsapp && <a href={`https://wa.me/244${p.support.whatsapp}`} target="_blank" rel="noopener noreferrer" className="underline-offset-4 hover:text-ink hover:underline">{t("footer.contactWhatsapp")}</a>}
+            {p.support.email && <a href={`mailto:${p.support.email}`} className="underline-offset-4 hover:text-ink hover:underline">{p.support.email}</a>}
+          </p>
+        )}
         <nav aria-label={t("footer.legal")} className="mt-3 flex flex-wrap gap-x-5 gap-y-1">
           <Link href="/termos" className="underline-offset-4 hover:text-ink hover:underline">{t("footer.terms")}</Link>
           <Link href="/privacidade" className="underline-offset-4 hover:text-ink hover:underline">{t("footer.privacy")}</Link>

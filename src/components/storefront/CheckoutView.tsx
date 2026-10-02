@@ -293,6 +293,12 @@ export function CheckoutView({ product: p, invalid, couponRejected, days, today 
       </main>
 
       <footer className="mx-auto mt-10 max-w-6xl px-4 text-[12px] text-ink-muted sm:px-6">
+        {(p.support.whatsapp || p.support.email) && (
+          <p className="mb-2 flex flex-wrap gap-x-5 gap-y-1">
+            {p.support.whatsapp && <a href={`https://wa.me/244${p.support.whatsapp}`} target="_blank" rel="noopener noreferrer" className="underline-offset-4 hover:text-ink hover:underline">{t("contactWhatsapp")}</a>}
+            {p.support.email && <a href={`mailto:${p.support.email}`} className="underline-offset-4 hover:text-ink hover:underline">{p.support.email}</a>}
+          </p>
+        )}
         <nav aria-label={t("legal")} className="flex flex-wrap gap-x-5 gap-y-1">
           <Link href="/termos" className="underline-offset-4 hover:text-ink hover:underline">{t("termsLink")}</Link>
           <Link href="/privacidade" className="underline-offset-4 hover:text-ink hover:underline">{t("privacyLink")}</Link>

@@ -55,6 +55,14 @@ export function OrderPlacedView({ order, pay, orderId, trackPurchase }: { order:
             <p className="text-sm text-ink-2">{t("cod.body", { total })}</p>
             {day && <p className="text-sm font-medium first-letter:uppercase">{t("cod.date", { date: day })}</p>}
             <p className="text-[13px] text-ink-muted">{t("cod.note")}</p>
+            {(order.support.whatsapp || order.support.email) && (
+              <p className="text-[13px] text-ink-2">
+                {t("cod.help")}{" "}
+                {order.support.whatsapp && <a href={`https://wa.me/244${order.support.whatsapp}`} target="_blank" rel="noopener noreferrer" className="font-semibold underline underline-offset-4">WhatsApp {order.support.whatsapp.replace(/(\d{3})(?=\d)/g, "$1 ")}</a>}
+                {order.support.whatsapp && order.support.email && " / "}
+                {order.support.email && <a href={`mailto:${order.support.email}`} className="font-semibold underline underline-offset-4">{order.support.email}</a>}
+              </p>
+            )}
           </section>
         )}
 

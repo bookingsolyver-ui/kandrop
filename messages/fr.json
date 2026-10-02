@@ -760,6 +760,22 @@
         "saved": "Numéro enregistré.",
         "failed": "Enregistrement impossible. Réessayez."
       }
+    },
+    "support": {
+      "title": "Contacts d’assistance de la boutique",
+      "subtitle": "Ce sont les contacts vers lesquels vos clients sont orientés : page produit, paiement, confirmation et e-mail de commande.",
+      "whatsapp": "WhatsApp d’assistance",
+      "email": "E-mail d’assistance",
+      "hint": "Les clients de votre boutique ne contactent que vous, jamais Kandrop. Sans contacts, aucun n’est affiché.",
+      "save": "Enregistrer les contacts",
+      "saving": "Enregistrement…",
+      "saved": "Contacts enregistrés.",
+      "failed": "Enregistrement impossible. Réessayez.",
+      "ownerOnly": "Seul le propriétaire de la boutique peut modifier les contacts.",
+      "validation": {
+        "whatsapp_invalid": "Indiquez un numéro angolais à 9 chiffres (commence par 9).",
+        "email_invalid": "Indiquez un e-mail valide."
+      }
     }
   },
   "Receipt": {
@@ -1386,7 +1402,8 @@
       "legal": "Informations légales",
       "terms": "Conditions Générales",
       "privacy": "Politique de Confidentialité",
-      "deliveries": "Garantie et Livraison"
+      "deliveries": "Garantie et Livraison",
+      "contactWhatsapp": "Contacter la boutique sur WhatsApp"
     },
     "landing": {
       "secureBadge": "Achat sécurisé",
@@ -3296,7 +3313,8 @@
       "body": "Payez {total} au livreur à la réception de la commande. Aucun virement nécessaire.",
       "date": "Jour de livraison demandé : {date}",
       "note": "L’équipe Kandrop vous contactera pour convenir de la livraison.",
-      "greeting": "Merci, {name}. Votre commande part en préparation."
+      "greeting": "Merci, {name}. Votre commande part en préparation.",
+      "help": "Une question ? Parlez à la boutique :"
     },
     "coupon": "Coupon {code}"
   },
@@ -3382,7 +3400,8 @@
     "legal": "Informations légales",
     "termsLink": "Conditions Générales",
     "privacyLink": "Politique de Confidentialité",
-    "deliveriesLink": "Garantie et Livraison"
+    "deliveriesLink": "Garantie et Livraison",
+    "contactWhatsapp": "Contacter la boutique sur WhatsApp"
   },
   "Customers": {
     "title": "Clients",

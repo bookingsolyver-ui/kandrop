@@ -6,7 +6,9 @@ import { isAdmin } from "@/server/auth/admin";
 import { readSession } from "@/server/auth/session";
 import { db } from "@/server/db/client";
 import { parseSubscription, pushConfigured, saveSubscription, type PushScope } from "@/server/modules/notifications/push";
+import { storeRepository } from "@/server/modules/store/repository";
 import { getStore } from "@/server/modules/store/service";
+import { storeSupportSchema } from "@/shared/store/support";
 
 export type PushResult = { ok: true } | { ok: false; error: "unavailable" | "invalid" | "unauthorized" | "forbidden" | "internal" };
 
@@ -54,6 +56,28 @@ export async function saveNotifyWhatsappAction(raw: unknown): Promise<{ ok: true
     return { ok: true };
   } catch (err) {
     console.error("[settings] saveNotifyWhatsapp failed", err instanceof Error ? err.message : err);
+    return { ok: false, error: "internal" };
+  }
+}
+
+/** Saves the store's OWN support contacts (the ones its customers see). Owner only; the store comes from the session. */
+export async function saveStoreSupportAction(raw: unknown): Promise<{ ok: true } | { ok: false; error: "validation" | "unauthorized" | "forbidden" | "internal"; fields?: Record<string, string> }> {
+  const session = await readSession();
+  if (!session || session.role === "supplier" || !(await hasAccess(session))) return { ok: false, error: "unauthorized" };
+  if (session.role !== "owner") return { ok: false, error: "forbidden" };
+  const parsed = storeSupportSchema.safeParse(raw);
+  if (!parsed.success) {
+    const fields: Record<string, string> = {};
+    for (const i of parsed.error.issues) { const k = String(i.path[0] ?? ""); if (k && !fields[k]) fields[k] = i.message; }
+    return { ok: false, error: "validation", fields };
+  }
+  try {
+    const store = await getStore(session);
+    await storeRepository.saveSupport(store.id, parsed.data);
+    revalidatePath("/[locale]/dashboard/settings", "page");
+    return { ok: true };
+  } catch (err) {
+    console.error("[settings] saveStoreSupport failed", err instanceof Error ? err.message : err);
     return { ok: false, error: "internal" };
   }
 }

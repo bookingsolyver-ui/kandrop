@@ -15,6 +15,8 @@ export interface OrderEmailData {
   couponCode?: string;
   /** `YYYY-MM-DD`, when the customer chose a day. */
   deliveryDate?: string;
+  /** The STORE's own support contacts (never the platform's). */
+  support?: { whatsapp?: string | null; email?: string | null };
 }
 
 const esc = (value: string) => value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
@@ -35,6 +37,11 @@ export function renderOrderEmail(d: OrderEmailData): { subject: string; html: st
     ["Total a pagar na entrega", kwz(d.total)],
     ...(d.deliveryDate ? ([["Dia de entrega pedido", day(d.deliveryDate)]] as Array<[string, string]>) : []),
   ];
+  // Questions go to the STORE that sold the product, with ITS contacts only.
+  const w = d.support?.whatsapp ? `WhatsApp ${d.support.whatsapp.replace(/(\d{3})(?=\d)/g, "$1 ")}` : null;
+  const em = d.support?.email ?? null;
+  const contacts = [w, em].filter((x): x is string => !!x);
+  const help = contacts.length ? { text: `Em caso de dúvida, contacte a loja ${d.storeName} através de ${contacts.join(" ou ")}.`, html: `Em caso de dúvida, contacte a loja ${esc(d.storeName)} através de ${contacts.map(esc).join(" ou ")}.` } : null;
   const table = rows
     .map(([k, v], i) => `<tr><td style="padding:10px 0;border-top:1px solid #e6e6e6;color:#6b6b6b;font-size:14px">${esc(k)}</td><td style="padding:10px 0;border-top:1px solid #e6e6e6;text-align:right;font-size:14px;${i === rows.findIndex(([x]) => x.startsWith("Total")) ? "font-weight:700" : ""}">${esc(v)}</td></tr>`)
     .join("");
@@ -48,6 +55,7 @@ export function renderOrderEmail(d: OrderEmailData): { subject: string; html: st
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:8px 0 20px">${table}</table>
 <p style="margin:0 0 12px;font-size:15px;line-height:1.6"><strong>Pagamento na entrega.</strong> Não paga nada agora: o pagamento é feito diretamente ao estafeta, no momento em que receber o produto.</p>
 <p style="margin:0 0 12px;font-size:15px;line-height:1.6">O estafeta entrará em contacto consigo por chamada ou WhatsApp para combinar a entrega. Mantenha o telemóvel por perto.</p>
+${help ? `<p style="margin:0 0 12px;font-size:15px;line-height:1.6">${help.html}</p>` : ""}
 <p style="margin:20px 0 0;font-size:13px;color:#6b6b6b">Se não fez esta encomenda, ignore este e-mail.</p>
 </td></tr></table></td></tr></table></body></html>`;
   const text = [
@@ -57,6 +65,7 @@ export function renderOrderEmail(d: OrderEmailData): { subject: string; html: st
     "",
     "Pagamento na entrega: não paga nada agora, paga diretamente ao estafeta quando receber o produto.",
     "O estafeta entrará em contacto consigo por chamada ou WhatsApp para combinar a entrega.",
+    ...(help ? ["", help.text] : []),
   ].join("\n");
   return { subject: "A sua encomenda foi confirmada - Kandrop", html, text };
 }

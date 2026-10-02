@@ -37,6 +37,7 @@ export async function getStorefrontProduct(slug: string): Promise<StorefrontProd
     description: p.description,
     storeName: await storeNameOf(p.storeId),
     metaPixelId: await storeRepository.metaPixelOf(p.storeId),
+    support: await storeRepository.supportOf(p.storeId),
     currency: "AOA",
     images: p.images.map((image) => ({
       id: image.id,
@@ -123,6 +124,7 @@ export async function placeStorefrontOrder(slug: string, rawBuyer: unknown): Pro
       total: order.total,
       couponCode: coupon?.code,
       deliveryDate: buyer.deliveryDate,
+      support: await storeRepository.supportOf(p.storeId),
     });
   } catch (err) {
     console.error("[email] could not prepare the order confirmation", err instanceof Error ? err.message : err);

@@ -7,7 +7,7 @@ import type { Store } from "./schema";
  * number and the verification status live in `settings`, which has room for them.
  */
 const fromRow = (row: Record<string, unknown>): Store => {
-  const settings = (row.settings ?? {}) as { nif?: string | null; status?: Store["status"]; profile?: { province?: string; municipality?: string }; meta_pixel_id?: string; notify_whatsapp?: string };
+  const settings = (row.settings ?? {}) as { nif?: string | null; status?: Store["status"]; profile?: { province?: string; municipality?: string }; meta_pixel_id?: string; notify_whatsapp?: string; support_whatsapp?: string; support_email?: string };
   return {
     id: String(row.id),
     name: String(row.name),
@@ -16,6 +16,8 @@ const fromRow = (row: Record<string, unknown>): Store => {
     municipality: settings.profile?.municipality ?? null,
     metaPixelId: settings.meta_pixel_id ?? null,
     notifyWhatsapp: settings.notify_whatsapp ?? null,
+    supportWhatsapp: settings.support_whatsapp ?? null,
+    supportEmail: settings.support_email ?? null,
     currency: "AOA",
     status: settings.status ?? "pending_verification",
   };
@@ -35,6 +37,25 @@ export const storeRepository = {
     if (pixelId) settings.meta_pixel_id = pixelId;
     else delete settings.meta_pixel_id;
     must("stores.saveMetaPixel", await db().from("stores").update({ settings }).eq("id", id));
+  },
+
+  /** Saves (or, empty, removes) the store's own support contacts; the rest of the settings is kept. */
+  async saveSupport(id: string, support: { whatsapp: string; email: string }): Promise<void> {
+    const row = must("stores.settings", await db().from("stores").select("settings").eq("id", id).maybeSingle());
+    if (!row) throw new Error("store not found");
+    const settings = { ...((row.settings as Record<string, unknown> | null) ?? {}) };
+    for (const [key, value] of [["support_whatsapp", support.whatsapp], ["support_email", support.email]] as const) {
+      if (value) settings[key] = value;
+      else delete settings[key];
+    }
+    must("stores.saveSupport", await db().from("stores").update({ settings }).eq("id", id));
+  },
+
+  /** A store's support contacts for ITS public pages; never throws. */
+  async supportOf(id: string): Promise<{ whatsapp: string | null; email: string | null }> {
+    const { data } = await db().from("stores").select("settings").eq("id", id).maybeSingle();
+    const s = (data?.settings ?? {}) as { support_whatsapp?: unknown; support_email?: unknown };
+    return { whatsapp: typeof s.support_whatsapp === "string" && /^9\d{8}$/.test(s.support_whatsapp) ? s.support_whatsapp : null, email: typeof s.support_email === "string" ? s.support_email : null };
   },
 
   /** The pixel id of a store for its PUBLIC pages (product, checkout, confirmation); `null` when none. A failure is never fatal. */
@@ -74,7 +95,7 @@ export const storeRepository = {
         )
     );
     return (
-      (await this.get(id)) ?? { id, name, nif: null, province: null, municipality: null, metaPixelId: null, notifyWhatsapp: null, currency: "AOA", status: "pending_verification" }
+      (await this.get(id)) ?? { id, name, nif: null, province: null, municipality: null, metaPixelId: null, notifyWhatsapp: null, supportWhatsapp: null, supportEmail: null, currency: "AOA", status: "pending_verification" }
     );
   },
 };

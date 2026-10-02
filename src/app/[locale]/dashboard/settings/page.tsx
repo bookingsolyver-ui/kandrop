@@ -4,6 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 import { Panel } from "@/components/dashboard/Panel";
+import { StoreSupportForm } from "@/components/settings/StoreSupportForm";
 import { NotificationsForm } from "@/components/settings/NotificationsForm";
 import { MetaPixelForm } from "@/components/settings/MetaPixelForm";
 import { StoreLocationForm } from "@/components/settings/StoreLocationForm";
@@ -116,7 +117,11 @@ export default async function SettingsPage({ params, searchParams }: Props) {
                     ]}
                   />
                 </Panel>
-                <p className="mt-4 text-sm text-ink-muted">{t("readOnly")}</p>
+                <div className="mt-6">
+                  <Panel title={t("support.title")} subtitle={t("support.subtitle")}>
+                    <StoreSupportForm initial={{ whatsapp: store.supportWhatsapp, email: store.supportEmail }} canEdit={session!.role === "owner"} />
+                  </Panel>
+                </div>
               </div>
             ),
             integrations: (

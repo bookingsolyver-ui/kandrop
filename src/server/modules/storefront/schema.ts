@@ -21,6 +21,8 @@ export interface StorefrontProduct {
     /** Only given when few are left: the exact stock of a well-stocked product is not public. */
     remaining?: number;
   };
+  /** The STORE's own support contacts (never the platform's), or nulls. */
+  support: { whatsapp: string | null; email: string | null };
   /** The merchant's own Meta Pixel id (public by nature: it is in the page of any store that uses it), or `null`. */
   metaPixelId: string | null;
   /** The server's clock, so the countdown does not depend on the shopper's device clock. */

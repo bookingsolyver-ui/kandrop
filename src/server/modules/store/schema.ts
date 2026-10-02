@@ -13,6 +13,9 @@ export const storeSchema = z.object({
   metaPixelId: z.string().nullable(),
   /** The merchant's WhatsApp number for sale alerts (`settings.notify_whatsapp`), or `null`. */
   notifyWhatsapp: z.string().nullable(),
+  /** The store's own support contacts (`settings.support_whatsapp` / `support_email`), shown to its customers. */
+  supportWhatsapp: z.string().nullable(),
+  supportEmail: z.string().nullable(),
   currency: z.literal("AOA"),
   status: z.enum(["pending_verification", "active", "suspended"]),
 });

@@ -11,6 +11,7 @@ import { canAdvanceLogistics, type LogisticsStatus } from "@/shared/fulfilment/s
 import { CASH_ON_DELIVERY, canMovePayment, isCashOnDelivery, isPaymentVerified, normalizePaymentProvider, normalizePaymentStatus, type OrderPaymentProvider, type OrderPaymentStatus, type PaymentEvidence } from "@/shared/payments/orderPayment";
 import { ORDER_STATUSES, canTransition, type OrderStatus } from "@/shared/orders/schemas";
 
+import { storeRepository } from "@/server/modules/store/repository";
 import { splitSale, type Split } from "./split";
 export { splitSale, type Split };
 
@@ -489,6 +490,8 @@ export interface ShopperOrder {
   customerName: string;
   /** The store's own Meta Pixel id, or `null`. */
   metaPixelId: string | null;
+  /** The store's own support contacts: what the customer is told to use, never the platform's. */
+  support: { whatsapp: string | null; email: string | null };
   /** The product's public slug (or its id): what the ad pixel reports as `content_ids`. */
   productKey: string | null;
   /** The coupon applied and what it took off (already out of `total`). */
@@ -520,6 +523,7 @@ export async function getShopperOrder(id: string): Promise<ShopperOrder | null> 
     paymentProvider: normalizePaymentProvider(o.payment_provider),
     customerName: String((o.customer as { name?: string } | null)?.name ?? ""),
     metaPixelId: (() => { const v = ((store?.settings ?? {}) as { meta_pixel_id?: unknown }).meta_pixel_id; return typeof v === "string" && /^\d{6,20}$/.test(v) ? v : null; })(),
+    support: await storeRepository.supportOf(String(o.store_id)),
     productKey: product?.slug ? String(product.slug) : (item?.productId ?? null),
     // Just placed (within 30 minutes): only then is the order reported to the ad pixel, never when the link is reopened later.
     couponCode: ((o.payment as { coupon?: { code?: string } } | null)?.coupon?.code) ?? null,
