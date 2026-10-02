@@ -8,7 +8,7 @@ import { CatalogIcon } from "@/components/shell/icons";
 import { ChevronDownIcon } from "./icons";
 
 const GROUPS: Array<{ key: "operation" | "growth"; items: Array<NavKey | "vitrine"> }> = [
-  { key: "operation", items: ["overview", "products", "vitrine", "orders", "logistics", "customers"] },
+  { key: "operation", items: ["overview", "products", "vitrine", "orders", "logistics", "customers", "coupons"] },
   {
     key: "growth",
     items: ["wallet", "whatsapp", "affiliates", "landingPages", "academy", "plans", "support"],
