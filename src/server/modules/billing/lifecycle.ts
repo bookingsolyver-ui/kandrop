@@ -82,20 +82,34 @@ export async function runSubscriptionSweep(now = Date.now(), dryRun = false): Pr
   return result;
 }
 
+export interface AccountChange {
+  suspended: boolean;
+  periodEnd: number;
+  periodsPaid: number;
+  plan: SubscriptionRecord["plan"];
+  /** A new paid period was added (the administrator confirmed a payment): the merchant gets the confirmation e-mail. */
+  extended: boolean;
+}
+
 /**
- * The administrator's switch. Deactivate: the account loses the dashboard at its next request. Activate: the account is
- * back; if its paid period had already ended, a new 30-day period starts now (the administrator confirms the payment
- * arrived), counted as one more paid period.
+ * The administrator's switch.
+ *  - `deactivate`: the account loses the dashboard at its next request.
+ *  - `activate`: the account is back. If its paid period had already ended, a new 30-day period starts now (the administrator
+ *    confirms the payment arrived), counted as one more paid period; if time was left (it was switched off by hand) nothing is added.
+ *  - `renew`: the administrator confirms a renewal payment: 30 days are added after the current end (or from now when it already ended)
+ *    and the account is switched on.
  */
-export async function setAccountActive(storeId: string, active: boolean, now = Date.now()): Promise<{ suspended: boolean; periodEnd: number } | null> {
+export async function changeAccount(storeId: string, action: "activate" | "deactivate" | "renew", now = Date.now()): Promise<AccountChange | null> {
   const sub = await billingRepository.subscription(storeId);
   if (!sub) return null; // never paid: nothing to switch
-  if (!active) {
+  if (action === "deactivate") {
     await billingRepository.setSuspension(storeId, { suspended: true, reason: "admin" });
-    return { suspended: true, periodEnd: sub.periodEnd };
+    return { suspended: true, periodEnd: sub.periodEnd, periodsPaid: sub.periodsPaid, plan: sub.plan, extended: false };
   }
   const lapsed = sub.periodEnd <= now;
-  const periodEnd = lapsed ? now + PERIOD_DAYS * DAY : sub.periodEnd;
-  await billingRepository.setSuspension(storeId, { suspended: false, reason: null, ...(lapsed ? { periodEnd, periodsPaid: sub.periodsPaid + 1 } : {}) });
-  return { suspended: false, periodEnd };
+  const extended = action === "renew" || lapsed;
+  const periodEnd = extended ? Math.max(sub.periodEnd, now) + PERIOD_DAYS * DAY : sub.periodEnd;
+  const periodsPaid = extended ? sub.periodsPaid + 1 : sub.periodsPaid;
+  await billingRepository.setSuspension(storeId, { suspended: false, reason: null, ...(extended ? { periodEnd, periodsPaid } : {}) });
+  return { suspended: false, periodEnd, periodsPaid, plan: sub.plan, extended };
 }

@@ -23,7 +23,9 @@ type Bucket = (typeof BUCKETS)[number];
 const bucketOf = (days: number): Bucket => (days <= 0 ? "expired" : days <= 3 ? "soon" : days <= 7 ? "week" : days <= 30 ? "month" : "later");
 const BUCKET_TONE = { expired: "danger", soon: "danger", week: "warn", month: "brand", later: "neutral" } as const;
 
-function Body({ rows }: { rows: SubscriptionRow[] }) {
+interface ChangeResult { suspended: boolean; periodEnd: number; periodsPaid: number; extended: boolean; emailSent: boolean }
+
+function Body({ rows: fetched }: { rows: SubscriptionRow[] }) {
   const t = useTranslations("Admin.subscriptions");
   const locale = useLocale();
   const f = useFormatters();
@@ -33,6 +35,9 @@ function Body({ rows }: { rows: SubscriptionRow[] }) {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>("all");
   const [busy, setBusy] = useState<string | null>(null);
+  // What the administrator just changed, applied over the fetched rows at once (the refresh below then makes it official).
+  const [changed, setChanged] = useState<Record<string, Partial<SubscriptionRow>>>({});
+  const rows = useMemo(() => fetched.map((r) => (changed[r.storeId] ? { ...r, ...changed[r.storeId] } : r)), [fetched, changed]);
 
   const filtered = useMemo(() => {
     const q = fold(query.trim());
@@ -46,14 +51,32 @@ function Body({ rows }: { rows: SubscriptionRow[] }) {
     [withDeadline],
   );
 
-  const act = async (row: SubscriptionRow, action: "activate" | "deactivate") => {
+  const act = async (row: SubscriptionRow, action: "activate" | "deactivate" | "renew") => {
     setBusy(row.storeId);
     try {
       const res = await fetch(`/api/admin/subscriptions/${row.storeId}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action }) });
-      if (res.ok) {
-        toast({ message: t(action === "activate" ? "activated" : "deactivated", { store: row.store }) });
-        router.refresh();
-      } else toast({ message: t("failed") });
+      if (!res.ok) return void toast({ message: t("failed") });
+      const out = (await res.json()) as ChangeResult;
+      const daysLeft = Math.ceil((out.periodEnd - Date.now()) / 86_400_000);
+      setChanged((prev) => ({
+        ...prev,
+        [row.storeId]: {
+          state: out.suspended || daysLeft <= 0 ? "inactive" : "active",
+          reason: out.suspended ? "admin" : daysLeft <= 0 ? "expired" : null,
+          periodEnd: out.periodEnd,
+          daysLeft,
+          periodsPaid: out.periodsPaid,
+          reminded: false,
+        },
+      }));
+      toast({
+        message: out.suspended
+          ? t("deactivated", { store: row.store })
+          : out.extended
+            ? t(out.emailSent ? "paymentConfirmedEmail" : "paymentConfirmedNoEmail", { store: row.store, date: endDate(out.periodEnd, locale) })
+            : t("activated", { store: row.store }),
+      });
+      router.refresh();
     } finally {
       setBusy(null);
     }
@@ -103,7 +126,7 @@ function Body({ rows }: { rows: SubscriptionRow[] }) {
                     <th className="px-4 py-3">{t("cols.expires")}</th>
                     <th className="px-4 py-3">{t("cols.state")}</th>
                     <th className="px-4 py-3 text-right">{t("cols.periods")}</th>
-                    <th className="w-36 px-4 py-3" />
+                    <th className="w-64 px-4 py-3" />
                   </tr>
                 </thead>
                 <tbody>
@@ -131,11 +154,15 @@ function Body({ rows }: { rows: SubscriptionRow[] }) {
                         {r.state === "pending" ? (
                           <span className="text-[12px] text-[var(--ink-500)]">{t("neverPaid")}</span>
                         ) : r.state === "active" ? (
-                          <button type="button" disabled={busy === r.storeId} onClick={() => act(r, "deactivate")}
-                            className="inline-flex h-9 items-center rounded-full border border-[var(--ink-200)] bg-white px-4 text-[13px] font-semibold text-[var(--kai-danger)] hover:border-[var(--kai-danger)] disabled:opacity-50">{t("deactivate")}</button>
+                          <div className="flex justify-end gap-2">
+                            <button type="button" disabled={busy === r.storeId} onClick={() => act(r, "renew")}
+                              className="inline-flex h-9 items-center rounded-full border border-[var(--ink-200)] bg-white px-4 text-[13px] font-semibold text-[var(--ink-900)] hover:border-[var(--ink-300)] disabled:opacity-50">{busy === r.storeId ? t("processing") : t("renew")}</button>
+                            <button type="button" disabled={busy === r.storeId} onClick={() => act(r, "deactivate")}
+                              className="inline-flex h-9 items-center rounded-full border border-[var(--ink-200)] bg-white px-4 text-[13px] font-semibold text-[var(--kai-danger)] hover:border-[var(--kai-danger)] disabled:opacity-50">{t("deactivate")}</button>
+                          </div>
                         ) : (
                           <button type="button" disabled={busy === r.storeId} onClick={() => act(r, "activate")}
-                            className="inline-flex h-9 items-center rounded-full bg-[var(--ink-900)] px-4 text-[13px] font-semibold text-white hover:opacity-90 disabled:opacity-50">{t("activate")}</button>
+                            className="inline-flex h-9 items-center rounded-full bg-[var(--ink-900)] px-4 text-[13px] font-semibold text-white hover:opacity-90 disabled:opacity-50">{busy === r.storeId ? t("processing") : t("activate")}</button>
                         )}
                       </td>
                     </tr>

@@ -3233,7 +3233,7 @@
         "expired": "Period ended",
         "admin": "Switched off by the team"
       },
-      "activate": "Activate",
+      "activate": "Confirm payment and activate",
       "deactivate": "Deactivate",
       "neverPaid": "Never paid",
       "activated": "{store}: access switched on.",
@@ -3253,7 +3253,11 @@
       },
       "sinceLine": "customer since {date} · {count} periods paid",
       "renewal": "renewal {price}",
-      "reminded": "reminder sent"
+      "reminded": "reminder sent",
+      "renew": "Record renewal",
+      "processing": "Processing…",
+      "paymentConfirmedEmail": "{store}: payment confirmed, active until {date}. Confirmation e-mail sent.",
+      "paymentConfirmedNoEmail": "{store}: payment confirmed, active until {date}. The e-mail was not sent (check RESEND_API_KEY and EMAIL_FROM)."
     }
   },
   "Supplier": {
