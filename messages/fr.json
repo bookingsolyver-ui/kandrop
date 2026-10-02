@@ -1093,28 +1093,29 @@
         }
       },
       "steps": {
-        "eyebrow": "Simple et transparent",
+        "eyebrow": "Simple et direct",
         "title": "Comment ça marche",
-        "subtitle": "Trois étapes pour faire facturer votre boutique avec des produits physiques, un catalogue chinois et une livraison en 24h à Luanda.",
+        "subtitle": "Trois étapes pour faire facturer votre boutique avec des produits physiques et une livraison rapide à Luanda.",
         "s1": {
-          "tag": "Accès au tableau de bord",
-          "title": "Créez votre compte et choisissez votre offre",
-          "body": "Inscrivez-vous et choisissez votre offre d’accès (à partir de {price} le 1er mois) pour débloquer le tableau de bord complet et les outils de vente.",
+          "tag": "Boutique connectée",
+          "title": "Créez votre compte",
+          "body": "Inscrivez-vous et connectez votre boutique à la plateforme.",
           "alt": "Entrepreneur angolais créant un compte et accédant au tableau de bord de la plateforme"
         },
         "s2": {
-          "tag": "Catalogue B2B",
-          "title": "Choisissez les produits du catalogue",
-          "body": "Importez des articles au prix d’usine chinois déjà à Luanda, avec la marge calculée et des pages de vente prêtes à convertir.",
+          "tag": "Prix fournisseur",
+          "title": "Choisissez vos produits",
+          "body": "Importez depuis le catalogue avec le prix fournisseur déjà défini.",
           "alt": "Produits physiques de dropshipping prêts à l’expédition"
         },
         "s3": {
-          "tag": "Retraits en 24h",
-          "title": "Vendez et recevez vos bénéfices",
-          "body": "Votre client achète et reçoit le lendemain à Luanda. Demandez le retrait de vos gains directement sur votre compte bancaire.",
+          "tag": "Livraison en 24h",
+          "title": "Vendez",
+          "body": "Le client achète, le fournisseur expédie et la livraison arrive en 24h.",
           "alt": "Livreur à Luanda effectuant une livraison rapide en 24h"
         },
-        "note": "<strong>Transparence :</strong> L’inscription sur la liste d’attente est aujourd’hui 100 % gratuite. Au lancement officiel, les inscrits auront la priorité pour choisir leur offre d’accès (à partir de {price} le 1er mois de l’offre Starter) et accéder immédiatement au tableau de bord. La date d’ouverture officielle sera annoncée sur notre Instagram @kandrop.ecom."
+        "closing": "Pas de stock, pas d’importation, pas de processus manuel.",
+        "cta": "Créer mon compte"
       },
       "compare": {
         "eyebrow": "Comparatif direct",

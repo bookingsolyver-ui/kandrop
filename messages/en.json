@@ -1093,28 +1093,29 @@
         }
       },
       "steps": {
-        "eyebrow": "Simple and transparent",
+        "eyebrow": "Simple and direct",
         "title": "How it works",
-        "subtitle": "Three steps to get your store billing with physical products, a Chinese catalogue and 24h delivery in Luanda.",
+        "subtitle": "Three steps to get your store billing with physical products and fast delivery in Luanda.",
         "s1": {
-          "tag": "Dashboard access",
-          "title": "Create your account and choose your plan",
-          "body": "Sign up and pick your access plan (from {price} in the 1st month) to unlock the full dashboard and the selling tools.",
+          "tag": "Store connected",
+          "title": "Create your account",
+          "body": "Sign up and connect your store to the platform.",
           "alt": "Angolan entrepreneur creating an account and opening the dashboard on the platform"
         },
         "s2": {
-          "tag": "B2B catalogue",
-          "title": "Pick products from the catalogue",
-          "body": "Import items at Chinese factory prices already in Luanda, with the margin calculated and landing pages ready to convert.",
+          "tag": "Supplier price",
+          "title": "Pick your products",
+          "body": "Import from the catalogue with the supplier price already set.",
           "alt": "Physical dropshipping products ready to ship"
         },
         "s3": {
-          "tag": "Payouts in 24h",
-          "title": "Sell and receive your profits",
-          "body": "Your customer buys and receives the next day in Luanda. Request a payout of your earnings straight to your bank account.",
+          "tag": "24h delivery",
+          "title": "Sell",
+          "body": "The customer buys, the supplier ships and the delivery arrives in 24h.",
           "alt": "Courier in Luanda making a fast 24h delivery of an order"
         },
-        "note": "<strong>Transparency:</strong> Joining the waiting list today is 100% free. At the official launch, anyone on the list gets priority to choose their access plan (from {price} in the 1st month of the Starter plan) and reach the dashboard immediately. The official opening date will be revealed on our Instagram @kandrop.ecom."
+        "closing": "No stock, no importing, no manual process.",
+        "cta": "Create my account"
       },
       "compare": {
         "eyebrow": "Direct comparison",

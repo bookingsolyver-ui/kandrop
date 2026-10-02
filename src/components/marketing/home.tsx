@@ -1,8 +1,8 @@
 import { getLocale, getTranslations } from "next-intl/server";
-import Image from "next/image";
 import { formatKwz } from "@/lib/money";
 import { Link } from "@/i18n/navigation";
 import { PLAN_INTRO_PRICES, PLAN_PRICES } from "@/server/modules/plan/limits";
+import { StepsShowcase, type ShowcaseStep } from "./StepsShowcase";
 import { FeaturedCarousel, type FeaturedProduct } from "./FeaturedCarousel";
 import { ArrowIcon, CheckIcon } from "./icons";
 
@@ -106,36 +106,39 @@ export async function HomeSolution() {
   );
 }
 
-/** Grey: three numbered steps. The first one carries the real entry price of the Starter plan. */
+/** Grey: "Como funciona", three steps as a timeline with the photo of the current step pinned beside it (see `StepsShowcase`). */
 export async function HomeSteps() {
   const t = await getTranslations("Marketing.home.steps");
-  const price = `${String(PLAN_INTRO_PRICES.starter).replace(/\B(?=(\d{3})+(?!\d))/g, ".")} Kz`;
+  const steps: ShowcaseStep[] = (["s1", "s2", "s3"] as const).map((k) => ({
+    tag: t(`${k}.tag`),
+    title: t(`${k}.title`),
+    body: t(`${k}.body`),
+    alt: t(`${k}.alt`),
+    image: STEP_PHOTOS[k],
+  }));
   return (
-    <section id="como-funciona" aria-labelledby="steps-title" className="scroll-mt-20 bg-brand-gray">
-      <div className="mx-auto w-full max-w-6xl px-6 py-20 sm:py-28">
-        <div className="reveal mx-auto max-w-2xl text-center">
-          <p className={`${eyebrow} text-brand-orange`}>{t("eyebrow")}</p>
-          <h2 id="steps-title" className="mt-2 text-3xl font-extrabold tracking-tight text-brand-black sm:text-4xl">{t("title")}</h2>
-          <p className="mt-3 text-base text-brand-black/60">{t("subtitle")}</p>
-        </div>
-        <ol className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {(["s1", "s2", "s3"] as const).map((k, i) => (
-            <li key={k} className="reveal group relative flex flex-col overflow-hidden rounded-2xl border border-black/10 bg-brand-white shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl" style={{ "--i": i } as React.CSSProperties}>
-              <div className="relative h-56 w-full overflow-hidden bg-brand-black/5 sm:h-60">
-                <Image src={STEP_PHOTOS[k]} alt={t(`${k}.alt`)} fill sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" className="object-cover transition-transform duration-500 group-hover:scale-105" />
-                <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60" />
-                <span className="absolute top-4 left-4 flex size-9 items-center justify-center rounded-xl bg-brand-orange text-sm font-black text-brand-black shadow-lg">{`0${i + 1}`}</span>
-              </div>
-              <div className="flex flex-1 flex-col p-6">
-                <span className="mb-2 inline-flex w-fit items-center rounded-md bg-brand-orange/10 px-2 py-0.5 text-[11px] font-bold tracking-wider text-brand-orange uppercase">{t(`${k}.tag`)}</span>
-                <h3 className="text-xl font-bold tracking-tight text-brand-black transition-colors group-hover:text-brand-orange">{t(`${k}.title`)}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-brand-black/70">{t(`${k}.body`, { price })}</p>
-              </div>
-            </li>
-          ))}
-        </ol>
-        <div className="reveal mt-12 rounded-2xl border border-black/10 bg-brand-white p-5 text-center shadow-xs sm:p-6">
-          <p className="text-sm leading-relaxed font-medium text-brand-black/80">{t.rich("note", { price, strong: (c) => <strong className="font-bold text-brand-black">{c}</strong> })}</p>
+    <section id="como-funciona" aria-labelledby="steps-title" className="relative scroll-mt-20 bg-brand-gray">
+      <div aria-hidden className="pointer-events-none absolute inset-0 overflow-clip">
+        <div className="absolute -top-32 right-[-8%] size-80 rounded-full bg-brand-orange/25 blur-[110px]" />
+        <div className="absolute bottom-0 left-[-10%] size-72 rounded-full bg-brand-orange/15 blur-[110px]" />
+      </div>
+      <div className="relative mx-auto w-full max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
+        <div className="reveal rounded-[28px] border border-black/10 bg-brand-white p-5 shadow-[0_45px_100px_-75px_rgba(0,0,0,0.9)] sm:p-8 lg:p-12">
+          <div className="max-w-2xl">
+            <p className="inline-flex items-center rounded-full border border-brand-orange/30 bg-brand-orange/10 px-3 py-1 text-xs font-normal text-brand-orange">{t("eyebrow")}</p>
+            <h2 id="steps-title" className="mt-4 text-3xl font-extrabold tracking-tight text-brand-black sm:text-4xl">{t("title")}</h2>
+            <p className="mt-3 text-sm leading-relaxed text-brand-black/60 sm:text-base">{t("subtitle")}</p>
+          </div>
+          <div className="mt-10 lg:mt-14">
+            <StepsShowcase steps={steps} />
+            <div className="mt-12 pl-[60px] lg:mt-16 lg:ml-[calc(41.666%+3rem)]">
+              <p className="max-w-md text-sm leading-relaxed font-semibold text-brand-black/75 sm:text-base">{t("closing")}</p>
+              <Link href="/register" className="group mt-2 inline-flex items-center gap-1.5 text-sm font-bold text-brand-orange transition-colors hover:text-brand-orange/80">
+                {t("cta")}
+                <ArrowIcon size={16} />
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </section>
