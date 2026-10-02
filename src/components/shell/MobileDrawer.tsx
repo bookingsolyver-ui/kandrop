@@ -71,11 +71,15 @@ export function MobileDrawer({
         </div>
 
         <div className="min-h-0 flex-1 overflow-y-auto">
-          <div className="mx-4 mt-4 mb-1">
-            <p className="text-[10px] font-bold tracking-[0.16em] text-[var(--ink-500)] uppercase">
-              {t("store")}
-            </p>
-            <p className="mt-1 truncate text-sm font-semibold">{storeName}</p>
+          {/* The signed-in merchant's own store, under the brand: a card of its own, so the name never touches the logo or the menu and a long name wraps instead of being cut. */}
+          <div className="mx-4 mt-4 mb-3 flex items-center gap-3 rounded-[var(--r-md)] border border-[var(--ink-200)] bg-[var(--ink-50)] p-3">
+            <span aria-hidden className="grid size-10 shrink-0 place-items-center rounded-xl bg-brand-orange text-base font-extrabold text-brand-black">
+              {(storeName.trim()[0] ?? "?").toUpperCase()}
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="text-[10px] font-bold tracking-[0.16em] text-[var(--ink-500)] uppercase">{t("store")}</p>
+              <p className="mt-0.5 line-clamp-2 text-sm leading-snug font-semibold break-words text-[var(--ink-900)]" title={storeName}>{storeName}</p>
+            </div>
           </div>
           {/* Same list as on the desktop; the padding makes the items float inside the panel. */}
           <nav aria-label={t("navLabel")} className="flex flex-col gap-2 px-3 pb-3">
