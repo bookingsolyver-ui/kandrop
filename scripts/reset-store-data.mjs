@@ -4,7 +4,7 @@
  *
  *   node scripts/reset-store-data.mjs --store sto_xxxx            # dry run: only COUNTS, deletes nothing
  *   node scripts/reset-store-data.mjs --store sto_xxxx --apply    # deletes
- *   node scripts/reset-store-data.mjs --all-stores --apply        # every store (asks you to type RESET)
+ *   node scripts/reset-store-data.mjs --all-stores --apply --confirm RESET   # every store
  *
  * Deleted (per store): orders, supplier lines (supplier_orders), their invoices, deliveries, payouts (merchant
  * withdrawals), checkout sessions that were product purchases, and the product view counters.
@@ -43,11 +43,17 @@ for (const s of stores) {
   const counts = Object.fromEntries(await Promise.all(TABLES.map(async (t) => [t, await count(t, s.id)])));
   const { data: lines } = await db.from("supplier_orders").select("supplier_product_id,stock_reserved,stock_restored_at,logistics_status").eq("store_id", s.id);
   const toGiveBack = (lines ?? []).filter((l) => l.supplier_product_id && !l.stock_restored_at && l.logistics_status !== "cancelled" && l.stock_reserved > 0);
-  console.log(`${apply ? "DELETING" : "DRY RUN"}  ${s.id}  "${s.name}"  ${JSON.stringify(counts)}  stock units to give back: ${toGiveBack.reduce((n, l) => n + l.stock_reserved, 0)}`);
+  console.log(`${apply ? "TO DELETE" : "DRY RUN"}  ${s.id}  "${s.name}"  ${JSON.stringify(counts)}  stock units to give back: ${toGiveBack.reduce((n, l) => n + l.stock_reserved, 0)}`);
 }
 if (!apply) { console.log("\nNothing was deleted (dry run). Add --apply to delete."); process.exit(0); }
 
-if (all) {
+// Wiping EVERY store needs an explicit confirmation: `--confirm RESET` (works from `!` / CI, where nothing can be typed),
+// or, in a real terminal, typing RESET at the prompt.
+if (all && value("--confirm") !== "RESET") {
+  if (!process.stdin.isTTY) {
+    console.error('\nNot confirmed. Add  --confirm RESET  to wipe every store (this shell cannot ask you to type it).');
+    process.exit(1);
+  }
   const rl = createInterface({ input: process.stdin, output: process.stdout });
   const answer = await rl.question(`\nThis wipes the sales history of ${stores.length} store(s). Type RESET to continue: `);
   rl.close();
