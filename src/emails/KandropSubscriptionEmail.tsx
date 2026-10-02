@@ -88,4 +88,15 @@ export function KandropSubscriptionEmail(props: KandropSubscriptionEmailProps) {
   );
 }
 
+/** Sample data for the `react-email` preview (`npx email dev`); never used when sending. */
+KandropSubscriptionEmail.PreviewProps = {
+  kind: "reminder",
+  shopName: "Loja Exemplo",
+  daysLeft: 3,
+  expirationDate: "5 de outubro de 2026",
+  planName: "Starter",
+  renewalAmount: "8 799 Kz",
+  ctaUrl: "https://wa.me/244900000000",
+} satisfies KandropSubscriptionEmailProps;
+
 export default KandropSubscriptionEmail;
