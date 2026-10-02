@@ -1716,7 +1716,7 @@
     "current": {
       "label": "Plano atual",
       "name": "Plano {plan}",
-      "active": "{price} por mês · ativo até {date}",
+      "active": "Ativo até {date}. Renovação a {price}/mês, paga por ti quando quiseres renovar (sem débito automático).",
       "landingPages": "{used} de {limit} landing pages usadas",
       "products": "{used} de {limit} produtos usados",
       "landingPagesUnlimited": "Landing pages ilimitadas · {used} em uso",
@@ -1734,7 +1734,9 @@
       "renew": "Renovar 30 dias",
       "included": "Incluído no seu plano",
       "soon": "Em breve",
-      "label": "Planos disponíveis"
+      "label": "Planos disponíveis",
+      "firstMonth": "no 1.º mês",
+      "then": "depois {price}/mês"
     },
     "dialog": {
       "title": "Subscrever o plano {plan}",
@@ -1751,7 +1753,10 @@
       "successTitle": "Plano {plan} ativo",
       "successBody": "O seu plano está ativo até {date}. O pagamento ficou registado nas suas faturas.",
       "invoice": "Ver fatura",
-      "done": "Concluir"
+      "done": "Concluir",
+      "renewal": "A partir do 2.º mês",
+      "renewalValue": "{price} / mês",
+      "renewalNote": "Este é o preço de lançamento do 1.º mês. A partir do 2.º mês aplica-se o preço normal de {price}/mês. Não há débito automático: és tu a renovar, quando quiseres, e cancelas sem custos."
     },
     "invoices": {
       "title": "Histórico de faturas",
@@ -1918,7 +1923,7 @@
       "soon": "Em breve",
       "firstMonth": "no 1.º mês",
       "then": "depois {price}/mês (-{pct}% no 1.º mês)",
-      "thenShort": "Preço de lançamento do 1.º mês. Depois {price}/mês."
+      "thenShort": "Preço de lançamento do 1.º mês. A partir do 2.º mês: {price}/mês, pagos por ti quando renovares (sem débito automático)."
     },
     "details": {
       "title": "Os seus dados",

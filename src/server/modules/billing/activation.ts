@@ -26,10 +26,14 @@ export async function activateSubscription(session: CheckoutSession, paidAt: num
   try {
     const current = await billingRepository.subscription(target.storeId);
     const renewing = current?.plan === target.plan && current.periodEnd > paidAt;
+    // Periods paid = the charges that activated a plan (this one included): the first is the launch month.
+    const periodsPaid = (await billingRepository.charges(target.storeId)).filter((c) => c.activated).length;
     await billingRepository.saveSubscription({
       storeId: target.storeId,
       plan: target.plan,
       periodEnd: (renewing ? current.periodEnd : paidAt) + PERIOD_DAYS * DAY,
+      startedAt: current?.startedAt ?? paidAt,
+      periodsPaid,
     });
   } catch (error) {
     await billingRepository.releaseActivation(session.id); // so a retry can still switch it on

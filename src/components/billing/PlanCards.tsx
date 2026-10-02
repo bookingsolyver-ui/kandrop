@@ -65,8 +65,9 @@ function PlanCard({ plan, onChoose }: { plan: PublicPlan; onChoose: (plan: PaidP
         <span className="text-[2.25rem] leading-none font-semibold tracking-tight">
           {paid ? f.money(plan.price) : t("free")}
         </span>
-        {paid && <span className="text-sm text-ink-muted">{t("perMonth")}</span>}
+        {paid && <span className="text-sm text-ink-muted">{plan.intro ? t("firstMonth") : t("perMonth")}</span>}
       </p>
+      {plan.intro && <p className="mt-2 text-sm text-ink-muted">{t("then", { price: f.money(plan.regularPrice) })}</p>}
       {highlighted && current && (
         <p className="mt-2 text-[13px] font-medium text-accent">{t("current")}</p>
       )}

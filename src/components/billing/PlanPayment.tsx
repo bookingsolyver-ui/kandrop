@@ -176,6 +176,7 @@ export function PlanPayment({
             [t("plan"), names(plan)],
             [t("period"), t("days")],
             [t("total"), f.money(session.amount)],
+            ...(session.intro ? ([[t("renewal"), t("renewalValue", { price: f.money(session.renewalAmount) })]] as const) : []),
           ] as const
         ).map(([label, value], i) => (
           <div key={label} className="flex justify-between gap-4 px-4 py-3">
@@ -184,6 +185,7 @@ export function PlanPayment({
           </div>
         ))}
       </dl>
+      {session.intro && <p className="mt-3 text-[13px] leading-snug text-ink-muted">{t("renewalNote", { price: f.money(session.renewalAmount) })}</p>}
       {sandbox && (
         <div className="mt-5 overflow-hidden rounded-md border border-line">
           <SandboxBanner />

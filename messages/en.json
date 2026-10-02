@@ -1716,7 +1716,7 @@
     "current": {
       "label": "Current plan",
       "name": "{plan} plan",
-      "active": "{price} a month · active until {date}",
+      "active": "Active until {date}. Renews at {price}/month, paid by you when you choose to renew (no automatic debit).",
       "landingPages": "{used} of {limit} landing pages used",
       "products": "{used} of {limit} products used",
       "landingPagesUnlimited": "Unlimited landing pages · {used} in use",
@@ -1734,7 +1734,9 @@
       "renew": "Renew 30 days",
       "included": "Included in your plan",
       "soon": "Soon",
-      "label": "Available plans"
+      "label": "Available plans",
+      "firstMonth": "for the 1st month",
+      "then": "then {price}/month"
     },
     "dialog": {
       "title": "Subscribe to the {plan} plan",
@@ -1751,7 +1753,10 @@
       "successTitle": "{plan} plan active",
       "successBody": "Your plan is active until {date}. The payment is recorded in your invoices.",
       "invoice": "View invoice",
-      "done": "Done"
+      "done": "Done",
+      "renewal": "From the 2nd month",
+      "renewalValue": "{price} / month",
+      "renewalNote": "This is the launch price for the 1st month. From the 2nd month the regular price of {price}/month applies. There is no automatic debit: you renew whenever you like, and you can cancel at no cost."
     },
     "invoices": {
       "title": "Invoice history",
@@ -1918,7 +1923,7 @@
       "soon": "Soon",
       "firstMonth": "for the 1st month",
       "then": "then {price}/month (-{pct}% in the 1st month)",
-      "thenShort": "Launch price for the 1st month. Then {price}/month."
+      "thenShort": "Launch price for the 1st month. From the 2nd month: {price}/month, paid by you when you renew (no automatic debit)."
     },
     "details": {
       "title": "Your details",

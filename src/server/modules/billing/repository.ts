@@ -33,18 +33,25 @@ export const billingRepository = {
       console.error("[billing] a subscription has an unknown plan value; treated as no active plan", { storeId, plan: JSON.stringify(String(row.plan)) });
       return null;
     }
-    return { storeId, plan, periodEnd: Number(row.period_end) };
+    return {
+      storeId,
+      plan,
+      periodEnd: Number(row.period_end),
+      startedAt: row.started_at == null ? null : Number(row.started_at),
+      periodsPaid: Number(row.periods_paid ?? 0),
+    };
   },
 
   async saveSubscription(subscription: SubscriptionRecord): Promise<SubscriptionRecord> {
-    must(
-      "subscriptions.save",
-      await db().from("subscriptions").upsert({
-        store_id: subscription.storeId,
-        plan: subscription.plan,
-        period_end: subscription.periodEnd,
-      })
-    );
+    const base = { store_id: subscription.storeId, plan: subscription.plan, period_end: subscription.periodEnd };
+    const full = await db().from("subscriptions").upsert({ ...base, started_at: subscription.startedAt, periods_paid: subscription.periodsPaid });
+    // Until the cycle migration is applied the columns do not exist: keep billing alive and say so (the price rule reads the charges, not these columns).
+    if (full.error && /started_at|periods_paid/.test(full.error.message)) {
+      console.error("[billing] subscription cycle columns are missing; apply supabase/migrations/20261012000000_subscription_cycle.sql");
+      must("subscriptions.save", await db().from("subscriptions").upsert(base));
+    } else {
+      must("subscriptions.save", full);
+    }
     return subscription;
   },
 

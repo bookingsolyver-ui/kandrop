@@ -1716,7 +1716,7 @@
     "current": {
       "label": "Offre actuelle",
       "name": "Offre {plan}",
-      "active": "{price} par mois · active jusqu’au {date}",
+      "active": "Actif jusqu’au {date}. Renouvellement à {price}/mois, payé par vous quand vous choisissez de renouveler (sans prélèvement automatique).",
       "landingPages": "{used} pages de vente utilisées sur {limit}",
       "products": "{used} produits utilisés sur {limit}",
       "landingPagesUnlimited": "Pages de vente illimitées · {used} en cours",
@@ -1734,7 +1734,9 @@
       "renew": "Renouveler 30 jours",
       "included": "Inclus dans votre offre",
       "soon": "Bientôt",
-      "label": "Offres disponibles"
+      "label": "Offres disponibles",
+      "firstMonth": "le 1er mois",
+      "then": "puis {price}/mois"
     },
     "dialog": {
       "title": "Souscrire à l’offre {plan}",
@@ -1751,7 +1753,10 @@
       "successTitle": "Offre {plan} active",
       "successBody": "Votre offre est active jusqu’au {date}. Le paiement est enregistré dans vos factures.",
       "invoice": "Voir la facture",
-      "done": "Terminer"
+      "done": "Terminer",
+      "renewal": "À partir du 2e mois",
+      "renewalValue": "{price} / mois",
+      "renewalNote": "Ceci est le prix de lancement du 1er mois. À partir du 2e mois, le prix normal de {price}/mois s’applique. Il n’y a pas de prélèvement automatique : vous renouvelez quand vous voulez, et vous pouvez résilier sans frais."
     },
     "invoices": {
       "title": "Historique des factures",
@@ -1918,7 +1923,7 @@
       "soon": "Bientôt",
       "firstMonth": "le 1er mois",
       "then": "puis {price}/mois (-{pct} % le 1er mois)",
-      "thenShort": "Prix de lancement du 1er mois. Ensuite {price}/mois."
+      "thenShort": "Prix de lancement du 1er mois. À partir du 2e mois : {price}/mois, payés par vous au renouvellement (sans prélèvement automatique)."
     },
     "details": {
       "title": "Vos informations",

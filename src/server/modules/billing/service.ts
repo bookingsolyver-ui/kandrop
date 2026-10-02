@@ -85,9 +85,12 @@ export async function getBilling(auth: Session): Promise<BillingOverview> {
     plan,
     periodEnd: new Date(sub.periodEnd).toISOString(),
     usage,
+    cycle: { periodsPaid: sub.periodsPaid, firstMonth: sub.periodsPaid <= 1, renewalPrice: PLAN_PRICES[plan] * KZ },
     plans: PLAN_KEYS.map((key) => ({
       key,
       price: priceOf(key, intro),
+      regularPrice: PLAN_PRICES[key] * KZ,
+      intro,
       limits: PLANS[key],
       action: action(key, plan),
     })),
@@ -107,7 +110,8 @@ export async function startUpgrade(auth: Session, input: UpgradeInput): Promise<
   const current = await planOf(auth.storeId);
   if (current && planRank(plan) < planRank(current)) throw new ApiError("plan_not_upgradable");
 
-  const amount = priceOf(plan, await introEligible(auth.storeId));
+  const intro = await introEligible(auth.storeId);
+  const amount = priceOf(plan, intro);
 
   // Coming back to the payment step (a reload, or after leaving with a bank transfer still waiting)
   // picks up the checkout that is still open instead of piling up new ones, so a pending transfer
@@ -124,7 +128,7 @@ export async function startUpgrade(auth: Session, input: UpgradeInput): Promise<
       open && statusOf(open) === "open" && open.expiresAt - now > 10 * 60_000 ? [open] : []
     )
     .sort((x, y) => y.createdAt - x.createdAt)[0];
-  if (reusable) return { sessionId: reusable.id, plan, amount, transfer: transferInfo() };
+  if (reusable) return { sessionId: reusable.id, plan, amount, renewalAmount: PLAN_PRICES[plan] * KZ, intro, transfer: transferInfo() };
 
   const session = await buildCheckout({
     storeId: PLATFORM_STORE_ID,
@@ -143,5 +147,5 @@ export async function startUpgrade(auth: Session, input: UpgradeInput): Promise<
     createdAt: Date.now(),
     activated: false,
   });
-  return { sessionId: session.id, plan, amount, transfer: transferInfo() };
+  return { sessionId: session.id, plan, amount, renewalAmount: PLAN_PRICES[plan] * KZ, intro, transfer: transferInfo() };
 }

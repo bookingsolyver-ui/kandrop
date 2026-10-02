@@ -8,6 +8,10 @@ export interface SubscriptionRecord {
   plan: PaidPlan;
   /** Epoch ms. */
   periodEnd: number;
+  /** Epoch ms of the first payment; `null` for rows that predate the cycle columns. */
+  startedAt: number | null;
+  /** 30-day periods paid so far. 1 = still in the launch month; the next one is billed at the regular price. */
+  periodsPaid: number;
 }
 
 /** One attempt to pay for a plan: the checkout session that carries the money. */
@@ -40,6 +44,10 @@ export interface PublicPlan {
   /** Minor units per month. */
   price: number;
   limits: { landingPages: number | null; products: number | null };
+  /** Minor units: the regular monthly price, shown next to a launch `price`. */
+  regularPrice: number;
+  /** `price` is the launch price of the first month. */
+  intro: boolean;
   /** What the button of this plan's card does. */
   action: "current" | "upgrade" | "renew" | "included";
 }
@@ -53,6 +61,8 @@ export interface BillingOverview {
     products: { used: number; limit: number | null };
   };
   plans: PublicPlan[];
+  /** Cycle of the current subscription: what the next renewal costs. */
+  cycle: { periodsPaid: number; firstMonth: boolean; renewalPrice: number };
   invoices: PublicInvoice[];
   /** Test mode: payments are simulated and nothing is really charged. */
   sandbox: boolean;
@@ -63,6 +73,10 @@ export interface UpgradeSession {
   plan: PaidPlan;
   /** Minor units. */
   amount: number;
+  /** Minor units: what the next renewal costs (the regular price). */
+  renewalAmount: number;
+  /** `amount` is the launch price of the first month. */
+  intro: boolean;
   /** Where to send a bank transfer instead, or `null` when transfers are not offered. */
   transfer: TransferInfo | null;
 }
