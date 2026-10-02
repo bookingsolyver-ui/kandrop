@@ -3257,7 +3257,29 @@
       "renew": "Registar renovação",
       "processing": "A processar…",
       "paymentConfirmedEmail": "{store}: pagamento confirmado, ativa até {date}. E-mail de confirmação enviado.",
-      "paymentConfirmedNoEmail": "{store}: pagamento confirmado, ativa até {date}. O e-mail não foi enviado (verifica RESEND_API_KEY e EMAIL_FROM)."
+      "paymentConfirmedNoEmail": "{store}: pagamento confirmado, ativa até {date}. O e-mail não foi enviado (verifica RESEND_API_KEY e EMAIL_FROM).",
+      "maintenance": {
+        "open": "Enviar aviso de manutenção",
+        "title": "Aviso de manutenção",
+        "intro": "Envia um e-mail a todos os lojistas a avisar da manutenção programada.",
+        "reason": "Motivo",
+        "reasonPlaceholder": "Melhorias de performance e atualizações no catálogo",
+        "starts": "Início previsto",
+        "ends": "Término previsto",
+        "clock": "Hora de Luanda. Indica pelo menos o início ou a duração.",
+        "duration": "Duração estimada (opcional)",
+        "durationPlaceholder": "cerca de 2 horas",
+        "includeInactive": "Incluir também contas inativas e pendentes (por omissão só vão contas com subscrição ativa).",
+        "warning": "O e-mail sai de imediato para todos os destinatários e não pode ser desfeito.",
+        "cancel": "Cancelar",
+        "send": "Enviar aviso",
+        "sending": "A enviar avisos aos lojistas...",
+        "done": "Aviso enviado a {sent} de {total} lojistas.",
+        "donePartial": "Aviso enviado a {sent} de {total} lojistas. Alguns e-mails falharam.",
+        "nobody": "Não há lojistas a quem enviar.",
+        "notConfigured": "O envio de e-mail não está configurado (RESEND_API_KEY). Nada foi enviado.",
+        "failed": "Não foi possível enviar o aviso."
+      }
     }
   },
   "Supplier": {

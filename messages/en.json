@@ -3257,7 +3257,29 @@
       "renew": "Record renewal",
       "processing": "Processing…",
       "paymentConfirmedEmail": "{store}: payment confirmed, active until {date}. Confirmation e-mail sent.",
-      "paymentConfirmedNoEmail": "{store}: payment confirmed, active until {date}. The e-mail was not sent (check RESEND_API_KEY and EMAIL_FROM)."
+      "paymentConfirmedNoEmail": "{store}: payment confirmed, active until {date}. The e-mail was not sent (check RESEND_API_KEY and EMAIL_FROM).",
+      "maintenance": {
+        "open": "Send maintenance notice",
+        "title": "Maintenance notice",
+        "intro": "Sends an e-mail to every merchant announcing the planned maintenance.",
+        "reason": "Reason",
+        "reasonPlaceholder": "Performance improvements and catalogue updates",
+        "starts": "Expected start",
+        "ends": "Expected end",
+        "clock": "Luanda time. Give at least the start or the duration.",
+        "duration": "Estimated duration (optional)",
+        "durationPlaceholder": "about 2 hours",
+        "includeInactive": "Also include inactive and pending accounts (by default only accounts with an active subscription are notified).",
+        "warning": "The e-mail goes out immediately to every recipient and cannot be undone.",
+        "cancel": "Cancel",
+        "send": "Send notice",
+        "sending": "Sending notices to merchants...",
+        "done": "Notice sent to {sent} of {total} merchants.",
+        "donePartial": "Notice sent to {sent} of {total} merchants. Some e-mails failed.",
+        "nobody": "There are no merchants to send to.",
+        "notConfigured": "E-mail sending is not configured (RESEND_API_KEY). Nothing was sent.",
+        "failed": "The notice could not be sent."
+      }
     }
   },
   "Supplier": {

@@ -3257,7 +3257,29 @@
       "renew": "Enregistrer le renouvellement",
       "processing": "Traitement…",
       "paymentConfirmedEmail": "{store} : paiement confirmé, actif jusqu’au {date}. E-mail de confirmation envoyé.",
-      "paymentConfirmedNoEmail": "{store} : paiement confirmé, actif jusqu’au {date}. L’e-mail n’a pas été envoyé (vérifiez RESEND_API_KEY et EMAIL_FROM)."
+      "paymentConfirmedNoEmail": "{store} : paiement confirmé, actif jusqu’au {date}. L’e-mail n’a pas été envoyé (vérifiez RESEND_API_KEY et EMAIL_FROM).",
+      "maintenance": {
+        "open": "Envoyer un avis de maintenance",
+        "title": "Avis de maintenance",
+        "intro": "Envoie un e-mail à tous les marchands pour annoncer la maintenance programmée.",
+        "reason": "Motif",
+        "reasonPlaceholder": "Améliorations de performance et mises à jour du catalogue",
+        "starts": "Début prévu",
+        "ends": "Fin prévue",
+        "clock": "Heure de Luanda. Indiquez au moins le début ou la durée.",
+        "duration": "Durée estimée (facultatif)",
+        "durationPlaceholder": "environ 2 heures",
+        "includeInactive": "Inclure aussi les comptes inactifs et en attente (par défaut, seuls les comptes avec un abonnement actif sont prévenus).",
+        "warning": "L’e-mail part immédiatement vers tous les destinataires et ne peut pas être annulé.",
+        "cancel": "Annuler",
+        "send": "Envoyer l’avis",
+        "sending": "Envoi des avis aux marchands...",
+        "done": "Avis envoyé à {sent} marchands sur {total}.",
+        "donePartial": "Avis envoyé à {sent} marchands sur {total}. Certains e-mails ont échoué.",
+        "nobody": "Aucun marchand à qui envoyer.",
+        "notConfigured": "L’envoi d’e-mails n’est pas configuré (RESEND_API_KEY). Rien n’a été envoyé.",
+        "failed": "L’avis n’a pas pu être envoyé."
+      }
     }
   },
   "Supplier": {

@@ -7,6 +7,7 @@ import { SearchIcon } from "@/components/kai/icons";
 import { ToastProvider, useToast } from "@/components/ui/Toast";
 import { useRouter } from "@/i18n/navigation";
 import type { SubscriptionRow, SubscriptionState } from "@/shared/admin/types";
+import { MaintenanceNotice } from "./MaintenanceNotice";
 import { Badge, Pager, PageHeader, card, fold, usePager } from "./ui";
 
 const TONE = { active: "success", inactive: "danger", pending: "warn" } as const;
@@ -56,7 +57,7 @@ function Body({ rows: fetched }: { rows: SubscriptionRow[] }) {
     try {
       const res = await fetch(`/api/admin/subscriptions/${row.storeId}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action }) });
       if (!res.ok) return void toast({ message: t("failed") });
-      const out = (await res.json()) as ChangeResult;
+      const out = ((await res.json()) as { data: ChangeResult }).data;
       const daysLeft = Math.ceil((out.periodEnd - Date.now()) / 86_400_000);
       setChanged((prev) => ({
         ...prev,
@@ -86,7 +87,7 @@ function Body({ rows: fetched }: { rows: SubscriptionRow[] }) {
 
   return (
     <div>
-      <PageHeader title={t("title")} subtitle={t("subtitle")} />
+      <PageHeader title={t("title")} subtitle={t("subtitle")} actions={<MaintenanceNotice />} />
       <div role="tablist" aria-label={t("title")} className="mb-4 flex gap-1.5">
         {(["accounts", "deadlines"] as const).map((k) => (
           <button key={k} type="button" role="tab" aria-selected={tab === k} onClick={() => setTab(k)}
