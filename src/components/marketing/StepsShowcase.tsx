@@ -12,29 +12,53 @@ export interface ShowcaseStep {
   image: string;
 }
 
-/** How much of the line is lit when step `i` is the current one (the line runs over the three steps and the final check). */
-const LINE = ["scale-y-[0.18]", "scale-y-[0.55]", "scale-y-[0.9]"] as const;
-
 /**
  * "Como funciona": the three steps as a timeline. From `lg` the photo of the CURRENT step is pinned on the left (the
  * three photos cross-fade as the reader scrolls); below `lg` each step carries its own photo. Plain Tailwind transitions,
- * no animation library; the observer only decides which step is current.
+ * no animation library; a scroll handler works out the current step and how much of the line is lit.
  */
 export function StepsShowcase({ steps }: { steps: ShowcaseStep[] }) {
   const [active, setActive] = useState(0);
+  const [done, setDone] = useState(false);
+  const timeline = useRef<HTMLDivElement>(null);
+  const line = useRef<HTMLSpanElement>(null);
   const items = useRef<Array<HTMLLIElement | null>>([]);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) setActive(items.current.indexOf(entry.target as HTMLLIElement));
-        }
-      },
-      { rootMargin: "-40% 0px -40% 0px" },
-    );
-    for (const el of items.current) if (el) observer.observe(el);
-    return () => observer.disconnect();
+    // The reading point sits at 60% of the screen height. The lit line runs from the first number to the final check:
+    // its length is the distance from the reading point to the top of the timeline over that whole run, so it reaches the check
+    // exactly when the reading point does (an observer on the steps could never light the last stretch).
+    const READING = 0.6;
+    const NUMBER = 20; // half of the 40px circles: the line starts and ends at their centres
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const box = timeline.current;
+      if (!box) return;
+      const rect = box.getBoundingClientRect();
+      const point = window.innerHeight * READING;
+      const run = Math.max(1, rect.height - 2 * NUMBER);
+      const progress = Math.min(1, Math.max(0, (point - rect.top - NUMBER) / run));
+      // `scale` (not `transform`): Tailwind's `scale-y-0` class sets that property, and the inline value replaces it.
+      line.current?.style.setProperty("scale", `1 ${progress}`);
+      let current = 0;
+      items.current.forEach((el, i) => {
+        if (el && el.getBoundingClientRect().top + NUMBER <= point) current = i;
+      });
+      setActive(current);
+      setDone(progress >= 0.999);
+    };
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    return () => {
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      if (frame) cancelAnimationFrame(frame);
+    };
   }, []);
 
   const current = steps[active] ?? steps[0];
@@ -70,9 +94,9 @@ export function StepsShowcase({ steps }: { steps: ShowcaseStep[] }) {
         </div>
       </div>
 
-      <div className="relative lg:col-span-7">
+      <div ref={timeline} className="relative lg:col-span-7">
         <span aria-hidden className="absolute top-5 bottom-5 left-[19px] w-0.5 rounded-full bg-black/10" />
-        <span aria-hidden className={`absolute top-5 bottom-5 left-[19px] w-0.5 origin-top rounded-full bg-gradient-to-b from-brand-orange via-brand-orange to-brand-orange-light shadow-[0_0_14px_rgba(255,90,0,0.55)] transition-transform duration-700 ease-out motion-reduce:transition-none ${LINE[active] ?? LINE[0]}`} />
+        <span ref={line} aria-hidden className="absolute top-5 bottom-5 left-[19px] w-0.5 origin-top scale-y-0 rounded-full bg-gradient-to-b from-brand-orange via-brand-orange to-brand-orange-light shadow-[0_0_14px_rgba(255,90,0,0.55)] transition-[scale] duration-150 ease-out motion-reduce:transition-none" />
         <ol className="space-y-10 lg:space-y-0">
           {steps.map((s, i) => (
             <li key={s.image} ref={(el) => { items.current[i] = el; }} className="lg:min-h-[34vh]">
@@ -93,7 +117,7 @@ export function StepsShowcase({ steps }: { steps: ShowcaseStep[] }) {
           ))}
         </ol>
         <div className="relative mt-6 h-10">
-          <span className={`absolute top-0 left-0 z-10 flex size-10 items-center justify-center rounded-full transition-all duration-500 motion-reduce:transition-none ${active === steps.length - 1 ? "bg-brand-orange text-brand-black shadow-[0_0_0_6px_rgba(255,90,0,0.15)]" : "bg-brand-white text-brand-black/35 ring-1 ring-black/10"}`}>
+          <span className={`absolute top-0 left-0 z-10 flex size-10 items-center justify-center rounded-full transition-all duration-500 motion-reduce:transition-none ${done ? "bg-brand-orange text-brand-black shadow-[0_0_0_6px_rgba(255,90,0,0.15)]" : "bg-brand-white text-brand-black/35 ring-1 ring-black/10"}`}>
             <CheckIcon size={20} />
           </span>
         </div>

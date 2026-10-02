@@ -1,4 +1,4 @@
-import { Body, Button, Container, Head, Heading, Hr, Html, Preview, Section, Tailwind, Text } from "@react-email/components";
+import { Body, Button, Container, Head, Heading, Hr, Html, Img, Preview, Section, Tailwind, Text } from "@react-email/components";
 
 export type SubscriptionEmailKind = "reminder" | "deactivated";
 
@@ -51,9 +51,7 @@ export function KandropSubscriptionEmail(props: KandropSubscriptionEmailProps) {
         <Body className="m-0 bg-[#f6f6f6] py-6 font-sans">
           <Container className="mx-auto max-w-[560px] overflow-hidden rounded-2xl bg-white">
             <Section className="px-8 pt-8 pb-2 text-center">
-              <Text className="m-0 text-[28px] leading-none font-extrabold tracking-tight text-brand-black">
-                <span className="text-brand-orange">K</span>androp
-              </Text>
+              <Img src="https://kandrop.com/images/kandrop-logo.png" width="140" alt="Kandrop" className="mx-auto" />
             </Section>
 
             <Section className="px-8 pt-4 pb-8">
