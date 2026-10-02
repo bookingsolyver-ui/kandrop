@@ -2,11 +2,11 @@
 
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import { A11y, Autoplay, EffectCoverflow, Navigation, Pagination } from "swiper/modules";
+import type { Swiper as SwiperType } from "swiper";
+import { A11y, Autoplay, EffectCoverflow, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/effect-coverflow";
-import "swiper/css/pagination";
 
 export interface FeaturedProduct {
   key: "watch" | "earbuds" | "projector" | "powerbank" | "clipper" | "mic";
@@ -33,10 +33,14 @@ const Chevron = ({ d }: { d: string }) => (
 /** The 3D coverflow of featured products (Swiper), with the reference's card design, arrows and orange pagination. */
 export function FeaturedCarousel({ products }: { products: FeaturedProduct[] }) {
   const t = useTranslations("Marketing.home.catalog");
+  const [swiper, setSwiper] = useState<SwiperType | null>(null);
+  const [active, setActive] = useState(0);
+  // Loop mode needs more slides than fit on screen: show the list twice so wide screens never have a gap, and keep the dots at one per product.
+  const slides = [...products, ...products];
   return (
-    <div className="relative mx-auto w-full max-w-6xl px-4">
+    <div className="relative left-1/2 w-screen -translate-x-1/2">
       <style>{`
-  .kandrop-product-carousel { width: 100%; padding-top: 20px; padding-bottom: 60px !important; }
+  .kandrop-product-carousel { width: 100%; -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%); padding-top: 20px; padding-bottom: 56px !important; }
   .kandrop-product-carousel .swiper-slide { background-position: center; background-size: cover; width: 285px; }
   @media (min-width: 640px) { .kandrop-product-carousel .swiper-slide { width: 320px; } }
   .kandrop-product-carousel .swiper-pagination-bullet { background-color: rgba(255, 255, 255, 0.25) !important; opacity: 1; transition: all 0.3s ease; }
@@ -45,24 +49,25 @@ export function FeaturedCarousel({ products }: { products: FeaturedProduct[] }) 
       <div className="relative">
         <Swiper
           className="kandrop-product-carousel"
-          modules={[EffectCoverflow, Pagination, Navigation, Autoplay, A11y]}
+          modules={[EffectCoverflow, Navigation, Autoplay, A11y]}
+          onSwiper={setSwiper}
+          onRealIndexChange={(sw) => setActive(sw.realIndex % products.length)}
           effect="coverflow"
           grabCursor
           centeredSlides
           slidesPerView="auto"
           loop
           coverflowEffect={{ rotate: 0, stretch: 0, depth: 140, modifier: 1.4, slideShadows: false }}
-          pagination={{ clickable: true }}
           navigation={{ prevEl: ".kandrop-swiper-prev", nextEl: ".kandrop-swiper-next" }}
           autoplay={{ delay: 3800, disableOnInteraction: true, pauseOnMouseEnter: true }}
           a11y={{ enabled: true }}
         >
-          {products.map((p) => {
+          {slides.map((p, n) => {
             const profit = p.price - p.cost;
             const pct = Math.round((profit / p.price) * 100);
             const name = t(`items.${p.key}.name`);
             return (
-              <SwiperSlide key={p.key}>
+              <SwiperSlide key={`${p.key}-${n}`}>
                 <div className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#121212] p-3.5 shadow-2xl backdrop-blur-xl transition-all duration-300">
                   <div className="relative h-48 w-full overflow-hidden rounded-xl bg-black/40 sm:h-52">
                     <Photo src={`/images/products/${p.image}`} alt={name} />
@@ -89,9 +94,16 @@ export function FeaturedCarousel({ products }: { products: FeaturedProduct[] }) 
             );
           })}
         </Swiper>
+        <div className="-mt-10 flex items-center justify-center gap-2 pb-4">
+          {products.map((p, i) => (
+            <button key={p.key} type="button" aria-label={t(`items.${p.key}.name`)} aria-current={i === active} onClick={() => swiper?.slideToLoop(i)} className={`h-2 rounded-full transition-all duration-300 ${i === active ? "w-6 bg-brand-orange" : "w-2 bg-white/25 hover:bg-white/50"}`} />
+          ))}
+        </div>
       </div>
-      <button type="button" aria-label={t("prev")} className="kandrop-swiper-prev absolute top-1/2 -left-2 z-20 flex h-10 w-10 -translate-y-8 items-center justify-center rounded-full border border-white/15 bg-black/80 text-white shadow-xl backdrop-blur-md transition-all hover:border-brand-orange hover:bg-brand-orange hover:text-black focus:outline-none sm:-left-5"><Chevron d="m15 18-6-6 6-6" /></button>
-      <button type="button" aria-label={t("next")} className="kandrop-swiper-next absolute top-1/2 -right-2 z-20 flex h-10 w-10 -translate-y-8 items-center justify-center rounded-full border border-white/15 bg-black/80 text-white shadow-xl backdrop-blur-md transition-all hover:border-brand-orange hover:bg-brand-orange hover:text-black focus:outline-none sm:-right-5"><Chevron d="m9 18 6-6-6-6" /></button>
+      <div className="pointer-events-none absolute inset-0 mx-auto max-w-6xl px-4">
+      <button type="button" aria-label={t("prev")} className="kandrop-swiper-prev pointer-events-auto absolute top-1/2 -left-2 z-20 flex h-10 w-10 -translate-y-8 items-center justify-center rounded-full border border-white/15 bg-black/80 text-white shadow-xl backdrop-blur-md transition-all hover:border-brand-orange hover:bg-brand-orange hover:text-black focus:outline-none sm:-left-5"><Chevron d="m15 18-6-6 6-6" /></button>
+      <button type="button" aria-label={t("next")} className="kandrop-swiper-next pointer-events-auto absolute top-1/2 -right-2 z-20 flex h-10 w-10 -translate-y-8 items-center justify-center rounded-full border border-white/15 bg-black/80 text-white shadow-xl backdrop-blur-md transition-all hover:border-brand-orange hover:bg-brand-orange hover:text-black focus:outline-none sm:-right-5"><Chevron d="m9 18 6-6-6-6" /></button>
+      </div>
     </div>
   );
 }
