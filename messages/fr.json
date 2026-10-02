@@ -1107,22 +1107,6 @@
           "body": "Le client achète, reçoit et paie le livreur. Votre marge arrive dans le portefeuille et vous demandez le retrait."
         }
       },
-      "earnings": {
-        "eyebrow": "Comment vous gagnez",
-        "title1": "Gardez la",
-        "accent": "marge.",
-        "body": "Vous fixez le prix de vente ; le fournisseur reçoit le coût du produit et Kandrop une commission sur votre marge. Le reste est à vous, toujours visible dans le tableau de bord.",
-        "cta": "Commencer maintenant",
-        "example": "Exemple illustratif",
-        "sale": "Prix de vente",
-        "cost": "Coût fournisseur",
-        "margin": "Votre marge",
-        "fee": "Commission Kandrop",
-        "feeValue": "une part de la marge",
-        "profit": "Ce qu’il vous reste",
-        "profitValue": "marge moins commission",
-        "note": "Chiffres d’exemple, seulement pour expliquer les calculs. La commission et les prix réels sont affichés dans le tableau de bord avant de vendre."
-      },
       "compare": {
         "eyebrow": "Comparatif direct",
         "title": "Kandrop vs. modèle traditionnel",
@@ -1192,6 +1176,52 @@
         "body": "Créez votre compte, choisissez votre premier produit et commencez à vendre aujourd’hui.",
         "cta": "Créer mon compte",
         "login": "J’ai déjà un compte"
+      },
+      "catalog": {
+        "eyebrow": "Catalogue à la Une",
+        "title1": "Des produits très demandés.",
+        "accent": "De vraies marges",
+        "title2": "pour votre poche.",
+        "body": "Importez ces produits directement dans votre boutique au prix d’usine chinois. Votre client à Luanda les reçoit le lendemain et vous gardez la marge.",
+        "cost": "Coût fournisseur :",
+        "sale": "Vente à Luanda :",
+        "profit": "Votre bénéfice :",
+        "prev": "Produit précédent",
+        "next": "Produit suivant",
+        "count": "<strong>Plus de 500 produits physiques</strong> validés pour le marché angolais dès l’ouverture.",
+        "cta": "Créer mon compte",
+        "items": {
+          "watch": {
+            "name": "Smartwatch Ultra 2",
+            "category": "Tech & Wearables",
+            "badge": "Forte demande"
+          },
+          "earbuds": {
+            "name": "Écouteurs sans fil TWS Pro",
+            "category": "Audio & Gadgets",
+            "badge": "Meilleure vente"
+          },
+          "projector": {
+            "name": "Mini projecteur Smart LED HD",
+            "category": "Cinéma & Maison",
+            "badge": "Tendance virale"
+          },
+          "powerbank": {
+            "name": "Batterie externe rapide 20 000 mAh",
+            "category": "Énergie & Accessoires",
+            "badge": "Essentiel Luanda"
+          },
+          "clipper": {
+            "name": "Tondeuse Barber Pro",
+            "category": "Soins personnels",
+            "badge": "Rotation rapide"
+          },
+          "mic": {
+            "name": "Micro-cravate double sans fil",
+            "category": "Création de contenu",
+            "badge": "Choix des créateurs"
+          }
+        }
       }
     }
   },

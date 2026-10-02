@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { HomeClosing, HomeCompare, HomeEarnings, HomeFaq, HomeHero, HomeProblem, HomeSolution, HomeSteps } from "@/components/marketing/home";
+import { HomeClosing, HomeCatalog, HomeCompare, HomeFaq, HomeHero, HomeProblem, HomeSolution, HomeSteps } from "@/components/marketing/home";
 import { Pricing } from "@/components/marketing/Pricing";
 import { routing } from "@/i18n/routing";
 
@@ -35,7 +35,7 @@ export default async function LandingPage({ params }: Props) {
       <HomeProblem />
       <HomeSolution />
       <HomeSteps />
-      <HomeEarnings />
+      <HomeCatalog />
       <HomeCompare />
       <Pricing />
       <HomeFaq />

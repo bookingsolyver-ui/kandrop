@@ -1107,22 +1107,6 @@
           "body": "O cliente compra, recebe e paga ao estafeta. A tua margem fica na carteira e pedes o levantamento."
         }
       },
-      "earnings": {
-        "eyebrow": "Como ganhas",
-        "title1": "Fica com a",
-        "accent": "margem.",
-        "body": "Defines o preço de venda; o fornecedor recebe o custo do produto e a Kandrop uma comissão sobre a tua margem. O resto é teu, sempre visível no painel.",
-        "cta": "Começar agora",
-        "example": "Exemplo ilustrativo",
-        "sale": "Preço de venda",
-        "cost": "Custo do fornecedor",
-        "margin": "A tua margem",
-        "fee": "Comissão Kandrop",
-        "feeValue": "percentagem da margem",
-        "profit": "O que ficas",
-        "profitValue": "margem menos comissão",
-        "note": "Valores de exemplo, só para explicar as contas. A comissão e os preços reais aparecem no painel antes de venderes."
-      },
       "compare": {
         "eyebrow": "Comparativo direto",
         "title": "Kandrop vs. modelo tradicional",
@@ -1192,6 +1176,52 @@
         "body": "Cria a tua conta, escolhe o teu primeiro produto e começa a vender hoje.",
         "cta": "Criar a minha conta",
         "login": "Já tenho conta"
+      },
+      "catalog": {
+        "eyebrow": "Catálogo em Destaque",
+        "title1": "Produtos de alta procura.",
+        "accent": "Margens reais",
+        "title2": "para o teu bolso.",
+        "body": "Importa estes produtos diretamente para a tua loja com preço de fábrica chinês. O teu cliente em Luanda recebe no dia seguinte e tu ficas com a margem.",
+        "cost": "Custo fornecedor:",
+        "sale": "Venda em Luanda:",
+        "profit": "Teu lucro:",
+        "prev": "Produto anterior",
+        "next": "Próximo produto",
+        "count": "Mais de <strong>500 produtos físicos</strong> validados para o mercado angolano no dia de abertura.",
+        "cta": "Criar a minha conta",
+        "items": {
+          "watch": {
+            "name": "Smartwatch Ultra 2",
+            "category": "Tech & Wearables",
+            "badge": "Alta Procura"
+          },
+          "earbuds": {
+            "name": "Fones Sem Fios TWS Pro",
+            "category": "Áudio & Gadgets",
+            "badge": "Mais Vendido"
+          },
+          "projector": {
+            "name": "Mini Projetor Smart LED HD",
+            "category": "Cinema & Casa",
+            "badge": "Tendência Viral"
+          },
+          "powerbank": {
+            "name": "Power Bank Rápido 20.000mAh",
+            "category": "Energia & Acessórios",
+            "badge": "Essencial Luanda"
+          },
+          "clipper": {
+            "name": "Máquina de Corte Barber Pro",
+            "category": "Cuidados Pessoais",
+            "badge": "Giro Rápido"
+          },
+          "mic": {
+            "name": "Microfone Lapela Duplo Sem Fios",
+            "category": "Criação de Conteúdo",
+            "badge": "Top Criadores"
+          }
+        }
       }
     }
   },

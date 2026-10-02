@@ -3,6 +3,7 @@ import Image from "next/image";
 import { formatKwz } from "@/lib/money";
 import { Link } from "@/i18n/navigation";
 import { PLAN_PRICES } from "@/server/modules/plan/limits";
+import { FeaturedCarousel, type FeaturedProduct } from "./FeaturedCarousel";
 import { ArrowIcon, CheckIcon } from "./icons";
 
 /**
@@ -140,31 +141,38 @@ export async function HomeSteps() {
   );
 }
 
-/** Black: how the money is split, with an ILLUSTRATIVE example (labelled as such, no invented results). */
-export async function HomeEarnings() {
-  const t = await getTranslations("Marketing.home.earnings");
+/** The featured catalogue (reference "Catálogo em Destaque"): a 3D coverflow of product cards with supplier cost, selling price and profit. */
+const FEATURED: FeaturedProduct[] = [
+  { key: "watch", image: "smartwatch-ultra.jpg", cost: 4800, price: 16500 },
+  { key: "earbuds", image: "earbuds-pro.jpg", cost: 2900, price: 10500 },
+  { key: "projector", image: "mini-projector.jpg", cost: 26500, price: 65000 },
+  { key: "powerbank", image: "powerbank-fast.jpg", cost: 5800, price: 19500 },
+  { key: "clipper", image: "barber-clipper.jpg", cost: 3500, price: 12000 },
+  { key: "mic", image: "wireless-mic.jpg", cost: 3800, price: 14500 },
+];
+
+export async function HomeCatalog() {
+  const t = await getTranslations("Marketing.home.catalog");
   return (
-    <section id="margem" aria-labelledby="earn-title" className="relative overflow-hidden bg-brand-black py-20 text-brand-white sm:py-28">
-      <div aria-hidden className="pointer-events-none absolute -right-32 top-0 h-96 w-96 rounded-full bg-[radial-gradient(closest-side,rgba(255,90,0,0.22),transparent)]" />
-      <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
-        <div className="reveal">
-          <p className={`${eyebrow} text-brand-orange`}>{t("eyebrow")}</p>
-          <h2 id="earn-title" className="mt-4 text-3xl leading-tight font-extrabold tracking-tight text-balance sm:text-4xl md:text-5xl">
-            {t("title1")} <span className="text-brand-orange">{t("accent")}</span>
+    <section id="catalogo" className="relative overflow-hidden bg-brand-black py-20 sm:py-28">
+      <div aria-hidden className="pointer-events-none absolute top-1/2 left-1/2 h-[500px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-20 blur-[130px]" style={{ background: "radial-gradient(circle, #FF5A00 0%, transparent 70%)" }} />
+      <div className="relative mx-auto w-full max-w-6xl px-6">
+        <div className="reveal mx-auto max-w-3xl text-center">
+          <p className="text-xs font-bold tracking-[0.2em] text-brand-orange uppercase">{t("eyebrow")}</p>
+          <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-brand-white sm:text-4xl md:text-5xl">
+            {t("title1")} <span className="text-gradient-orange">{t("accent")}</span> {t("title2")}
           </h2>
-          <p className="mt-5 max-w-xl text-base leading-relaxed text-brand-white/70 sm:text-lg">{t("body")}</p>
-          <Link href="/register" className={`${PRIMARY} mt-8`}>{t("cta")}<ArrowIcon /></Link>
+          <p className="mt-4 text-base leading-relaxed text-brand-white/70 sm:text-lg">{t("body")}</p>
         </div>
-        <div className="reveal glass rounded-2xl p-6 sm:p-8" style={{ "--i": 1 } as React.CSSProperties}>
-          <p className="inline-flex rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold tracking-[0.14em] text-brand-white/70 uppercase">{t("example")}</p>
-          <dl className="mt-5 space-y-3 text-sm">
-            <div className="flex justify-between gap-4"><dt className="text-brand-white/70">{t("sale")}</dt><dd className="font-bold tabular-nums">15.000 kwz</dd></div>
-            <div className="flex justify-between gap-4"><dt className="text-brand-white/70">{t("cost")}</dt><dd className="font-bold text-brand-white/90 tabular-nums">- 10.000 kwz</dd></div>
-            <div className="flex justify-between gap-4 border-t border-white/10 pt-3"><dt className="text-brand-white/70">{t("margin")}</dt><dd className="font-bold tabular-nums">5.000 kwz</dd></div>
-            <div className="flex justify-between gap-4"><dt className="text-brand-white/70">{t("fee")}</dt><dd className="font-bold text-brand-white/90">{t("feeValue")}</dd></div>
-            <div className="flex justify-between gap-4 rounded-xl bg-brand-orange/15 px-4 py-3 text-base"><dt className="font-bold text-brand-orange">{t("profit")}</dt><dd className="font-extrabold text-brand-orange">{t("profitValue")}</dd></div>
-          </dl>
-          <p className="mt-5 text-xs leading-relaxed text-brand-white/50">{t("note")}</p>
+        <div className="mt-12">
+          <FeaturedCarousel products={FEATURED} />
+        </div>
+        <div className="mt-6 flex flex-col items-center justify-center gap-3 text-center sm:flex-row">
+          <p className="text-sm text-brand-white/60">{t.rich("count", { strong: (c) => <strong className="font-bold text-brand-white">{c}</strong> })}</p>
+          <Link href="/register" className="inline-flex items-center gap-1.5 text-sm font-bold text-brand-orange transition-colors hover:text-brand-orange/80 hover:underline">
+            {t("cta")}
+            <ArrowIcon size={16} />
+          </Link>
         </div>
       </div>
     </section>

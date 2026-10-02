@@ -1107,22 +1107,6 @@
           "body": "The customer buys, receives and pays the courier. Your margin lands in your wallet and you request the withdrawal."
         }
       },
-      "earnings": {
-        "eyebrow": "How you earn",
-        "title1": "Keep the",
-        "accent": "margin.",
-        "body": "You set the selling price; the supplier receives the product cost and Kandrop a commission on your margin. The rest is yours, always visible in the dashboard.",
-        "cta": "Start now",
-        "example": "Illustrative example",
-        "sale": "Selling price",
-        "cost": "Supplier cost",
-        "margin": "Your margin",
-        "fee": "Kandrop commission",
-        "feeValue": "a share of the margin",
-        "profit": "What you keep",
-        "profitValue": "margin minus commission",
-        "note": "Example figures, only to explain the maths. The real commission and prices are shown in the dashboard before you sell."
-      },
       "compare": {
         "eyebrow": "Direct comparison",
         "title": "Kandrop vs. the traditional model",
@@ -1192,6 +1176,52 @@
         "body": "Create your account, pick your first product and start selling today.",
         "cta": "Create my account",
         "login": "I already have an account"
+      },
+      "catalog": {
+        "eyebrow": "Featured Catalogue",
+        "title1": "High-demand products.",
+        "accent": "Real margins",
+        "title2": "for your pocket.",
+        "body": "Import these products straight into your store at Chinese factory prices. Your customer in Luanda receives them the next day and you keep the margin.",
+        "cost": "Supplier cost:",
+        "sale": "Sale in Luanda:",
+        "profit": "Your profit:",
+        "prev": "Previous product",
+        "next": "Next product",
+        "count": "<strong>500+ physical products</strong> validated for the Angolan market on opening day.",
+        "cta": "Create my account",
+        "items": {
+          "watch": {
+            "name": "Smartwatch Ultra 2",
+            "category": "Tech & Wearables",
+            "badge": "High Demand"
+          },
+          "earbuds": {
+            "name": "TWS Pro Wireless Earbuds",
+            "category": "Audio & Gadgets",
+            "badge": "Best Seller"
+          },
+          "projector": {
+            "name": "Smart LED HD Mini Projector",
+            "category": "Cinema & Home",
+            "badge": "Going Viral"
+          },
+          "powerbank": {
+            "name": "Fast Power Bank 20,000mAh",
+            "category": "Power & Accessories",
+            "badge": "Luanda Essential"
+          },
+          "clipper": {
+            "name": "Barber Pro Hair Clipper",
+            "category": "Personal Care",
+            "badge": "Fast Mover"
+          },
+          "mic": {
+            "name": "Dual Wireless Lavalier Microphone",
+            "category": "Content Creation",
+            "badge": "Creators' Pick"
+          }
+        }
       }
     }
   },

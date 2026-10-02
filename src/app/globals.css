@@ -290,6 +290,13 @@ h2 {
   --ink-2: var(--ink-600);
   --glow: color-mix(in oklab, var(--kai-orange) 16%, transparent);
 }
+/* Orange gradient text (the highlighted words of the dark sections). */
+.marketing .text-gradient-orange {
+  background: linear-gradient(90deg, #ffa366 0%, #ff5a00 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
 /* The frosted card of the dark hero and the earnings block. */
 .marketing .glass {
   background: rgba(255, 255, 255, 0.04);
