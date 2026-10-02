@@ -1,5 +1,6 @@
 "use client";
 
+import { AdminNotificationBell } from "./AdminNotificationBell";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useEffect, useRef, useState, type ReactNode } from "react";
@@ -196,6 +197,7 @@ export function AdminShell({ user, children }: { user: string; children: ReactNo
             </div>
             <div className="ml-auto flex items-center gap-2">
               <PushToggle scope="admin" compact />
+              <AdminNotificationBell />
               <LocaleSwitcher className="h-9 cursor-pointer rounded-full border border-[var(--ink-200)] bg-white px-3 text-[13px] font-medium text-[var(--ink-700)]" />
             </div>
           </header>

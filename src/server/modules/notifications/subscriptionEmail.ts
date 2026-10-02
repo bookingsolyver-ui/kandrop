@@ -1,6 +1,7 @@
 import { render } from "@react-email/components";
 import { Resend } from "resend";
 import { getEnv } from "@/server/config/env";
+import { KandropNewRequestAdminEmail } from "@/emails/KandropNewRequestAdminEmail";
 import { KandropMaintenanceEmail } from "@/emails/KandropMaintenanceEmail";
 import { KandropPaymentSuccessEmail } from "@/emails/KandropPaymentSuccessEmail";
 import { KandropSubscriptionEmail, type KandropSubscriptionEmailProps, type SubscriptionEmailKind } from "@/emails/KandropSubscriptionEmail";
@@ -195,4 +196,33 @@ export async function sendMaintenanceEmails(notice: MaintenanceNotice, recipient
   };
   await Promise.all(Array.from({ length: Math.min(CONCURRENCY, recipients.length) }, worker));
   return report;
+}
+
+export interface NewRequestAlert {
+  /** The administrators' addresses (`ADMIN_EMAILS`). */
+  to: string[];
+  storeName: string;
+  merchantEmail: string;
+  planName: string;
+  requestedAt: number;
+}
+
+/** Tells the administrators a merchant just asked for a plan. One e-mail per administrator, each isolated. Never throws; returns how many were accepted. */
+export async function sendNewRequestAdminEmails(alert: NewRequestAlert): Promise<number> {
+  if (!getEnv().RESEND_API_KEY || alert.to.length === 0) return 0;
+  try {
+    const element = KandropNewRequestAdminEmail({
+      shopName: alert.storeName,
+      merchantEmail: alert.merchantEmail,
+      planName: alert.planName,
+      requestedAt: timeOf(alert.requestedAt),
+    });
+    const [html, text] = await Promise.all([render(element), render(element, { plainText: true })]);
+    const message = { subject: `Novo pedido de adesão: ${alert.storeName} (${alert.planName})`, html, text };
+    const results = await Promise.all(alert.to.map((to) => deliver("new request (admin)", to, message)));
+    return results.filter(Boolean).length;
+  } catch (err) {
+    console.error("[email] new-request alert could not be rendered", err instanceof Error ? err.message : err);
+    return 0;
+  }
 }

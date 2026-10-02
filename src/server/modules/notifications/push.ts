@@ -41,7 +41,7 @@ async function list(scope: PushScope, storeId?: string): Promise<PushSubscriptio
 }
 
 /** Sends one notification to every device of an audience. Gone devices (404/410) are forgotten. Never throws. */
-export async function sendPush(scope: PushScope, storeId: string | undefined, payload: { title: string; body: string; url: string }): Promise<void> {
+export async function sendPush(scope: PushScope, storeId: string | undefined, payload: { title: string; body: string; url: string; tag?: string }): Promise<void> {
   try {
     const env = getEnv();
     if (!env.VAPID_PUBLIC_KEY || !env.VAPID_PRIVATE_KEY) return;

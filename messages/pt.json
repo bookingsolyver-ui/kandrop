@@ -3327,6 +3327,18 @@
       "approve": "Aprovar / Confirmar Pagamento",
       "requested": "Pediu {plan}",
       "noApprovals": "Não há pedidos à espera de aprovação."
+    },
+    "bell": {
+      "label": "Notificações",
+      "labelUnread": "Notificações: {count} por ler",
+      "title": "Notificações",
+      "markAll": "Marcar tudo como lido",
+      "clearRead": "Limpar lidas",
+      "clearAll": "Limpar tudo",
+      "empty": "Sem notificações.",
+      "loading": "A carregar…",
+      "more": "Ver mais",
+      "remove": "Remover notificação"
     }
   },
   "Supplier": {

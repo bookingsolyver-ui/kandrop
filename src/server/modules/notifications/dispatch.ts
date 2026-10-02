@@ -11,7 +11,7 @@ const kz = (minor: number) => String(Math.round(minor / 100)).replace(/\B(?=(\d{
  */
 export async function notifyNewSale(sale: { storeId: string; storeName: string; total: number; locale: string }): Promise<void> {
   try {
-    const body = `${kz(sale.total)} kz. Verifique o seu painel.`;
+    const body = `${kz(sale.total)} Kz. Verifique o seu painel.`;
     let whatsapp: string | undefined;
     try {
       const { data } = await db().from("stores").select("settings").eq("id", sale.storeId).maybeSingle();

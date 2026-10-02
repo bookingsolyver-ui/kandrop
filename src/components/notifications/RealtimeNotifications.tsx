@@ -36,7 +36,7 @@ export function RealtimeNotifications({ scope }: { scope: Scope }) {
   const since = useRef<number | null>(null);
   const seen = useRef(new Set<string>());
 
-  const money = useCallback((minor: number) => `${format.number(Math.round(minor / 100))} kz`, [format]);
+  const money = useCallback((minor: number) => `${format.number(Math.round(minor / 100))} Kz`, [format]);
 
   const poll = useCallback(async () => {
     try {

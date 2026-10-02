@@ -14,8 +14,8 @@ const kz = (minor: number) => String(Math.round(minor / 100)).replace(/\B(?=(\d{
 /** The plain text sent to each audience (no emojis, no markup). */
 export const saleMessage = (order: SaleInfo, role: NotificationRole) =>
   role === "admin"
-    ? `KANDROP: Nova Venda! Valor: ${kz(order.total)} kz. Loja: ${order.storeName}.`
-    : `Parabéns! Nova venda na sua loja ${order.storeName}. Valor: ${kz(order.total)} kz. Aceda ao painel para os detalhes.`;
+    ? `KANDROP: Nova Venda! Valor: ${kz(order.total)} Kz. Loja: ${order.storeName}.`
+    : `Parabéns! Nova venda na sua loja ${order.storeName}. Valor: ${kz(order.total)} Kz. Aceda ao painel para os detalhes.`;
 
 /** One POST with a hard timeout; any failure is logged quietly and never thrown. */
 async function post(url: string, body: unknown, headers: Record<string, string> = {}): Promise<void> {
