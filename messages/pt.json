@@ -1028,6 +1028,171 @@
         "title": "Sobre a Kandrop",
         "body": "Estamos a construir a plataforma de dropshipping pensada para Angola. Em breve contamos aqui a nossa história."
       }
+    },
+    "home": {
+      "hero": {
+        "eyebrow": "Dropshipping em Angola · Sem stock",
+        "title1": "A tua loja.",
+        "title2": "O teu",
+        "accent": "lucro",
+        "title3": ". Sem stock.",
+        "subtitle": "Vende produtos de fornecedores aprovados e o teu cliente recebe em casa, em Luanda e no Bengo, com pagamento na entrega. Sem stock, sem importação, sem processos manuais.",
+        "primary": "Criar a minha conta",
+        "secondary": "Ver planos",
+        "trust": "Entrega em 24h em Luanda e Bengo · Pagamento na entrega",
+        "card": {
+          "eyebrow": "O que ganhas ao entrar",
+          "a": {
+            "title": "Catálogo pronto",
+            "body": "Escolhe produtos de fornecedores aprovados e vende-os com a tua margem."
+          },
+          "b": {
+            "title": "Pagamento na entrega",
+            "body": "O cliente só paga ao estafeta, quando recebe o produto."
+          },
+          "c": {
+            "title": "Ganhos na tua conta",
+            "body": "Acompanha as vendas e pede o levantamento para a tua conta bancária."
+          }
+        }
+      },
+      "problem": {
+        "title": "Importar demora. Comprar stock arrisca. Entregar tarde perde a venda.",
+        "body": "O cliente angolano compra por impulso e espera rápido. A Kandrop junta o que normalmente não anda junto: preço de fornecedor e entrega rápida."
+      },
+      "solution": {
+        "title": "A solução",
+        "s1": {
+          "title": "Catálogo de fornecedores",
+          "body": "Produtos de fornecedores aprovados pela equipa Kandrop, com o preço de custo à vista."
+        },
+        "s2": {
+          "title": "Entrega em 24h",
+          "body": "O pedido entra, o produto sai e o cliente recebe em Luanda e no Bengo, no dia que escolher."
+        },
+        "s3": {
+          "title": "Zero stock",
+          "body": "Não compras nada antes de vender. Investimento inicial mínimo."
+        },
+        "s4": {
+          "title": "Operação organizada",
+          "body": "Cada pedido segue para o fornecedor e para a entrega, tratado pela Kandrop."
+        },
+        "s5": {
+          "title": "Pagamento adaptado",
+          "body": "Pagamento na entrega, diretamente ao estafeta."
+        },
+        "s6": {
+          "title": "Levantamentos",
+          "body": "A tua margem vai para a carteira e pedes o levantamento para a tua conta bancária angolana."
+        }
+      },
+      "steps": {
+        "eyebrow": "Simples e transparente",
+        "title": "Como funciona",
+        "subtitle": "Três etapas para pores a tua loja a vender produtos físicos com entrega em 24h.",
+        "s1": {
+          "tag": "Acesso à plataforma",
+          "title": "Cria a conta e escolhe o teu plano",
+          "body": "Regista-te e escolhe o plano (a partir de {price} / 30 dias) para desbloqueares o painel e as ferramentas de venda."
+        },
+        "s2": {
+          "tag": "Catálogo",
+          "title": "Escolhe os produtos no catálogo",
+          "body": "Importa os produtos para a tua loja, define o preço de venda e partilha a tua página de venda e o checkout."
+        },
+        "s3": {
+          "tag": "Ganhos",
+          "title": "Vende e recebe os teus lucros",
+          "body": "O cliente compra, recebe e paga ao estafeta. A tua margem fica na carteira e pedes o levantamento."
+        }
+      },
+      "earnings": {
+        "eyebrow": "Como ganhas",
+        "title1": "Fica com a",
+        "accent": "margem.",
+        "body": "Defines o preço de venda; o fornecedor recebe o custo do produto e a Kandrop uma comissão sobre a tua margem. O resto é teu, sempre visível no painel.",
+        "cta": "Começar agora",
+        "example": "Exemplo ilustrativo",
+        "sale": "Preço de venda",
+        "cost": "Custo do fornecedor",
+        "margin": "A tua margem",
+        "fee": "Comissão Kandrop",
+        "feeValue": "percentagem da margem",
+        "profit": "O que ficas",
+        "profitValue": "margem menos comissão",
+        "note": "Valores de exemplo, só para explicar as contas. A comissão e os preços reais aparecem no painel antes de venderes."
+      },
+      "compare": {
+        "eyebrow": "Comparativo direto",
+        "title": "Kandrop vs. modelo tradicional",
+        "subtitle": "Compara a operação tradicional com a infraestrutura pronta da Kandrop.",
+        "factor": "Fator",
+        "traditional": "Modelo tradicional",
+        "r1": {
+          "factor": "Preço de compra",
+          "old": "Revenda local",
+          "new": "Preço de fornecedor"
+        },
+        "r2": {
+          "factor": "Prazo de entrega",
+          "old": "Dias ou semanas",
+          "new": "24h em Luanda e Bengo"
+        },
+        "r3": {
+          "factor": "Investimento em stock",
+          "old": "Alto",
+          "new": "Zero"
+        },
+        "r4": {
+          "factor": "Operação",
+          "old": "Manual",
+          "new": "Organizada na plataforma"
+        }
+      },
+      "who": {
+        "title": "Para quem é",
+        "a": "Quem quer vender online sem comprar stock",
+        "b": "Quem já vende e quer melhor margem e entrega mais rápida",
+        "c": "Quem quer um negócio com pagamento na entrega"
+      },
+      "faq": {
+        "title": "Perguntas frequentes",
+        "q1": {
+          "q": "Quanto custa começar?",
+          "a": "Escolhes um plano mensal: o Starter custa {starter} por 30 dias e o Pro {pro} por 30 dias. Não compras stock."
+        },
+        "q2": {
+          "q": "Preciso de investir em stock?",
+          "a": "Não. Só o fornecedor tem stock: tu vendes e o produto segue do fornecedor para o teu cliente."
+        },
+        "q3": {
+          "q": "Como recebo o pagamento dos clientes?",
+          "a": "O cliente paga ao estafeta no momento da entrega. Depois da entrega e da confirmação do pagamento, a tua margem fica disponível na carteira."
+        },
+        "q4": {
+          "q": "Como e quando recebo o dinheiro das minhas vendas?",
+          "a": "Na carteira pedes o levantamento e a equipa Kandrop paga por transferência para a tua conta bancária. Cada pedido fica pendente até ser pago ou recusado."
+        },
+        "q5": {
+          "q": "A entrega em 24h é para todo o país?",
+          "a": "Nesta fase entregamos em Luanda e no Bengo, de segunda a sábado, no dia que o cliente escolher."
+        },
+        "q6": {
+          "q": "Preciso de conhecimentos técnicos?",
+          "a": "Não. Escolhes o produto, defines o preço e partilhas a página de venda. A plataforma trata do checkout e dos pedidos."
+        },
+        "q7": {
+          "q": "O que fazem com os meus dados?",
+          "a": "Usamos os dados só para operar a plataforma, entregar encomendas e pagar a quem vende. Os detalhes estão na Política de Privacidade."
+        }
+      },
+      "closing": {
+        "title": "Vende com preço de fornecedor. Entrega em 24h. Fica com a margem.",
+        "body": "Cria a tua conta, escolhe o teu primeiro produto e começa a vender hoje.",
+        "cta": "Criar a minha conta",
+        "login": "Já tenho conta"
+      }
     }
   },
   "Automations": {

@@ -6,7 +6,7 @@ import type { LegalDoc } from "./legal";
 export async function LegalPage({ doc }: { doc: LegalDoc }) {
   const nav = await getTranslations("Marketing.nav");
   return (
-    <main id="conteudo" className="mx-auto max-w-3xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+    <main className="mx-auto max-w-3xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
       <article>
         <h1 className="font-serif text-[clamp(2rem,5vw,3rem)] leading-[1.1] font-normal tracking-[-0.02em] text-balance">{doc.title}</h1>
         <p className="mt-6 text-lg leading-relaxed text-ink-2">{doc.intro}</p>

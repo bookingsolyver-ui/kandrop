@@ -1028,6 +1028,171 @@
         "title": "About Kandrop",
         "body": "We are building the dropshipping platform designed for Angola. We will tell our story here soon."
       }
+    },
+    "home": {
+      "hero": {
+        "eyebrow": "Dropshipping in Angola · No stock",
+        "title1": "Your store.",
+        "title2": "Your",
+        "accent": "profit",
+        "title3": ". No stock.",
+        "subtitle": "Sell products from approved suppliers and your customer gets them at home, in Luanda and Bengo, paying on delivery. No stock, no importing, no manual processes.",
+        "primary": "Create my account",
+        "secondary": "See plans",
+        "trust": "24h delivery in Luanda and Bengo · Pay on delivery",
+        "card": {
+          "eyebrow": "What you get",
+          "a": {
+            "title": "Ready catalogue",
+            "body": "Pick products from approved suppliers and sell them with your own margin."
+          },
+          "b": {
+            "title": "Pay on delivery",
+            "body": "The customer only pays the courier, when the product arrives."
+          },
+          "c": {
+            "title": "Earnings in your account",
+            "body": "Track your sales and request a withdrawal to your bank account."
+          }
+        }
+      },
+      "problem": {
+        "title": "Importing takes time. Buying stock is a risk. Delivering late loses the sale.",
+        "body": "Angolan customers buy on impulse and expect it fast. Kandrop brings together what usually does not go together: supplier prices and fast delivery."
+      },
+      "solution": {
+        "title": "The solution",
+        "s1": {
+          "title": "Supplier catalogue",
+          "body": "Products from suppliers approved by the Kandrop team, with the cost price in plain sight."
+        },
+        "s2": {
+          "title": "24h delivery",
+          "body": "The order comes in, the product goes out and the customer receives it in Luanda and Bengo, on the day they choose."
+        },
+        "s3": {
+          "title": "Zero stock",
+          "body": "You buy nothing before you sell. Minimal initial investment."
+        },
+        "s4": {
+          "title": "Organised operation",
+          "body": "Every order goes to the supplier and to delivery, handled by Kandrop."
+        },
+        "s5": {
+          "title": "Adapted payment",
+          "body": "Pay on delivery, straight to the courier."
+        },
+        "s6": {
+          "title": "Withdrawals",
+          "body": "Your margin goes to your wallet and you request a withdrawal to your Angolan bank account."
+        }
+      },
+      "steps": {
+        "eyebrow": "Simple and transparent",
+        "title": "How it works",
+        "subtitle": "Three steps to get your store selling physical products with 24h delivery.",
+        "s1": {
+          "tag": "Platform access",
+          "title": "Create your account and choose your plan",
+          "body": "Sign up and choose a plan (from {price} / 30 days) to unlock the dashboard and the selling tools."
+        },
+        "s2": {
+          "tag": "Catalogue",
+          "title": "Pick your products from the catalogue",
+          "body": "Import products into your store, set your selling price and share your sales page and checkout."
+        },
+        "s3": {
+          "tag": "Earnings",
+          "title": "Sell and receive your profits",
+          "body": "The customer buys, receives and pays the courier. Your margin lands in your wallet and you request the withdrawal."
+        }
+      },
+      "earnings": {
+        "eyebrow": "How you earn",
+        "title1": "Keep the",
+        "accent": "margin.",
+        "body": "You set the selling price; the supplier receives the product cost and Kandrop a commission on your margin. The rest is yours, always visible in the dashboard.",
+        "cta": "Start now",
+        "example": "Illustrative example",
+        "sale": "Selling price",
+        "cost": "Supplier cost",
+        "margin": "Your margin",
+        "fee": "Kandrop commission",
+        "feeValue": "a share of the margin",
+        "profit": "What you keep",
+        "profitValue": "margin minus commission",
+        "note": "Example figures, only to explain the maths. The real commission and prices are shown in the dashboard before you sell."
+      },
+      "compare": {
+        "eyebrow": "Direct comparison",
+        "title": "Kandrop vs. the traditional model",
+        "subtitle": "Compare the traditional operation with Kandrop's ready-made infrastructure.",
+        "factor": "Factor",
+        "traditional": "Traditional model",
+        "r1": {
+          "factor": "Buying price",
+          "old": "Local resale",
+          "new": "Supplier price"
+        },
+        "r2": {
+          "factor": "Delivery time",
+          "old": "Days or weeks",
+          "new": "24h in Luanda and Bengo"
+        },
+        "r3": {
+          "factor": "Stock investment",
+          "old": "High",
+          "new": "Zero"
+        },
+        "r4": {
+          "factor": "Operation",
+          "old": "Manual",
+          "new": "Organised on the platform"
+        }
+      },
+      "who": {
+        "title": "Who it is for",
+        "a": "Anyone who wants to sell online without buying stock",
+        "b": "Anyone who already sells and wants a better margin and faster delivery",
+        "c": "Anyone who wants a pay-on-delivery business"
+      },
+      "faq": {
+        "title": "Frequently asked questions",
+        "q1": {
+          "q": "How much does it cost to start?",
+          "a": "You pick a monthly plan: Starter costs {starter} per 30 days and Pro {pro} per 30 days. You buy no stock."
+        },
+        "q2": {
+          "q": "Do I need to invest in stock?",
+          "a": "No. Only the supplier holds stock: you sell and the product goes from the supplier to your customer."
+        },
+        "q3": {
+          "q": "How do I get paid by customers?",
+          "a": "The customer pays the courier at the moment of delivery. After delivery and payment confirmation, your margin becomes available in your wallet."
+        },
+        "q4": {
+          "q": "How and when do I receive my sales money?",
+          "a": "In the wallet you request a withdrawal and the Kandrop team pays it by bank transfer to your account. Each request stays pending until it is paid or rejected."
+        },
+        "q5": {
+          "q": "Is 24h delivery nationwide?",
+          "a": "At this stage we deliver in Luanda and Bengo, Monday to Saturday, on the day the customer chooses."
+        },
+        "q6": {
+          "q": "Do I need technical skills?",
+          "a": "No. You pick the product, set the price and share the sales page. The platform handles checkout and orders."
+        },
+        "q7": {
+          "q": "What do you do with my data?",
+          "a": "We use data only to run the platform, deliver orders and pay those who sell. The details are in the Privacy Policy."
+        }
+      },
+      "closing": {
+        "title": "Sell at supplier prices. Deliver in 24h. Keep the margin.",
+        "body": "Create your account, pick your first product and start selling today.",
+        "cta": "Create my account",
+        "login": "I already have an account"
+      }
     }
   },
   "Automations": {

@@ -2,13 +2,8 @@ import type { Metadata } from "next";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { FinalCta } from "@/components/marketing/FinalCta";
-import { HeroVisual } from "@/components/marketing/HeroVisual";
-import { ArrowIcon } from "@/components/marketing/icons";
-import { Pillars } from "@/components/marketing/Pillars";
+import { HomeClosing, HomeCompare, HomeEarnings, HomeFaq, HomeHero, HomeProblem, HomeSolution, HomeSteps } from "@/components/marketing/home";
 import { Pricing } from "@/components/marketing/Pricing";
-import { BrandLink } from "@/components/ui/BrandButton";
-import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 
 type Props = { params: Promise<{ locale: string }> };
@@ -28,75 +23,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-/** The public landing page: sells Kandrop to merchants. */
+/** The public landing page: sells Kandrop to merchants, section by section as in the official reference. */
 export default async function LandingPage({ params }: Props) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
-  const t = await getTranslations("Marketing.hero");
 
   return (
     <main>
-      <section id="inicio" aria-labelledby="hero-title" className="relative overflow-hidden">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -top-40 left-1/2 -z-10 h-[38rem] w-[70rem] -translate-x-1/2 bg-[radial-gradient(closest-side,var(--glow),transparent)]"
-        />
-        <div className="mx-auto grid max-w-7xl gap-16 px-4 pt-14 pb-20 sm:px-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:gap-12 lg:px-8 lg:pt-24 lg:pb-32">
-          <div>
-            <p
-              className="enter inline-flex items-center gap-2.5 rounded-full border border-[var(--ink-200)] bg-white px-4 py-1.5 text-[13px] font-medium text-[var(--ink-600)]"
-              style={{ "--i": 0 } as React.CSSProperties}
-            >
-              <span aria-hidden className="size-1.5 rounded-full bg-[var(--kai-orange)]" />
-              {t("eyebrow")}
-            </p>
-
-            <h1
-              id="hero-title"
-              className="enter mt-7 font-serif text-[clamp(2.75rem,6.4vw,5.25rem)] leading-[0.98] font-normal tracking-[-0.03em] text-balance"
-              style={{ "--i": 1 } as React.CSSProperties}
-            >
-              {t.rich("title1", {
-                nowrap: (chunks) => <span className="whitespace-nowrap">{chunks}</span>,
-              })}{" "}
-              <span className="sm:block">{t("title2")}</span>{" "}
-              <span className="text-[var(--kai-orange)] sm:block">{t("title3")}</span>
-            </h1>
-
-            <p
-              className="enter mt-7 max-w-xl text-lg leading-relaxed text-[var(--ink-600)] sm:text-xl"
-              style={{ "--i": 2 } as React.CSSProperties}
-            >
-              {t("subtitle")}
-            </p>
-
-            <div
-              className="enter mt-10 flex flex-col gap-3 sm:flex-row"
-              style={{ "--i": 3 } as React.CSSProperties}
-            >
-              <BrandLink href="/register" size="lg" className="w-full sm:w-auto">
-                {t("primary")}
-                <ArrowIcon />
-              </BrandLink>
-              <Link
-                href="/#planos"
-                className="inline-flex h-14 w-full items-center justify-center rounded-xl border border-[var(--ink-200)] bg-white px-8 text-base font-semibold sm:w-auto text-[var(--ink-900)] transition-colors hover:border-[var(--ink-300)]"
-              >
-                {t("secondary")}
-              </Link>
-            </div>
-          </div>
-
-          <div className="enter" style={{ "--i": 4 } as React.CSSProperties}>
-            <HeroVisual />
-          </div>
-        </div>
-      </section>
-
-      <Pillars />
+      <HomeHero />
+      <HomeProblem />
+      <HomeSolution />
+      <HomeSteps />
+      <HomeEarnings />
+      <HomeCompare />
       <Pricing />
-      <FinalCta />
+      <HomeFaq />
+      <HomeClosing />
     </main>
   );
 }

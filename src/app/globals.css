@@ -290,6 +290,13 @@ h2 {
   --ink-2: var(--ink-600);
   --glow: color-mix(in oklab, var(--kai-orange) 16%, transparent);
 }
+/* The frosted card of the dark hero and the earnings block. */
+.marketing .glass {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
 .marketing section[id] {
   scroll-margin-top: 5rem; /* the sticky navbar */
 }
