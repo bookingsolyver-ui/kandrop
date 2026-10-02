@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { BrandLink } from "@/components/ui/BrandButton";
 import { CloseIcon, MenuIcon } from "@/components/shell/icons";
@@ -16,8 +16,16 @@ const LINKS = [
   { key: "suppliers", href: "/fornecedor/registo" },
 ] as const;
 
+const LOCALE_PILL_DARK =
+  "h-10 cursor-pointer rounded-full border border-white/25 bg-white/5 px-3 text-[13px] font-medium text-white transition-all hover:border-white/50 [&_option]:text-black";
+
 const LOCALE_PILL =
   "h-10 cursor-pointer rounded-full border border-[var(--ink-200)] bg-white px-3 text-[13px] font-medium text-[var(--ink-700)] transition-all hover:border-[var(--ink-300)] hover:text-[var(--ink-900)]";
+
+/** The official inverted logo (white wordmark, light K) from KANDROP_VISUAL, for the dark hero. */
+const LOGO_DARK = (
+  <Image src="/brand/logo-inverted.png" alt="" width={1024} height={205} priority className="h-6 w-auto object-contain min-[400px]:h-7 md:h-8" />
+);
 
 const LOGO = (
   <Image
@@ -39,6 +47,20 @@ export function MarketingNav() {
   const pathname = usePathname();
   const sheet = useRef<HTMLDialogElement>(null);
   const close = () => sheet.current?.close();
+  // On the home page the bar floats transparent over the black hero (white logo and links), then turns into the
+  // usual white bar as soon as the page scrolls.
+  const [scrolled, setScrolled] = useState(false);
+  const onDark = pathname === "/" && !scrolled;
+
+  useEffect(() => {
+    const update = () => setScrolled(window.scrollY > 24);
+    const first = window.setTimeout(update, 0);
+    window.addEventListener("scroll", update, { passive: true });
+    return () => {
+      window.clearTimeout(first);
+      window.removeEventListener("scroll", update);
+    };
+  }, []);
 
   useEffect(() => {
     const query = window.matchMedia("(min-width: 1024px)");
@@ -50,10 +72,10 @@ export function MarketingNav() {
   const isCurrent = (href: string) => (href === "/" ? pathname === "/" : pathname === href);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[var(--ink-200)] bg-white/90 backdrop-blur-md">
+    <header className={`sticky top-0 z-40 border-b transition-colors duration-300 ${onDark ? "border-transparent bg-transparent" : "border-[var(--ink-200)] bg-white/95 backdrop-blur-md"}`}>
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 sm:px-6 lg:gap-4 lg:px-8 xl:gap-10">
         <Link href="/" aria-label="Kandrop" className="inline-flex shrink-0 items-center rounded-md">
-          {LOGO}
+          {onDark ? LOGO_DARK : LOGO}
         </Link>
 
         <nav aria-label={t("label")} className="hidden lg:block">
@@ -64,9 +86,13 @@ export function MarketingNav() {
                   href={href}
                   aria-current={isCurrent(href) ? "page" : undefined}
                   className={`inline-flex min-h-10 items-center rounded-full px-2.5 text-[13px] whitespace-nowrap font-medium transition-colors xl:px-4 xl:text-sm ${
-                    isCurrent(href)
-                      ? "bg-[var(--ink-100)] text-[var(--ink-900)]"
-                      : "text-[var(--ink-600)] hover:bg-[var(--ink-100)] hover:text-[var(--ink-900)]"
+                    onDark
+                      ? isCurrent(href)
+                        ? "bg-white/10 text-white"
+                        : "text-white/75 hover:bg-white/10 hover:text-white"
+                      : isCurrent(href)
+                        ? "bg-[var(--ink-100)] text-[var(--ink-900)]"
+                        : "text-[var(--ink-600)] hover:bg-[var(--ink-100)] hover:text-[var(--ink-900)]"
                   }`}
                 >
                   {t(key)}
@@ -78,7 +104,7 @@ export function MarketingNav() {
 
         <div className="ml-auto flex items-center gap-2 lg:gap-3">
           <div className="hidden lg:block">
-            <LocaleSwitcher className={LOCALE_PILL} />
+            <LocaleSwitcher className={onDark ? LOCALE_PILL_DARK : LOCALE_PILL} />
           </div>
           {/* A wrapper, not `hidden` on the link itself: the button's own `inline-flex` would win. */}
           <div className="hidden lg:block">
@@ -94,7 +120,7 @@ export function MarketingNav() {
             onClick={() => sheet.current?.showModal()}
             aria-label={t("open")}
             aria-haspopup="dialog"
-            className="grid size-10 shrink-0 place-items-center rounded-full border border-[var(--ink-200)] bg-white text-[var(--ink-700)] hover:text-[var(--ink-900)] lg:hidden"
+            className={`grid size-10 shrink-0 place-items-center rounded-full border lg:hidden ${onDark ? "border-white/25 bg-white/5 text-white" : "border-[var(--ink-200)] bg-white text-[var(--ink-700)] hover:text-[var(--ink-900)]"}`}
           >
             <MenuIcon />
           </button>

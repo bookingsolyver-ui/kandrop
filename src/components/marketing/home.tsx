@@ -1,4 +1,5 @@
 import { getLocale, getTranslations } from "next-intl/server";
+import Image from "next/image";
 import { formatKwz } from "@/lib/money";
 import { Link } from "@/i18n/navigation";
 import { PLAN_PRICES } from "@/server/modules/plan/limits";
@@ -26,11 +27,18 @@ const SOLUTION_ICONS = {
   s6: <svg {...icon}><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H18v3" /><rect x="3.5" y="8" width="17" height="11.5" rx="2.5" /><path d="M16 13.8h2.2" /></svg>,
 } as const;
 
+/**
+ * Photos of the three "how it works" steps (as in the reference, 4:3, they zoom on hover). No photograph exists in the
+ * project or in KANDROP_VISUAL yet, so none is shown and nothing is invented: put the real files in `public/images/steps/`
+ * and list their paths here, e.g. "/images/steps/step1-conta.jpg".
+ */
+const STEP_PHOTOS: Array<string | null> = [null, null, null];
+
 /** Black hero: eyebrow, the headline with the orange word, the promise, two calls to action and a glass card of what you get. */
 export async function HomeHero() {
   const t = await getTranslations("Marketing.home.hero");
   return (
-    <section id="inicio" aria-labelledby="hero-title" className="relative overflow-hidden bg-brand-black text-brand-white">
+    <section id="inicio" aria-labelledby="hero-title" className="relative -mt-16 overflow-hidden bg-brand-black pt-16 text-brand-white">
       <div aria-hidden className="pointer-events-none absolute -top-32 left-1/2 h-[34rem] w-[64rem] -translate-x-1/2 bg-[radial-gradient(closest-side,rgba(255,90,0,0.28),transparent)]" />
       <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-[linear-gradient(to_top,rgba(255,90,0,0.08),transparent)]" />
       <div className="relative mx-auto flex max-w-4xl flex-col items-center px-4 pt-16 pb-20 text-center sm:px-6 sm:pt-24 sm:pb-28">
@@ -112,11 +120,18 @@ export async function HomeSteps() {
         </div>
         <ol className="mt-12 grid gap-5 md:grid-cols-3">
           {(["s1", "s2", "s3"] as const).map((k, i) => (
-            <li key={k} className="reveal group rounded-2xl border border-black/10 bg-brand-white p-8 transition-all duration-300 hover:-translate-y-1.5 hover:border-brand-orange hover:shadow-xl" style={{ "--i": i } as React.CSSProperties}>
+            <li key={k} className="reveal group overflow-hidden rounded-2xl border border-black/10 bg-brand-white transition-all duration-300 hover:-translate-y-1.5 hover:border-brand-orange hover:shadow-xl" style={{ "--i": i } as React.CSSProperties}>
+              {STEP_PHOTOS[i] && (
+                <div className="relative aspect-[4/3] overflow-hidden">
+                  <Image src={STEP_PHOTOS[i]!} alt={t(`${k}.title`)} fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover transition-transform duration-500 group-hover:scale-105" />
+                </div>
+              )}
+              <div className="p-8">
               <span className="grid size-12 place-items-center rounded-full bg-brand-orange text-lg font-extrabold text-brand-black transition-transform duration-300 group-hover:scale-110">{i + 1}</span>
               <p className={`mt-5 ${eyebrow} text-black/50`}>{t(`${k}.tag`)}</p>
               <h3 className="mt-1 text-xl font-bold tracking-tight text-brand-black transition-colors group-hover:text-brand-orange">{t(`${k}.title`)}</h3>
               <p className="mt-3 text-[15px] leading-relaxed text-black/65">{t(`${k}.body`, { price })}</p>
+              </div>
             </li>
           ))}
         </ol>
