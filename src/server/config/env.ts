@@ -39,29 +39,68 @@ const schema = z.object({
   BANK_TRANSFER_IBAN: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
   // Aliases and extras read by the order page (`orderPaymentInfo`): the bank's name and the holder under the
   // names used on the host, and the BIC/SWIFT code (shown when set).
-  BANK_TRANSFER_BANK_NAME: z.preprocess((v) => (typeof v === "string" && v.trim() === "" ? undefined : v), z.string().optional()),
-  BANK_TRANSFER_ACCOUNT_NAME: z.preprocess((v) => (typeof v === "string" && v.trim() === "" ? undefined : v), z.string().optional()),
-  BANK_TRANSFER_BIC_SWIFT: z.preprocess((v) => (typeof v === "string" && v.trim() === "" ? undefined : v), z.string().optional()),
+  BANK_TRANSFER_BANK_NAME: z.preprocess(
+    (v) => (typeof v === "string" && v.trim() === "" ? undefined : v),
+    z.string().optional()
+  ),
+  BANK_TRANSFER_ACCOUNT_NAME: z.preprocess(
+    (v) => (typeof v === "string" && v.trim() === "" ? undefined : v),
+    z.string().optional()
+  ),
+  BANK_TRANSFER_BIC_SWIFT: z.preprocess(
+    (v) => (typeof v === "string" && v.trim() === "" ? undefined : v),
+    z.string().optional()
+  ),
   SUPPORT_WHATSAPP: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
   // The support inbox shown on the Support page (the WhatsApp number is `SUPPORT_WHATSAPP`, shared with
   // the bank-transfer proofs). Both fall back to the values in `support/contacts.ts`.
   SUPPORT_EMAIL: z.preprocess((v) => (v === "" ? undefined : v), z.email().optional()),
   // Shared secret of the daily subscriptions job (`/api/cron/subscriptions`). Vercel Cron sends it as `Authorization: Bearer <secret>`. Unset = the job refuses to run.
-  CRON_SECRET: z.preprocess((v) => (typeof v === "string" && v.trim() === "" ? undefined : v), z.string().min(16).optional()),
+  CRON_SECRET: z.preprocess(
+    (v) => (typeof v === "string" && v.trim() === "" ? undefined : v),
+    z.string().min(16).optional()
+  ),
   // Transactional e-mail (order confirmation to the customer). Unset RESEND_API_KEY = no e-mail is sent, nothing else changes.
-  RESEND_API_KEY: z.preprocess((v) => (typeof v === "string" && v.trim() === "" ? undefined : v), z.string().optional()),
+  RESEND_API_KEY: z.preprocess(
+    (v) => (typeof v === "string" && v.trim() === "" ? undefined : v),
+    z.string().optional()
+  ),
   // The sender, on a domain verified in Resend, e.g. `Kandrop <encomendas@kandrop.com>`. Unset = Resend's test sender.
-  EMAIL_FROM: z.preprocess((v) => (typeof v === "string" && v.trim() === "" ? undefined : v), z.string().max(200).optional()),
+  EMAIL_FROM: z.preprocess(
+    (v) => (typeof v === "string" && v.trim() === "" ? undefined : v),
+    z.string().max(200).optional()
+  ),
   // Web Push (browser notifications). Generate the pair with `npx web-push generate-vapid-keys`. Without the pair the
   // feature is simply off. NEXT_PUBLIC_VAPID_PUBLIC_KEY is the same public key, for the browser.
-  VAPID_PUBLIC_KEY: z.preprocess((v) => (typeof v === "string" && v.trim() === "" ? undefined : v), z.string().optional()),
-  VAPID_PRIVATE_KEY: z.preprocess((v) => (typeof v === "string" && v.trim() === "" ? undefined : v), z.string().optional()),
-  VAPID_SUBJECT: z.preprocess((v) => (typeof v === "string" && v.trim() === "" ? undefined : v), z.string().optional()),
+  VAPID_PUBLIC_KEY: z.preprocess(
+    (v) => (typeof v === "string" && v.trim() === "" ? undefined : v),
+    z.string().optional()
+  ),
+  VAPID_PRIVATE_KEY: z.preprocess(
+    (v) => (typeof v === "string" && v.trim() === "" ? undefined : v),
+    z.string().optional()
+  ),
+  VAPID_SUBJECT: z.preprocess(
+    (v) => (typeof v === "string" && v.trim() === "" ? undefined : v),
+    z.string().optional()
+  ),
   // External alerts. Both are optional and independent; each is a URL that accepts a JSON POST.
-  ADMIN_TELEGRAM_WEBHOOK: z.preprocess((v) => (typeof v === "string" && v.trim() === "" ? undefined : v), z.url().optional()),
-  ADMIN_TELEGRAM_CHAT_ID: z.preprocess((v) => (typeof v === "string" && v.trim() === "" ? undefined : v), z.string().optional()),
-  WHATSAPP_API_URL: z.preprocess((v) => (typeof v === "string" && v.trim() === "" ? undefined : v), z.url().optional()),
-  WHATSAPP_API_TOKEN: z.preprocess((v) => (typeof v === "string" && v.trim() === "" ? undefined : v), z.string().optional()),
+  ADMIN_TELEGRAM_WEBHOOK: z.preprocess(
+    (v) => (typeof v === "string" && v.trim() === "" ? undefined : v),
+    z.url().optional()
+  ),
+  ADMIN_TELEGRAM_CHAT_ID: z.preprocess(
+    (v) => (typeof v === "string" && v.trim() === "" ? undefined : v),
+    z.string().optional()
+  ),
+  WHATSAPP_API_URL: z.preprocess(
+    (v) => (typeof v === "string" && v.trim() === "" ? undefined : v),
+    z.url().optional()
+  ),
+  WHATSAPP_API_TOKEN: z.preprocess(
+    (v) => (typeof v === "string" && v.trim() === "" ? undefined : v),
+    z.string().optional()
+  ),
   // Who may open `/admin`: a comma-separated list of account e-mails. Empty = nobody (the pages answer
   // 404), so the operator console is never open by default.
   ADMIN_EMAILS: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
@@ -73,10 +112,10 @@ const schema = z.object({
   DATA_ENCRYPTION_KEY: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
   // The public address links are built on (`https://www.kandrop.com`): used for the promotion links the merchant
   // copies. Unset = the address the merchant is browsing on.
-  PUBLIC_SITE_URL: z.preprocess((v) => (typeof v === "string" && v.trim() === "" ? undefined : v), z.url().optional().catch(undefined)),
-  // Kandrop's commission, in basis points of the merchant's gross margin (sale price − the supplier's cost):
-  // 1000 = 10%. A BUSINESS decision: set it deliberately; the default is only a placeholder.
-  COMMISSION_BPS: z.preprocess((v) => (v === "" ? undefined : v), z.coerce.number().int().min(0).max(10_000).default(1000).catch(1000)),
+  PUBLIC_SITE_URL: z.preprocess(
+    (v) => (typeof v === "string" && v.trim() === "" ? undefined : v),
+    z.url().optional().catch(undefined)
+  ),
   // `sandbox` simulates every payment. `live` needs a real provider integration (none yet).
   PAYMENTS_MODE: z.enum(["sandbox", "live"]).default("sandbox"),
 });
@@ -94,8 +133,12 @@ let cached: Env | undefined;
 function parseTolerant(source: NodeJS.ProcessEnv): Env {
   const first = schema.safeParse(source);
   if (first.success) return first.data;
-  const bad = [...new Set(first.error.issues.map((issue) => String(issue.path[0] ?? "")))].filter(Boolean);
-  console.error(`[env] IGNORING invalid environment variables (fix them in the host settings): ${bad.join(", ")}`);
+  const bad = [...new Set(first.error.issues.map((issue) => String(issue.path[0] ?? "")))].filter(
+    Boolean
+  );
+  console.error(
+    `[env] IGNORING invalid environment variables (fix them in the host settings): ${bad.join(", ")}`
+  );
   const cleaned: NodeJS.ProcessEnv = { ...source };
   for (const key of bad) delete cleaned[key];
   return schema.parse(cleaned);

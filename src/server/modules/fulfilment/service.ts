@@ -1,5 +1,4 @@
 import { randomBytes } from "node:crypto";
-import { getEnv } from "@/server/config/env";
 import { db, isUniqueViolation, must } from "@/server/db/client";
 import { ApiError } from "@/server/http/errors";
 import type { CheckoutSession } from "@/server/modules/checkout/schema";
@@ -12,6 +11,7 @@ import { CASH_ON_DELIVERY, canMovePayment, isCashOnDelivery, isPaymentVerified, 
 import { ORDER_STATUSES, canTransition, type OrderStatus } from "@/shared/orders/schemas";
 
 import { storeRepository } from "@/server/modules/store/repository";
+import { PLATFORM_COMMISSION_BPS } from "@/shared/products/schemas";
 import { splitSale, type Split } from "./split";
 export { splitSale, type Split };
 
@@ -80,7 +80,7 @@ export interface Invoice {
   party: "merchant" | "supplier";
   supplierOrderId: string;
   orderNumber: number;
-  lines: Array<{ kind: "sale" | "supplier_cost" | "commission" | "discount" | "due"; description: string; quantity?: number; amount: number }>;
+  lines: Array<{ kind: "sale" | "supplier_cost" | "commission" | "discount" | "shipping" | "due"; description: string; quantity?: number; amount: number }>;
   saleTotal: number;
   costTotal: number;
   commission: number;
@@ -195,7 +195,7 @@ export async function placeOrder(input: PlaceOrderInput): Promise<{ order: Order
   const sp = must("supplier_products.forOrder", await db().from("supplier_products").select("id,supplier_id,name,cost_price").eq("id", link.supplier_product_id).maybeSingle());
   if (!sp) return { order, line: null };
 
-  const split = splitSale(input.item.unitAmount, Number(sp.cost_price), input.item.quantity, getEnv().COMMISSION_BPS, input.coupon?.discount ?? 0, input.merchantShipping ?? 0);
+  const split = splitSale(input.item.unitAmount, Number(sp.cost_price), input.item.quantity, PLATFORM_COMMISSION_BPS, input.coupon?.discount ?? 0, input.merchantShipping ?? 0);
   const { data: lineRow, error } = await db().from("supplier_orders").insert({
     order_id: order.id, order_number: order.number, store_id: input.storeId, store_name: input.storeName,
     supplier_id: sp.supplier_id, supplier_product_id: sp.id, product_title: input.item.name,
@@ -225,6 +225,7 @@ export async function placeOrder(input: PlaceOrderInput): Promise<{ order: Order
     { kind: "sale", description: input.item.name, quantity: input.item.quantity, amount: split.saleTotal },
     { kind: "supplier_cost", description: input.item.name, quantity: input.item.quantity, amount: -split.costTotal },
     { kind: "commission", description: `${split.commissionBps / 100}%`, amount: -split.commission },
+    ...(split.shipping > 0 ? [{ kind: "shipping" as const, description: input.buyer.address.province, amount: -split.shipping }] : []),
     ...(split.discount > 0 ? [{ kind: "discount" as const, description: input.coupon?.code ?? "", amount: -split.discount }] : []),
   ];
   const supplierLines: Invoice["lines"] = [{ kind: "due", description: input.item.name, quantity: input.item.quantity, amount: split.costTotal }];

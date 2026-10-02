@@ -47,6 +47,14 @@ export type ProductSort = (typeof PRODUCT_SORTS)[number];
 /** Who pays the delivery: the buyer (worked out at checkout from the zone in Luanda) or the merchant. */
 export const SHIPPING_BEARERS = ["customer", "merchant"] as const;
 export type ShippingBearer = (typeof SHIPPING_BEARERS)[number];
+/** Kandrop's fixed commission: 7.9 % of the SALE value of every product, in basis points. */
+export const PLATFORM_COMMISSION_BPS = 790;
+/** Kandrop's cut of a sale (minor units), on the sale value and nothing else: always secured, whatever the merchant's costs. */
+export const platformCommission = (
+  saleTotal: number,
+  bps: number = PLATFORM_COMMISSION_BPS
+): number => Math.round((saleTotal * bps) / 10_000);
+
 /**
  * The delivery cost the merchant bears for a product delivered to `city`: nothing when the customer pays
  * the freight, the province's fee (see `SHIPPING_RATES`) when the merchant does.
@@ -169,29 +177,40 @@ export function firstProductError(
 // ── Margin ────────────────────────────────────────────────────────────────────────────────
 
 export interface Margin {
-  /** Sale price − cost, minor units. Negative when selling below cost. */
+  /** What the merchant keeps per unit: sale − cost − Kandrop's commission − the freight they bear. Negative at a loss. */
   amount: number;
-  /** Margin over the sale price (0.38 = 38 %), or `null` when there is no sale price yet. */
+  /** `amount` over the sale price (0.38 = 38 %), or `null` when there is no sale price yet. */
   rate: number | null;
+  /** Kandrop's commission on the sale value (7.9 %), already taken off `amount`. */
+  commission: number;
 }
 
-/** One definition for the form, the table and the API, so the three can never disagree. */
+/**
+ * One definition for the form, the table and the API, so the three can never disagree. Order of the deductions
+ * (the same as the server's `splitSale`): Kandrop's commission comes off the sale value FIRST; the delivery the
+ * merchant bears comes off what is left for them, never off the commission.
+ */
 export function computeMargin(
   costPrice: number,
   salePrice: number,
   shippingBearer: ShippingBearer = "customer",
   city: DeliveryCity = DEFAULT_DELIVERY_CITY
 ): Margin {
-  const amount = salePrice - costPrice - merchantShippingCost(shippingBearer, city);
-  return { amount, rate: salePrice > 0 ? amount / salePrice : null };
+  const commission = platformCommission(salePrice);
+  const amount = salePrice - costPrice - commission - merchantShippingCost(shippingBearer, city);
+  return { amount, rate: salePrice > 0 ? amount / salePrice : null, commission };
 }
 
-/** The lowest sale price at which the product does not lose money (margin 0), minor units. */
+/** The lowest sale price at which the merchant does not lose money (profit 0), minor units: (cost + freight) ÷ (1 − 7.9 %), rounded up. */
 export const breakEvenPrice = (
   costPrice: number,
   shippingBearer: ShippingBearer,
   city: DeliveryCity = DEFAULT_DELIVERY_CITY
-): number => costPrice + merchantShippingCost(shippingBearer, city);
+): number =>
+  Math.ceil(
+    ((costPrice + merchantShippingCost(shippingBearer, city)) * 10_000) /
+      (10_000 - PLATFORM_COMMISSION_BPS)
+  );
 
 // ── Offer and stock ───────────────────────────────────────────────────────────────────────
 

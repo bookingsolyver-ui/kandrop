@@ -94,4 +94,4 @@ Production builds redirect every public page of the PUBLIC domain (`kandrop.com`
 Vercel the details the shopper's order page shows (`/pedido/...`; each one is shown only when set and valid):
 `SUPPORT_WHATSAPP` (9-digit number, no +244), `BANK_TRANSFER_IBAN` (Angolan IBAN, check digits verified),
 `BANK_TRANSFER_BANK_NAME`, `BANK_TRANSFER_ACCOUNT_NAME` and optionally `BANK_TRANSFER_BIC_SWIFT`. Also set
-`COMMISSION_BPS` (Kandrop's share of the merchant's margin, in basis points) and `ADMIN_EMAILS`.
+`ADMIN_EMAILS`. (Kandrop's 7.9 % commission is fixed in code: `PLATFORM_COMMISSION_BPS`.)

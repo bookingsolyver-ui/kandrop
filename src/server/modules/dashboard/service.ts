@@ -1,6 +1,6 @@
 import type { DashboardSummary } from "./schema";
 import { reservedAmount } from "@/server/modules/payouts/ledger";
-import { getEnv } from "@/server/config/env";
+import { PLATFORM_COMMISSION_BPS } from "@/shared/products/schemas";
 import { db, must } from "@/server/db/client";
 import { orderRepository } from "@/server/modules/orders/repository";
 import { productRepository } from "@/server/modules/products/repository";
@@ -40,7 +40,7 @@ export async function getDashboardSummary(storeId: string): Promise<DashboardSum
     orders,
     lineNets: new Map(lines.map((l) => [String(l.order_id), Number(l.merchant_net)])),
     costs: new Map(products.map((p) => [p.id, p.costPrice])),
-    commissionBps: getEnv().COMMISSION_BPS,
+    commissionBps: PLATFORM_COMMISSION_BPS,
     now: Date.now(),
   });
   return await withPayouts(summary, storeId);

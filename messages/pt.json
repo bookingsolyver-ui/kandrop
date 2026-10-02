@@ -425,7 +425,8 @@
           }
         },
         "simulate": "Simular preço de venda",
-        "region": "Região da entrega (simulação)"
+        "region": "Região da entrega (simulação)",
+        "commission": "Comissão Kandrop (7,9 %)"
       },
       "save": "Guardar produto",
       "saving": "A guardar…",
@@ -2628,7 +2629,7 @@
         "gmv": "Volume bruto transacionado (GMV)",
         "gmvNote": "Tudo o que os clientes finais pagaram",
         "revenue": "Receita própria Kandrop",
-        "revenueNote": "Comissão sobre a margem dos lojistas",
+        "revenueNote": "Comissão sobre o valor das vendas (7,9 %)",
         "held": "Saldo retido dos lojistas",
         "heldNote": "Margem líquida a pagar a {count} lojas",
         "transit": "Dinheiro em trânsito",

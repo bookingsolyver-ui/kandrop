@@ -425,7 +425,8 @@
           }
         },
         "simulate": "Simulate sale price",
-        "region": "Delivery region (simulation)"
+        "region": "Delivery region (simulation)",
+        "commission": "Kandrop commission (7.9%)"
       },
       "save": "Save product",
       "saving": "Saving…",
@@ -2628,7 +2629,7 @@
         "gmv": "Gross merchandise value (GMV)",
         "gmvNote": "Everything end customers paid",
         "revenue": "Kandrop’s own revenue",
-        "revenueNote": "Commission on merchants' margin",
+        "revenueNote": "Commission on sales value (7.9%)",
         "held": "Merchants’ held balance",
         "heldNote": "Net margin owed to {count} stores",
         "transit": "Money in transit",

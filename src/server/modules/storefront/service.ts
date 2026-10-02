@@ -11,7 +11,7 @@ import { evaluateCoupon } from "@/server/modules/coupons/math";
 import { placeOrder, supplierStockFor, unitCostFor } from "@/server/modules/fulfilment/service";
 import { CASH_ON_DELIVERY, DEFAULT_ORDER_PAYMENT_PROVIDER } from "@/shared/payments/orderPayment";
 import { SHIPPING_RATES, buyerSchema } from "@/shared/fulfilment/schemas";
-import { merchantShippingCost, offerOf, stockState } from "@/shared/products/schemas";
+import { PLATFORM_COMMISSION_BPS, merchantShippingCost, offerOf, stockState } from "@/shared/products/schemas";
 import type { StorefrontProduct } from "./schema";
 
 /** A product is public only while it is active: drafts and archived ones are "not found". */
@@ -73,7 +73,7 @@ async function resolveCoupon(p: ProductRecord, rawCode: string): Promise<{ code:
   if (!coupon) throw new ApiError("coupon_unavailable");
   const unitPrice = offerOf(p, Date.now()).price;
   const unitCost = await unitCostFor(p.storeId, p.id, p.costPrice);
-  const result = evaluateCoupon({ type: coupon.type, value: coupon.value, unitPrice, unitCost, quantity: 1, shipping: 0, commissionBps: getEnv().COMMISSION_BPS });
+  const result = evaluateCoupon({ type: coupon.type, value: coupon.value, unitPrice, unitCost, quantity: 1, shipping: 0, commissionBps: PLATFORM_COMMISSION_BPS });
   if (!result.ok) throw new ApiError("coupon_unavailable");
   return { code: coupon.code, discount: result.discount, total: result.total };
 }

@@ -180,6 +180,8 @@ export function PricingPanel({
             <dd className={`font-medium tabular-nums ${loss ? "text-down" : ""}`}>
               {f.money(margin.amount)}
             </dd>
+            <dt className="mt-4 text-[13px] text-ink-muted">{t("commission")}</dt>
+            <dd className="font-medium tabular-nums">−{f.money(margin.commission)}</dd>
             {merchantPays && (
               <>
                 <dt className="mt-4 text-[13px] text-ink-muted">{t("shippingCost")}</dt>
