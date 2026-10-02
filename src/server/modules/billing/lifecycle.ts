@@ -1,5 +1,6 @@
 import { db, must } from "@/server/db/client";
 import { getEnv } from "@/server/config/env";
+import { orderPaymentInfo } from "@/server/modules/payments/transfer";
 import { sendSubscriptionEmail } from "@/server/modules/notifications/subscriptionEmail";
 import { PERIOD_DAYS } from "@/shared/billing/schemas";
 import { PLAN_PRICES } from "@/server/modules/plan/limits";
@@ -45,7 +46,7 @@ export async function runSubscriptionSweep(now = Date.now(), dryRun = false): Pr
   const { remind, expire } = classify(subs, now);
   const owners = await ownersOf([...remind, ...expire].map((s) => s.storeId));
   const env = getEnv();
-  const support = { whatsapp: env.SUPPORT_WHATSAPP ?? null, email: env.SUPPORT_EMAIL ?? null };
+  const support = { whatsapp: orderPaymentInfo().whatsapp ?? null, email: env.SUPPORT_EMAIL ?? null };
   const result: SweepResult = { reminded: [], deactivated: [], emailFailed: 0, dryRun };
 
   for (const s of remind) {
