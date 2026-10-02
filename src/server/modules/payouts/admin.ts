@@ -11,6 +11,8 @@ export interface AdminMerchantPayout {
   storeName: string;
   reference: string;
   amount: number;
+  /** Kandrop's withdrawal fee: transfer `amount - fee`. */
+  fee: number;
   status: PayoutStatus;
   /** Frozen at request time: masked. */
   ibanMasked: string;
@@ -20,7 +22,7 @@ export interface AdminMerchantPayout {
 
 /** Admin: every real merchant payout (historical demo rows excluded), newest first. */
 export async function listAllMerchantPayouts(limit = 300): Promise<AdminMerchantPayout[]> {
-  const rows = must("admin.merchantPayouts", await db().from("payouts").select("id,store_id,reference,amount,status,bank,created_at").eq("historical", false).order("created_at", { ascending: false }).limit(limit)) ?? [];
+  const rows = must("admin.merchantPayouts", await db().from("payouts").select("id,store_id,reference,amount,fee,status,bank,created_at").eq("historical", false).order("created_at", { ascending: false }).limit(limit)) ?? [];
   if (!rows.length) return [];
   const ids = [...new Set(rows.map((r) => String(r.store_id)))];
   const stores = must("admin.merchantPayouts.stores", await db().from("stores").select("id,name").in("id", ids)) ?? [];
@@ -29,7 +31,7 @@ export async function listAllMerchantPayouts(limit = 300): Promise<AdminMerchant
     const bank = (r.bank ?? {}) as { holderName?: string; ibanMasked?: string };
     return {
       id: String(r.id), storeId: String(r.store_id), storeName: names.get(String(r.store_id)) ?? String(r.store_id), reference: String(r.reference),
-      amount: Number(r.amount), status: (["pending", "completed", "rejected"].includes(String(r.status)) ? r.status : "pending") as PayoutStatus,
+      amount: Number(r.amount), fee: Number(r.fee ?? 0), status: (["pending", "completed", "rejected"].includes(String(r.status)) ? r.status : "pending") as PayoutStatus,
       ibanMasked: bank.ibanMasked ?? "—", holderName: bank.holderName ?? "—", createdAt: Number(r.created_at),
     };
   });

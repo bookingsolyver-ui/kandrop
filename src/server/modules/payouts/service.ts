@@ -7,6 +7,8 @@ import { eventBus } from "@/server/realtime/eventBus";
 import { maskIban } from "@/shared/bank/schemas";
 import {
   MIN_PAYOUT,
+  WITHDRAWAL_FEE,
+  withdrawalNet,
   createPayoutSchema,
   listPayoutsQuerySchema,
   type ListPayoutsQuery,
@@ -19,6 +21,8 @@ export function toPublic(p: PayoutRecord): PublicPayout {
     id: p.id,
     reference: p.reference,
     amount: p.amount,
+    fee: p.fee,
+    net: withdrawalNet(p.amount, p.fee),
     currency: p.currency,
     status: p.status,
     bank: p.bank,
@@ -43,6 +47,7 @@ export async function listPayouts(auth: Session, rawQuery: ListPayoutsQuery): Pr
     pageSize: query.pageSize,
     available: await availableFor(auth.storeId),
     minAmount: MIN_PAYOUT,
+    fee: WITHDRAWAL_FEE,
     hasPending: all.some((p) => p.status === "pending"),
     bank: await getBankAccount(auth),
   };
@@ -73,6 +78,7 @@ export async function requestPayout(auth: Session, input: unknown): Promise<Publ
     storeId: auth.storeId,
     reference: await nextReference(now),
     amount,
+    fee: WITHDRAWAL_FEE, // kept by Kandrop; the bank receives amount − fee
     currency: "AOA",
     status: "pending",
     bank: { holderName: bank.holderName, ibanMasked: maskIban(bank.iban) },

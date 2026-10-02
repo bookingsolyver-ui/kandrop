@@ -1,6 +1,8 @@
 import { getEnv } from "@/server/config/env";
 import { ApiError } from "@/server/http/errors";
 import { userRepository } from "@/server/modules/auth/userRepository";
+import { hasActiveSubscription } from "@/server/modules/billing/plan";
+import { isDemoStore } from "@/server/modules/store/demo";
 import { storeRepository } from "@/server/modules/store/repository";
 import { productRepository } from "@/server/modules/products/repository";
 import type { ProductRecord } from "@/server/modules/products/schema";
@@ -14,10 +16,17 @@ import { SHIPPING_RATES, buyerSchema } from "@/shared/fulfilment/schemas";
 import { PLATFORM_COMMISSION_BPS, merchantShippingCost, offerOf, stockState } from "@/shared/products/schemas";
 import type { StorefrontProduct } from "./schema";
 
-/** A product is public only while it is active: drafts and archived ones are "not found". */
+/**
+ * A product is public only while it is active: drafts and archived ones are "not found". Selling needs the
+ * merchant's subscription: a store whose paid period is over (or was never paid) is "not found" too, on the
+ * page and at checkout alike. (The development sandbox store has no subscription to pay.)
+ */
 async function publicProduct(slug: string): Promise<ProductRecord> {
   const product = await productRepository.bySlug(slug);
   if (!product || product.status !== "active") throw new ApiError("not_found");
+  if (!(await isDemoStore(product.storeId)) && !(await hasActiveSubscription(product.storeId))) {
+    throw new ApiError("not_found");
+  }
   return product;
 }
 

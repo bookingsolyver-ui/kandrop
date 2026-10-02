@@ -1,5 +1,6 @@
 "use client";
 
+import { WITHDRAWAL_FEE } from "@/shared/payouts/schemas";
 import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState, useTransition } from "react";
 import { Badge, Modal, Pager, dateOnly, usePager } from "@/components/admin/ui";
@@ -200,6 +201,7 @@ export function SupplierFinance({ bank, orders, withdrawals }: { bank: BankView 
           <label className="block"><span className={labelClass}>{t("modal.amount")}</span>
             <input value={amount} onChange={(e) => setAmount(e.target.value)} inputMode="decimal" aria-invalid={amount !== "" && !valid} className={`${inputClass} mono-num mt-1.5`} />
             <span className="mt-1 block text-[12px] text-[var(--ink-500)]">{t("modal.help", { min: f.money(MIN) })}</span>
+            <span className="mt-1 block text-[12px] text-[var(--ink-500)]">{valid ? t("modal.net", { fee: f.money(WITHDRAWAL_FEE), net: f.money(minor - WITHDRAWAL_FEE) }) : t("modal.fee", { fee: f.money(WITHDRAWAL_FEE) })}</span>
           </label>
           <p className="text-[12px] text-[var(--ink-500)]">{t("modal.destination", { name: supplier.name })}</p>
           <div className="flex justify-end gap-2">

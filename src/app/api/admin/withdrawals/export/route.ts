@@ -27,7 +27,7 @@ export const GET = handle(async (req) => {
   const lines = await Promise.all(
     pending.map(async (w) => {
       const bank = await supplierBank.getFull(w.supplierId).catch(() => null);
-      return [`WD-${w.id.slice(0, 8).toUpperCase()}`, w.supplierName, bank?.holderName ?? "", bank?.bankName ?? "", bank?.iban ?? "", Math.round(w.amount / 100), new Date(w.createdAt).toISOString().slice(0, 10)].map(cell).join(";");
+      return [`WD-${w.id.slice(0, 8).toUpperCase()}`, w.supplierName, bank?.holderName ?? "", bank?.bankName ?? "", bank?.iban ?? "", Math.round((w.amount - w.fee) / 100), Math.round(w.fee / 100), new Date(w.createdAt).toISOString().slice(0, 10)].map(cell).join(";");
     })
   );
   const merchantPending = (await listAllMerchantPayouts()).filter((p) => p.status === "pending");
@@ -35,10 +35,10 @@ export const GET = handle(async (req) => {
     merchantPending.map(async (p) => {
       // The store's CURRENT account (the payout only froze it masked); the holder is checked by the person who pays.
       const bank = await merchantBankForExport(p.storeId).catch(() => null);
-      return [p.reference, p.storeName, bank?.holderName ?? p.holderName, "", bank?.iban ?? "", Math.round(p.amount / 100), new Date(p.createdAt).toISOString().slice(0, 10)].map(cell).join(";");
+      return [p.reference, p.storeName, bank?.holderName ?? p.holderName, "", bank?.iban ?? "", Math.round((p.amount - p.fee) / 100), Math.round(p.fee / 100), new Date(p.createdAt).toISOString().slice(0, 10)].map(cell).join(";");
     })
   );
-  const head = ["referencia", "fornecedor", "titular", "banco", "iban", "valor_kz", "data"].join(";");
+  const head = ["referencia", "fornecedor", "titular", "banco", "iban", "valor_kz", "taxa_kz", "data"].join(";");
 
   const actor = await userRepository.findById(session.userId);
   await recordAudit({ actorId: session.userId, actorEmail: actor?.email ?? null, action: "withdrawal.export", target: `${pending.length + merchantPending.length} transfers`, before: {}, after: { suppliers: pending.length, merchants: merchantPending.length }, ip: clientIp(req) });

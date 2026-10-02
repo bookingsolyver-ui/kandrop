@@ -870,7 +870,9 @@
       "min": "Minimum : {amount}",
       "submit": "Confirmer le retrait",
       "submitting": "Demande en cours…",
-      "cancel": "Annuler"
+      "cancel": "Annuler",
+      "fee": "Frais de retrait fixes : {fee}, déduits du montant demandé.",
+      "net": "Frais de retrait : {fee}. Vous recevrez {net}."
     },
     "history": {
       "title": "Historique des retraits",
@@ -2912,7 +2914,8 @@
       "merchants": {
         "title": "Retraits des marchands",
         "empty": "Aucun retrait de marchand pour l’instant."
-      }
+      },
+      "fee": "Frais de retrait : {fee}"
     },
     "catalog": {
       "title": "Catalogue",
@@ -3613,7 +3616,9 @@
         "help": "Minimum {min}.",
         "destination": "Le montant sera viré sur le compte bancaire de {name}.",
         "cancel": "Annuler",
-        "submit": "Demander"
+        "submit": "Demander",
+        "fee": "Frais de retrait fixes : {fee}, déduits du montant demandé.",
+        "net": "Frais de retrait : {fee}. Vous recevrez {net}."
       },
       "bank": {
         "title": "Coordonnées de paiement",

@@ -870,7 +870,9 @@
       "min": "Mínimo: {amount}",
       "submit": "Confirmar levantamento",
       "submitting": "A pedir…",
-      "cancel": "Cancelar"
+      "cancel": "Cancelar",
+      "fee": "Taxa de saque fixa: {fee}, descontada do valor pedido.",
+      "net": "Taxa de saque: {fee}. Receberá {net}."
     },
     "history": {
       "title": "Histórico de levantamentos",
@@ -2912,7 +2914,8 @@
       "merchants": {
         "title": "Levantamentos de lojistas",
         "empty": "Ainda sem levantamentos de lojistas."
-      }
+      },
+      "fee": "Taxa de saque: {fee}"
     },
     "catalog": {
       "title": "Catálogo",
@@ -3613,7 +3616,9 @@
         "help": "Mínimo {min}.",
         "destination": "O valor será transferido para a conta bancária de {name}.",
         "cancel": "Cancelar",
-        "submit": "Solicitar"
+        "submit": "Solicitar",
+        "fee": "Taxa de saque fixa: {fee}, descontada do valor pedido.",
+        "net": "Taxa de saque: {fee}. Receberá {net}."
       },
       "bank": {
         "title": "Dados de recebimento",

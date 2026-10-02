@@ -8,6 +8,8 @@ export interface PayoutRecord {
   reference: string;
   /** Minor units. */
   amount: number;
+  /** Kandrop's fixed withdrawal fee (200 Kz for new requests, 0 for older ones): `amount - fee` is what reaches the bank. */
+  fee: number;
   currency: "AOA";
   status: PayoutStatus;
   /** Where it went, frozen at request time: changing the bank details later never rewrites history. */
@@ -27,6 +29,9 @@ export interface PublicPayout {
   id: string;
   reference: string;
   amount: number;
+  fee: number;
+  /** What is transferred to the bank: `amount - fee`. */
+  net: number;
   currency: "AOA";
   status: PayoutStatus;
   bank: { holderName: string; ibanMasked: string };
@@ -42,6 +47,8 @@ export interface PayoutPage {
   /** Balance the merchant could withdraw right now (already net of pending/completed payouts). */
   available: number;
   minAmount: number;
+  /** The fee a new withdrawal will carry. */
+  fee: number;
   hasPending: boolean;
   /** Destination of the next payout (masked), or `null` if none is set up yet. */
   bank: PublicBankAccount | null;

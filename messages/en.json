@@ -870,7 +870,9 @@
       "min": "Minimum: {amount}",
       "submit": "Confirm payout",
       "submitting": "Requesting…",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "fee": "Fixed withdrawal fee: {fee}, deducted from the amount requested.",
+      "net": "Withdrawal fee: {fee}. You will receive {net}."
     },
     "history": {
       "title": "Payout history",
@@ -2912,7 +2914,8 @@
       "merchants": {
         "title": "Merchant payouts",
         "empty": "No merchant payouts yet."
-      }
+      },
+      "fee": "Withdrawal fee: {fee}"
     },
     "catalog": {
       "title": "Catalogue",
@@ -3613,7 +3616,9 @@
         "help": "Minimum {min}.",
         "destination": "The amount will be transferred to the bank account of {name}.",
         "cancel": "Cancel",
-        "submit": "Request"
+        "submit": "Request",
+        "fee": "Fixed withdrawal fee: {fee}, deducted from the amount requested.",
+        "net": "Withdrawal fee: {fee}. You will receive {net}."
       },
       "bank": {
         "title": "Payout details",

@@ -9,6 +9,8 @@ export interface Withdrawal {
   supplierId: string;
   /** Minor units. */
   amount: number;
+  /** Kandrop's withdrawal fee: the bank receives `amount - fee`. */
+  fee: number;
   status: WithdrawalStatus;
   createdAt: number;
   processedAt: number | null;
@@ -21,6 +23,7 @@ const toWithdrawal = (r: Record<string, unknown>): Withdrawal => ({
   id: String(r.id),
   supplierId: String(r.supplier_id),
   amount: Number(r.amount),
+  fee: Number(r.fee ?? 0),
   status: (["requested", "paid", "rejected"].includes(String(r.status)) ? r.status : "requested") as WithdrawalStatus,
   createdAt: Number(r.created_at),
   processedAt: r.processed_at == null ? null : Number(r.processed_at),

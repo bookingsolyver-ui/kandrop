@@ -8,6 +8,11 @@ export const PAYOUT_STATUSES = ["pending", "completed", "rejected"] as const;
 export type PayoutStatus = (typeof PAYOUT_STATUSES)[number];
 
 const KZ = 100;
+/** Fixed fee kept by Kandrop on every withdrawal request, merchants and suppliers alike (200 Kz), in minor units. */
+export const WITHDRAWAL_FEE = 200 * KZ;
+/** What actually reaches the bank for a withdrawal of `amount`: the fee is taken off the amount requested. */
+export const withdrawalNet = (amount: number, fee: number = WITHDRAWAL_FEE) => amount - fee;
+
 /** Smallest transfer worth making (5 000 Kz), in minor units. */
 export const MIN_PAYOUT = 5_000 * KZ;
 /** Highest single request accepted (10 000 000 Kz). Matches the platform's price ceiling. */

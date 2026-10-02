@@ -25,7 +25,7 @@ function Body({ rows, merchantRows }: { rows: AdminWithdrawal[]; merchantRows: A
   const pager = usePager(shown, 20);
   const pending = rows.filter((r) => r.status === "requested");
   const merchantPending = merchantRows.filter((r) => r.status === "pending");
-  const sum = (list: AdminWithdrawal[]) => list.reduce((n, r) => n + r.amount, 0);
+  const sum = (list: AdminWithdrawal[]) => list.reduce((n, r) => n + r.amount - r.fee, 0);
 
   const decide = async (id: string, status: "paid" | "rejected", kind: "withdrawals" | "payouts" = "withdrawals") => {
     setBusy(id);
@@ -102,7 +102,7 @@ function Body({ rows, merchantRows }: { rows: AdminWithdrawal[]; merchantRows: A
                     <td className="px-4 py-3 whitespace-nowrap text-[var(--ink-600)]">{dateOnly(p.createdAt, locale)}</td>
                     <td className="px-4 py-3"><p className="font-semibold text-[var(--ink-900)]">{p.supplierName}</p><p className="mono-num text-[12px] text-[var(--ink-500)]">WD-{p.id.slice(0, 8).toUpperCase()}</p></td>
                     <td className="px-4 py-3 text-[var(--ink-600)]">{p.bank ? <>{p.bank.bankName}<span className="mono-num block text-[12px] text-[var(--ink-500)]">{p.bank.holderName} · {p.bank.ibanMasked}</span></> : "—"}</td>
-                    <td className="mono-num px-4 py-3 text-right font-bold">{f.money(p.amount)}</td>
+                    <td className="mono-num px-4 py-3 text-right font-bold">{f.money(p.amount - p.fee)}{p.fee > 0 && <span className="block text-[12px] font-normal text-[var(--ink-500)]">{t("fee", { fee: f.money(p.fee) })}</span>}</td>
                     <td className="px-4 py-3"><Badge tone={TONE[p.status]}>{t(`status.${p.status}`)}</Badge></td>
                     <td className="px-4 py-3 text-right">
                       {p.status === "requested" && (
@@ -134,7 +134,7 @@ function Body({ rows, merchantRows }: { rows: AdminWithdrawal[]; merchantRows: A
                       <td className="px-4 py-3 whitespace-nowrap text-[var(--ink-600)]">{dateOnly(p.createdAt, locale)}</td>
                       <td className="px-4 py-3"><p className="font-semibold text-[var(--ink-900)]">{p.storeName}</p><p className="mono-num text-[12px] text-[var(--ink-500)]">{p.reference}</p></td>
                       <td className="px-4 py-3 text-[var(--ink-600)]">{p.holderName}<span className="mono-num block text-[12px] text-[var(--ink-500)]">{p.ibanMasked}</span></td>
-                      <td className="mono-num px-4 py-3 text-right font-bold">{f.money(p.amount)}</td>
+                      <td className="mono-num px-4 py-3 text-right font-bold">{f.money(p.amount - p.fee)}{p.fee > 0 && <span className="block text-[12px] font-normal text-[var(--ink-500)]">{t("fee", { fee: f.money(p.fee) })}</span>}</td>
                       <td className="px-4 py-3"><Badge tone={TONE[state]}>{t(`status.${state}`)}</Badge></td>
                       <td className="px-4 py-3 text-right">
                         {p.status === "pending" && (

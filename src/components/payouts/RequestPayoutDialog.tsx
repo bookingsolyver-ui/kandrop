@@ -9,7 +9,7 @@ import { useCurrencySymbol } from "@/components/products/useCurrencySymbol";
 import type { ApiErrorCode } from "@/server/http/errors";
 import type { PublicBankAccount } from "@/server/modules/bank/schema";
 import type { PublicPayout } from "@/server/modules/payouts/schema";
-import { createPayoutSchema, type PayoutValidationCode } from "@/shared/payouts/schemas";
+import { WITHDRAWAL_FEE, createPayoutSchema, type PayoutValidationCode } from "@/shared/payouts/schemas";
 import { requestPayout } from "./payoutsApi";
 
 /** Whole Kwanzas typed by the merchant → minor units; `undefined` while empty. */
@@ -163,6 +163,11 @@ function PayoutForm({
           placeholder="0"
           numeric
         />
+        <p className="mt-2 text-sm text-ink-2">
+          {amount && Number(amount) * 100 > WITHDRAWAL_FEE
+            ? t("net", { fee: f.money(WITHDRAWAL_FEE), net: f.money(Number(amount) * 100 - WITHDRAWAL_FEE) })
+            : t("fee", { fee: f.money(WITHDRAWAL_FEE) })}
+        </p>
         <button
           type="button"
           onClick={() =>
