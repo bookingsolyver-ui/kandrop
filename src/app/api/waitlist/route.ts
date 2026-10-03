@@ -98,19 +98,21 @@ function saveReplay(phone: string, body: SignupSuccess): void {
 async function sendSerialized(phone: string, payload: SignupRequest): Promise<SignupResult> {
   const prev = phoneChains.get(phone) ?? Promise.resolve(undefined);
   // Um erro na fila anterior nunca pode impedir a seguinte de correr.
-  const slot: Promise<SignupResult> = prev.catch(() => undefined).then(async () => {
-    const cached = phoneReplay.get(phone);
-    if (cached && cached.expires > Date.now()) {
-      // Outro POST com o mesmo número acabou de receber a resposta do n8n →
-      // devolve-a como duplicado, sem segunda chamada (FR-16).
-      return cached.body.status === "created"
-        ? { ...cached.body, status: "duplicate" as const }
-        : cached.body;
-    }
-    const res = await sendSignup(payload);
-    if (res.status === "created" || res.status === "duplicate") saveReplay(phone, res);
-    return res;
-  });
+  const slot: Promise<SignupResult> = prev
+    .catch(() => undefined)
+    .then(async () => {
+      const cached = phoneReplay.get(phone);
+      if (cached && cached.expires > Date.now()) {
+        // Outro POST com o mesmo número acabou de receber a resposta do n8n →
+        // devolve-a como duplicado, sem segunda chamada (FR-16).
+        return cached.body.status === "created"
+          ? { ...cached.body, status: "duplicate" as const }
+          : cached.body;
+      }
+      const res = await sendSignup(payload);
+      if (res.status === "created" || res.status === "duplicate") saveReplay(phone, res);
+      return res;
+    });
   phoneChains.set(phone, slot);
   try {
     return await slot;
@@ -121,7 +123,7 @@ async function sendSerialized(phone: string, payload: SignupRequest): Promise<Si
   }
 }
 
-export async function POST(req: Request) {
+async function handlePost(req: Request) {
   if (getLaunchMode() === "launched") {
     return NextResponse.json({ status: "closed" }, { status: 403 });
   }
@@ -137,7 +139,7 @@ export async function POST(req: Request) {
   } catch {
     return NextResponse.json(
       { status: "invalid", errors: {} satisfies FieldErrors },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
@@ -154,10 +156,7 @@ export async function POST(req: Request) {
 
   const result = validate(body);
   if (!result.ok) {
-    return NextResponse.json(
-      { status: "invalid", errors: result.errors },
-      { status: 400 },
-    );
+    return NextResponse.json({ status: "invalid", errors: result.errors }, { status: 400 });
   }
 
   const requestId =
@@ -184,7 +183,11 @@ export async function POST(req: Request) {
     return NextResponse.json(n8n, { status: 400 });
   }
   if (n8n.status === "unavailable") {
-    return NextResponse.json({ status: "unavailable" }, { status: 503 });
+    // `reason` é um código curto (not_configured, sheets_403, google_auth…): diz o que corrigir, sem expor segredos.
+    return NextResponse.json(
+      { status: "unavailable", reason: n8n.reason ?? "unknown" },
+      { status: 503 }
+    );
   }
 
   // Contrato secção 8: um 200 só vale se vier `status` + `code` (nós Respond do
@@ -199,9 +202,7 @@ export async function POST(req: Request) {
 
   // O n8n pode omitir `shareUrl` (na prática vem "") — a API compõe-a com
   // baseUrl(), que na Vercel nunca devolve localhost (ver lib/n8n.ts)
-  const shareUrl = ok.shareUrl
-    ? String(ok.shareUrl)
-    : `${baseUrl()}/?ref=${ok.code}`;
+  const shareUrl = ok.shareUrl ? String(ok.shareUrl) : `${baseUrl()}/?ref=${ok.code}`;
 
   // Alimenta GET /api/status e GET /api/stats (FR-18, FR-19)
   recordStatus({
@@ -218,6 +219,19 @@ export async function POST(req: Request) {
       validInvites: Number(ok.validInvites) || 0,
       shareUrl,
     },
-    { status: 200 },
+    { status: 200 }
   );
+}
+
+/**
+ * Rede de segurança: qualquer exceção inesperada (credenciais, rede, bug) vira uma resposta JSON 503 com a causa
+ * registada no log, em vez de um erro opaco da plataforma sem rasto.
+ */
+export async function POST(req: Request) {
+  try {
+    return await handlePost(req);
+  } catch (err) {
+    console.error("[waitlist] erro inesperado:", err instanceof Error ? err.message : err);
+    return NextResponse.json({ status: "unavailable", reason: "internal" }, { status: 503 });
+  }
 }

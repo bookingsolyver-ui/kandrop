@@ -31,7 +31,7 @@ export interface SignupSuccess {
 export type SignupResult =
   | SignupSuccess
   | { status: "invalid"; errors: Record<string, string> }
-  | { status: "unavailable" };
+  | { status: "unavailable"; reason?: string };
 
 /* ─── Mock (M3) — estado em memória do processo do servidor ─── */
 
@@ -177,9 +177,9 @@ export async function sendSignup(req: SignupRequest): Promise<SignupResult> {
     // tinha de ir para a folha (FR-16 / NFR-03).
     if (process.env.VERCEL || process.env.NODE_ENV === "production") {
       console.error(
-        "[waitlist] sem destino configurado (nem GOOGLE_SERVICE_ACCOUNT_EMAIL + GOOGLE_PRIVATE_KEY + GOOGLE_SHEET_ID, nem N8N_WEBHOOK_URL) — a recusar em produção (503)",
+        "[waitlist] sem destino configurado (nem GOOGLE_SERVICE_ACCOUNT_JSON ou EMAIL + PRIVATE_KEY, com GOOGLE_SHEET_ID, nem N8N_WEBHOOK_URL) — a recusar em produção (503)"
       );
-      return { status: "unavailable" };
+      return { status: "unavailable", reason: "not_configured" };
     }
     return mockSubmit(req);
   }

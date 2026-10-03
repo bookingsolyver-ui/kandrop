@@ -76,8 +76,24 @@ function credentials(): { email: string; key: string } | null {
   return { email, key };
 }
 
+/** Nunca lança: ler as variáveis de ambiente não pode, por si só, derrubar um pedido. */
 export function sheetsConfigured(): boolean {
-  return Boolean(credentials() && process.env.GOOGLE_SHEET_ID?.trim());
+  try {
+    return Boolean(credentials() && process.env.GOOGLE_SHEET_ID?.trim());
+  } catch {
+    return false;
+  }
+}
+
+/** Causa técnica → código curto e seguro de mostrar na resposta da API (sem dados nem segredos). */
+function reasonOf(err: unknown): string {
+  const message = err instanceof Error ? err.message : String(err);
+  const http = /sheets (\d{3})/.exec(message);
+  if (http) return `sheets_${http[1]}`; // 403 = folha não partilhada / API desativada · 404 = id errado
+  if (/oauth/i.test(message)) return "google_auth"; // chave inválida, conta apagada, relógio
+  if (/private key|PRIVATE KEY|DECODER|PEM|asn1/i.test(message)) return "bad_private_key";
+  if (/timeout|aborted/i.test(message)) return "timeout";
+  return "sheets_error";
 }
 
 const b64url = (input: string | Buffer) => Buffer.from(input).toString("base64url");
@@ -273,7 +289,7 @@ export async function sheetsSubmit(req: SignupRequest, baseUrl: string): Promise
   } catch (err) {
     // Sem PII: só a causa técnica (ex.: "sheets 403 /values/…" = folha não partilhada com a conta de serviço).
     console.error("[waitlist] falha ao gravar na folha:", err instanceof Error ? err.message : err);
-    return { status: "unavailable" };
+    return { status: "unavailable", reason: reasonOf(err) };
   }
 }
 
