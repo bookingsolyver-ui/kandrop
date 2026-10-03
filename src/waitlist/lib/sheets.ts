@@ -13,30 +13,44 @@ import type { SignupRequest, SignupResult, SignupSuccess } from "@/waitlist/lib/
  *   GOOGLE_SHEET_TAB              (opcional) nome do separador; por omissão o primeiro
  * A folha tem de estar partilhada com o email da conta de serviço como Editor.
  *
- * Colunas (a linha 1 é o cabeçalho, criado se a folha estiver vazia):
- *   A data · B requestId · C nome · D email · E whatsapp · F perfil · G código · H ref · I convites válidos ·
- *   J utm_source · K utm_medium · L utm_campaign · M dispositivo
- * A posição na lista é o número da linha de dados (linha 2 = posição 1). As células são gravadas em modo RAW:
- * nada é interpretado como fórmula.
+ * Colunas — as da folha de produção (A–R), por esta ordem:
+ *   id · created_at · name · email · whatsapp · country · profile · consent · consent_at · code · ref ·
+ *   valid_invites · utm_source · utm_medium · utm_campaign · device · status · request_id
+ * `id` é a posição na lista (1, 2, 3…); as datas são hora de Luanda (UTC+1) sem fuso, como as linhas que já lá estão;
+ * `consent` é "sim" e `status` é "novo". As células são gravadas em modo RAW: nada é interpretado como fórmula.
  */
 
 const HEADER = [
-  "data",
-  "requestId",
-  "nome",
+  "id",
+  "created_at",
+  "name",
   "email",
   "whatsapp",
-  "perfil",
-  "codigo",
+  "country",
+  "profile",
+  "consent",
+  "consent_at",
+  "code",
   "ref",
-  "convites_validos",
+  "valid_invites",
   "utm_source",
   "utm_medium",
   "utm_campaign",
-  "dispositivo",
+  "device",
+  "status",
+  "request_id",
 ];
-const LAST_COL = "M";
-const COL = { requestId: 1, whatsapp: 4, code: 6, invites: 8 } as const;
+const LAST_COL = "R";
+/** Posição (0-based) de cada coluna dentro de uma linha lida. */
+const COL = { id: 0, whatsapp: 4, code: 9, invites: 11, requestId: 17 } as const;
+/** Coluna do Sheets (letra) dos convites válidos. */
+const INVITES_LETTER = "L";
+
+/** Só os dígitos: o Sheets pode devolver +244… como número (244…) ou texto, e continua a ser o mesmo número. */
+const digits = (v: string | undefined) => (v ?? "").replace(/\D/g, "");
+
+/** Hora de Luanda (UTC+1) sem fuso, como as linhas que já estão na folha: 2026-10-02T00:31:05. */
+const luandaNow = () => new Date(Date.now() + 3_600_000).toISOString().slice(0, 19);
 
 /** Email + chave privada, venham das duas variáveis ou do JSON inteiro. A chave é limpa dos erros típicos de colagem. */
 function credentials(): { email: string; key: string } | null {
@@ -166,6 +180,9 @@ function genCode(taken: Set<string>): string {
   throw new Error("code space exhausted");
 }
 
+/** A posição de uma linha existente é o seu `id`; sem `id` legível, a ordem na folha. */
+const positionOf = (row: string[], index: number) => Number(row[COL.id]) || index + 1;
+
 const success = (
   status: "created" | "duplicate",
   row: string[],
@@ -191,23 +208,31 @@ export async function sheetsSubmit(req: SignupRequest, baseUrl: string): Promise
     }
     const data = rows.slice(1);
 
-    // Idempotência (mesmo requestId) e duplicado (mesmo número): devolve a linha que já existe.
+    // Idempotência (mesmo request_id) e duplicado (mesmo número): devolve a linha que já existe.
+    const phone = digits(req.whatsapp);
     const index = data.findIndex(
-      (r) => r[COL.requestId] === req.requestId || r[COL.whatsapp] === req.whatsapp
+      (r) => r[COL.requestId] === req.requestId || digits(r[COL.whatsapp]) === phone
     );
-    if (index >= 0) return success("duplicate", data[index]!, index + 1, baseUrl);
+    if (index >= 0)
+      return success("duplicate", data[index]!, positionOf(data[index]!, index), baseUrl);
 
     const code = genCode(new Set(data.map((r) => r[COL.code] ?? "")));
     const owner = req.ref
-      ? data.findIndex((r) => r[COL.code] === req.ref && r[COL.whatsapp] !== req.whatsapp)
+      ? data.findIndex((r) => r[COL.code] === req.ref && digits(r[COL.whatsapp]) !== phone)
       : -1;
+    const lastId = data.reduce((max, r) => Math.max(max, Number(r[COL.id]) || 0), 0);
+    const id = Math.max(lastId, data.length) + 1;
+    const now = luandaNow();
     const row = [
-      new Date().toISOString(),
-      req.requestId,
+      String(id),
+      now,
       req.name,
       req.email,
       req.whatsapp,
+      req.country,
       req.profile ?? "",
+      "sim",
+      now,
       code,
       owner >= 0 ? (req.ref ?? "") : "",
       "0",
@@ -215,20 +240,29 @@ export async function sheetsSubmit(req: SignupRequest, baseUrl: string): Promise
       req.utm.medium ?? "",
       req.utm.campaign ?? "",
       req.device,
+      "novo",
+      req.requestId,
     ];
     const appended = await api<{ updates?: { updatedRange?: string } }>(
       `/values/${await range(`A:${LAST_COL}`)}:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`,
       { method: "POST", body: JSON.stringify({ values: [row] }) }
     );
-    // A posição é a linha onde o Sheets realmente gravou (atómico), não uma contagem nossa.
+    // Se dois envios simultâneos tiveram o mesmo `id`, a linha onde o Sheets realmente gravou (atómico) manda.
     const written = Number(/!A(\d+)/.exec(appended.updates?.updatedRange ?? "")?.[1]);
-    const position = Number.isFinite(written) && written >= 2 ? written - 1 : data.length + 1;
+    let position = id;
+    if (Number.isFinite(written) && written >= 2 && written - 1 !== id) {
+      position = written - 1;
+      await api(`/values/${await range(`A${written}`)}?valueInputOption=RAW`, {
+        method: "PUT",
+        body: JSON.stringify({ values: [[String(position)]] }),
+      }).catch(() => undefined);
+    }
 
     // Convite válido para quem indicou. Falhar aqui nunca desfaz a inscrição.
     if (owner >= 0) {
       const sheetRow = owner + 2;
       const next = (Number(data[owner]![COL.invites]) || 0) + 1;
-      await api(`/values/${await range(`I${sheetRow}`)}?valueInputOption=RAW`, {
+      await api(`/values/${await range(`${INVITES_LETTER}${sheetRow}`)}?valueInputOption=RAW`, {
         method: "PUT",
         body: JSON.stringify({ values: [[String(next)]] }),
       }).catch((e) =>
@@ -249,7 +283,9 @@ export async function sheetsStatus(
 ): Promise<{ code: string; position: number; validInvites: number } | null> {
   const data = (await readRows()).slice(1);
   const i = data.findIndex((r) => r[COL.code] === code);
-  return i < 0 ? null : { code, position: i + 1, validInvites: Number(data[i]![COL.invites]) || 0 };
+  return i < 0
+    ? null
+    : { code, position: positionOf(data[i]!, i), validInvites: Number(data[i]![COL.invites]) || 0 };
 }
 
 /** Total de inscritos (para /api/stats). */
