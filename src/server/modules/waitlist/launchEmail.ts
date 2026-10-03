@@ -48,13 +48,15 @@ export function renderLaunchEmail(d: LaunchEmailData): {
   const first = (d.name.trim().split(/\s+/)[0] ?? "").slice(0, 40);
   const hello = first ? `Olá ${first},` : "Olá,";
   const cta = `${siteUrl()}/pt/register`;
+  // The light ("inverted") PNG of the logo, hosted on the site: white lettering for the black header. Absolute URL, as mail clients need.
+  const logo = `${siteUrl()}/brand/logo-inverted.png`;
   const subject = "A Kandrop já está no ar";
   const html = `<!doctype html><html lang="pt"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(subject)}</title></head>
 <body style="margin:0;background:#f6f6f6;font-family:Arial,Helvetica,sans-serif;color:#111">
 <div style="display:none;max-height:0;overflow:hidden;opacity:0">A lista de espera acabou: já pode criar a sua loja e começar a vender.</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:24px 12px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border-radius:12px;overflow:hidden">
-<tr><td style="background:#111111;padding:18px 28px;color:#ffffff;font-size:18px;font-weight:700">Kandrop</td></tr>
+<tr><td align="center" style="background:#000000;padding:24px 28px;color:#ffffff;font-size:18px;font-weight:700"><img src="${esc(logo)}" alt="Kandrop" width="140" height="28" border="0" style="display:inline-block;width:140px;max-width:100%;height:auto;border:0;outline:none;text-decoration:none;color:#ffffff;font-size:18px;font-weight:700"></td></tr>
 <tr><td style="padding:32px 28px 8px">
 <p style="margin:0 0 6px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#d94c00;font-weight:700">Lançamento oficial</p>
 <h1 style="margin:0 0 16px;font-size:26px;line-height:1.25">A Kandrop já está no ar.</h1>
