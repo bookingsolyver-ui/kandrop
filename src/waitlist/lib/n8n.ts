@@ -177,7 +177,7 @@ export async function sendSignup(req: SignupRequest): Promise<SignupResult> {
     // tinha de ir para a folha (FR-16 / NFR-03).
     if (process.env.VERCEL || process.env.NODE_ENV === "production") {
       console.error(
-        "[waitlist] N8N_WEBHOOK_URL em falta — a recusar em produção (503)",
+        "[waitlist] sem destino configurado (nem GOOGLE_SERVICE_ACCOUNT_EMAIL + GOOGLE_PRIVATE_KEY + GOOGLE_SHEET_ID, nem N8N_WEBHOOK_URL) — a recusar em produção (503)",
       );
       return { status: "unavailable" };
     }

@@ -7,7 +7,8 @@ import type { SignupRequest, SignupResult, SignupSuccess } from "@/waitlist/lib/
  *
  * Configuração (Vercel → Environment Variables, todas só no servidor):
  *   GOOGLE_SERVICE_ACCOUNT_EMAIL  email da conta de serviço (…@…iam.gserviceaccount.com)
- *   GOOGLE_PRIVATE_KEY            a "private_key" do JSON da conta (as quebras de linha podem vir como \n)
+ *   GOOGLE_PRIVATE_KEY            a "private_key" do JSON da conta (as quebras de linha podem vir como \n; aspas à volta são ignoradas)
+ *   GOOGLE_SERVICE_ACCOUNT_JSON   (alternativa às duas acima) o conteúdo INTEIRO do ficheiro JSON da chave
  *   GOOGLE_SHEET_ID               id da folha (o texto entre /d/ e /edit no URL)
  *   GOOGLE_SHEET_TAB              (opcional) nome do separador; por omissão o primeiro
  * A folha tem de estar partilhada com o email da conta de serviço como Editor.
@@ -37,12 +38,32 @@ const HEADER = [
 const LAST_COL = "M";
 const COL = { requestId: 1, whatsapp: 4, code: 6, invites: 8 } as const;
 
+/** Email + chave privada, venham das duas variáveis ou do JSON inteiro. A chave é limpa dos erros típicos de colagem. */
+function credentials(): { email: string; key: string } | null {
+  let email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL?.trim();
+  let key = process.env.GOOGLE_PRIVATE_KEY;
+  const json = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
+  if (json) {
+    try {
+      const parsed = JSON.parse(json) as { client_email?: string; private_key?: string };
+      email ||= parsed.client_email;
+      key ||= parsed.private_key;
+    } catch {
+      console.error("[waitlist] GOOGLE_SERVICE_ACCOUNT_JSON não é JSON válido");
+    }
+  }
+  if (!email || !key) return null;
+  // Erros típicos ao colar na Vercel: aspas à volta, \n literais em vez de quebras de linha, espaços nas pontas.
+  key = key
+    .trim()
+    .replace(/^["']|["']$/g, "")
+    .replace(/\\n/g, "\n")
+    .trim();
+  return { email, key };
+}
+
 export function sheetsConfigured(): boolean {
-  return Boolean(
-    process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL &&
-    process.env.GOOGLE_PRIVATE_KEY &&
-    process.env.GOOGLE_SHEET_ID
-  );
+  return Boolean(credentials() && process.env.GOOGLE_SHEET_ID?.trim());
 }
 
 const b64url = (input: string | Buffer) => Buffer.from(input).toString("base64url");
@@ -53,8 +74,11 @@ let cachedToken: { value: string; expires: number } | null = null;
 
 async function accessToken(): Promise<string> {
   if (cachedToken && cachedToken.expires > Date.now() + 60_000) return cachedToken.value;
-  const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL!;
-  const key = process.env.GOOGLE_PRIVATE_KEY!.replace(/\\n/g, "\n");
+  const { email, key } = credentials()!;
+  if (!key.includes("BEGIN PRIVATE KEY"))
+    throw new Error(
+      "GOOGLE_PRIVATE_KEY não parece uma chave privada (falta -----BEGIN PRIVATE KEY-----)"
+    );
   const now = Math.floor(Date.now() / 1000);
   const unsigned = `${b64url(JSON.stringify({ alg: "RS256", typ: "JWT" }))}.${b64url(
     JSON.stringify({
@@ -91,7 +115,7 @@ async function accessToken(): Promise<string> {
 
 async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
   const res = await fetch(
-    `https://sheets.googleapis.com/v4/spreadsheets/${process.env.GOOGLE_SHEET_ID}${path}`,
+    `https://sheets.googleapis.com/v4/spreadsheets/${process.env.GOOGLE_SHEET_ID!.trim()}${path}`,
     {
       ...init,
       headers: {
