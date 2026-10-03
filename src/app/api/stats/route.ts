@@ -6,10 +6,23 @@
 
 import { NextResponse } from "next/server";
 import { signupCount } from "@/waitlist/lib/n8n";
+import { sheetsConfigured, sheetsCount } from "@/waitlist/lib/sheets";
 
 const CACHE = "public, max-age=60, s-maxage=120, stale-while-revalidate=180";
 
 export async function GET() {
+  if (sheetsConfigured()) {
+    try {
+      const total = await sheetsCount();
+      return NextResponse.json(
+        { total, showCounter: total >= 50 },
+        { headers: { "Cache-Control": CACHE } }
+      );
+    } catch {
+      return NextResponse.json({ status: "unavailable" }, { status: 503 });
+    }
+  }
+
   const upstream = process.env.N8N_STATS_URL;
 
   if (upstream) {
@@ -23,12 +36,18 @@ export async function GET() {
         return NextResponse.json({ status: "unavailable" }, { status: 503 });
       }
       const total = body.total;
-      return NextResponse.json({ total, showCounter: total >= 50 }, { headers: { "Cache-Control": CACHE } });
+      return NextResponse.json(
+        { total, showCounter: total >= 50 },
+        { headers: { "Cache-Control": CACHE } }
+      );
     } catch {
       return NextResponse.json({ status: "unavailable" }, { status: 503 });
     }
   }
 
   const total = signupCount();
-  return NextResponse.json({ total, showCounter: total >= 50 }, { headers: { "Cache-Control": CACHE } });
+  return NextResponse.json(
+    { total, showCounter: total >= 50 },
+    { headers: { "Cache-Control": CACHE } }
+  );
 }

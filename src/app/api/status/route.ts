@@ -7,12 +7,23 @@
 
 import { NextResponse } from "next/server";
 import { lookupStatus } from "@/waitlist/lib/n8n";
+import { sheetsConfigured, sheetsStatus } from "@/waitlist/lib/sheets";
 
 const notFound = () => NextResponse.json({ status: "not_found" }, { status: 404 });
 
 export async function GET(req: Request) {
   const code = new URL(req.url).searchParams.get("code")?.trim().toUpperCase() ?? "";
   if (!/^[A-Z0-9]{4}$/.test(code)) return notFound();
+
+  // Google Sheets direto: a folha é a fonte da verdade.
+  if (sheetsConfigured()) {
+    try {
+      const info = await sheetsStatus(code);
+      return info ? NextResponse.json(info) : notFound();
+    } catch {
+      return NextResponse.json({ status: "unavailable" }, { status: 503 });
+    }
+  }
 
   // Fonte externa opcional (webhook de leitura no n8n — leia a Fase C do checklist)
   const upstream = process.env.N8N_STATUS_URL;
@@ -25,9 +36,10 @@ export async function GET(req: Request) {
       });
       if (res.status === 404) return notFound();
       if (!res.ok) return NextResponse.json({ status: "unavailable" }, { status: 503 });
-      const body = (await res.json().catch(() => null)) as
-        | { position?: unknown; validInvites?: unknown }
-        | null;
+      const body = (await res.json().catch(() => null)) as {
+        position?: unknown;
+        validInvites?: unknown;
+      } | null;
       if (!body || typeof body.position !== "number") {
         return NextResponse.json({ status: "unavailable" }, { status: 503 });
       }

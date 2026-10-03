@@ -10,6 +10,7 @@
  * O browser nunca liga ao n8n — só a Route Handler (NFR-03).
  */
 
+import { sheetsConfigured, sheetsSubmit } from "@/waitlist/lib/sheets";
 import type { WaitlistData } from "@/waitlist/lib/validation";
 
 export interface SignupRequest extends WaitlistData {
@@ -165,6 +166,9 @@ export function signupCount(): number {
 }
 
 export async function sendSignup(req: SignupRequest): Promise<SignupResult> {
+  // Google Sheets direto (sem n8n) quando a conta de serviço está configurada.
+  if (sheetsConfigured()) return sheetsSubmit(req, baseUrl());
+
   const url = process.env.N8N_WEBHOOK_URL;
 
   if (!url) {
