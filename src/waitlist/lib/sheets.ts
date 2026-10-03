@@ -39,10 +39,20 @@ const HEADER = [
   "device",
   "status",
   "request_id",
+  "email_enviado",
+  "email_enviado_em",
 ];
-const LAST_COL = "R";
+const LAST_COL = "T";
 /** Posição (0-based) de cada coluna dentro de uma linha lida. */
-const COL = { id: 0, whatsapp: 4, code: 9, invites: 11, requestId: 17 } as const;
+const COL = {
+  id: 0,
+  whatsapp: 4,
+  code: 9,
+  invites: 11,
+  requestId: 17,
+  emailSent: 18,
+  emailSentAt: 19,
+} as const;
 /** Coluna do Sheets (letra) dos convites válidos. */
 const INVITES_LETTER = "L";
 
@@ -258,6 +268,8 @@ export async function sheetsSubmit(req: SignupRequest, baseUrl: string): Promise
       req.device,
       "novo",
       req.requestId,
+      "false",
+      "",
     ];
     const appended = await api<{ updates?: { updatedRange?: string } }>(
       `/values/${await range(`A:${LAST_COL}`)}:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`,
@@ -307,4 +319,59 @@ export async function sheetsStatus(
 /** Total de inscritos (para /api/stats). */
 export async function sheetsCount(): Promise<number> {
   return Math.max(0, (await readRows()).length - 1);
+}
+
+/* ─── Envio do e-mail de lançamento: estado por lead (colunas S e T) ─── */
+
+export interface Lead {
+  /** Número da linha na folha (a linha 2 é a primeira inscrição). */
+  row: number;
+  name: string;
+  email: string;
+  code: string;
+  position: number;
+  consent: boolean;
+  /** "" / "false" = por enviar · "true" = enviado · "erro" = recusado · "duplicado" = mesmo e-mail já tratado. */
+  emailState: string;
+}
+
+/** Garante os cabeçalhos S e T (email_enviado, email_enviado_em) numa folha criada antes deles. */
+export async function sheetsEnsureEmailColumns(): Promise<void> {
+  const head = await api<{ values?: string[][] }>(`/values/${await range("S1:T1")}`);
+  if (head.values?.[0]?.[0] === "email_enviado") return;
+  await api(`/values/${await range("S1:T1")}?valueInputOption=RAW`, {
+    method: "PUT",
+    body: JSON.stringify({ values: [["email_enviado", "email_enviado_em"]] }),
+  });
+}
+
+/** Todas as inscrições, com o estado do e-mail. Lê a folha (a fonte da verdade). */
+export async function sheetsLeads(): Promise<Lead[]> {
+  const data = (await readRows()).slice(1);
+  return data.map((r, i) => ({
+    row: i + 2,
+    name: r[2] ?? "",
+    email: (r[3] ?? "").trim(),
+    code: r[COL.code] ?? "",
+    position: positionOf(r, i),
+    consent: (r[7] ?? "").trim().toLowerCase() === "sim",
+    emailState: (r[COL.emailSent] ?? "").trim().toLowerCase(),
+  }));
+}
+
+/** Marca o resultado do e-mail de várias linhas de uma só vez (colunas S:T). */
+export async function sheetsMarkEmail(
+  updates: Array<{ row: number; state: string; at: string }>
+): Promise<void> {
+  if (updates.length === 0) return;
+  const tabRange = async (row: number) => `'${(await tab()).replace(/'/g, "''")}'!S${row}:T${row}`;
+  await api(`/values:batchUpdate`, {
+    method: "POST",
+    body: JSON.stringify({
+      valueInputOption: "RAW",
+      data: await Promise.all(
+        updates.map(async (u) => ({ range: await tabRange(u.row), values: [[u.state, u.at]] }))
+      ),
+    }),
+  });
 }
