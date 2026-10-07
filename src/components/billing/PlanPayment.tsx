@@ -193,6 +193,7 @@ export function PlanPayment({
       )}
       <div className="mt-6">
         <PaymentForm
+          live={!sandbox}
           inline
           transfer={session.transfer}
           sessionId={session.sessionId}

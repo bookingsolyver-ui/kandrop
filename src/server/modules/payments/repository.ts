@@ -16,6 +16,9 @@ const toRow = (p: PaymentRecord) => ({
   paid_at: p.paidAt ?? null,
   provider_ref: p.providerRef ?? null,
   settle: p.settle ?? null,
+  payer_name: p.payerName ?? null,
+  payer_email: p.payerEmail ?? null,
+  instructions: p.instructions ?? null,
 });
 
 function fromRow(row: Record<string, unknown>): PaymentRecord {
@@ -33,6 +36,9 @@ function fromRow(row: Record<string, unknown>): PaymentRecord {
     paidAt: row.paid_at === null ? undefined : Number(row.paid_at),
     providerRef: row.provider_ref === null ? undefined : String(row.provider_ref),
     settle: (row.settle as PaymentRecord["settle"]) ?? undefined,
+    payerName: row.payer_name === null || row.payer_name === undefined ? undefined : String(row.payer_name),
+    payerEmail: row.payer_email === null || row.payer_email === undefined ? undefined : String(row.payer_email),
+    instructions: (row.instructions as PaymentRecord["instructions"]) ?? undefined,
   };
 }
 

@@ -7,6 +7,7 @@ import { activateSubscription } from "@/server/modules/billing/activation";
 import { issueReceipt } from "@/server/modules/receipts/service";
 import { fulfilPaidCheckout } from "@/server/modules/fulfilment/service";
 import { checkoutRepository } from "@/server/modules/checkout/repository";
+import type { CheckoutSession } from "@/server/modules/checkout/schema";
 import { statusOf } from "@/server/modules/checkout/service";
 import {
   cardBrand,
@@ -15,7 +16,14 @@ import {
   type PaymentRequest,
   type PaymentRequestInput,
 } from "@/shared/checkout/schemas";
-import { PROVIDER_TIMEOUT_MS, requestPayment, type MulticaixaEvent } from "./multicaixa";
+import { requestPayment, type MulticaixaEvent } from "./multicaixa";
+import {
+  OLUALI_TIMEOUT_MS,
+  OlualiError,
+  chargeInstructions,
+  createCharge,
+  type OlualiPaymentType,
+} from "./oluali";
 import { transferInfo } from "./transfer";
 import { paymentRepository } from "./repository";
 import type { PaymentRecord, PublicPayment } from "./schema";
@@ -24,12 +32,20 @@ import { simulate } from "./simulator";
 // Card-testing and brute-force guard: at most 8 payment attempts per (IP, session) per 15 min.
 const attempts = attemptLimiter({ max: 8, windowMs: 15 * 60 * 1000 });
 
-function assertSandbox() {
-  if (getEnv().PAYMENTS_MODE !== "sandbox") {
-    // `live` means "talk to a real provider" — refuse rather than pretend to charge someone.
-    console.error("[payments] PAYMENTS_MODE=live but no payment provider is integrated");
+/**
+ * `sandbox` simulates every method. `live` talks to a real provider, and the only one integrated is
+ * Oluali, for Multicaixa Express and pay-by-reference: every other method is refused rather than pretend to charge someone.
+ */
+function assertAvailable(method: PaymentRequest["method"]): { live: boolean } {
+  const env = getEnv();
+  if (env.PAYMENTS_MODE === "sandbox") return { live: false };
+  if (
+    (method !== "multicaixa_express" && method !== "reference") ||
+    !env.OLUALI_API_KEY || !env.OLUALI_BASE_URL) {
+    console.error("[payments] PAYMENTS_MODE=live but this method has no integrated provider", { method });
     throw new ApiError("payments_unavailable");
   }
+  return { live: true };
 }
 
 function maskedTarget(req: PaymentRequest): string {
@@ -59,6 +75,7 @@ export function toPublic(p: PaymentRecord): PublicPayment {
     target: p.target,
     createdAt: new Date(p.createdAt).toISOString(),
     paidAt: p.paidAt ? new Date(p.paidAt).toISOString() : undefined,
+    instructions: p.status === "pending" ? p.instructions : undefined,
   };
 }
 
@@ -79,9 +96,18 @@ async function markPaid(p: PaymentRecord) {
   }
 }
 
+/** The Oluali payment type each of our methods is charged as. A "pay by reference" method maps to `REFERENCE` here. */
+const OLUALI_TYPE: Partial<Record<PaymentRecord["method"], OlualiPaymentType>> = {
+  multicaixa_express: "MCX",
+  reference: "REFERENCE",
+};
+
+/** How long a webhook-confirmed payment may stay pending: 3 min for MCX, 2 h 15 min for a REFERENCE. */
+const providerTimeoutMs = (p: PaymentRecord) => OLUALI_TIMEOUT_MS[OLUALI_TYPE[p.method] ?? "MCX"];
+
 /** Lazily applies what is due: a polled provider's answer, or the timeout of a webhook one. */
 async function settle(p: PaymentRecord): Promise<PaymentRecord> {
-  if (p.status === "pending" && p.providerRef && Date.now() > p.createdAt + PROVIDER_TIMEOUT_MS) {
+  if (p.status === "pending" && p.providerRef && Date.now() > p.createdAt + providerTimeoutMs(p)) {
     // The provider never called back. Fail visibly rather than leave the payer waiting forever.
     p.status = "failed";
     p.failureCode = "timeout";
@@ -100,8 +126,8 @@ async function settle(p: PaymentRecord): Promise<PaymentRecord> {
 }
 
 export async function createPayment(input: PaymentRequestInput, clientKey: string) {
-  assertSandbox();
   const req = paymentRequestSchema.parse(input); // never log `input`: it may contain card data
+  const { live } = assertAvailable(req.method);
 
   const session = await checkoutRepository.get(req.sessionId);
   if (!session) throw new ApiError("not_found");
@@ -128,11 +154,20 @@ export async function createPayment(input: PaymentRequestInput, clientKey: strin
     currency: session.currency,
     target: maskedTarget(req),
     createdAt: Date.now(),
+    // Who pays, as typed at the checkout (a card payment carries the cardholder instead).
+    ...(req.method !== "card" && { payerName: req.name, payerEmail: req.email }),
   };
 
-  if (req.method === "multicaixa_express") {
+  if (req.method === "multicaixa_express" || req.method === "reference") {
     // Asynchronous: the provider answers later, through the signed webhook (`applyProviderEvent`).
-    payment.providerRef = requestPayment({ phone: req.phone, amount: session.total }).transactionId;
+    if (live) {
+      const charge = await chargeWithOluali(session, req, OLUALI_TYPE[req.method]!);
+      payment.providerRef = charge.providerRef;
+      payment.instructions = charge.instructions;
+    } else if (req.method === "multicaixa_express") {
+      payment.providerRef = requestPayment({ phone: req.phone, amount: session.total }).transactionId;
+    }
+    // Sandbox reference: stays pending until "simulate success" (nothing real to pay).
   } else {
     const sim = simulate(req);
     if (sim.kind === "immediate") {
@@ -155,15 +190,61 @@ export async function createPayment(input: PaymentRequestInput, clientKey: strin
   return toPublic(payment);
 }
 
+/**
+ * Asks Oluali to charge the payer for the whole session (`MCX`: approved on their phone; `REFERENCE`: paid
+ * later with the entity/reference we show them). Returns its `transaction_id`, kept as the payment's
+ * `providerRef` (the webhook finds the payment by it), and, for a reference, the details to show.
+ * `client_reference_id` is our checkout session id. Never logs the payer's data.
+ */
+async function chargeWithOluali(
+  session: CheckoutSession,
+  payer: { phone: string; name: string; email: string },
+  type: OlualiPaymentType
+): Promise<{ providerRef: string; instructions?: Record<string, string> }> {
+  try {
+    const charge = await createCharge({
+      amount: session.total,
+      payment_type: type,
+      client_reference_id: session.id,
+      customer: { name: payer.name, email: payer.email, phone: payer.phone },
+    });
+    if (typeof charge.transaction_id !== "string" || !charge.transaction_id) {
+      console.error("[payments] Oluali answered without a transaction_id");
+      throw new ApiError("payments_unavailable");
+    }
+    return {
+      providerRef: charge.transaction_id,
+      instructions: type === "REFERENCE" ? chargeInstructions(charge) : undefined,
+    };
+  } catch (err) {
+    if (err instanceof OlualiError) throw new ApiError("payments_unavailable");
+    throw err;
+  }
+}
+
+/** What a provider tells us about a payment, whichever provider it is. */
+export type ProviderEvent = Pick<
+  MulticaixaEvent,
+  "event" | "transactionId" | "amount" | "currency" | "reason"
+>;
+
 export type ProviderOutcome = "applied" | "ignored" | "unknown";
 
 /**
  * Applies a provider event that has already passed signature verification. Idempotent: a
  * replayed, duplicate or late event never changes a payment that is no longer pending.
  */
-export async function applyProviderEvent(event: MulticaixaEvent): Promise<ProviderOutcome> {
+export async function applyProviderEvent(
+  event: ProviderEvent,
+  opts: { clientReferenceId?: string } = {}
+): Promise<ProviderOutcome> {
   const payment = await paymentRepository.byProviderRef(event.transactionId);
   if (!payment) return "unknown";
+  // The provider echoes the reference we gave it (the checkout session): it must be this payment's.
+  if (opts.clientReferenceId !== undefined && opts.clientReferenceId !== payment.sessionId) {
+    console.error("[payments] provider reference mismatch", { paymentId: payment.id });
+    return "ignored";
+  }
 
   if ((await settle(payment)).status !== "pending") {
     // E.g. the payer cancelled or it timed out, then approved in the app anyway: money may have

@@ -188,6 +188,10 @@
         "name": "Unitel Money",
         "hint": "Confirmez sur votre téléphone"
       },
+      "reference": {
+        "name": "Référence de paiement",
+        "hint": "Payez au distributeur ou dans l’app de la banque"
+      },
       "card": {
         "name": "Carte de crédit ou de débit",
         "hint": "Paiement immédiat"
@@ -205,6 +209,9 @@
     "fields": {
       "phone": "Numéro de téléphone",
       "phoneHint": "Saisissez les 9 chiffres, sans indicatif.",
+      "email": "E-mail",
+      "emailHint": "Nous enverrons votre reçu à cette adresse.",
+      "name": "Nom du titulaire",
       "cardNumber": "Numéro de carte",
       "expiry": "Expiration",
       "expiryPlaceholder": "MM/AA",
@@ -214,6 +221,7 @@
     "notes": {
       "multicaixa_express": "Vous recevrez une demande de confirmation dans l'application Multicaixa Express.",
       "unitel_money": "Vous recevrez une demande de confirmation sur votre téléphone.",
+      "reference": "Vous recevrez une référence à payer à un distributeur, dans l’app de votre banque ou à un guichet. Vous avez 2 heures pour payer.",
       "card": "Nous ne conservons pas les données de votre carte."
     },
     "trust": {
@@ -235,6 +243,23 @@
         "store": "Boutique",
         "phone": "Téléphone",
         "reference": "Référence"
+      },
+      "reference": {
+        "title": "En attente de votre paiement par référence",
+        "body": "Payez {amount} avec les informations ci-dessous. Nous avançons dès que le paiement est confirmé.",
+        "steps": {
+          "pay": "À un distributeur, dans l’app Multicaixa Express ou votre banque, choisissez Paiements par référence.",
+          "enter": "Saisissez l’entité et la référence indiquées ci-dessous et vérifiez le montant de {amount}.",
+          "confirm": "Payez et gardez cette page ouverte : nous confirmons automatiquement."
+        },
+        "waiting": "Vous avez jusqu’à 2 heures pour payer. Si vous préférez un autre moyen, annulez et choisissez-en un autre."
+      },
+      "details": {
+          "entity": "Entité",
+          "reference": "Référence",
+          "expires_at": "Valable jusqu’au",
+          "expiration": "Valable jusqu’au",
+          "expires_in": "Expire dans"
       },
       "waiting": "Cela prend généralement moins d’une minute. Gardez cette page ouverte : nous continuons dès votre confirmation.",
       "cancel": "Annuler et choisir un autre moyen"
@@ -277,6 +302,10 @@
     "validation": {
       "phone_required": "Saisissez votre numéro de téléphone.",
       "phone_invalid": "Saisissez 9 chiffres commençant par 9. Ex. : 923 456 789",
+      "email_required": "Saisissez votre e-mail.",
+      "email_invalid": "Saisissez un e-mail valide. Ex. : nom@exemple.com",
+      "name_required": "Indiquez le nom du titulaire.",
+      "name_invalid": "Saisissez le nom complet (2 lettres minimum).",
       "card_number_required": "Saisissez le numéro de carte.",
       "card_number_invalid": "Le numéro de carte n'est pas valide. Vérifiez les chiffres.",
       "card_expiry_required": "Saisissez la date d'expiration.",

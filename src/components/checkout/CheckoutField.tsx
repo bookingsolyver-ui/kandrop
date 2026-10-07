@@ -14,7 +14,7 @@ interface CheckoutFieldProps {
   onBlur: () => void;
   autoComplete: string;
   autoCapitalize?: "none" | "words";
-  inputMode?: "numeric" | "tel" | "text";
+  inputMode?: "numeric" | "tel" | "text" | "email";
   placeholder?: string;
   maxLength?: number;
   /** Fixed text inside the field's left edge (e.g. `+244`). */

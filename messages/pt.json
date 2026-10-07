@@ -188,6 +188,10 @@
         "name": "Unitel Money",
         "hint": "Confirme no seu telemóvel"
       },
+      "reference": {
+        "name": "Referência de pagamento",
+        "hint": "Pague no ATM ou na app do banco"
+      },
       "card": {
         "name": "Cartão de crédito ou débito",
         "hint": "Pagamento imediato"
@@ -205,6 +209,9 @@
     "fields": {
       "phone": "Número de telemóvel",
       "phoneHint": "Introduza os 9 dígitos, sem indicativo.",
+      "email": "E-mail",
+      "emailHint": "Enviaremos o comprovativo para este endereço.",
+      "name": "Nome do titular",
       "cardNumber": "Número do cartão",
       "expiry": "Validade",
       "expiryPlaceholder": "MM/AA",
@@ -214,6 +221,7 @@
     "notes": {
       "multicaixa_express": "Vai receber um pedido de confirmação na aplicação Multicaixa Express.",
       "unitel_money": "Vai receber um pedido de confirmação no seu telemóvel.",
+      "reference": "Vai receber uma referência para pagar no ATM, na app do seu banco ou num balcão. Tem 2 horas para pagar.",
       "card": "Não guardamos os dados do seu cartão."
     },
     "trust": {
@@ -235,6 +243,23 @@
         "store": "Loja",
         "phone": "Telemóvel",
         "reference": "Referência"
+      },
+      "reference": {
+        "title": "A aguardar o seu pagamento por referência",
+        "body": "Pague {amount} com os dados abaixo. Avançamos assim que o pagamento for confirmado.",
+        "steps": {
+          "pay": "Em qualquer ATM, app Multicaixa Express ou banco, escolha Pagamentos por referência.",
+          "enter": "Introduza a entidade e a referência indicadas abaixo e confirme o valor de {amount}.",
+          "confirm": "Pague e mantenha esta página aberta: confirmamos automaticamente."
+        },
+        "waiting": "Tem até 2 horas para pagar. Se não quiser pagar assim, cancele e escolha outro método."
+      },
+      "details": {
+          "entity": "Entidade",
+          "reference": "Referência",
+          "expires_at": "Válido até",
+          "expiration": "Válido até",
+          "expires_in": "Expira em"
       },
       "waiting": "Normalmente demora menos de um minuto. Não feche esta página: avançamos assim que confirmar.",
       "cancel": "Cancelar e escolher outro método"
@@ -277,6 +302,10 @@
     "validation": {
       "phone_required": "Indique o número de telemóvel.",
       "phone_invalid": "Introduza 9 dígitos a começar por 9. Ex.: 923 456 789",
+      "email_required": "Indique o seu e-mail.",
+      "email_invalid": "Introduza um e-mail válido. Ex.: nome@exemplo.com",
+      "name_required": "Indique o nome do titular.",
+      "name_invalid": "Introduza o nome completo (mínimo 2 letras).",
       "card_number_required": "Indique o número do cartão.",
       "card_number_invalid": "O número do cartão não é válido. Verifique os dígitos.",
       "card_expiry_required": "Indique a validade do cartão.",

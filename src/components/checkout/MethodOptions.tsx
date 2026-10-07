@@ -88,7 +88,7 @@ export function MethodTile(props: OptionProps) {
   );
 }
 
-/** Card is the secondary path: a quieter full-width row, with its fields attached below. */
+/** Card and pay-by-reference are the secondary paths: a quieter full-width row, with their fields attached below. */
 export function MethodRow({ children, ...props }: OptionProps & { children?: ReactNode }) {
   const t = useTranslations("Checkout.method");
   const { method, selected } = props;
@@ -102,7 +102,7 @@ export function MethodRow({ children, ...props }: OptionProps & { children?: Rea
         <Radio {...props} />
         <span className={`flex min-h-16 items-center gap-3 rounded-lg px-4 py-3 ${focusRing}`}>
           <span className="text-ink-2">
-            <CardIcon />
+            {method === "reference" ? <BankIcon /> : <CardIcon />}
           </span>
           <span className="min-w-0 flex-1">
             <span className="block font-medium">{t(`${method}.name`)}</span>

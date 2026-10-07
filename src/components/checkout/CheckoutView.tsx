@@ -61,7 +61,12 @@ export function CheckoutView({
     [t, router]
   );
 
-  usePaymentPolling(phase.kind === "pending" ? phase.payment.id : null, apply);
+  // A reference is paid at an ATM or in a bank app, not in seconds: ask less often.
+  usePaymentPolling(
+    phase.kind === "pending" ? phase.payment.id : null,
+    apply,
+    phase.kind === "pending" && phase.payment.method === "reference" ? 5000 : undefined
+  );
 
   async function cancel() {
     if (phase.kind !== "pending") return;
@@ -96,6 +101,7 @@ export function CheckoutView({
                 {t("title")}
               </h1>
               <PaymentForm
+                live={!sandbox}
                 sessionId={checkout.id}
                 totalLabel={amountLabel}
                 notice={notice}

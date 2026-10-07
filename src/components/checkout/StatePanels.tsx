@@ -4,7 +4,7 @@ import { useFormatter, useTranslations } from "next-intl";
 import { useEffect, useRef, type ReactNode } from "react";
 import { Link } from "@/i18n/navigation";
 import { useFormatters } from "@/components/dashboard/useFormatters";
-import { LockIcon, PhoneIcon } from "./icons";
+import { BankIcon, LockIcon, PhoneIcon } from "./icons";
 import { Spinner } from "./Spinner";
 import type { PublicCheckout } from "@/server/modules/checkout/schema";
 import type { PublicPayment } from "@/server/modules/payments/schema";
@@ -48,6 +48,11 @@ function Badge({ kind }: { kind: "success" | "wait" | "fail" }) {
   );
 }
 
+/** Provider fields we have a translated label for; any other one is shown under its own (humanised) name. */
+const KNOWN_DETAILS = ["entity", "reference", "expires_at", "expiration", "expires_in"] as const;
+const isKnownDetail = (key: string): key is (typeof KNOWN_DETAILS)[number] =>
+  (KNOWN_DETAILS as readonly string[]).includes(key);
+
 const title = "font-serif text-[1.75rem] leading-tight font-normal tracking-[-0.01em]";
 
 /** Session expired / already paid / not found. */
@@ -89,7 +94,9 @@ export function PendingPanel({
   // A new screen: put focus on its title so keyboard and screen-reader users start here.
   useEffect(() => heading.current?.focus(), []);
 
+  const reference = payment.method === "reference";
   const values = { app, amount: amountLabel, store: storeName, phone: payment.target };
+  const details = Object.entries(payment.instructions ?? {});
   const rows: Array<[string, string]> = [
     [t("pending.receipt.amount"), amountLabel],
     [t("pending.receipt.store"), storeName],
@@ -100,18 +107,20 @@ export function PendingPanel({
   return (
     <Panel>
       <Spinner>
-        <PhoneIcon size={30} />
+        {reference ? <BankIcon size={30} /> : <PhoneIcon size={30} />}
       </Spinner>
 
       <div role="status" aria-live="polite">
         <h1 ref={heading} tabIndex={-1} className={`${title} outline-none`}>
-          {t("pending.title", values)}
+          {reference ? t("pending.reference.title") : t("pending.title", values)}
         </h1>
-        <p className="mx-auto mt-3 max-w-sm text-ink-2">{t("pending.body", values)}</p>
+        <p className="mx-auto mt-3 max-w-sm text-ink-2">
+          {reference ? t("pending.reference.body", values) : t("pending.body", values)}
+        </p>
       </div>
 
       <ol className="mx-auto mt-7 max-w-sm space-y-3 text-left text-sm">
-        {(["open", "check", "approve"] as const).map((step, i) => (
+        {(reference ? (["pay", "enter", "confirm"] as const) : (["open", "check", "approve"] as const)).map((step, i) => (
           <li key={step} className="flex gap-3">
             <span
               aria-hidden
@@ -119,7 +128,11 @@ export function PendingPanel({
             >
               {i + 1}
             </span>
-            <span className="pt-0.5 text-ink-2">{t(`pending.steps.${step}`, values)}</span>
+            <span className="pt-0.5 text-ink-2">
+              {reference
+                ? t(`pending.reference.steps.${step as "pay" | "enter" | "confirm"}`, values)
+                : t(`pending.steps.${step as "open" | "check" | "approve"}`, values)}
+            </span>
           </li>
         ))}
       </ol>
@@ -133,13 +146,28 @@ export function PendingPanel({
         ))}
       </dl>
 
+      {reference && details.length > 0 && (
+        <dl className="mx-auto mt-5 max-w-sm divide-y divide-line rounded-md border border-line text-left text-sm">
+          {details.map(([key, value]) => (
+            <div key={key} className="flex items-baseline justify-between gap-6 px-4 py-3">
+              <dt className="text-ink-muted">
+                {isKnownDetail(key) ? t(`pending.details.${key}`) : key.replace(/_/g, " ")}
+              </dt>
+              <dd className="text-right font-mono font-semibold tracking-wide break-all">{value}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
+
       <p className="mx-auto mt-5 flex max-w-sm items-start justify-center gap-2 text-left text-[13px] leading-snug text-ink-muted">
         <span className="mt-0.5">
           <LockIcon />
         </span>
         {t("trust.noPin")}
       </p>
-      <p className="mt-2 text-[13px] text-ink-muted">{t("pending.waiting")}</p>
+      <p className="mt-2 text-[13px] text-ink-muted">
+        {reference ? t("pending.reference.waiting") : t("pending.waiting")}
+      </p>
 
       {onSimulate && (
         <div className="mx-auto mt-6 max-w-sm rounded-md border border-dashed border-field p-3">

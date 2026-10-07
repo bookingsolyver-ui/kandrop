@@ -34,6 +34,11 @@ export interface PaymentRecord {
   /** Provider transaction id (Multicaixa: `MCX-…`). Internal: the webhook finds the payment by it. */
   providerRef?: string;
   /** For `pending` payments answered by polling (Unitel Money): when the simulator will answer. */
+  /** Who paid, as typed at the checkout (mobile money and reference payments). Personal data: never logged, never sent to the browser. */
+  payerName?: string;
+  payerEmail?: string;
+  /** "Pay by reference": what the payer must do (entity, reference, deadline…), as the provider gave it. Flat strings. */
+  instructions?: Record<string, string>;
   settle?: { at: number; status: "success" | "failed"; failureCode?: FailureCode };
 }
 
@@ -48,4 +53,6 @@ export interface PublicPayment {
   target: string;
   createdAt: string;
   paidAt?: string;
+  /** Pay-by-reference details to show the payer while the payment is pending. */
+  instructions?: Record<string, string>;
 }

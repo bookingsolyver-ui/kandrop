@@ -21,6 +21,11 @@ const schema = z.object({
     (v) => (v === "" ? undefined : v),
     z.string().min(32).optional()
   ),
+  // Oluali (Angolan payments API): charges (MCX / REFERENCE) and withdrawals. Server-only secrets. The webhook secret
+  // verifies `X-Signature` on `POST /api/webhooks/oluali`. Unset = the client refuses to run (payments_unavailable).
+  OLUALI_API_KEY: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
+  OLUALI_WEBHOOK_SECRET: z.preprocess((v) => (v === "" ? undefined : v), z.string().optional()),
+  OLUALI_BASE_URL: z.preprocess((v) => (v === "" ? undefined : v), z.url().optional()),
   // Supabase (the database; see src/lib/supabase and supabase/migrations). The two NEXT_PUBLIC_ values are
   // public by design; the service-role key bypasses Row Level Security and must stay server-only.
   NEXT_PUBLIC_SUPABASE_URL: z.preprocess((v) => (v === "" ? undefined : v), z.url().optional()),

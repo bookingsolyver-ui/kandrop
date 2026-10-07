@@ -7,6 +7,10 @@ import { z } from "zod";
 export type CheckoutValidationCode =
   | "phone_required"
   | "phone_invalid"
+  | "email_required"
+  | "email_invalid"
+  | "name_required"
+  | "name_invalid"
   | "card_number_required"
   | "card_number_invalid"
   | "card_expiry_required"
@@ -24,6 +28,7 @@ export type CheckoutValidationCode =
 export const PAYMENT_METHODS = [
   "multicaixa_express",
   "unitel_money",
+  "reference",
   "card",
   "bank_transfer",
 ] as const;
@@ -54,6 +59,22 @@ export const phoneSchema = z
   .min(1, c("phone_required"))
   .transform(normalizePhone)
   .pipe(z.string().regex(/^9\d{8}$/, c("phone_invalid")));
+
+/** The payer's full name (the payment provider requires one). */
+export const payerNameSchema = z
+  .string(c("name_required"))
+  .trim()
+  .min(1, c("name_required"))
+  .min(2, c("name_invalid"))
+  .max(120, c("name_invalid"));
+
+/** The payer's e-mail (the payment provider requires one). */
+export const emailSchema = z
+  .string(c("email_required"))
+  .trim()
+  .min(1, c("email_required"))
+  .max(254, c("email_invalid"))
+  .pipe(z.email(c("email_invalid")));
 
 // ── Cards ─────────────────────────────────────────────────────────────────────────────────
 
@@ -125,8 +146,28 @@ export const cardSchema = z.object({
 const sessionId = z.string().regex(/^chk_[A-Za-z0-9_-]{16,64}$/);
 
 export const paymentRequestSchema = z.discriminatedUnion("method", [
-  z.object({ sessionId, method: z.literal("multicaixa_express"), phone: phoneSchema }),
-  z.object({ sessionId, method: z.literal("unitel_money"), phone: phoneSchema }),
+  z.object({
+    sessionId,
+    method: z.literal("multicaixa_express"),
+    phone: phoneSchema,
+    name: payerNameSchema,
+    email: emailSchema,
+  }),
+  z.object({
+    sessionId,
+    method: z.literal("unitel_money"),
+    phone: phoneSchema,
+    name: payerNameSchema,
+    email: emailSchema,
+  }),
+  // Pay by reference (Oluali `REFERENCE`): paid later at an ATM, in the bank app or at a counter, up to 2 h.
+  z.object({
+    sessionId,
+    method: z.literal("reference"),
+    phone: phoneSchema,
+    name: payerNameSchema,
+    email: emailSchema,
+  }),
   z.object({ sessionId, method: z.literal("card"), card: cardSchema }),
 ]);
 

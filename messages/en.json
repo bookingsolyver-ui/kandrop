@@ -188,6 +188,10 @@
         "name": "Unitel Money",
         "hint": "Confirm on your phone"
       },
+      "reference": {
+        "name": "Payment reference",
+        "hint": "Pay at an ATM or in your bank app"
+      },
       "card": {
         "name": "Credit or debit card",
         "hint": "Instant payment"
@@ -205,6 +209,9 @@
     "fields": {
       "phone": "Mobile number",
       "phoneHint": "Enter the 9 digits, without the country code.",
+      "email": "E-mail",
+      "emailHint": "We will send your receipt to this address.",
+      "name": "Account holder name",
       "cardNumber": "Card number",
       "expiry": "Expiry",
       "expiryPlaceholder": "MM/YY",
@@ -214,6 +221,7 @@
     "notes": {
       "multicaixa_express": "You will receive a confirmation request in the Multicaixa Express app.",
       "unitel_money": "You will receive a confirmation request on your phone.",
+      "reference": "You will get a reference to pay at an ATM, in your bank app or at a counter. You have 2 hours to pay.",
       "card": "We don't store your card details."
     },
     "trust": {
@@ -235,6 +243,23 @@
         "store": "Store",
         "phone": "Phone",
         "reference": "Reference"
+      },
+      "reference": {
+        "title": "Waiting for your reference payment",
+        "body": "Pay {amount} with the details below. We move on as soon as the payment is confirmed.",
+        "steps": {
+          "pay": "At any ATM, in the Multicaixa Express app or your bank, choose Payments by reference.",
+          "enter": "Enter the entity and reference shown below and check the amount of {amount}.",
+          "confirm": "Pay and keep this page open: we confirm automatically."
+        },
+        "waiting": "You have up to 2 hours to pay. If you prefer not to pay this way, cancel and choose another method."
+      },
+      "details": {
+          "entity": "Entity",
+          "reference": "Reference",
+          "expires_at": "Valid until",
+          "expiration": "Valid until",
+          "expires_in": "Expires in"
       },
       "waiting": "It usually takes less than a minute. Please keep this page open: we move on as soon as you confirm.",
       "cancel": "Cancel and choose another method"
@@ -277,6 +302,10 @@
     "validation": {
       "phone_required": "Enter your mobile number.",
       "phone_invalid": "Enter 9 digits starting with 9. E.g. 923 456 789",
+      "email_required": "Enter your e-mail.",
+      "email_invalid": "Enter a valid e-mail. E.g. name@example.com",
+      "name_required": "Enter the account holder's name.",
+      "name_invalid": "Enter the full name (at least 2 letters).",
       "card_number_required": "Enter the card number.",
       "card_number_invalid": "The card number isn't valid. Check the digits.",
       "card_expiry_required": "Enter the card expiry date.",
